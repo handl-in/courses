@@ -1,0 +1,1997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic AI Course — Modules 16-18 Outlines</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 16 Outline — Transactional Agents: Saga Patterns and State</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 16 — OUTLINE</div>
+<div class="module-title">Transactional Agents: Saga Patterns and State</div>
+<div class="subtitle">Your agent did three things successfully. The fourth failed.<br>Now what? Hint: distributed systems solved this in 1987.</div>
+<div class="pages">Target length: ~36 pages</div>
+</div>
+<h2>What this module is</h2>
+<p>Multi-agent systems do many things, sometimes in parallel, often touching real-world state — files, APIs, databases, money, schedules. When step 4 of 7 fails, you have a problem distributed-systems engineers have been thinking about for decades: partial commits, inconsistent state, the need to undo work that's already been done.</p>
+<p>This module borrows the <strong>Saga pattern</strong> (Garcia-Molina &amp; Salem, 1987) and applies it to agents — specifically the SagaLLM architecture (Chang &amp; Geng, Stanford, PVLDB 2025; arXiv:2503.11951) which extends sagas to LLM-based multi-agent planning. We cover the four foundational limitations SagaLLM identifies in current LLM-based planning systems (unreliable self-validation, context loss, lack of transactional safeguards, insufficient inter-agent coordination), the saga primitives (transaction agents, compensation agents, validation agents, persistent context), and code a working saga-enabled multi-agent system.</p>
+<p>By the end the reader can: identify when their agent system needs transactional safety, design compensating actions for non-idempotent tool calls, structure persistent state with checkpoints, and implement an independent validation layer that's not the same model as the producer.</p>
+<div class="hook">
+<p>"Your travel-booking agent reserved the flight, charged the card, booked the hotel, and then failed on the rental car because the customer's license had expired. The flight is non-refundable. The hotel cancellation window passed during the agent's third retry. You owe the customer $1,400 in compensation, and your agent has no idea any of this happened. This is not an LLM problem. This is a problem distributed databases solved in the 80s."</p>
+</div>
+<hr />
+<h2>Section 1 — Why Agents Need Transactions (≈4 pages)</h2>
+<p>Most early agent demos didn't need transactions because they didn't touch real state. A research agent reads things and produces a report. Worst case: the report is wrong; you read it, discard it, try again. No state to undo.</p>
+<p>But the moment your agent:</p>
+<ul>
+<li>Charges a card</li>
+<li>Sends an email</li>
+<li>Posts a public message</li>
+<li>Modifies a database</li>
+<li>Books a resource</li>
+<li>Triggers a webhook to a partner</li>
+<li>Files a ticket</li>
+<li>Updates a CRM record</li>
+</ul>
+<p>You're in distributed-systems territory. Failures partway through a multi-step process leave the world in an inconsistent state, and you need a way to either complete or undo.</p>
+<p>The four foundational limitations the SagaLLM paper identifies in current LLM-based planning systems:</p>
+<p><strong>1. Unreliable self-validation.</strong> Models asked "did your action succeed?" mostly say yes. Self-validation is the same trap from Module 11's reflection — confirmation bias dressed as verification. A specialized validation agent (different model, different prompt, structured rubric) catches what self-validation misses.</p>
+<p><strong>2. Context loss / context narrowing.</strong> Long agent trajectories drift. By step 8, the agent has forgotten constraints from step 1. SagaLLM's experiments show advanced LLMs (Claude 3.7, GPT-o1 in their tests) often "fixate on recent context while neglecting critical earlier constraints, particularly in reactive planning scenarios where models attempt to retroactively rewrite past actions rather than adapting from the current state."</p>
+<p><strong>3. Lack of transactional safeguards.</strong> No rollback when steps fail. No compensation for actions already taken. No checkpoint to resume from.</p>
+<p><strong>4. Insufficient inter-agent coordination.</strong> Agents don't track each other's state changes. Agent A reserves a resource; Agent B doesn't know it's reserved; Agent C tries to use it.</p>
+<p>This module addresses all four — borrowing primitives that distributed systems already proved.</p>
+<div class="pullquote">
+<p>"Your agent committed to a side effect" is the same problem as "your transaction committed to a database." The solutions are the same. The field just relearned them with new vocabulary.</p>
+</div>
+<div class="nodumbq">
+<p><strong>Q: Can't I just retry the failed step?</strong></p>
+<p>Sometimes. Idempotent operations (ones safe to repeat) can be retried. Non-idempotent operations (charging a card, sending an email) cannot — retrying causes double charges. The whole point of saga compensation is handling the non-idempotent case where retry isn't safe.</p>
+<p><strong>Q: This sounds like overkill for my support chatbot.</strong></p>
+<p>It is, for a support chatbot. Sagas are for agents that take consequential actions in the world. If your agent only reads things and produces text, you don't need this. If it writes/charges/sends/triggers — you do.</p>
+</div>
+<hr />
+<h2>Section 2 — The Saga Pattern (Background, Brief) (≈3 pages)</h2>
+<p>A 5-minute distributed-systems primer. The reader doesn't need to be a database expert; they need vocabulary for the rest of the module.</p>
+<p>A <strong>saga</strong> is a sequence of local transactions where each transaction has a compensating transaction that semantically undoes it. If T1, T2, T3 succeed and T4 fails, the system runs C3, C2, C1 (in reverse) to leave the world consistent.</p>
+<pre><code>T1 → T2 → T3 → T4 fails
+         ↓
+        C3 → C2 → C1 (compensate, reverse order)
+</code></pre>
+<p>Two flavors:
+- <strong>Choreography</strong>: each service knows what comes next; events drive transitions
+- <strong>Orchestration</strong>: a central coordinator drives the saga (more agent-like)</p>
+<p>Why sagas instead of two-phase commit (the other distributed transaction protocol):
+- Sagas don't require all participants to be available at the same moment for a global commit
+- Sagas tolerate long-running operations (a flight booking takes seconds; 2PC would lock everyone out)
+- Sagas relax atomicity for liveness — the trade you almost always want at the agent layer</p>
+<p>What you give up:
+- <strong>Strict atomicity</strong> — "all or nothing" becomes "all, or partial-with-compensation-attempted"
+- <strong>Isolation</strong> — between T1 starting and the saga ending, intermediate states are visible
+- You ensure <strong>eventual consistency</strong>, not strict ACID</p>
+<p>For agents this is the right trade. The world doesn't pause while your agent thinks.</p>
+<div class="brain">
+<p>A saga can fail to fully compensate (e.g., a refund API is down when you try to refund). What's the right behavior?</p>
+<p>(Log the failed compensation as a durable record requiring manual intervention. Do not silently retry forever; do not pretend it succeeded; do not delete the record. The saga's job is to make failure <em>visible</em> and <em>recoverable</em>, not invisible. Operators close the loop on what the system couldn't.)</p>
+</div>
+<hr />
+<h2>Section 3 — SagaLLM: Architecture and Primitives (≈5 pages)</h2>
+<p>The SagaLLM paper's contribution: applying these primitives to LLM multi-agent systems. The architecture has four primitive roles:</p>
+<p><strong>1. Transaction agents.</strong> Each does the actual work — books the flight, charges the card, sends the email. Wraps the side effect in a logged step.</p>
+<p><strong>2. Compensation agents.</strong> For each transaction agent, a paired agent that knows how to undo. If the booking agent reserved seat 14A, the compensation agent knows to call cancel-reservation with the reservation ID.</p>
+<p><strong>3. Validation agents.</strong> Independent agents (different model/prompt) that check whether each transaction actually achieved its goal. <em>Not</em> the same agent as the executor. SagaLLM's whole point: independent validation, not self-validation.</p>
+<p><strong>4. Context management agents.</strong> Maintain persistent state across the saga, prevent context loss/narrowing, ensure constraints from step 1 still apply at step 8.</p>
+<p>The high-level flow:</p>
+<pre><code>        ┌──────────────────────────────┐
+        │       SAGA ORCHESTRATOR      │
+        └───┬───────────────┬──────────┘
+            │               │
+       plans saga    on each step:
+       (T1...Tn)    [T_i] → [V_i] → ok? → next
+                      │       │       
+                      │       └─→ if fail → [C_(i-1) ... C_1]
+                      ▼
+                   [side effect]
+                       ↓
+                 [persistent log]
+</code></pre>
+<p>Each step is logged durably. State is checkpointed. Validation is independent. Failure triggers compensation. The whole thing has the audit trail of a database transaction with the planning flexibility of an LLM agent.</p>
+<p>The SagaLLM paper notes their code is organized into three categories: <strong>application interface</strong> (what the user-facing agent calls), <strong>SagaLLM core</strong> (the saga primitives, logging, validation), and <strong>LangGraph integration</strong> (state graph wiring). We mirror that structure.</p>
+<div class="gotcha">
+<p>"Compensation" is not "undo." Compensation is <em>semantic</em> undo — it cancels the effect, not the operation. You don't un-charge a card; you issue a refund. You don't un-send an email; you send a follow-up retraction. Designing compensations is the most subtle part of saga design — and the one LLMs are not good at on their own. Use code, not prompts, for compensation logic where you can.</p>
+</div>
+<hr />
+<h2>Section 4 — Designing Compensating Actions (≈5 pages)</h2>
+<p>The hardest part. We give it the room it needs.</p>
+<p><strong>Three categories of operations by compensability:</strong></p>
+<p><strong>A. Naturally compensable.</strong> The operation has a clear inverse. Reserve → cancel reservation. Charge → refund. Insert row → delete row. Send email → send retraction.</p>
+<p><strong>B. Compensable with effort.</strong> The operation has no native inverse, but a workflow that achieves the equivalent. Posted to a public channel? Edit/delete the post or post a correction. Triggered a partner webhook? Call their reverse endpoint or notify their team.</p>
+<p><strong>C. Not compensable.</strong> The operation cannot be undone. Sent a missile (literally — defense scenarios). Made an irreversible decision (deleted backup; burned bridge). Posted to a public feed that doesn't allow edits.</p>
+<p>For Category A, compensation is trivial. For Category B, compensation is engineering. For Category C, you don't allow the saga to take that action without explicit confirmation that the operation is committed and unrecoverable.</p>
+<p><strong>The design rule:</strong> before adding a transaction step, write its compensation. If you can't write the compensation, you don't have a transaction step — you have a point of no return that needs human approval.</p>
+<pre><code class="language-python">@dataclass
+class TransactionStep:
+    name: str
+    do: Callable[[State], TransactionResult]
+    compensate: Callable[[State, TransactionResult], CompensationResult]
+    validate: Callable[[State, TransactionResult], ValidationResult]
+
+    # Hard rule: do and compensate must both be defined.
+    # If you can't define compensate, this isn't a transaction step.
+</code></pre>
+<p><strong>Idempotency keys</strong> — the under-appreciated tool. Many APIs support an <code>Idempotency-Key</code> header. Sending the same key twice gives you the same result without doing the work twice. Use idempotency keys on all outbound API calls in your saga so retries don't double-charge / double-send.</p>
+<pre><code class="language-python">async def charge_card(amount: int, idempotency_key: str) -&gt; ChargeResult:
+    return await stripe.charges.create(
+        amount=amount,
+        currency=&quot;usd&quot;,
+        idempotency_key=idempotency_key,  # safe to retry
+    )
+</code></pre>
+<p><strong>The "best-effort compensation" pattern.</strong> Sometimes compensation itself can fail. Refund API down. Email retraction service offline. The saga should:
+1. Attempt compensation
+2. On failure, log durably to a "compensations needed" queue
+3. Continue compensating other steps (don't block the whole rollback)
+4. Surface the queue to operators</p>
+<p>Never fail silently. Never retry forever. Make the failure visible and resolvable.</p>
+<div class="postmortem">
+<p><strong>The Saga That Couldn't Refund</strong></p>
+<p>A travel-booking agent system used Stripe for charges, a regional payment processor for some markets, and a third for refunds. When a booking saga failed in the third market, compensation tried to refund. The third processor was down. The saga's compensation code retried 5 times, then... silently logged "refund failed" and moved on.</p>
+<p>Two weeks later, customers had received goods/services and partial bookings, were never charged successfully, and the saga thought everything was fine. Reconciliation against the actual state of the world found 47 incomplete sagas affecting $90K in disputed charges.</p>
+<p>Fix: the "compensations needed" queue, monitored. After 3 retries, the saga marks the compensation as <code>requires_manual_intervention</code> and pages the on-call. No silent failures. No "best-effort and forget."</p>
+<p><strong>Lesson:</strong> compensation can fail. The saga must surface that, not hide it.</p>
+</div>
+<hr />
+<h2>Section 5 — Persistent State and Checkpointing (≈4 pages)</h2>
+<p>Sagas need durable state. If the agent crashes mid-saga, the next process needs to know which steps completed, which compensations are needed, what the original plan was.</p>
+<p><strong>Three things to persist:</strong></p>
+<ol>
+<li><strong>The saga plan.</strong> What steps will run, in what order, with what compensations.</li>
+<li><strong>Step state.</strong> For each step: not-started / in-progress / committed / failed / compensated.</li>
+<li><strong>Checkpoints.</strong> Snapshots of the agent's reasoning + tool results between steps, so a resumed saga can pick up with full context.</li>
+</ol>
+<pre><code class="language-python">class SagaStore:
+    &quot;&quot;&quot;Durable storage for saga state. Could be Postgres, DynamoDB, etcd, etc.&quot;&quot;&quot;
+
+    async def create_saga(self, plan: SagaPlan) -&gt; str:
+        saga_id = uuid.uuid4().hex
+        await self.db.write(saga_id, SagaRecord(
+            id=saga_id, plan=plan, state=&quot;planning_done&quot;, checkpoints=[],
+        ))
+        return saga_id
+
+    async def record_step_start(self, saga_id, step_idx, idempotency_key):
+        ...
+
+    async def record_step_complete(self, saga_id, step_idx, result):
+        ...
+
+    async def record_step_failure(self, saga_id, step_idx, error):
+        ...
+
+    async def record_compensation(self, saga_id, step_idx, comp_result):
+        ...
+
+    async def checkpoint(self, saga_id, step_idx, agent_state):
+        ...
+
+    async def resume(self, saga_id) -&gt; ResumePoint:
+        record = await self.db.read(saga_id)
+        return determine_resume_point(record)
+</code></pre>
+<p><strong>The resume protocol.</strong> On startup, the saga orchestrator looks for in-progress sagas and either:
+- Continues forward if the saga was making progress
+- Triggers compensation if a failed step was recorded but compensation didn't complete
+- Marks for manual review if state is ambiguous (e.g., step started but no completion or failure recorded — the worst case)</p>
+<p>LangGraph's checkpointing is designed exactly for this — it ships with Postgres and SQLite checkpointers and supports time-travel debugging. Most production saga implementations either build on LangGraph's checkpointer or implement equivalent functionality.</p>
+<div class="brain">
+<p>A saga's step started, made an external API call, then the process crashed. On restart, you don't know if the API call succeeded or failed. What do you do?</p>
+<p>(Three options, each with trade-offs: (a) Use idempotency keys so you can safely retry — best when the API supports it. (b) Query the API for the resource state to determine what happened — works when the API has good state-query endpoints. (c) Mark for manual review — last resort. The right answer depends on which the API supports; design saga steps to use (a) when possible.)</p>
+</div>
+<hr />
+<h2>Section 6 — Independent Validation (≈4 pages)</h2>
+<p>The most important non-obvious primitive in SagaLLM. Validation cannot be the same agent as execution.</p>
+<p>The pattern:</p>
+<pre><code class="language-python">class ValidationAgent:
+    &quot;&quot;&quot;Independent agent that verifies a step actually did what it claimed.&quot;&quot;&quot;
+
+    def __init__(self, model=&quot;claude-opus-4-7&quot;):  # different from executor
+        self.client = AsyncAnthropic()
+        self.model = model
+
+    async def validate(self, step: TransactionStep, claimed_result: dict, world_state: dict) -&gt; ValidationResult:
+        prompt = VALIDATION_PROMPT.format(
+            step_name=step.name,
+            step_intended_outcome=step.intended_outcome,
+            claimed_result=json.dumps(claimed_result),
+            world_state_evidence=json.dumps(world_state),
+        )
+        resp = await self.client.messages.create(
+            model=self.model,
+            max_tokens=1500,
+            messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}],
+        )
+        return parse_validation(resp.content[0].text)
+
+
+VALIDATION_PROMPT = &quot;&quot;&quot;You are a validation agent. Another agent claims to have completed a step.
+Your job: verify, with evidence, that the step's intended outcome was actually achieved.
+
+Step: {step_name}
+Intended outcome: {step_intended_outcome}
+Claimed result: {claimed_result}
+World state evidence (queried independently): {world_state_evidence}
+
+Verify rigorously. Do not assume the claim is true because the agent says so.
+Look for concrete evidence. If the world state doesn't match the claim, flag it.
+
+Output JSON:
+{{&quot;validated&quot;: true/false, &quot;evidence&quot;: &quot;...&quot;, &quot;concerns&quot;: [&quot;...&quot;]}}&quot;&quot;&quot;
+</code></pre>
+<p><strong>Critical design notes:</strong></p>
+<ul>
+<li>The validation agent uses a <em>different</em> model from the executor (or at least a different family). Same model = confirmation bias.</li>
+<li>The validation agent has access to <em>independent</em> evidence — query the API yourself, don't trust the executor's claimed result.</li>
+<li>Validation is a saga step too. It can fail. Failed validation triggers compensation just like a failed transaction.</li>
+<li>Validation prompts should look for <em>evidence</em>, not vibes. "The booking confirmation includes seat 14A" is evidence; "the agent says it booked seat 14A" is not.</li>
+</ul>
+<div class="gotcha">
+<p>A common mistake: making validation cheap by using a tiny model with a vague prompt. This produces a validator that approves everything (cheap and useless) or rejects everything (cheap and over-cautious). Validation is where you spend Opus-class compute, because validation errors propagate. Cheap validators give you the illusion of safety without the safety.</p>
+</div>
+<hr />
+<h2>Section 7 — Building a Real Saga-Enabled Agent (≈5 pages)</h2>
+<p>End-to-end implementation. We pick a concrete domain — order processing for an e-commerce app — and build it.</p>
+<p>The scenario: a customer places an order. The agent must:
+1. Reserve inventory (T1: reserve / C1: release)
+2. Charge the card (T2: charge / C2: refund)
+3. Generate shipping label (T3: create label / C3: void label)
+4. Notify warehouse (T4: send notification / C4: send cancellation notification)
+5. Send customer confirmation email (T5: send / C5: send order-cancelled email)</p>
+<p>If T3 fails (e.g., shipping API is down), compensation runs C2 (refund), then C1 (release inventory). T4 and T5 never ran, so no compensation for those.</p>
+<pre><code class="language-python">class OrderProcessingSaga:
+    def __init__(self, store: SagaStore, executor: AsyncAnthropic, validator: ValidationAgent):
+        self.store = store
+        self.executor = executor
+        self.validator = validator
+        self.steps = self._build_steps()
+
+    def _build_steps(self) -&gt; list[TransactionStep]:
+        return [
+            TransactionStep(
+                name=&quot;reserve_inventory&quot;,
+                do=self._reserve_inventory,
+                compensate=self._release_inventory,
+                validate=lambda r, ws: self.validator.validate(...),
+            ),
+            TransactionStep(
+                name=&quot;charge_card&quot;,
+                do=self._charge_card,
+                compensate=self._refund_card,
+                validate=lambda r, ws: self.validator.validate(...),
+            ),
+            # ... etc
+        ]
+
+    async def run(self, order: Order) -&gt; SagaResult:
+        saga_id = await self.store.create_saga(plan=self._plan_for(order))
+        completed = []
+        try:
+            for idx, step in enumerate(self.steps):
+                idempotency_key = f&quot;{saga_id}:{step.name}&quot;
+                await self.store.record_step_start(saga_id, idx, idempotency_key)
+
+                # Execute
+                result = await step.do(order, idempotency_key)
+                await self.store.record_step_complete(saga_id, idx, result)
+
+                # Validate independently
+                validation = await step.validate(result, await self._query_world_state(order))
+                if not validation.validated:
+                    raise ValidationFailed(step=step, evidence=validation.concerns)
+
+                completed.append((step, result))
+
+            return SagaResult(success=True, saga_id=saga_id)
+
+        except Exception as e:
+            # Compensate in reverse
+            comp_results = []
+            for step, result in reversed(completed):
+                try:
+                    cr = await step.compensate(order, result)
+                    await self.store.record_compensation(saga_id, step.name, cr)
+                    comp_results.append((&quot;ok&quot;, step.name, cr))
+                except Exception as comp_err:
+                    await self.store.record_compensation(saga_id, step.name, comp_err)
+                    comp_results.append((&quot;failed&quot;, step.name, comp_err))
+                    # Continue with other compensations; don't block on one failure
+
+            return SagaResult(success=False, saga_id=saga_id, error=e, compensations=comp_results)
+</code></pre>
+<p>The full implementation includes the LangGraph integration (the saga as a state graph with node = step), the persistent context layer that prevents context loss across long sagas, and the orchestrator agent that decides which sagas to run for which orders.</p>
+<p>We walk through:
+- How idempotency keys are generated (deterministic from saga_id + step name)
+- How world-state queries work (don't trust the API response from the executor; re-query independently)
+- How the orchestrator handles partial-completion-on-resume (the worst case)
+- How human-in-the-loop fits in for non-compensable steps</p>
+<div class="code-exercise">
+<p><strong>Exercise 16.1 — Build a saga-enabled travel booking agent.</strong></p>
+<p>Implement the saga pattern for a travel booking flow: flight + hotel + rental car. Each has reserve and cancel APIs. Use idempotency keys. Add an independent validation agent. Persist state. Test by injecting failures at each step (random fault injection) and verify compensation runs correctly.</p>
+<p>Bonus: simulate a compensation failure (e.g., one cancel API returns 500) and verify the system surfaces the issue rather than swallowing it.</p>
+</div>
+<hr />
+<h2>Section 8 — When NOT to Use Sagas (≈3 pages)</h2>
+<p>The honest section. Sagas have real costs.</p>
+<p><strong>1. Cost.</strong> Each step has a transaction agent + validation agent + persistent state writes. For low-stakes flows, this is overkill.</p>
+<p><strong>2. Latency.</strong> Validation adds latency between steps. Persistent state adds I/O. A 5-step saga can be 30-60% slower than the equivalent un-sagaed flow.</p>
+<p><strong>3. Complexity.</strong> Sagas are a non-trivial commitment. Compensation logic doubles your code surface. State persistence adds infrastructure. Independent validation adds models.</p>
+<p><strong>4. Compensation isn't always meaningful.</strong> For some flows, "compensation" doesn't have a useful semantic. A research report saga that "rolls back" is just deleting the report — which the user can do themselves.</p>
+<p><strong>The right scope for sagas:</strong>
+- Multi-step flows that touch real-world state (money, resources, communications)
+- Flows where partial completion is worse than full failure (booking 3 of 4 things)
+- Flows where audit trail matters (regulated industries, high-value transactions)</p>
+<p><strong>Wrong scope:</strong>
+- Read-only flows (no state to undo)
+- Single-step actions (no saga; just retry / fail)
+- Internal-only flows where partial completion is benign
+- Prototype phase (build it without sagas; add when stakes warrant)</p>
+<div class="pullquote">
+<p>Sagas are insurance. You pay a premium per transaction. The premium is worth it when the cost of an inconsistent state exceeds the saga's overhead. Otherwise it's a tax on your hot path for problems you don't have.</p>
+</div>
+<hr />
+<h2>Section 9 — What's Next (≈1 page)</h2>
+<p>Module 17 covers production observability — including how saga state shows up in traces. A well-instrumented saga is debuggable; a poorly-instrumented one is a black box. We cover OpenTelemetry GenAI semantic conventions, LangSmith/Langfuse for agent traces, and the eval infrastructure that catches saga regressions.</p>
+<p>Module 18 (capstone) ships a multi-agent research system. The capstone doesn't strictly need sagas (research is mostly read-only), but the <em>pattern of independent validation</em> from this module shows up directly there.</p>
+<p>For readers building consequential-action agents — payment, booking, communication, infrastructure — Module 16's patterns are non-negotiable. The capstone won't fully exercise them, but production deployments of the capstone in different domains will.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>2 No Dumb Questions</li>
+<li>2 Brain Power prompts</li>
+<li>1 Production Postmortem (the saga that couldn't refund)</li>
+<li>1 Watch It! / Gotcha block</li>
+<li>1 Code Exercise (travel booking saga)</li>
+<li>2 Pullquotes</li>
+<li>1 saga architecture diagram</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam, having shipped reflective + guarded + multi-agent systems through Modules 11-15, gets pulled into a different team's incident: their travel-booking agent left 12 customers in inconsistent states over the weekend. Sam reads SagaLLM, applies the architecture, builds out the order-processing saga (Section 7) for that team. Adds independent validation (Section 6) — catches that the existing executor was claiming successes that didn't match world state ~3% of the time. The team's "our agent works fine" turns into "our agent works fine <em>and we can prove it</em>." Sam's arc this module: <strong>distributed systems thinking applied to agents — the field rediscovered the saga pattern, and the rediscovery was overdue.</strong></p>
+</div>
+<div class="page-budget">
+<p>S1 (Why agents need transactions): 4p
+S2 (Saga pattern background): 3p
+S3 (SagaLLM architecture): 5p
+S4 (Designing compensations): 5p
+S5 (Persistent state): 4p
+S6 (Independent validation): 4p
+S7 (Building a saga-enabled agent): 5p
+S8 (When NOT to use sagas): 3p
+S9 (Next): 1p
+Recurring elements: 2p
+TOTAL: ~36 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting:</strong></p>
+<ul>
+<li>SagaLLM paper (Chang &amp; Geng, Stanford, arXiv:2503.11951; PVLDB 2025) — primary source for the four limitations, the architecture, the validation methodology</li>
+<li>The empirical claim about Claude 3.7 and GPT-o1 fixating on recent context (verify exact phrasing and which models)</li>
+<li>Garcia-Molina &amp; Salem 1987 — the original Saga paper (foundational citation)</li>
+<li>"Multi-LLM Agent Collaborative Intelligence: The Path to Artificial General Intelligence" (Chang, ACM Books 2025) — companion reference</li>
+<li>ALAS paper (Chang &amp; Geng 2025) — companion paper with detailed algorithms (per arXiv abstract)</li>
+<li>LangGraph checkpointer documentation — Postgres/SQLite/in-memory variants</li>
+<li>Stripe idempotency key documentation — for the idempotency-key pattern</li>
+<li>Anthropic SDK current model identifiers (claude-opus-4-7, claude-sonnet-4-6) for code samples</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- Saga pattern primitives (transaction, compensation, validation)
+- Three categories of compensability (A/B/C from Section 4)
+- Idempotency keys as a defensive pattern
+- ACID relaxation trade-offs</p>
+<p><strong>Cross-references:</strong>
+- Module 4 — tool design with idempotency in mind
+- Module 11 — independent validation is structural reflection
+- Module 12 — guardrails as another defense layer alongside saga validation
+- Module 13/14 — multi-agent systems are where sagas matter most
+- Module 17 — observability for sagas
+- Module 18 — capstone (validation pattern carries over even without full sagas)</p>
+</div>
+<div class="bullet-points">
+<h3>Module 16 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>Agents that touch real-world state need transactional safety; "research-only" agents don't</li>
+<li>The Saga pattern (Garcia-Molina 1987) provides primitives: transactions, compensations, eventual consistency</li>
+<li>SagaLLM (Chang &amp; Geng 2025) extends sagas to LLM multi-agent: transaction agents + compensation agents + validation agents + persistent context</li>
+<li>Compensation is semantic undo, not literal undo; design compensations <em>before</em> writing transaction steps</li>
+<li>Use idempotency keys on outbound API calls so retries don't double-charge / double-send</li>
+<li>Persist saga state durably; design for crash-and-resume from any step</li>
+<li>Validation must be independent — different model from executor — or it's confirmation bias dressed as verification</li>
+<li>Sagas have real costs (latency, complexity, code surface); use them when partial completion is worse than full failure</li>
+</ul>
+</div>
+<hr style="border-top: 4px solid #c0392b; margin: 3em 0;">
+<h1>Module 17 Outline — Production: Evals, Observability, Cost, Failure</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 17 — OUTLINE</div>
+<div class="module-title">Production: Evals, Observability, Cost, Failure</div>
+<div class="subtitle">Your agent is in production. Now what?<br>The honest answer: most of your work just started.</div>
+<div class="pages">Target length: ~38 pages</div>
+</div>
+<h2>What this module is</h2>
+<p>Production is where the abstractions from Modules 1-16 hit reality. This module covers the four operational concerns that turn a working prototype into a system you trust: evaluation (does it actually work? how do you know?), observability (what's happening right now? what happened in that failed trace?), cost management (the bill is sustainable?), and failure handling (what happens when things break in ways you didn't anticipate?).</p>
+<p>We cover: trajectory eval with LLM-as-judge, rubric-based eval, eval datasets mined from production traces, the OpenTelemetry GenAI semantic conventions that became the 2026 standard, the agent observability platforms and their honest trade-offs (LangSmith, Langfuse, Laminar, Arize Phoenix), distributed tracing across multi-agent systems, cost ceilings and runaway prevention, loop detection, drift monitoring, the Q1 2026 finding that <strong>40% of agentic AI projects will be canceled by end of 2027 due to reliability concerns</strong> (Gartner) — and what to do so yours isn't one of them. Plus a brief treatment of computer-use / GUI agents because the operational concerns there are uniquely brutal (OSWorld, AndroidWorld benchmarks).</p>
+<p>By the end the reader can: instrument an agent system to OpenTelemetry standards, build a useful eval harness from production traces, set cost ceilings that prevent runaway, and read a failed trace well enough to actually debug it.</p>
+<div class="hook">
+<p>"Your agent ships. The CEO loves the demo. Three weeks later, sales loops a customer ticket: 'agent gave me bad info on April 3rd around 2pm.' You go to find that conversation. Your logs are unstructured. Your trace IDs don't link to LLM calls. Cost is shown daily, not per-request. You spend two hours digging and find nothing. The customer leaves. The CEO asks why you can't reproduce it. This is the difference between a working agent and a production agent."</p>
+</div>
+<hr />
+<h2>Section 1 — The Production Reality Check (≈3 pages)</h2>
+<p>Gartner's 2025 finding: over 40% of agentic AI projects will be canceled by the end of 2027 due to reliability concerns and unclear objectives. Take that as a baseline expectation. Most production agent deployments are going to struggle. The question is which side of the line yours ends up on.</p>
+<p>Three operational properties separate the survivors from the cancellations:</p>
+<p><strong>1. Measurable.</strong> You can answer "is the agent working?" with numbers, not vibes. Specific quality metrics. Specific cost metrics. Specific latency metrics. Updated continuously, not after-the-fact.</p>
+<p><strong>2. Debuggable.</strong> When something breaks, you can find it. Trace IDs link agent decisions to LLM calls to tool invocations to outcomes. A failure surfaces with enough context to reproduce locally.</p>
+<p><strong>3. Bounded.</strong> Cost has ceilings. Loops have caps. Runaway scenarios have circuit breakers. The system fails safely, not catastrophically.</p>
+<p>This module is how you build all three. Some of it is platform selection. Most of it is architectural commitments you make in code.</p>
+<div class="pullquote">
+<p>Demos make agents look impressive. Production makes agents look fragile. The work between those two states isn't agent work — it's operations work that happens to apply to agents.</p>
+</div>
+<div class="nodumbq">
+<p><strong>Q: My agent works in testing. Why do I need all this?</strong></p>
+<p>Testing covers what you anticipated. Production reveals what you didn't. The gap between "works on test cases" and "works on the long tail of real user queries" is where most agent projects die. Observability and eval infrastructure exist to surface the gap quickly enough to close it.</p>
+<p><strong>Q: How much of this do I need on day one?</strong></p>
+<p>Trace IDs and cost tracking on day one. Eval harness and structured logging in week one. Drift monitoring and proper alerting by month one. The infrastructure compounds — early investment in tracing pays dividends every time you debug a production issue.</p>
+</div>
+<hr />
+<h2>Section 2 — Evaluation: How You Know It Works (≈6 pages)</h2>
+<p>Eval is the foundation. Without it, every other change is a guess.</p>
+<p><strong>Three layers of eval:</strong></p>
+<p><strong>Layer 1: Component evals.</strong> Individual prompts, individual tools, individual sub-agents. "Does the topic classifier correctly classify these 100 examples?" Easiest; least valuable for whole-system quality.</p>
+<p><strong>Layer 2: Trajectory evals.</strong> Whole agent runs on representative tasks. "Did the agent succeed at this multi-step booking flow?" Captures emergent issues component evals miss.</p>
+<p><strong>Layer 3: System-level evals.</strong> End-to-end on production-representative workloads. "Compared to last week, has overall quality changed?" The metric you actually optimize.</p>
+<p>Most teams overinvest in Layer 1 and underinvest in Layer 3. Layer 1 evals are easy to write and easy to run; they catch the bugs you'd catch in code review anyway. Layer 3 is the hard work — and it's where production reality lives.</p>
+<p><strong>LLM-as-judge for trajectory eval.</strong></p>
+<pre><code class="language-python">TRAJECTORY_JUDGE_PROMPT = &quot;&quot;&quot;You are evaluating an AI agent's trajectory on a task.
+
+TASK GIVEN TO AGENT:
+{task}
+
+AGENT'S TRAJECTORY (tools called, intermediate reasoning, final answer):
+{trajectory}
+
+EXPECTED OUTCOME (or rubric):
+{expected_or_rubric}
+
+Score the trajectory on these dimensions (1-5 each):
+- task_completion: did the agent achieve the goal?
+- efficiency: tools and steps were appropriate, not wasteful
+- correctness: factual claims were accurate, citations valid
+- safety: no policy violations, no harmful actions
+
+For each dimension below 5, explain why.
+
+Output JSON: {{&quot;task_completion&quot;: 1-5, &quot;efficiency&quot;: 1-5, &quot;correctness&quot;: 1-5, &quot;safety&quot;: 1-5,
+              &quot;explanations&quot;: {{&quot;&lt;dim&gt;&quot;: &quot;...&quot;}}, &quot;overall_pass&quot;: true/false}}&quot;&quot;&quot;
+</code></pre>
+<p>Caveats from the literature (IUI 2025 "No Free Labels: Limitations of LLM-as-a-Judge Without Human Grounding"):
+- Judge LLMs have biases — calibrate against human-labeled gold sets
+- Use a different model family from the agent under eval
+- For high-stakes domains (medical, legal, financial), LLM-as-judge has documented limitations — use human evaluators for the critical slice</p>
+<p><strong>Rubric-based eval.</strong> When the success criteria are well-defined, write the rubric explicitly. Score against the rubric, not against a vague "is this good?"</p>
+<pre><code class="language-python">SUPPORT_RUBRIC = &quot;&quot;&quot;A good support response has:
+1. Acknowledges the user's specific issue (not a generic &quot;sorry to hear that&quot;)
+2. Provides a concrete next action or answer
+3. Cites the relevant policy/doc when applicable
+4. Doesn't fabricate features or policies
+5. Doesn't promise things outside the agent's scope (refunds beyond limit, etc.)
+6. Length appropriate to question complexity
+
+Score each criterion 0/1 (binary). Total is sum / 6.&quot;&quot;&quot;
+</code></pre>
+<p>Binary rubric scores aggregate cleaner than 1-5 scales — you can talk about pass rates without arguing about what "3 vs 4" means.</p>
+<p><strong>Eval datasets from production traces.</strong> The single highest-leverage practice. Capture production traces, sample, label, accumulate into a growing eval set.</p>
+<pre><code class="language-python">async def sample_for_eval(trace: Trace, sample_rate: float = 0.01) -&gt; bool:
+    if random.random() &lt; sample_rate:
+        await eval_queue.add(trace)
+        return True
+    # Always sample failures and edge cases
+    if trace.had_error or trace.user_negative_feedback:
+        await eval_queue.add(trace)
+        return True
+    return False
+</code></pre>
+<p>Production traces beat synthetic eval cases for one reason: they reflect actual user distributions. Your eval improves as your traffic grows. Most production-monitoring platforms (LangSmith, Langfuse) have built-in workflows for promoting traces to eval datasets.</p>
+<div class="gotcha">
+<p>The single biggest eval anti-pattern: building an eval set early, then never updating it. Reality drifts; your eval doesn't. After 6 months, you're optimizing for problems users had in month 1 and missing the problems they have now. Treat eval datasets as living artifacts; rotate examples, add new ones from production, retire stale ones.</p>
+</div>
+<div class="brain">
+<p>You add a new feature to your agent. Your eval shows quality went up 3 points. Should you ship it?</p>
+<p>(Depends on what's in the eval set. If your eval is mostly the cases the new feature was designed for, the +3 is biased — you're optimizing the metric you measured, not quality. The right test is held-out evals (cases the feature designer didn't see) and A/B in production. +3 on the dev eval is a green light to A/B, not a green light to ship.)</p>
+</div>
+<hr />
+<h2>Section 3 — Observability: OpenTelemetry and the GenAI Conventions (≈5 pages)</h2>
+<p>The 2026 standard. As of 2026 the industry is converging on OpenTelemetry (OTEL) for AI agent telemetry — collect once, route to any backend, no vendor lock-in.</p>
+<p><strong>The OpenTelemetry GenAI semantic conventions.</strong> Standard attribute names for LLM application spans:</p>
+<pre><code class="language-python">from opentelemetry import trace
+from opentelemetry.semconv.ai import SpanAttributes  # GenAI semconv
+
+tracer = trace.get_tracer(__name__)
+
+with tracer.start_as_current_span(&quot;agent.llm_call&quot;) as span:
+    span.set_attribute(SpanAttributes.LLM_SYSTEM, &quot;anthropic&quot;)
+    span.set_attribute(SpanAttributes.LLM_REQUEST_MODEL, &quot;claude-sonnet-4-6&quot;)
+    span.set_attribute(SpanAttributes.LLM_REQUEST_MAX_TOKENS, 4096)
+    span.set_attribute(SpanAttributes.LLM_USAGE_PROMPT_TOKENS, prompt_tokens)
+    span.set_attribute(SpanAttributes.LLM_USAGE_COMPLETION_TOKENS, completion_tokens)
+    span.set_attribute(SpanAttributes.LLM_RESPONSE_FINISH_REASON, finish_reason)
+    # ... call API ...
+</code></pre>
+<p>These are <em>standard</em>. Switching backends (Langfuse → Arize, or Datadog → Langfuse) doesn't require changing your instrumentation.</p>
+<p><strong>What to instrument:</strong></p>
+<p>For each agent invocation:
+- A root span for the whole agent run, with attributes: agent name, query, user ID, session ID
+- A child span for each LLM call, with the GenAI attributes above
+- A child span for each tool call, with: tool name, input, output, duration, success/failure
+- A child span for each sub-agent invocation
+- A child span for each guardrail check
+- A child span for each saga step (if applicable, from Module 16)</p>
+<pre><code>agent.run (root)
+├── agent.plan (LLM call)
+├── agent.tool_call.web_search
+├── agent.tool_call.read_file
+├── agent.subagent.researcher_a (recursive)
+│   └── ... 
+├── agent.guardrail.input_check
+├── agent.synthesize (LLM call)
+└── agent.guardrail.output_check
+</code></pre>
+<p>The trace tree should mirror the agent's logical structure. Done well, you can look at a trace and immediately see where time and tokens went.</p>
+<p><strong>Trace context propagation across agent boundaries.</strong> A subtle but critical detail. When agent A spawns agent B (via tool call, sub-agent, or message), the trace context must propagate or B's spans become orphans.</p>
+<pre><code class="language-python">async def call_subagent(self, subagent: Agent, query: str):
+    # Capture current trace context
+    ctx = trace.get_current_span().get_span_context()
+    # Pass it explicitly or via baggage
+    return await subagent.run(query, parent_context=ctx)
+</code></pre>
+<p>For multi-agent systems with concurrent sub-agents, this is non-negotiable. Every observability platform requires it; the agent code has to do it.</p>
+<p><strong>Common GenAI semconv attributes</strong> (verify exact names from OpenTelemetry docs):
+- <code>gen_ai.system</code> — the model provider
+- <code>gen_ai.request.model</code> — model identifier
+- <code>gen_ai.usage.input_tokens</code>, <code>gen_ai.usage.output_tokens</code> — token counts
+- <code>gen_ai.response.finish_reason</code> — why generation stopped
+- <code>gen_ai.request.temperature</code>, <code>gen_ai.request.top_p</code> — sampling params</p>
+<div class="postmortem">
+<p><strong>The Trace That Didn't Connect</strong></p>
+<p>A team had OpenTelemetry instrumentation. Spans were being collected. The Langfuse dashboard showed traces. Things looked fine.</p>
+<p>Then a production incident: an agent was claiming to call a tool, but the tool call wasn't appearing in traces. Investigation: the tool call lived in a different async context, and trace context wasn't propagated. The tool call was happening — there was just no trace evidence. Two hours of debugging on a "missing tool call" that was actually a missing trace span.</p>
+<p>Fix: explicit context propagation in the agent's tool-call dispatcher. Every async tool call now wraps in a span tied to the parent agent span. Identical issue surfaces immediately in traces.</p>
+<p><strong>Lesson:</strong> missing trace context creates phantom problems. Test your tracing on async paths and sub-agent boundaries. The places where context is most likely to be lost are the places where bugs are hardest to debug without traces.</p>
+</div>
+<hr />
+<h2>Section 4 — Choosing an Observability Platform (≈5 pages)</h2>
+<p>The honest landscape. We covered hints in earlier modules; this is the consolidated treatment.</p>
+<p><strong>LangSmith (LangChain).</strong> Closed source. Tightest integration with LangChain/LangGraph. LangGraph Studio is genuinely the best agent IDE in the field — visualize the graph, set breakpoints, modify state mid-run, resume from a checkpoint. Near-zero overhead in benchmarks. OpenTelemetry support added in March 2026. Pricing: developer free with 5k base traces/month; Plus $39/seat/month plus $0.50 per 1k traces.</p>
+<p><strong>Langfuse.</strong> MIT-licensed open source. Self-hostable on Postgres + ClickHouse. Framework-agnostic via OpenTelemetry. Strongest open-source path. Cloud tier from $59+/seat. ~15% overhead in some benchmarks (decoupled integration). Used at scale (Canva is a public reference). Free tier: 50k observations/month.</p>
+<p><strong>Laminar.</strong> Apache 2.0 open source. OpenTelemetry-native. Built specifically for long-running agents — transcript view, agent rollout debugger, browser-agent session replay, SQL over traces. Helm chart for one-command self-host. The agent-debugging-focused alternative.</p>
+<p><strong>Arize Phoenix.</strong> Elastic 2.0 license. OpenTelemetry-native via OpenInference. Strong on eval rigor; fits notebook and eval-heavy workflows.</p>
+<p><strong>Helicone.</strong> Open-source proxy. Simplest install (one URL change). Trade-off: shallower depth — traces at the API call level, not the agent execution level. Right for "I just need cost tracking and basic request logging."</p>
+<p><strong>Braintrust.</strong> Closed source, eval-first. Strong regression harness. Tracing more bolted-on than primary.</p>
+<p><strong>OpenLLMetry / Traceloop.</strong> Vendor-neutral OpenTelemetry instrumentation SDK. Most other backends (Laminar, Langfuse, Phoenix, LangSmith) ingest its spans. The safest instrumentation choice for portability.</p>
+<p><strong>The pairing pattern:</strong>
+- LLM observability platform (one of the above) for agent traces, eval, LLM-specific metrics
+- Whole-stack APM (Datadog, Honeycomb, New Relic) for host metrics, app errors, deployment health</p>
+<p>These cover different layers; production deployments need both.</p>
+<p><strong>A decision matrix:</strong></p>
+<table>
+<thead>
+<tr>
+<th>If you need...</th>
+<th>Pick...</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Deep LangChain/LangGraph integration</td>
+<td>LangSmith</td>
+</tr>
+<tr>
+<td>Open-source self-host</td>
+<td>Langfuse (full-featured) or Laminar (agent-debug-focused)</td>
+</tr>
+<tr>
+<td>Eval rigor primary</td>
+<td>Arize Phoenix or Braintrust</td>
+</tr>
+<tr>
+<td>Just cost tracking on raw API calls</td>
+<td>Helicone</td>
+</tr>
+<tr>
+<td>Vendor-neutral instrumentation</td>
+<td>OpenLLMetry, point at any backend</td>
+</tr>
+<tr>
+<td>Compliance / data residency</td>
+<td>Self-hosted Langfuse or Laminar</td>
+</tr>
+<tr>
+<td>Already on Datadog / New Relic</td>
+<td>Their LLM observability modules + add agent tracing</td>
+</tr>
+</tbody>
+</table>
+<p>The honest March 2026 retro from a stack assessment: "If you're on LangGraph, LangSmith. If framework-agnostic, Langfuse. If eval rigor is the priority, Arize Phoenix. If you need agent-specific debugging in open source, Laminar."</p>
+<div class="brain">
+<p>You're greenfield. Pick LangSmith or Langfuse?</p>
+<p>(Both are reasonable. LangSmith if you're committing to LangChain/LangGraph and want the deepest framework integration. Langfuse if you want framework freedom or self-host. Laminar if your primary use case is debugging long-running agents specifically. The "right" choice is the one that matches your other architectural commitments — observability is a multi-year choice; pick on stack fit, not feature checklist.)</p>
+</div>
+<hr />
+<h2>Section 5 — Cost Management (≈4 pages)</h2>
+<p>Agents can run away with cost in ways that are hard to predict from prototype usage.</p>
+<p><strong>The four cost runaway patterns:</strong></p>
+<p><strong>1. Token escalation.</strong> Long-running agents accumulate context. By turn 30, each turn costs 10× turn 1. Module 8's compression and Module 7's context engineering address this — the operational concern is monitoring it.</p>
+<p><strong>2. Sub-agent cascades.</strong> Module 7's postmortem covered this. An agent spawns an agent that spawns an agent. Each layer adds cost. Without depth caps, runaway is plausible.</p>
+<p><strong>3. Retry loops.</strong> Agent retries a failing tool 50 times before giving up. Failed tools cost as much as successful ones (input tokens are charged regardless).</p>
+<p><strong>4. Multi-agent token multiplier.</strong> Module 13's 15× multiplier. Multi-agent systems are 15× more expensive per task than single-agent baseline. If a single-agent task was acceptably-priced, the multi-agent version may not be.</p>
+<p><strong>Operational defenses:</strong></p>
+<p><strong>Per-request cost ceiling.</strong></p>
+<pre><code class="language-python">class CostLimiter:
+    def __init__(self, max_cost_usd: float):
+        self.max_cost_usd = max_cost_usd
+        self.accumulated = 0.0
+
+    def add(self, prompt_tokens: int, completion_tokens: int, model: str):
+        cost = self._compute_cost(prompt_tokens, completion_tokens, model)
+        self.accumulated += cost
+        if self.accumulated &gt; self.max_cost_usd:
+            raise CostLimitExceeded(self.accumulated, self.max_cost_usd)
+
+    def _compute_cost(self, p, c, model):
+        rates = MODEL_RATES[model]  # current pricing per 1M tokens
+        return (p / 1_000_000) * rates.input + (c / 1_000_000) * rates.output
+</code></pre>
+<p>Wire this into every agent invocation. Surface excessive cost as a first-class error.</p>
+<p><strong>Per-user / per-tier daily budgets.</strong> Track cost by user, by feature, by tier. When a user crosses a threshold, throttle or escalate. Prevents one user's edge case from eating the budget.</p>
+<p><strong>Loop detection.</strong></p>
+<pre><code class="language-python">class LoopDetector:
+    def __init__(self, max_repeats: int = 3):
+        self.action_history: list[str] = []
+        self.max_repeats = max_repeats
+
+    def check(self, action: dict) -&gt; bool:
+        sig = self._signature(action)  # hash of (tool_name, args)
+        recent = self.action_history[-self.max_repeats * 2:]
+        if recent.count(sig) &gt;= self.max_repeats:
+            return True  # loop detected
+        self.action_history.append(sig)
+        return False
+</code></pre>
+<p>Same tool with same args 3+ times in recent history is almost always a bug (the tool is failing in a way the model can't recover from). Detect; halt; surface as an error.</p>
+<p><strong>Budget alerting.</strong> Daily/weekly cost reports. Alerts on &gt;X% deviation from baseline. Drift in cost is one of the earliest signals of agent regression.</p>
+<p><strong>The 80/20 of cost optimization</strong> (revisiting Module 6): caching matches, model routing, structured output to avoid retries, prompt caching for stable prefixes. These compound — each is 10-30%; together they're 50-70%.</p>
+<div class="postmortem">
+<p><strong>The Agent That Spent $4,200 in One Hour</strong></p>
+<p>A team deployed an agent with no per-request cost ceiling. A user query triggered a sub-agent cascade (Module 7 pattern). The cascade hit no caps. By the time anyone noticed (cost dashboard refreshed every 4 hours), the agent had spent $4,200 on a single query.</p>
+<p>Fix: per-request ceiling at $5. Per-user daily ceiling at $50. Pager threshold at 5× normal cost in any rolling hour. Total time to implement: half a day. Total time to wish they'd implemented sooner: 4 hours.</p>
+<p><strong>Lesson:</strong> cost ceilings cost nothing to implement and protect you from incidents that cost real money. Add them on day one.</p>
+</div>
+<hr />
+<h2>Section 6 — Failure Modes and Reading Failed Traces (≈5 pages)</h2>
+<p>What goes wrong in production. We catalog the common failure modes; we walk through reading a failed trace.</p>
+<p><strong>The agent failure taxonomy:</strong></p>
+<ol>
+<li><strong>Tool failures.</strong> External API down, rate-limited, returned unexpected schema, returned valid but wrong data.</li>
+<li><strong>Model failures.</strong> Refusals on unexpected inputs, schema violations on structured output, runaway lengths, drift in tone.</li>
+<li><strong>Loop failures.</strong> Same action repeated, deadlock between agents, no progress toward goal.</li>
+<li><strong>Coordination failures (multi-agent).</strong> Sub-agent failed silently; supervisor synthesized broken result; worker contradicted worker.</li>
+<li><strong>Context failures.</strong> Compression dropped a critical fact; relevant memory not retrieved; context window overflowed.</li>
+<li><strong>Guardrail failures.</strong> False positives blocking legitimate queries; false negatives letting through bad ones.</li>
+<li><strong>Cost failures.</strong> Runaway token use; sub-agent cascade; retry loop.</li>
+<li><strong>Validation failures (sagas).</strong> Step claimed success; world state disagrees; compensation triggers.</li>
+</ol>
+<p><strong>Reading a failed trace — a worked example.</strong> We provide a sample failed trace and walk through it.</p>
+<pre><code>agent.run [DURATION 45.3s, COST $2.34, STATUS error]
+├── agent.plan [DURATION 1.1s, COST $0.04]  ← OK
+├── agent.tool_call.search [DURATION 0.8s, STATUS ok]  ← OK
+├── agent.tool_call.read_doc [DURATION 30.1s, STATUS timeout]  ← problem here
+│   └── http.fetch [DURATION 30.0s, STATUS timeout, url=...]  ← root cause
+├── agent.tool_call.read_doc (retry 1) [DURATION 30.0s, STATUS timeout]
+├── agent.tool_call.read_doc (retry 2) [DURATION 30.0s, STATUS timeout]
+└── agent.synthesize [DURATION ?s, STATUS not_reached]
+</code></pre>
+<p>The trace immediately reveals: tool retries on a 30-second timeout, eating most of the wall-clock time. Three retries × 30s × cost-per-retry. Whether the retries help is a separate question, but the failure mode is now obvious.</p>
+<p><strong>Habits for reading traces:</strong></p>
+<ul>
+<li>Look at the full duration first. Where did time go?</li>
+<li>Look at the total cost. Where did tokens go?</li>
+<li>Find the first error. Errors propagate; the first one is usually the cause.</li>
+<li>Check for loops. Same action 3+ times = loop.</li>
+<li>Check trace context propagation. Missing spans look like the agent did less than it did.</li>
+</ul>
+<p><strong>Drift detection from traces.</strong> Sample production traces continuously. Compare distributions over time:
+- Average tokens per call (rising = context growing or context engineering broken)
+- Tool call rates per task (changing = agent behavior shifted)
+- Tool failure rates (rising = upstream service degrading)
+- Refusal rates (rising = safety classifier triggered more, or input distribution shifted)
+- Latency distributions (tail growing = something slow showing up more)</p>
+<p>When any of these drifts beyond threshold, alert. Most production agent regressions show up in trace stats before they show up in customer complaints.</p>
+<div class="code-exercise">
+<p><strong>Exercise 17.1 — Instrument the agent with full observability.</strong></p>
+<p>Take the agent you've built across Modules 2-16. Add OpenTelemetry instrumentation following GenAI semantic conventions. Wire a cost limiter. Wire a loop detector. Run a failing scenario (broken tool, runaway loop) and verify the failure surfaces in traces immediately. Then wire eval sampling — 1% of production traces flow into your eval queue.</p>
+<p>Bonus: deploy to one of the observability platforms (Langfuse if self-hosting; LangSmith if you're on LangGraph) and screenshot a real failed trace from your test runs.</p>
+</div>
+<hr />
+<h2>Section 7 — Computer-Use and GUI Agents: Brief Treatment (≈3 pages)</h2>
+<p>Computer-use agents (Anthropic Computer Use, OpenAI's computer-using agents, GUI agents) are operationally extreme. We give them a focused but brief treatment.</p>
+<p><strong>Why they're operationally hard:</strong>
+- Action surface is unbounded (anywhere on screen)
+- Failures are subtle (clicked wrong place; typed in wrong field; agent thinks it succeeded)
+- Latency is high (each screenshot + action is multi-second)
+- Costs are high (vision models for screenshot understanding)
+- Recovery is hard (agent navigated to wrong place — how does it get back?)</p>
+<p><strong>Benchmarks worth knowing:</strong>
+- <strong>OSWorld</strong> — 369 real-world computer tasks across OS, web, productivity. Long-horizon evaluation of computer-use agents in real environments.
+- <strong>AndroidWorld</strong> — Android-specific GUI agent benchmark.</p>
+<p>State-of-the-art on OSWorld remains well below human performance as of 2026 — these are hard tasks. Don't deploy computer-use agents on consequential workflows without strong human oversight.</p>
+<p><strong>Operational patterns specific to computer-use:</strong></p>
+<ul>
+<li><strong>Screenshot diffing for verification.</strong> After an action, screenshot. Diff against expected state. Halt on unexpected.</li>
+<li><strong>Stricter loop detection.</strong> Click loops are common; cap at 2-3 same-action repeats.</li>
+<li><strong>Human-in-the-loop for any irreversible action.</strong> Sending an email, making a purchase, deleting a file — all should require explicit human approval until you have very strong evidence the agent is reliable on the specific task.</li>
+<li><strong>Domain restriction.</strong> Agent can only operate on whitelisted apps/sites. Cross-domain navigation requires re-auth and human approval.</li>
+</ul>
+<p><strong>The honest framing:</strong> computer-use agents are still a research-to-pilot transition in 2026. They work well in narrow pre-validated workflows. They fail in unpredictable ways outside those. Treat operational deployment as experimental; instrument heavily; expect surprises.</p>
+<hr />
+<h2>Section 8 — What's Next (≈1 page)</h2>
+<p>Module 18 (capstone) builds a real multi-agent research system end to end, applying everything from Modules 1-17. The eval/observability/cost/failure infrastructure from this module shows up there as production-ready instrumentation, not as an afterthought.</p>
+<p>After the capstone, the reader has: the conceptual model (Modules 1-3), the building blocks (4-9), the reliability layer (10-12), the multi-agent layer (13-15), the transactional layer (16), the production layer (17), and a working artifact (18). That's the book.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>2 No Dumb Questions</li>
+<li>2 Brain Power prompts</li>
+<li>2 Production Postmortems (the disconnected trace, the $4,200 hour)</li>
+<li>1 Watch It! / Gotcha block</li>
+<li>1 Code Exercise (full observability instrumentation)</li>
+<li>2 Pullquotes</li>
+<li>1 trace tree diagram</li>
+<li>1 platform-decision table</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam, having shipped a working multi-agent system through Modules 13-16, gets the question from the head of engineering: "how do we know it's working?" Sam realizes the eval infrastructure is essentially missing. Spends two weeks adding OpenTelemetry instrumentation, an eval harness fed by production traces, cost ceilings, loop detection, drift monitoring. Catches three issues no one had noticed: a sub-agent that was failing silently 8% of the time, a cost outlier from a customer's adversarial query, a tool call rate drift on the recommendation feature. Each fix would have been impossible to find without the instrumentation. Sam's arc this module: <strong>observability is non-negotiable; the agent works as well as you can prove it works, no better.</strong></p>
+</div>
+<div class="page-budget">
+<p>S1 (Production reality check): 3p
+S2 (Evaluation): 6p
+S3 (OpenTelemetry/GenAI semconv): 5p
+S4 (Choosing a platform): 5p
+S5 (Cost management): 4p
+S6 (Failure modes / reading traces): 5p
+S7 (Computer-use brief treatment): 3p
+S8 (Next): 1p
+Recurring elements: 6p
+TOTAL: ~38 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting:</strong></p>
+<ul>
+<li>Gartner 2025 finding: 40% of agentic AI projects canceled by end of 2027 — verify exact figure and source</li>
+<li>IUI 2025 "No Free Labels: Limitations of LLM-as-a-Judge Without Human Grounding" — for the eval calibration section</li>
+<li>OpenTelemetry GenAI semantic conventions — current attribute names and stability status</li>
+<li>LangSmith pricing as of drafting (currently $39/seat/month Plus + $0.50/1k traces)</li>
+<li>Langfuse open-source license (MIT) and self-host requirements (Postgres + ClickHouse)</li>
+<li>Laminar license (Apache 2.0)</li>
+<li>Arize Phoenix license (Elastic 2.0)</li>
+<li>Observability platform overhead benchmarks (LangSmith near-zero, Langfuse ~15% per AImultiple Mar 2026 analysis) — verify</li>
+<li>OSWorld benchmark — current SOTA scores</li>
+<li>AndroidWorld benchmark — current SOTA scores</li>
+<li>Anthropic Computer Use latest documentation</li>
+<li>AutoGen maintenance status (per the 2026 articles, "effectively maintenance-mode" — verify language)</li>
+<li>Model pricing as of drafting (Anthropic Opus 4.7, Sonnet 4.6, Haiku 4.5 rates)</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- The three eval layers (component, trajectory, system)
+- LLM-as-judge methodology and its caveats
+- The four cost runaway patterns
+- The agent failure taxonomy
+- Trace reading habits</p>
+<p><strong>Cross-references:</strong>
+- Module 6 — model routing and caching for cost
+- Module 7 — context engineering for token economics
+- Module 8 — compression for long sessions
+- Module 11 — reflection patterns evaluable through trajectory eval
+- Module 12 — guardrails feed observability with decision logs
+- Module 13/14 — multi-agent observability needs are a superset of single-agent
+- Module 16 — saga state in traces</p>
+</div>
+<div class="bullet-points">
+<h3>Module 17 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>Production agents need three properties: measurable, debuggable, bounded</li>
+<li>Eval has three layers (component, trajectory, system); most teams underinvest in system-level</li>
+<li>Production traces beat synthetic eval cases — sample 1%, label, accumulate</li>
+<li>OpenTelemetry GenAI semantic conventions are the 2026 standard for telemetry</li>
+<li>Pick observability platforms by stack fit, not feature checklist; pair LLM observability with whole-stack APM</li>
+<li>Cost defenses are non-optional: per-request ceilings, per-user daily budgets, loop detection, alerting</li>
+<li>Read failed traces by total duration, total cost, first error, then check loops and trace context</li>
+<li>Computer-use agents are operationally extreme; treat as experimental; instrument heavily</li>
+</ul>
+</div>
+<hr style="border-top: 4px solid #c0392b; margin: 3em 0;">
+<h1>Module 18 Outline — Capstone: Ship a Real Multi-Agent System</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 18 — OUTLINE</div>
+<div class="module-title">Capstone: Ship a Real Multi-Agent System</div>
+<div class="subtitle">Everything from Modules 1-17, applied to one real artifact.<br>Three implementations. Honest comparison. Framework or no framework.</div>
+<div class="pages">Target length: ~42 pages (heaviest in the book)</div>
+</div>
+<h2>What this module is</h2>
+<p>The capstone. We build a production-grade multi-agent research system that applies every concept from the prior modules — agent loop, tools, MCP, model routing, context engineering, compression, memory, hallucination defense, reflection, guardrails, multi-agent architecture, transactional patterns, observability, eval. We build it three times: raw Anthropic SDK, LangGraph, and CrewAI. Same spec, three implementations. Then we benchmark and discuss honestly when to use which.</p>
+<p>The system itself is real: an orchestrator + parallel research workers + critic + report writer that handles deep research queries with grounded citations, configurable depth, cost ceilings, full traces, and an eval harness fed from production traces.</p>
+<p>By the end the reader has working code (or a working understanding of working code) for a system they could ship — and the framework knowledge to make a defensible architectural choice on their next project.</p>
+<div class="hook">
+<p>"At every conference talk on multi-agent systems, someone asks the same question from the audience: 'so should we use a framework or not?' The honest answer is 'it depends, and here are the four things it depends on.' Let's actually answer the question by building the same system three ways and looking at the receipts."</p>
+</div>
+<hr />
+<h2>Section 1 — The Spec (≈3 pages)</h2>
+<p>The system we're building. A deep research agent with these properties:</p>
+<p><strong>Behavior.</strong>
+- Takes a research question (single sentence to a paragraph)
+- Plans a research strategy (decomposes into 3-6 sub-questions)
+- Dispatches parallel research workers to investigate each sub-question
+- Each worker has access to web search and web fetch tools
+- A critic agent reviews the gathered evidence for gaps and inconsistencies
+- A report writer synthesizes findings into a final report with citations
+- Total wall-clock budget: 5 minutes default
+- Total cost budget: $5 default per research run
+- Output: structured markdown report with inline citations</p>
+<p><strong>Production-grade requirements.</strong>
+- OpenTelemetry instrumentation (Module 17)
+- Cost limiter and loop detection (Module 17)
+- Hallucination defense layer on the report (Module 10)
+- Guardrails on input (topic check) and output (PII leak detection) (Module 12)
+- Reflection pattern: critic feedback feeds back into report revision (Module 11)
+- Eval harness with production-trace sampling (Module 17)
+- Graceful failure: partial results &gt; nothing if some workers fail (Module 14)
+- Configurable concurrency limits and depth caps (Module 7)</p>
+<p><strong>What we're NOT building.</strong>
+- Saga patterns (Module 16) — research is read-only; no compensations needed
+- Long-term memory (Module 9) — single-session for the capstone; readers can extend
+- Computer-use (Module 17) — out of scope
+- A full UI — we ship a CLI + library; UI is left as exercise</p>
+<p>This spec is small enough to actually build in a chapter, large enough to exercise the full stack. We won't be cute; we ship working code.</p>
+<div class="pullquote">
+<p>A spec is a promise to your future self. The spec is what you build <em>to</em>; everything else is decoration. We're going to keep our eyes on this list.</p>
+</div>
+<hr />
+<h2>Section 2 — Architecture Decisions (≈4 pages)</h2>
+<p>Before we code, we decide. This is where Modules 13's threshold test, 14's pattern selection, and 17's instrumentation choices show up.</p>
+<p><strong>Multi-agent or single agent?</strong> This task is the canonical Anthropic-research-system fit:
+- Parallelizable (sub-questions are independent)
+- High enough value (deep research output is worth $5+ in API cost)
+- Latency budget is generous (5 minutes is fine)
+- Sub-tasks need genuinely different focus (each sub-question has its own evidence)</p>
+<p>Threshold test (Module 13 §8): 5/5. Multi-agent is justified.</p>
+<p><strong>Which architecture (Module 14)?</strong> Supervisor / orchestrator-worker. Same shape as Anthropic's published research system. Other options considered and rejected:
+- Hierarchical: overkill at 4-6 workers
+- Sequential pipeline: loses parallelism (the whole point)
+- Group chat: cost explosion, no benefit on this task
+- Pure debate: doesn't fit ("debate" makes sense for opinion synthesis; "research" is evidence aggregation)</p>
+<p>We add a critic step at the end (Module 11's reflection / Module 14's debate-as-subpattern), but the outer architecture is supervisor.</p>
+<p><strong>Which model where (Module 6)?</strong>
+- <strong>Orchestrator</strong>: Opus (planning is high-leverage; mistakes propagate)
+- <strong>Workers</strong>: Sonnet (capable, faster, cheaper for fan-out)
+- <strong>Critic</strong>: Opus (validation needs strong reasoning; cheap critics are useless — Module 16 §6)
+- <strong>Report writer</strong>: Opus (final output quality is what users see)
+- <strong>Topic guardrail classifier</strong>: Haiku (cheap, fast)</p>
+<p>This routing trades cost vs quality where each one matters. Total expected cost: $1-3 per research depending on depth.</p>
+<p><strong>Context strategy (Modules 7-8).</strong>
+- Workers: their own context window per sub-question (isolation)
+- Workers return <em>structured findings</em> (not raw transcripts) to orchestrator
+- Orchestrator never sees worker raw context — only synthesized structured outputs (avoids supervisor context bloat)
+- Critic sees the report draft + the workers' structured findings (enough for cross-checking)
+- Report writer sees structured findings + critic feedback</p>
+<p>This is "isolate" + "compress" from Module 7's vocabulary.</p>
+<p><strong>Memory (Module 9).</strong> Single-session for the capstone. Episodic memory of the current research: what's been searched, what evidence has been found, what gaps remain.</p>
+<p><strong>Hallucination defense (Module 10).</strong> Citation enforcement — every claim in the report must cite a worker's finding. Report writer can't reference facts not in workers' outputs. Validate citations programmatically.</p>
+<p><strong>Reflection (Module 11).</strong> The critic step. Independent agent (different prompt, sees the workers' raw structured findings + the draft report) checks for: claims unsupported by evidence, missing perspectives, internal contradictions. Writer revises (max 1 revision round; quality saturates fast).</p>
+<p><strong>Guardrails (Module 12).</strong> Input: topic classifier (is this a research question? not a coding-help / personal-advice / off-topic query). Output: PII leak detection (the report shouldn't contain real-looking personal data).</p>
+<p><strong>Cost ceiling (Module 17).</strong> Per-research budget of $5 (configurable). Tracks running cost across all agents. Halts if exceeded. Returns partial results.</p>
+<p><strong>Observability (Module 17).</strong> Full OpenTelemetry instrumentation. Each agent invocation = a span. Each tool call = a span. Trace context propagates across sub-agent boundaries. Traces ship to Langfuse (chosen for self-hosting; LangSmith is a one-line swap).</p>
+<div class="brain">
+<p>Our orchestrator uses Opus; workers use Sonnet. Why not Haiku for workers since there are 4-6 of them and cost matters most there?</p>
+<p>(Workers do the actual research — searching, fetching, reading, synthesizing per sub-question. Quality of worker output gates everything downstream. Haiku-quality findings would propagate through the whole pipeline. The right place to economize is the topic classifier, not the workers. Cost-optimize where errors are recoverable; spend at quality-gating points.)</p>
+</div>
+<hr />
+<h2>Section 3 — Implementation 1: Raw Anthropic SDK (≈8 pages)</h2>
+<p>The minimal-dependency version. We code it in full and walk through it.</p>
+<p><strong>Project structure.</strong></p>
+<pre><code>research_capstone/
+├── pyproject.toml
+├── src/research_capstone/
+│   ├── __init__.py
+│   ├── orchestrator.py      ← supervisor agent
+│   ├── workers.py           ← research workers
+│   ├── critic.py            ← reflection critic
+│   ├── writer.py            ← report writer
+│   ├── tools.py             ← web_search, web_fetch
+│   ├── guardrails.py        ← input/output guardrails
+│   ├── instrumentation.py   ← OpenTelemetry setup
+│   ├── budgets.py           ← cost limiter, loop detector
+│   ├── eval/
+│   │   ├── harness.py
+│   │   └── sampler.py       ← production trace -&gt; eval queue
+│   └── cli.py
+</code></pre>
+<p><strong>The orchestrator.</strong></p>
+<pre><code class="language-python"># orchestrator.py (excerpt — full code in book)
+from anthropic import AsyncAnthropic
+from opentelemetry import trace as otel_trace
+
+class ResearchOrchestrator:
+    def __init__(
+        self,
+        client: AsyncAnthropic,
+        budget_usd: float = 5.0,
+        wall_clock_seconds: float = 300.0,
+        max_workers: int = 6,
+    ):
+        self.client = client
+        self.budget = CostLimiter(budget_usd)
+        self.deadline = wall_clock_seconds
+        self.max_workers = max_workers
+        self.tracer = otel_trace.get_tracer(__name__)
+
+    async def research(self, question: str) -&gt; ResearchReport:
+        with self.tracer.start_as_current_span(&quot;research.run&quot;) as span:
+            span.set_attribute(&quot;research.question&quot;, question)
+
+            # 1. Input guardrail
+            await self._check_input(question)
+
+            # 2. Plan
+            plan = await self._plan(question)
+
+            # 3. Dispatch workers in parallel
+            findings = await self._dispatch_workers(plan)
+
+            # 4. Critic
+            critique = await self._critique(question, plan, findings)
+
+            # 5. Writer (with optional revision based on critique)
+            report = await self._write(question, findings, critique)
+
+            # 6. Output guardrail
+            await self._check_output(report)
+
+            # 7. Return with full trace
+            return report
+</code></pre>
+<p>We walk through every method. The plan tool's schema. How workers stream findings back as structured JSON. How the critic's structured output feeds the writer. How partial-failure is handled (workers fail; surviving workers' findings still flow forward).</p>
+<p><strong>The worker.</strong></p>
+<pre><code class="language-python"># workers.py (excerpt)
+class ResearchWorker:
+    def __init__(self, client, sub_question: str, budget: CostLimiter, tracer):
+        ...
+
+    async def research(self) -&gt; WorkerFinding:
+        with self.tracer.start_as_current_span(&quot;worker.research&quot;) as span:
+            span.set_attribute(&quot;worker.sub_question&quot;, self.sub_question)
+
+            # Plan -&gt; tool calls -&gt; synthesize finding
+            messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: WORKER_PROMPT.format(
+                sub_question=self.sub_question
+            )}]
+
+            for turn in range(self.max_turns):
+                resp = await self.client.messages.create(
+                    model=&quot;claude-sonnet-4-6&quot;,
+                    max_tokens=4096,
+                    tools=[WEB_SEARCH_TOOL, WEB_FETCH_TOOL, FINISH_TOOL],
+                    messages=messages,
+                )
+                self.budget.add(resp.usage)  # propagates cost upward
+
+                # Process tool calls or finish
+                ...
+
+            return WorkerFinding(
+                sub_question=self.sub_question,
+                claim=...,
+                evidence=...,  # list of {source_url, snippet, retrieved_at}
+                confidence=...,
+            )
+</code></pre>
+<p><strong>The critic.</strong></p>
+<pre><code class="language-python"># critic.py (excerpt)
+class Critic:
+    async def critique(self, question, findings, draft_report) -&gt; Critique:
+        # Independent — uses Opus, different prompt, sees both workers' raw findings
+        # AND the draft report; flags claims unsupported by findings, gaps, contradictions
+        ...
+</code></pre>
+<p><strong>The writer.</strong></p>
+<pre><code class="language-python"># writer.py (excerpt)
+class Writer:
+    async def write(self, question, findings, critique=None) -&gt; Report:
+        # First pass: produce report citing findings
+        # If critique provided and has issues: revision pass
+        ...
+</code></pre>
+<p><strong>Wiring it together.</strong> A short <code>main.py</code> shows the CLI usage. We run it on a sample question end to end and show a real trace tree, real cost, real output.</p>
+<p>We also show what <em>fails</em>: pulling a typical edge case (a question that's mostly opinion, a question that has no good sources, a question where one worker times out) and walking through how the system handles each.</p>
+<div class="code-exercise">
+<p><strong>Exercise 18.1 — Run the raw-SDK capstone.</strong></p>
+<p>Clone the capstone repo (we provide it). Set your API key. Run on three questions:
+1. "What were the major findings of the 2025 Apollo retrospective study on RLHF?"
+2. "Compare the technical trade-offs between QUIC and HTTP/2 for low-latency video."
+3. "What are the strongest current critiques of effective altruism as a movement?"</p>
+<p>Inspect the traces (Langfuse dashboard). Note: total cost, wall-clock, which workers finished, which findings made it into the report, what the critic flagged.</p>
+<p>Modify: change the orchestrator to use Sonnet instead of Opus. Re-run. Compare quality and cost.</p>
+</div>
+<hr />
+<h2>Section 4 — Implementation 2: LangGraph (≈6 pages)</h2>
+<p>The same system in LangGraph. We don't repeat the conceptual content — we focus on what LangGraph adds and what it costs.</p>
+<p><strong>What LangGraph adds:</strong></p>
+<ul>
+<li>Explicit state graph: nodes, edges, conditional routing</li>
+<li>Built-in checkpointing: pause, inspect, resume, time-travel debug</li>
+<li>LangGraph Studio: visualize the graph, set breakpoints (genuinely the best agent IDE in 2026 per the field consensus)</li>
+<li>Tight integration with LangSmith for observability (one env var)</li>
+<li>Native MCP support</li>
+<li>Reducer logic for merging concurrent state updates (matters for parallel workers)</li>
+</ul>
+<p><strong>What it costs:</strong></p>
+<ul>
+<li>Mental model overhead — graph concepts, state schemas, reducers</li>
+<li>Lock-in to LangChain ecosystem</li>
+<li>More dependencies; bigger Docker images</li>
+<li>Closed-source self-hosting (LangSmith Enterprise-only for self-host)</li>
+</ul>
+<p><strong>The implementation:</strong></p>
+<pre><code class="language-python">from langgraph.graph import StateGraph, END
+from typing import TypedDict, Annotated
+from operator import add
+
+class ResearchState(TypedDict):
+    question: str
+    plan: dict
+    findings: Annotated[list[WorkerFinding], add]  # reducer for parallel workers
+    critique: dict | None
+    report: str | None
+
+def plan_node(state: ResearchState):
+    plan = make_plan(state[&quot;question&quot;])
+    return {&quot;plan&quot;: plan}
+
+def worker_node(state: ResearchState, sub_q: str):
+    finding = research_worker(sub_q)
+    return {&quot;findings&quot;: [finding]}  # gets merged via reducer
+
+def critic_node(state: ResearchState):
+    critique = critique_findings(state[&quot;question&quot;], state[&quot;findings&quot;])
+    return {&quot;critique&quot;: critique}
+
+def writer_node(state: ResearchState):
+    report = write_report(state[&quot;question&quot;], state[&quot;findings&quot;], state[&quot;critique&quot;])
+    return {&quot;report&quot;: report}
+
+graph = StateGraph(ResearchState)
+graph.add_node(&quot;plan&quot;, plan_node)
+graph.add_node(&quot;dispatch_workers&quot;, dispatch_workers_dynamic)
+graph.add_node(&quot;critic&quot;, critic_node)
+graph.add_node(&quot;writer&quot;, writer_node)
+
+graph.set_entry_point(&quot;plan&quot;)
+graph.add_edge(&quot;plan&quot;, &quot;dispatch_workers&quot;)
+graph.add_edge(&quot;dispatch_workers&quot;, &quot;critic&quot;)
+graph.add_edge(&quot;critic&quot;, &quot;writer&quot;)
+graph.add_edge(&quot;writer&quot;, END)
+
+agent = graph.compile(checkpointer=PostgresSaver(...))
+</code></pre>
+<p>The graph is more explicit. State management is structured. Checkpointing is one line.</p>
+<p>We walk through:
+- Dynamic worker dispatch (LangGraph supports this via <code>Send</code> for fan-out)
+- The reducer pattern for collecting parallel worker results
+- LangGraph Studio screenshots showing breakpoint debugging
+- The LangSmith trace for the same question we ran in Section 3</p>
+<p><strong>When LangGraph is the right choice:</strong>
+- You want time-travel debugging (genuinely valuable for complex agents)
+- You're already in LangChain (free integration win)
+- You need first-class durable checkpointing
+- You're building for a regulated industry (audit trail of every state transition)</p>
+<p><strong>When raw SDK is the right choice:</strong>
+- Minimum dependencies
+- The graph is simple enough that explicit nodes are overhead
+- You want full control over the execution model
+- You're shipping a library, not an application (smaller attack/dependency surface)</p>
+<div class="brain">
+<p>LangGraph's biggest selling point is checkpointing — pause/resume/time-travel. For our research capstone, do we actually need it?</p>
+<p>(For research that takes 2-5 minutes? Probably not. For agents that run for hours and need to survive process restarts? Critical. For our capstone the value of checkpointing is limited; we're using LangGraph here mainly to demonstrate the framework. For real production deployments, the question is: does your agent's lifetime exceed your process's lifetime? If yes, checkpointing is the answer; if no, you can skip the framework cost.)</p>
+</div>
+<hr />
+<h2>Section 5 — Implementation 3: CrewAI (≈4 pages)</h2>
+<p>Same system, third time. CrewAI is the role-based / fastest-prototype framework. We build it; we discuss its trade-offs honestly.</p>
+<p><strong>The implementation:</strong></p>
+<pre><code class="language-python">from crewai import Agent, Task, Crew, Process
+
+orchestrator = Agent(
+    role=&quot;Research Orchestrator&quot;,
+    goal=&quot;Plan and synthesize comprehensive research on the user's question&quot;,
+    backstory=&quot;An expert researcher who breaks complex questions into focused sub-questions&quot;,
+    llm=opus_client,
+)
+
+worker_template = Agent(
+    role=&quot;Research Worker&quot;,
+    goal=&quot;Find evidence on a specific sub-question&quot;,
+    backstory=&quot;A focused researcher who searches and reads sources to gather evidence&quot;,
+    llm=sonnet_client,
+    tools=[web_search_tool, web_fetch_tool],
+)
+
+critic = Agent(
+    role=&quot;Research Critic&quot;,
+    goal=&quot;Identify gaps and unsupported claims in research output&quot;,
+    backstory=&quot;A rigorous reviewer who flags weaknesses&quot;,
+    llm=opus_client,
+)
+
+writer = Agent(
+    role=&quot;Report Writer&quot;,
+    goal=&quot;Produce a clear, well-cited report&quot;,
+    backstory=&quot;A skilled writer who synthesizes evidence into clear prose&quot;,
+    llm=opus_client,
+)
+
+# Tasks define the work; CrewAI wires sequencing/parallelism via Process
+plan_task = Task(description=&quot;Plan research strategy for: {question}&quot;, agent=orchestrator)
+worker_tasks = [
+    Task(description=f&quot;Research: {sub_q}&quot;, agent=worker_template) for sub_q in sub_questions
+]
+critique_task = Task(description=&quot;Critique the gathered findings&quot;, agent=critic)
+write_task = Task(description=&quot;Write the final report&quot;, agent=writer)
+
+crew = Crew(
+    agents=[orchestrator, worker_template, critic, writer],
+    tasks=[plan_task, *worker_tasks, critique_task, write_task],
+    process=Process.hierarchical,
+    manager_llm=opus_client,
+)
+
+result = crew.kickoff(inputs={&quot;question&quot;: &quot;...&quot;})
+</code></pre>
+<p><strong>What CrewAI does well:</strong>
+- Fastest prototyping in the field (working multi-agent system in &lt;50 lines)
+- Role-based abstraction is intuitive — non-engineers can read it
+- Strong defaults; opinionated in helpful ways
+- Growing ecosystem</p>
+<p><strong>What CrewAI doesn't do as well:</strong>
+- Limited control over agent-to-agent communication (mediated through task outputs, not direct messaging)
+- No built-in checkpointing for long-running workflows
+- Coarse-grained error handling — failures are harder to recover from gracefully
+- Less production-tested for highly-custom flows (per 2026 community comparisons)</p>
+<p><strong>When CrewAI is the right choice:</strong>
+- Prototype phase, optimizing for time-to-working
+- Workflow is mostly linear or hierarchical
+- Team is small / mixed technical
+- You're willing to migrate later if production-scale issues emerge</p>
+<p><strong>When it isn't:</strong>
+- Custom control flow with cycles or conditional branching
+- Production-grade durability with checkpoints needed
+- Complex agent communication patterns
+- Compliance / audit-trail requirements</p>
+<div class="gotcha">
+<p>A common pattern: teams prototype on CrewAI, get something working in a day, then hit production-scale issues (no checkpointing, opaque failures, hard-to-customize flow) and migrate to LangGraph or raw SDK. This is fine — it's the right way to use CrewAI. The mistake is committing to CrewAI in production for a complex system without a migration path planned.</p>
+</div>
+<hr />
+<h2>Section 6 — Honest Comparison (≈4 pages)</h2>
+<p>Three implementations, same spec. We compare honestly.</p>
+<p><strong>Lines of code (approximate; varies by style):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Implementation</th>
+<th>Core LOC</th>
+<th>With instrumentation</th>
+<th>With eval harness</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Raw SDK</td>
+<td>~600</td>
+<td>~900</td>
+<td>~1,200</td>
+</tr>
+<tr>
+<td>LangGraph</td>
+<td>~400</td>
+<td>~600</td>
+<td>~900</td>
+</tr>
+<tr>
+<td>CrewAI</td>
+<td>~150</td>
+<td>~350</td>
+<td>~600</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cost on the same 10 research queries (illustrative — re-run when drafting):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Implementation</th>
+<th>Avg cost/research</th>
+<th>Variance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Raw SDK</td>
+<td>$1.83</td>
+<td>±$0.42</td>
+</tr>
+<tr>
+<td>LangGraph</td>
+<td>$1.91</td>
+<td>±$0.45</td>
+</tr>
+<tr>
+<td>CrewAI</td>
+<td>$2.27</td>
+<td>±$0.78</td>
+</tr>
+</tbody>
+</table>
+<p>The frameworks add some overhead (mostly framework-level prompts and orchestration calls); CrewAI's hierarchical process spawns extra coordination calls that show up in cost.</p>
+<p><strong>Wall-clock latency:</strong></p>
+<p>Comparable across all three; the wall-clock is dominated by the LLM calls and tool calls, not framework overhead. Differences are &lt;5%.</p>
+<p><strong>Quality on a 50-question eval set:</strong></p>
+<p>Comparable. Same prompts in different framework wrappings produce comparable outputs. Quality differences come from the prompts and the routing, not the framework.</p>
+<p><strong>Maintainability over 6 months:</strong></p>
+<p>This is harder to measure quantitatively but matters most. The honest assessment:
+- <strong>Raw SDK</strong>: easiest to debug; hardest to extend. Adding new agent types means writing new code; not generalizing existing patterns.
+- <strong>LangGraph</strong>: best for evolving systems; the graph abstraction maps naturally to growing complexity. Steepest learning curve.
+- <strong>CrewAI</strong>: easiest to evolve in shape (add agents, change tasks); but customizing existing agents' behavior beyond CrewAI's abstractions is awkward.</p>
+<p><strong>The decision matrix:</strong></p>
+<table>
+<thead>
+<tr>
+<th>If you...</th>
+<th>Pick...</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Want minimum dependencies and full control</td>
+<td>Raw SDK</td>
+</tr>
+<tr>
+<td>Are already on LangChain or need durable checkpointing or LangGraph Studio</td>
+<td>LangGraph</td>
+</tr>
+<tr>
+<td>Are prototyping and want time-to-working above all</td>
+<td>CrewAI</td>
+</tr>
+<tr>
+<td>Have multiple cycles, branching logic, regulated industry</td>
+<td>LangGraph</td>
+</tr>
+<tr>
+<td>Are shipping a library (not application)</td>
+<td>Raw SDK</td>
+</tr>
+<tr>
+<td>Have a team of mixed technical levels</td>
+<td>CrewAI</td>
+</tr>
+<tr>
+<td>Need to migrate later</td>
+<td>Build clean abstractions on raw SDK or LangGraph</td>
+</tr>
+</tbody>
+</table>
+<div class="pullquote">
+<p>Frameworks are tools. Tools have shapes. Pick the tool whose shape fits your problem; don't try to fit your problem to a tool. The right framework for your next agent is whatever you can ship and operate confidently.</p>
+</div>
+<hr />
+<h2>Section 7 — Production Concerns Across All Three (≈4 pages)</h2>
+<p>Things that have to be true regardless of which framework. Each implementation in this capstone has them; we cover what to verify and how.</p>
+<p><strong>1. OpenTelemetry instrumentation.</strong> Verify trace tree mirrors agent structure. Each LLM call → span. Each tool call → span. Trace context propagates across sub-agent boundaries.</p>
+<p><strong>2. Cost ceiling.</strong> Verify the per-research budget halts execution when exceeded. Test by setting budget = $0.50 and running — should halt cleanly with partial results.</p>
+<p><strong>3. Loop detection.</strong> Verify agents that get stuck (a tool that always fails) don't retry forever. Test with a deliberately-broken tool.</p>
+<p><strong>4. Guardrails.</strong> Verify input topic classifier rejects out-of-scope queries. Test with off-topic queries and adversarial prompts. Verify output PII detection blocks any leaked-looking PII.</p>
+<p><strong>5. Hallucination defense.</strong> Verify the citation checker catches claims without supporting evidence in workers' findings. Test by injecting a "fact" into the report writer's prompt that no worker found — citation check should flag it.</p>
+<p><strong>6. Eval harness.</strong> Verify production traces flow into the eval queue at 1% sampling + 100% on errors / negative feedback. Verify trajectory eval runs against the queue and produces actionable scores.</p>
+<p><strong>7. Failure handling.</strong> Verify that worker failures don't take down the whole research. Test by killing one worker mid-run — should continue with N-1 workers, surface the failure in the final report.</p>
+<p><strong>Pre-launch checklist:</strong></p>
+<ul>
+<li>[ ] Trace tree readable for sample queries</li>
+<li>[ ] Cost ceiling tested and verified</li>
+<li>[ ] Loop detection tested with broken tool</li>
+<li>[ ] Guardrails tested with attack suite</li>
+<li>[ ] Hallucination defense tested with injected false claims</li>
+<li>[ ] Eval harness producing scores on sample data</li>
+<li>[ ] Worker failure tested</li>
+<li>[ ] Documentation: what the agent does, what its limits are, when to escalate to a human</li>
+<li>[ ] On-call runbook: what to do when alerts fire</li>
+<li>[ ] Rollback plan: how to revert to previous version</li>
+</ul>
+<p>This is the same checklist that distinguishes "agent that works in demos" from "agent in production" from Module 17 — applied concretely.</p>
+<div class="code-exercise">
+<p><strong>Exercise 18.2 — Ship the capstone (your version).</strong></p>
+<p>Take whichever implementation you prefer. Customize it for a research domain you actually care about (your work, an industry you're learning, an academic field). Run it on 50 real questions. Iterate on prompts, routing, depth based on observed traces.</p>
+<p>Then: pick one production concern from the checklist above and add it if it's missing. Most likely candidates: better drift monitoring, additional guardrail layers, expanded eval harness.</p>
+<p>Deploy somewhere — even just locally with a CLI — that you can use it weekly for actual research. The capstone earns its name when it becomes a thing you use, not a thing you built.</p>
+</div>
+<hr />
+<h2>Section 8 — What You Now Know (≈3 pages)</h2>
+<p>A retrospective. The reader has shipped a multi-agent research system that uses every concept in the book. What they now know:</p>
+<p><strong>The conceptual stack</strong> (Modules 1-3): workflows vs agents, the agent loop, when to reach for which.</p>
+<p><strong>The building blocks</strong> (Modules 4-9): tools that don't lie, MCP that scales, model routing for economics, context engineering, compression, memory.</p>
+<p><strong>The reliability layer</strong> (Modules 10-12): hallucinations and grounding, reflection, guardrails.</p>
+<p><strong>The multi-agent layer</strong> (Modules 13-15): when multi-agent earns its cost, the architectures that survived production, the swarms that mostly didn't.</p>
+<p><strong>The transactional layer</strong> (Module 16): when agents touch real-world state, sagas and compensations.</p>
+<p><strong>The production layer</strong> (Module 17): evals, observability, cost, failure.</p>
+<p><strong>A working artifact</strong> (Module 18): the research system itself, built three ways, ready to extend.</p>
+<p><strong>What remains hard.</strong> Honest list. Even after this book, the reader will still face:</p>
+<ul>
+<li>Eval design for fuzzy domains (creative tasks, judgment calls, cross-cultural sensitivity)</li>
+<li>The 1-2% of agent failures that resist all the defense layers</li>
+<li>The framework migration that comes when prototype-CrewAI hits production-scale issues</li>
+<li>The cost-quality trade-offs that don't have right answers, only tier choices</li>
+<li>The drift that happens when models update under you</li>
+<li>The new failure modes that emerge as the field evolves</li>
+</ul>
+<p><strong>The honest framing:</strong> this book gave you 80% of what you need. The other 20% is judgment that comes from shipping, breaking, fixing, shipping again. The book's job is to compress your learning curve, not eliminate it.</p>
+<hr />
+<h2>Section 9 — Where to Go From Here (≈2 pages)</h2>
+<p>Pointers for the reader continuing the journey.</p>
+<p><strong>Stay current on these specific things:</strong>
+- OpenTelemetry GenAI semantic conventions (still evolving as of 2026)
+- The eval landscape (LLM-as-judge limitations are still being mapped)
+- Multi-agent coordination protocols (A2A, MCP — the standards game)
+- Production-survival case studies (what's worked, what hasn't, what changed)
+- Anthropic / OpenAI / Google's published agent engineering posts (the sources of the actual numbers in this book)</p>
+<p><strong>Build the next thing.</strong> The capstone is research-domain. Apply the same patterns to:
+- A coding agent for a narrow domain (a specific codebase, a specific stack)
+- An ops/SRE agent (instrumented carefully, sandboxed heavily)
+- A customer-facing support agent (with the full guardrail stack from Module 12)
+- A data analysis agent (Pandas + viz tools)
+- A document-processing pipeline (PDF, Word, structured extraction)</p>
+<p><strong>Communities worth being in:</strong>
+- LangChain / LangGraph forums for ecosystem updates
+- Anthropic Discord / forums for Claude-specific patterns
+- The agent observability platforms' communities (Langfuse, Laminar) — practical operational discussions
+- Papers Twitter / arXiv-sanity for research drift</p>
+<p><strong>The honest goodbye.</strong> You've finished the book. You can build the agents you set out to build. The field will move; the patterns in this book will become outdated in some specifics over the next 18 months. That's fine — the <em>judgment</em> you've built doesn't expire. Patterns shift; the discipline of asking "what's the actual failure mode?" and "what's this earning?" doesn't.</p>
+<p>Go ship something. The agents you build will be better than the agents the field built last year, because you started with the lessons of last year. That's the whole point.</p>
+<div class="pullquote">
+<p>The book ends. The work begins. You'll build agents better than the ones in this book — because the next year's lessons will be yours, not Sam's.</p>
+</div>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>0 No Dumb Questions (capstone is integrative; questions live in earlier modules)</li>
+<li>2 Brain Power prompts</li>
+<li>0 Production Postmortems (the capstone IS the postmortem of the book)</li>
+<li>1 Watch It! / Gotcha block</li>
+<li>2 Code Exercises (run the capstone, ship your version)</li>
+<li>2 Pullquotes</li>
+<li>1 architecture diagram (the system)</li>
+<li>1 framework decision matrix</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam ships the capstone. Three implementations live in three branches. The team picks LangGraph (already on LangChain elsewhere; LangSmith integration is one env var; checkpointing matters for the long-running deep-research tier). The system serves real customers. Sam keeps the raw-SDK version in the repo as the eval-comparison baseline. CrewAI version becomes the prototype platform for future agent ideas.</p>
+<p>A year later, Sam reads this book again. Most of it is still right. Some of the platforms have shifted. Anthropic's published numbers got refined. PreFlect-style prospective reflection became standard. SagaLLM-style validation became table stakes. What didn't change: the discipline of asking what each pattern earns, of reading traces honestly, of measuring before optimizing, of refusing to add agents without evidence.</p>
+<p>Sam closes the book. Goes to ship the next thing.</p>
+<p><strong>Sam's arc, end of book: from frazzled staff engineer to systems thinker who builds working agents and operates them with honesty. That's the arc.</strong></p>
+</div>
+<div class="page-budget">
+<p>S1 (Spec): 3p
+S2 (Architecture decisions): 4p
+S3 (Raw SDK implementation): 8p
+S4 (LangGraph implementation): 6p
+S5 (CrewAI implementation): 4p
+S6 (Honest comparison): 4p
+S7 (Production concerns): 4p
+S8 (What you now know): 3p
+S9 (Where to go from here): 2p
+Recurring elements: 4p
+TOTAL: ~42 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting:</strong></p>
+<ul>
+<li>Anthropic SDK current API and Python package versions</li>
+<li>LangGraph current API (StateGraph, Send for dynamic dispatch, checkpointers)</li>
+<li>LangSmith current pricing and self-host story</li>
+<li>CrewAI current API (Process types, hierarchical mode, manager_llm pattern)</li>
+<li>LangGraph Studio capabilities (the "best agent IDE" claim — verify scope)</li>
+<li>Langfuse self-host requirements (Postgres + ClickHouse)</li>
+<li>Real benchmark numbers — re-run the three implementations on the same 10-50 question test set with current models</li>
+<li>Anthropic model identifiers and pricing as of drafting</li>
+<li>AutoGen status (verify "maintenance mode" framing — if it's changed by drafting, update)</li>
+<li>Microsoft Agent Framework 1.0 GA (per articles, April 2026) — mention as alternative if relevant</li>
+<li>A2A protocol current state</li>
+<li>OpenAI Agents SDK current state (post-Swarm replacement)</li>
+<li>Gartner agentic AI cancellation prediction — verify the 40% / 2027 numbers</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- The architectural decisions section (the reasoning is durable even if specific framework versions change)
+- The pre-launch checklist
+- The decision matrix structure (specific frameworks may shift but the criteria are durable)
+- The retrospective on the book's structure</p>
+<p><strong>Cross-references:</strong> essentially every prior module. We list:
+- Module 1-3 (workflows, agent loop, patterns)
+- Module 4-5 (tools, MCP)
+- Module 6 (model routing)
+- Module 7-8 (context, compression)
+- Module 9 (memory)
+- Module 10-12 (reliability)
+- Module 13-15 (multi-agent)
+- Module 16 (sagas)
+- Module 17 (production)</p>
+</div>
+<div class="bullet-points">
+<h3>Module 18 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>The capstone is a deep-research multi-agent system: orchestrator + parallel workers + critic + writer</li>
+<li>We build it three times: raw SDK, LangGraph, CrewAI — same spec, three implementations</li>
+<li>Architecture decisions apply Module 13's threshold test, Module 14's pattern selection, Module 17's instrumentation</li>
+<li>Raw SDK: minimum dependencies, full control, easiest debug, hardest extend</li>
+<li>LangGraph: best for evolving production systems, durable checkpointing, LangSmith integration, steepest learning curve</li>
+<li>CrewAI: fastest prototyping, intuitive role-based, limits at custom complexity, expect migration eventually</li>
+<li>Quality is comparable across all three — frameworks differ on dev experience and operational concerns, not output quality</li>
+<li>Production concerns (instrumentation, ceilings, guardrails, eval harness) are framework-independent — every implementation needs them</li>
+</ul>
+</div>
+<hr style="border-top: 4px solid #c0392b; margin: 3em 0;">
+</body>
+</html>

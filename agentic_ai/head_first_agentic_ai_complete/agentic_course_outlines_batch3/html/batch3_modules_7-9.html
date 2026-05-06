@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic AI Course — Modules 7-9 Outlines</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 7 Outline — Context Engineering Foundations</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 07 — OUTLINE</div>
+<div class="module-title">Context Engineering Foundations</div>
+<div class="subtitle">Prompt engineering was the warm-up.<br>This is the discipline that decides whether your agent ships.</div>
+<div class="pages">Target length: ~36 pages</div>
+</div>
+<h2>What this module is</h2>
+<p>Context engineering is the discipline that emerged in 2025 as engineers realized: building agents that work for one turn is prompt engineering; building agents that work over hundreds of turns and dozens of tool results is something else entirely. The framework that won — write, select, compress, isolate — comes from LangChain (Lance Martin, June 2025) and is now used at IBM, MongoDB, Letta, Mem0, Anthropic, and across the field.</p>
+<p>This module establishes the framework, the four memory types every agent eventually needs (episodic, semantic, procedural, working), and the design principles that make the next two modules (compression, memory systems) possible. Heavy on concepts and decision frameworks; the algorithms and code-heavy build come in Module 8 and Module 9.</p>
+<div class="hook">
+<p>"Your agent has a 200K context window. Sounds enormous. Then turn 12 dumps a 30K log file. Turn 14 fetches three 8K web pages. Turn 19 retrieves 12 documents from your knowledge base. Turn 22 the model is reasoning over 180K tokens of mostly garbage — paying $0.54 per turn — and missing the one fact that mattered, which is buried on line 43 of turn 7's tool result."</p>
+</div>
+<hr />
+<h2>Section 1 — From Prompt Engineering to Context Engineering (≈3 pages)</h2>
+<p>The shift. Prompt engineering optimized one input (a prompt) for one output (a completion). It implicitly assumed the prompt is what the model sees.</p>
+<p>In agents, that assumption breaks. Each turn, the model sees:</p>
+<ul>
+<li>The system prompt (rarely changes)</li>
+<li>Tool definitions (Module 4)</li>
+<li>The user's original message</li>
+<li>Every previous turn's assistant message</li>
+<li>Every previous turn's tool calls and results</li>
+<li>Whatever your agent code injected (retrieved memories, current state, etc.)</li>
+</ul>
+<p>The "prompt" — singular — has become "the context window" — a dynamic, growing, multi-source assemblage that you, the engineer, <em>compose</em> every turn. That composition is context engineering.</p>
+<div class="pullquote">
+<p>Prompt engineering is what to write. Context engineering is what to keep, what to fetch, what to summarize, what to throw away — every turn, forever.</p>
+</div>
+<p>What changed in 2024-2025 to make this a discipline:</p>
+<ol>
+<li><strong>Long agent horizons.</strong> Agents running for 50+ turns blew past naive context management.</li>
+<li><strong>Tool result bloat.</strong> Agents that fetch web pages, read files, query databases produce huge intermediate context.</li>
+<li><strong>Cost reality.</strong> A 200K-context Sonnet call costs ~$0.60. At dozens of calls per task, this is real money.</li>
+<li><strong>Quality degradation.</strong> Long contexts measurably degrade reasoning ("context rot" — well-documented). More context isn't better.</li>
+</ol>
+<div class="nodumbq">
+<p><strong>Q: Doesn't Claude Sonnet 4.6 have a 1M context window now? GPT-5.4 too? Doesn't that solve this?</strong></p>
+<p>No, for three reasons. (1) Cost: a 1M token call at $3/MTok input is $3 per call. (2) Latency: TTFT scales with input length. A 500K-token call has noticeably worse first-token latency. (3) Quality: long-context degradation is real and measurable. Even models marketed as "1M coherent" perform meaningfully better on focused 50K context than dumped 500K context. Bigger windows raise the ceiling on what's <em>possible</em>; they don't change what's <em>optimal</em>.</p>
+<p><strong>Q: Is context engineering just a fancy name for managing the conversation history?</strong></p>
+<p>It includes that. It also includes: deciding what to fetch from external memory, when to compress old turns, when to spawn a sub-agent with isolated context, when to write a fact to long-term memory, when to discard a tool result entirely. Conversation history is one input among many.</p>
+</div>
+<hr />
+<h2>Section 2 — The Write/Select/Compress/Isolate Framework (≈5 pages)</h2>
+<p>LangChain's framework, which became the field standard. Four verbs that describe everything you can do with context:</p>
+<p><strong>Write</strong> — persist information <em>outside</em> the context window so it's available later but doesn't consume tokens now. Examples: scratchpads, long-term memory stores, notes-to-self files, episode logs.</p>
+<p><strong>Select</strong> — pull information <em>into</em> the context window only when needed. Examples: retrieval (RAG-style), tool calls that fetch state, conditional prompt sections.</p>
+<p><strong>Compress</strong> — reduce the size of what's already in context while preserving meaning. Examples: summarization of old turns, dropping verbose tool outputs, replacing raw data with computed conclusions.</p>
+<p><strong>Isolate</strong> — split context across separate processes or sub-agents so each only sees what it needs. Examples: orchestrator-workers (Module 3), sub-agent delegation, multi-agent architectures (Module 14).</p>
+<p>Most production systems combine all four. A research agent might:
+- <strong>Write</strong> intermediate findings to a scratchpad after each search
+- <strong>Select</strong> the most relevant 3-5 findings when synthesizing
+- <strong>Compress</strong> old search results that didn't pan out
+- <strong>Isolate</strong> sub-research-tasks to separate sub-agents</p>
+<div class="brain">
+<p>Your agent's context just hit 150K tokens. You can spend the next hour applying any one strategy. Which do you reach for first?</p>
+<p>(Probably <strong>isolate</strong> — spinning off a sub-agent for the next subtask gives you a fresh window. Then <strong>compress</strong> if isolation isn't an option. <strong>Select</strong> assumes you have a retrieval system in place. <strong>Write</strong> doesn't help with the immediate problem; it helps with the next problem.)</p>
+</div>
+<p>We do a deep example: a customer support agent that answers questions across a 200-document knowledge base. We show the naive version (dump everything in context) and walk through applying each of the four strategies in turn, watching context size and quality both improve.</p>
+<div class="postmortem">
+<p><strong>The Chatbot That Got Dumber Every Day</strong></p>
+<p>A team built a Slack bot that helped engineers debug production issues. Naive design: every conversation in a channel was fed to the bot as context. Days 1-3 worked great. By day 14, context was 80K tokens of mostly stale conversation. By day 30, the bot was confidently mixing details from issues weeks apart, citing wrong customers, and giving advice based on solved problems.</p>
+<p>Cause: zero context engineering. No write (no separate fact memory), no select (every message included regardless of relevance), no compress (full transcript), no isolate (one bot, one growing context).</p>
+<p>Fix involved all four: write extracted facts to a memory store, select only conversation from the past 4 hours plus retrieved facts, compress with a 24-hour rolling summary, isolate per-thread instead of per-channel.</p>
+<p><strong>Lesson:</strong> the four strategies aren't optional. They're the minimum scaffolding for any agent that runs for more than a session.</p>
+</div>
+<hr />
+<h2>Section 3 — The Three (or Four) Memory Types (≈5 pages)</h2>
+<p>The memory taxonomy borrowed from cognitive science (Tulving 1972) and adapted by Letta, Mem0, LangMem, and others. The three memory types every production agent eventually distinguishes:</p>
+<p><strong>Working memory</strong> — what's in the current context window right now. Cleared between sessions or compressed continuously. Analog: human short-term memory, RAM.</p>
+<p><strong>Episodic memory</strong> — specific past events. "On 2026-04-15, the user asked about refund policy and I gave them this answer." Used for: continuity, personalization, learning from past interactions. Analog: human autobiographical memory.</p>
+<p><strong>Semantic memory</strong> — facts and preferences. "User works at Acme Corp." "User prefers TypeScript over JavaScript." "Company policy is no refunds after 30 days." Used for: stable knowledge that should persist. Analog: human factual knowledge.</p>
+<p><strong>Procedural memory</strong> — <em>how</em> to do things. Not facts, but learned workflows. "When asked to debug Python imports, first check <code>__init__.py</code> files, then PYTHONPATH, then virtual env." Used for: skill accumulation. Analog: human motor/skill memory. Mem0 added this as a first-class type in v1.0.0; Letta uses core memory blocks for similar effect.</p>
+<p>A fourth type that's emerging:</p>
+<p><strong>Reflective memory</strong> — explicit lessons learned from successes and failures, separate from episodic. "Last time I tried this approach to refund handling, the customer escalated. Try X first." This shows up under various names (reflection memory, retrospective memory, experience memory) and is closely tied to Module 11.</p>
+<div class="brain">
+<p>Map each to write/select/compress/isolate from Section 2:
+- Working memory ↔ ?
+- Episodic ↔ ?
+- Semantic ↔ ?
+- Procedural ↔ ?</p>
+<p>(Working = whatever's currently in context, the substrate compress and isolate operate on. Episodic, semantic, procedural all live in <em>write</em>-stores and become <em>select</em> candidates. Different memory types are storage; the four strategies are operations.)</p>
+</div>
+<div class="nodumbq">
+<p><strong>Q: Do I need all three memory types from day one?</strong></p>
+<p>No. Most production agents start with semantic memory only ("remember user preferences") and add episodic later when they need continuity ("what did we discuss yesterday?"). Procedural memory matters most for agents that should learn workflows over time — coding agents, research agents, ops agents.</p>
+<p><strong>Q: How is episodic memory different from just keeping conversation history?</strong></p>
+<p>Conversation history is raw. Episodic memory is <em>consolidated</em> — extracted, summarized, indexed. The Feb 2026 paper "Episodic Memory is the Missing Piece for Long-Term LLM Agents" (arXiv:2502.06975) argues that consolidation — converting events into compact, reusable representations — is the key mechanism. Storing every message verbatim is hoarding; episodic memory is filing.</p>
+</div>
+<hr />
+<h2>Section 4 — Where Context Comes From: Source Mapping (≈4 pages)</h2>
+<p>Before you engineer context, know what's flowing into it. We map every source:</p>
+<p><strong>Static (rarely changes):</strong>
+- System prompt
+- Tool definitions
+- Behavioral guidance / persona</p>
+<p><strong>Per-task:</strong>
+- User's original query
+- Initial state passed in (user ID, session ID, etc.)
+- Pre-loaded reference material (documents the user attached)</p>
+<p><strong>Dynamic (changes every turn):</strong>
+- Previous assistant messages
+- Tool call inputs
+- Tool call results — often the largest source
+- Retrieved memories (from semantic/episodic stores)
+- Sub-agent return values</p>
+<p><strong>Injected:</strong>
+- Time-sensitive context (current date, user timezone)
+- Permission/role context
+- Recent activity context (last login, recent purchases)</p>
+<p>We build a context-source diagram for a representative agent and label each source with: typical token cost, frequency of change, criticality to the task. Then we go through and ask of each: write, select, compress, or isolate?</p>
+<pre><code>┌─────────── CONTEXT WINDOW (this turn) ──────────────┐
+│                                                       │
+│  System prompt                          400 tok       │
+│  Tool definitions (12 tools)          1,800 tok       │
+│  ─────                                                │
+│  User query                              50 tok       │
+│  ─────                                                │
+│  Turn 1 assistant + tool call           120 tok       │
+│  Turn 1 tool result (web_fetch)       4,200 tok ← compress?
+│  Turn 2 assistant + tool call            90 tok       │
+│  Turn 2 tool result (db query)        2,300 tok       │
+│  Turn 3 assistant + tool call            80 tok       │
+│  Turn 3 tool result (web_fetch)      18,500 tok ← compress!
+│  ...                                                  │
+│  Retrieved memories (5 facts)           400 tok       │
+│  ─────                                                │
+│  TOTAL                              ~30,000 tok       │
+└──────────────────────────────────────────────────────┘
+</code></pre>
+<div class="gotcha">
+<p>Tool results are almost always the dominant source after a few turns. They're also where most teams ignore context engineering — every other source gets attention; tool results just accumulate. The compression module (Module 8) targets this directly.</p>
+</div>
+<hr />
+<h2>Section 5 — Design Principles (≈4 pages)</h2>
+<p>Six principles to apply when designing an agent's context:</p>
+<p><strong>1. Treat context as a resource, not a free input.</strong> Every token has cost (real $) and benefit (relevance to task). Optimize the ratio.</p>
+<p><strong>2. Write before you need to.</strong> Persist facts to memory the moment they appear, not when context fills up. Late writes lose information.</p>
+<p><strong>3. Select on demand, not on speculation.</strong> Don't pre-fetch "everything that might be relevant." Let the agent fetch when it knows it needs it. Speculative loading is how naive RAG bloats context.</p>
+<p><strong>4. Compress lossy, keep originals lossless.</strong> Compressed context is what the agent sees. Original tool results, raw data, full conversations stay in your logs / memory store / scratchpad. You can always re-fetch; you can't undelete.</p>
+<p><strong>5. Isolate when ownership boundaries change.</strong> A sub-task that needs different tools, different persona, or runs in parallel — that's a candidate for isolation. Same task, same tools, same context — keep it in one agent.</p>
+<p><strong>6. Measure before optimizing.</strong> Most teams do context engineering by gut feel. The teams that ship instrument first: token count per source per turn, retrieval hit rates, post-compression task success.</p>
+<div class="brain">
+<p>"Compress lossy, keep originals lossless." Why is this principle non-obvious enough to call out?</p>
+<p>(Because most engineers' first instinct is to throw away the raw tool result once it's been summarized. Then debugging an agent that got the wrong answer becomes impossible — you can't see what the model saw before the summary. Keep originals in logs/storage; only show summaries in context.)</p>
+</div>
+<div class="pullquote">
+<p>Context isn't what you have. Context is what you choose, every turn, to put in front of the model.</p>
+</div>
+<hr />
+<h2>Section 6 — A Reference Architecture (≈5 pages)</h2>
+<p>We design the context-engineered agent we'll extend in Modules 8-9. The architecture has six layers:</p>
+<pre><code>            ┌──────────────────────────────────────┐
+            │       AGENT LOOP (Module 2)          │
+            └──────────┬───────────────────────────┘
+                       │ assembles each turn's context
+                       ▼
+            ┌──────────────────────────────────────┐
+            │      CONTEXT BUILDER (this module)   │
+            │  - merges static + dynamic sources   │
+            │  - applies retrieval                 │
+            │  - applies compression               │
+            │  - injects memory                    │
+            └──────────────────────────────────────┘
+                       │
+        ┌──────────────┼──────────────┬─────────────┐
+        ▼              ▼              ▼             ▼
+   ┌─────────┐   ┌──────────┐   ┌──────────┐  ┌──────────┐
+   │WORKING  │   │ EPISODIC │   │ SEMANTIC │  │PROCEDURAL│
+   │MEM (RAM)│   │  STORE   │   │  STORE   │  │  STORE   │
+   └─────────┘   └──────────┘   └──────────┘  └──────────┘
+                       │
+                       ▼
+            ┌──────────────────────────────────────┐
+            │   COMPRESSION ENGINE (Module 8)      │
+            └──────────────────────────────────────┘
+</code></pre>
+<p><strong>The Context Builder</strong> is the new component. Every turn it:</p>
+<ol>
+<li>Pulls static context (system prompt, tools)</li>
+<li>Pulls dynamic context (working memory / message history)</li>
+<li>Decides what to retrieve (select from memory stores)</li>
+<li>Decides what to compress (compression engine, Module 8)</li>
+<li>Decides what to write (extract facts/episodes, send to stores)</li>
+<li>Returns the assembled <code>messages</code> list to the agent loop</li>
+</ol>
+<pre><code class="language-python">class ContextBuilder:
+    def __init__(
+        self,
+        memory: MemorySystem,
+        compressor: Compressor,
+        budget: ContextBudget,  # token budget for this turn
+    ):
+        self.memory = memory
+        self.compressor = compressor
+        self.budget = budget
+
+    async def build(
+        self,
+        system: str,
+        tool_schemas: list[dict],
+        working_memory: list[dict],
+        user_id: str,
+        task_id: str,
+    ) -&gt; list[dict]:
+        # Always-include
+        context = []
+
+        # Step 1: select relevant memories
+        retrieved = await self.memory.retrieve(
+            query=self._derive_query(working_memory),
+            user_id=user_id,
+            task_id=task_id,
+            max_tokens=self.budget.memory_budget,
+        )
+        if retrieved:
+            context.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: self._format_memories(retrieved)})
+
+        # Step 2: compress old working memory if needed
+        compressed_working = await self.compressor.compress(
+            working_memory,
+            target_tokens=self.budget.working_budget,
+        )
+        context.extend(compressed_working)
+
+        # Step 3: extract anything worth writing to long-term memory
+        facts = await self.memory.extract_writeable(working_memory)
+        if facts:
+            await self.memory.write(facts, user_id=user_id, task_id=task_id)
+
+        return context
+</code></pre>
+<p>We'll fill in <code>MemorySystem</code> (Module 9) and <code>Compressor</code> (Module 8). For now: the agent loop calls <code>ContextBuilder.build()</code> instead of building messages itself.</p>
+<div class="code-exercise">
+<p><strong>Exercise 7.1 — Wire the Context Builder.</strong></p>
+<p>Take the hardened agent from Module 2. Replace the inline <code>messages</code> construction with calls to a <code>ContextBuilder</code>. For now, the builder is a passthrough — no compression, no memory. The point is to introduce the seam. Modules 8 and 9 fill it in.</p>
+</div>
+<hr />
+<h2>Section 7 — Anti-Patterns (≈3 pages)</h2>
+<p>Common ways context engineering goes wrong.</p>
+<p><strong>Speculative dumping.</strong> "Let me include everything that might be relevant." Reality: you've increased cost, reduced quality, and now have to debug why the model is paying attention to the wrong thing.</p>
+<p><strong>Over-summarization.</strong> Compressing every tool result to one sentence. The model loses the specifics it needs to answer follow-ups.</p>
+<p><strong>Memory-as-trash-can.</strong> Writing everything to long-term memory "just in case." Then retrieval surfaces irrelevant junk. Be selective at write time, not just at read time.</p>
+<p><strong>Isolation as silver bullet.</strong> Spawning sub-agents whenever context grows. Each sub-agent has its own startup cost, its own context, and you've now multiplied your token spend. Isolate when it makes the work simpler, not when context feels uncomfortable.</p>
+<p><strong>No instrumentation.</strong> "We do context engineering." But you can't show me a graph of token cost per source per turn. You're not engineering; you're hoping.</p>
+<p><strong>Format inconsistency.</strong> Memories formatted one way, tool results formatted another, system prompts a third. The model wastes effort orienting. Pick a format (markdown sections with clear headers usually wins), use it everywhere.</p>
+<div class="postmortem">
+<p><strong>The Sub-Agent Cascade That 10x'd the Bill</strong></p>
+<p>A team noticed their main agent's context was getting big. They added "isolate as much as possible" as a heuristic — every subtask spawned a sub-agent. Sub-agents spawned sub-sub-agents. By the time a single user query resolved, 17 agents had run. Bill quintupled. Latency tripled. Quality unchanged because the sub-agents weren't doing meaningfully isolated work — they were just smaller copies of the same agent fighting over the same context.</p>
+<p>Fix: rule that isolation must justify itself by either (a) parallelism (Module 3 sectioning) or (b) genuinely different tools/persona for the sub-task. Most "isolation" reverted to compression instead.</p>
+<p><strong>Lesson:</strong> isolation isn't free. It's a structural change with a structural cost.</p>
+</div>
+<hr />
+<h2>Section 8 — What's Next (≈1 page)</h2>
+<p>Module 8 builds the <strong>Compression Engine</strong>: anchored iterative summarization, ACON's failure-driven optimization, budget-aware compression, distilled compressors. Code for all four. Benchmarks on real workloads.</p>
+<p>Module 9 builds the <strong>Memory System</strong>: vector store for semantic, knowledge graphs for entity-heavy queries, episodic store with consolidation, procedural memory as agent-rewritable instructions. Mem0/Letta/Zep architectural comparison. Layered memory pattern.</p>
+<p>After Modules 8-9, your agent has full context engineering. By Module 10 it also handles hallucinations; by Module 12 it has guardrails for off-topic drift.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>2 No Dumb Questions (one in Section 1, one in Section 3)</li>
+<li>3 Brain Power prompts</li>
+<li>2 Production Postmortems (Slack bot drift, sub-agent cascade)</li>
+<li>1 Watch It! / Gotcha block</li>
+<li>1 Code Exercise (wire the Context Builder)</li>
+<li>2 Pullquotes</li>
+<li>1 architecture diagram</li>
+<li>1 context-source breakdown diagram</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam's agent works on simple queries. PM tries it on the company's actual support workload — multi-turn debugging sessions that span hours. The agent loses track of what was discussed three turns ago, retrieves wrong docs, and racks up $0.40 per turn after turn 10. Sam realizes prompt-tuning won't fix this. Sam builds a Context Builder by Section 6 and refactors the agent. Performance improves but real wins wait for Modules 8-9. Sam's arc this module: <strong>the bottleneck moved</strong>.</p>
+</div>
+<div class="page-budget">
+<p>S1 (From prompt to context eng): 3p
+S2 (Write/Select/Compress/Isolate): 5p
+S3 (Memory types): 5p
+S4 (Source mapping): 4p
+S5 (Design principles): 4p
+S6 (Reference architecture): 5p
+S7 (Anti-patterns): 3p
+S8 (Next): 1p
+Recurring elements: 6p
+TOTAL: ~36 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting:</strong></p>
+<ul>
+<li>LangChain / Lance Martin "Context Engineering for Agents" (June 2025) — primary source for write/select/compress/isolate framework</li>
+<li>"Episodic Memory is the Missing Piece for Long-Term LLM Agents" (arXiv:2502.06975, Feb 2026) — for the consolidation argument</li>
+<li>"Memory in the Age of AI Agents" survey (arXiv:2512.13564, Dec 2025) — current taxonomy and field state</li>
+<li>Mem0 v1.0.0 procedural memory release notes — for procedural-memory-as-first-class</li>
+<li>Letta documentation on tiered memory (core / archival / recall)</li>
+<li>Zep / Graphiti documentation for graph-based memory</li>
+<li>LangMem SDK release notes (early 2025)</li>
+<li>Anthropic / Claude context length pricing (verify $3/MTok for Sonnet 4.6 input, current model strings)</li>
+<li>"Context Rot" research — find the citation; this matters for the long-context-doesn't-solve-it argument</li>
+<li>IBM Zurich "Cognitive Tools Framework" — referenced; verify</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- Tulving 1972 memory taxonomy (semantic, episodic, procedural)
+- The general principle that context composition matters
+- Anti-patterns (speculative dumping, etc. — these are universal)</p>
+<p><strong>Cross-references:</strong>
+- Module 8 implements the compression engine
+- Module 9 implements the memory system
+- Module 11 (reflection) ties to reflective/retrospective memory
+- Module 14 (multi-agent) is where isolation becomes architectural</p>
+</div>
+<div class="bullet-points">
+<h3>Module 7 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>Context engineering is the discipline of composing what the model sees every turn — across many sources</li>
+<li>Write/select/compress/isolate is the canonical four-strategy framework</li>
+<li>Working, episodic, semantic, procedural — the four memory types every production agent eventually distinguishes</li>
+<li>Tool results dominate context after a few turns; they're where most teams ignore engineering</li>
+<li>Six design principles, including: compress lossy, keep originals lossless; measure before optimizing</li>
+<li>The Context Builder is a real component sitting between the agent loop and memory/compression</li>
+<li>Anti-patterns: speculative dumping, over-summarization, memory-as-trash-can, isolation cascade</li>
+<li>Bigger context windows raise the ceiling but don't change what's optimal — engineering still matters</li>
+</ul>
+</div>
+<hr style="border-top: 4px solid #c0392b; margin: 3em 0;">
+<h1>Module 8 Outline — Context Compression Algorithms</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 08 — OUTLINE</div>
+<div class="module-title">Context Compression Algorithms</div>
+<div class="subtitle">Four real algorithms, four working implementations,<br>real benchmarks. The thing that pays the rent.</div>
+<div class="pages">Target length: ~38 pages (algorithm-heavy + code-heavy)</div>
+</div>
+<h2>What this module is</h2>
+<p>Compression is the load-bearing technique in production agent systems. Claude Code triggers auto-compact at ~95% of the 200K window. OpenAI Codex runs server-side compaction after every turn. Cursor truncates old history. Every coding agent compresses; the methods differ.</p>
+<p>This module covers four production-relevant compression algorithms in code: <strong>anchored iterative summarization</strong>, <strong>ACON's failure-driven optimization</strong> (arXiv:2510.00615), <strong>budget-aware compression</strong>, and <strong>distilled compressors</strong> for cost. We benchmark all four against naive baselines (FIFO truncation, retrieval, LLMLingua) on a long-horizon agent task. We end by integrating the best-performing into the Module 7 Context Builder.</p>
+<p>By the end the reader can pick the right compression algorithm for their workload, implement it, measure it, and avoid the most common failure mode (compressing away the one fact the agent needed).</p>
+<div class="hook">
+<p>"Naive context compression is easy. Useful context compression is hard. The hard part isn't 'how do I shrink this' — it's 'how do I shrink this without losing the one fact the agent will need three turns from now that I have no way of predicting.'"</p>
+</div>
+<hr />
+<h2>Section 1 — The Compression Problem, Stated Precisely (≈3 pages)</h2>
+<p>What we're optimizing for. Inputs:
+- A growing message history (assistant turns + tool results)
+- A token budget (e.g., "context must stay under 50K")
+- The agent's task (which determines what's relevant)</p>
+<p>Output: a compressed message sequence that:
+1. Fits the budget
+2. Preserves task-critical information
+3. Doesn't break the model's reasoning</p>
+<p>The hard constraint is #2. You don't know what's task-critical until the agent needs it, three turns from now. Compression is gambling: you bet that the discarded info won't be needed.</p>
+<div class="pullquote">
+<p>Every compression decision is a bet. Good compression algorithms make better-calibrated bets, not lossless ones.</p>
+</div>
+<p><strong>Three signal types you can preserve:</strong></p>
+<ul>
+<li><strong>Factual</strong> — entities, numbers, IDs that must be exact. Hardest to compress safely.</li>
+<li><strong>Procedural</strong> — what was tried, what worked, what failed. Compresses well into action-outcome pairs.</li>
+<li><strong>Reasoning</strong> — why the agent made decisions. Often safe to drop after the decision was made.</li>
+</ul>
+<p>The ACON paper (Kang et al., Oct 2025) names five signal types worth preserving: factual history, action-outcome relationships, evolving environment states, success preconditions, future decision cues. Naive summarization tends to keep the first two and drop the last three — which is exactly why agents fail after compression.</p>
+<div class="nodumbq">
+<p><strong>Q: Can't I just use a longer-context model and skip compression?</strong></p>
+<p>You can — at the cost of money and quality. A 1M context Sonnet call costs ~$3 per turn on input tokens alone. Across a 30-turn task that's $90, before output. Compression buys you 50-80% reduction in those costs (per ACON's 26-54% peak token reduction, plus what you save on every subsequent turn). And research consistently shows long-context degradation — models reason more reliably on focused 30K than dumped 500K.</p>
+<p><strong>Q: Isn't this what providers do server-side already?</strong></p>
+<p>Some do. Anthropic supports prompt caching which helps on repeated context, but that's caching, not compression. OpenAI Codex does server-side compaction. But in agent code where you control the message history, you compress better than the provider can — because you know what's task-relevant.</p>
+</div>
+<hr />
+<h2>Section 2 — Naive Baselines and Their Failure Modes (≈4 pages)</h2>
+<p>Before the good algorithms, the bad ones — so we know what we're improving on. ACON benchmarks against these; we'll do the same.</p>
+<p><strong>FIFO truncation.</strong> Drop oldest turns until you fit the budget.</p>
+<pre><code class="language-python">def compress_fifo(messages: list[dict], target_tokens: int) -&gt; list[dict]:
+    while count_tokens(messages) &gt; target_tokens and len(messages) &gt; 1:
+        messages.pop(0)  # drop oldest non-system message
+    return messages
+</code></pre>
+<p>Failure mode: the original task description and any early-established facts (user identity, key constraints) get dropped first. The agent forgets what it's doing.</p>
+<p><strong>Sliding window with system pin.</strong> Pin the system prompt and original user query; FIFO the rest.</p>
+<pre><code class="language-python">def compress_window(messages: list[dict], target_tokens: int, pin_first_n: int = 2) -&gt; list[dict]:
+    pinned = messages[:pin_first_n]
+    rest = messages[pin_first_n:]
+    while count_tokens(pinned + rest) &gt; target_tokens and len(rest) &gt; 1:
+        rest.pop(0)
+    return pinned + rest
+</code></pre>
+<p>Failure mode: middle-turn facts get dropped. If turn 8 established something important and you're at turn 30, that's gone.</p>
+<p><strong>Retrieval-based selection.</strong> Embed past turns; retrieve the top-k most similar to current state.</p>
+<pre><code class="language-python">def compress_retrieval(messages, current_query, target_tokens, k=10):
+    candidates = messages[1:-1]  # everything but first and last
+    embeddings = embed_all(candidates)
+    query_emb = embed(current_query)
+    ranked = rank_by_similarity(candidates, embeddings, query_emb)
+    selected = top_k_within_budget(ranked, k=k, budget=target_tokens)
+    return [messages[0]] + selected + [messages[-1]]
+</code></pre>
+<p>Failure mode: agent state often doesn't look like the answer's content. "I need to confirm the order" doesn't retrieve "confirmed order #12345 yesterday."</p>
+<p><strong>LLMLingua-style token pruning.</strong> Encoder-only LM scores each token; drop low-importance tokens.</p>
+<p>Failure mode: works well for static prompts, breaks for agent contexts where exact tokens (function call args, tool result values) matter and "low importance" tokens are often the critical ones.</p>
+<div class="postmortem">
+<p><strong>The Agent That Compressed Away Its Customer ID</strong></p>
+<p>A team built FIFO compression into their support agent. Worked fine in tests. In production, by turn 25 of a long debugging session, the agent forgot which customer it was helping. It started returning answers about the wrong account. Customer was furious. Compliance flagged it.</p>
+<p>Cause: the customer ID was established in turn 1's tool result ("identified user as alice@example.com, account_id=12345"). FIFO dropped turn 1 around turn 20. Nothing in subsequent turns repeated it. By turn 25, the agent's context started in the middle of a debugging conversation with no anchor.</p>
+<p>Fix: switched to compression that pins facts (Section 3) and writes IDs to working memory (Module 7) so they survive compression.</p>
+<p><strong>Lesson:</strong> FIFO without semantic awareness is dangerous. The "old" turns often contain the anchors.</p>
+</div>
+<hr />
+<h2>Section 3 — Anchored Iterative Summarization (≈5 pages)</h2>
+<p>The first real compression algorithm. The pattern most production systems implement — Claude Code's auto-compact, OpenAI Codex's compaction, and similar — is some variant of this.</p>
+<p><strong>The idea:</strong> maintain a running summary of "everything before turn N" alongside the most recent K turns verbatim. As the budget tightens, increase the summary's coverage; shrink the verbatim window.</p>
+<p><strong>The "anchored" variant:</strong> explicitly extract and preserve a set of anchor facts (entities, IDs, constraints, decisions made) that always survive compression, separate from the prose summary.</p>
+<pre><code class="language-python">@dataclass
+class CompressedHistory:
+    anchors: dict[str, str]   # stable facts: user_id, task_id, key constraints
+    summary: str              # prose summary of compressed turns
+    recent: list[dict]        # K most recent turns verbatim
+
+class AnchoredSummarizer:
+    def __init__(self, llm, recent_window=4, summary_target=2000):
+        self.llm = llm
+        self.recent_window = recent_window
+        self.summary_target = summary_target
+
+    async def compress(self, messages: list[dict], target_tokens: int) -&gt; CompressedHistory:
+        # Always keep last N turns verbatim
+        recent = messages[-self.recent_window:]
+        to_summarize = messages[:-self.recent_window]
+
+        # Extract anchors (entities, IDs, decisions)
+        anchors = await self._extract_anchors(to_summarize)
+
+        # Generate prose summary
+        summary = await self._summarize(to_summarize, target=self.summary_target)
+
+        return CompressedHistory(anchors=anchors, summary=summary, recent=recent)
+
+    async def _extract_anchors(self, messages):
+        prompt = ANCHOR_EXTRACTION_PROMPT.format(history=format_messages(messages))
+        resp = await self.llm.complete(prompt, max_tokens=500)
+        return parse_anchors(resp)  # returns dict like {&quot;user_id&quot;: &quot;12345&quot;, &quot;task&quot;: &quot;...&quot;}
+
+    async def _summarize(self, messages, target):
+        prompt = SUMMARY_PROMPT.format(
+            history=format_messages(messages),
+            target_tokens=target,
+        )
+        return await self.llm.complete(prompt, max_tokens=target)
+
+    def to_messages(self, compressed: CompressedHistory) -&gt; list[dict]:
+        anchor_block = &quot;\n&quot;.join(f&quot;- {k}: {v}&quot; for k, v in compressed.anchors.items())
+        return [
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: (
+                f&quot;&lt;context&gt;\n&quot;
+                f&quot;&lt;anchors&gt;\n{anchor_block}\n&lt;/anchors&gt;\n&quot;
+                f&quot;&lt;summary&gt;\n{compressed.summary}\n&lt;/summary&gt;\n&quot;
+                f&quot;&lt;/context&gt;&quot;
+            )},
+            *compressed.recent,
+        ]
+</code></pre>
+<p>We walk through the prompts. Anchor extraction is a structured-output call (use tool-use for reliability — Module 4's structured-output pattern). Summary generation is straightforward but the prompt matters a lot — we'll show good vs bad summary prompts.</p>
+<p><strong>The iterative part:</strong> when the compressed result still doesn't fit, summarize again with a tighter target. Re-summarization is lossy — be careful — but sometimes necessary.</p>
+<div class="code-exercise">
+<p><strong>Exercise 8.1 — Implement anchored summarization.</strong></p>
+<p>Build the <code>AnchoredSummarizer</code> class. Test it on a provided 30-turn agent transcript. Verify: anchors preserved across compressions, recent window intact, summary fits target. Compare resulting context size vs naive FIFO.</p>
+</div>
+<div class="gotcha">
+<p>The recent window matters more than people realize. Anthropic and OpenAI both default to keeping ~3-5 most recent turns verbatim. Drop below that and the agent loses local coherence (forgets what it just did). Go above 8-10 and you've barely compressed.</p>
+</div>
+<hr />
+<h2>Section 4 — ACON: Failure-Driven Compression (≈6 pages)</h2>
+<p>The Oct 2025 paper (Kang et al., arXiv:2510.00615) introduced <strong>Agent Context Optimization</strong> — a meta-algorithm that <em>learns</em> good compression by analyzing failures. ACON is the most important compression-research result of 2025.</p>
+<p><strong>The insight:</strong> compression prompts can be optimized in natural-language space (no fine-tuning) by:</p>
+<ol>
+<li>Run a task with full (uncompressed) context. Record success/failure.</li>
+<li>Run the same task with current compression. Record success/failure.</li>
+<li>Find tasks where full succeeded but compressed failed.</li>
+<li>For each failure, ask a capable LLM: "what information did the compression drop that caused this failure?"</li>
+<li>Update the compression prompt to preserve that class of information.</li>
+<li>Re-run. The compression prompt now generates better summaries.</li>
+</ol>
+<p>This is gradient-free (no model training), works with any API-accessible model, and ACON reports 26-54% peak token reduction while preserving task performance — across AppWorld, OfficeBench, and Multi-objective QA.</p>
+<pre><code class="language-python">class ACON:
+    def __init__(self, base_compressor: Compressor, judge_llm, optimizer_llm):
+        self.compressor = base_compressor
+        self.judge = judge_llm
+        self.optimizer = optimizer_llm
+        self.compression_prompt = INITIAL_COMPRESSION_PROMPT
+
+    async def optimize(self, train_tasks: list[Task], rounds: int = 5):
+        for round_i in range(rounds):
+            failures = []
+            for task in train_tasks:
+                # Run with full context (ground truth)
+                full_result = await run_agent(task, compressor=NoOp())
+                # Run with current compression
+                comp_result = await run_agent(task, compressor=self._with_prompt())
+
+                if full_result.succeeded and not comp_result.succeeded:
+                    failures.append((task, full_result, comp_result))
+
+            if not failures:
+                break
+
+            # Analyze failures
+            analysis = await self._analyze_failures(failures)
+
+            # Update prompt
+            self.compression_prompt = await self._update_prompt(
+                old_prompt=self.compression_prompt,
+                analysis=analysis,
+            )
+
+    async def _analyze_failures(self, failures):
+        prompts = []
+        for task, full, comp in failures:
+            prompts.append(FAILURE_ANALYSIS_PROMPT.format(
+                task=task.description,
+                full_trajectory=full.trajectory,
+                comp_trajectory=comp.trajectory,
+                comp_compressed=comp.compressed_history,
+            ))
+        analyses = await asyncio.gather(*[self.judge.complete(p) for p in prompts])
+        return aggregate(analyses)
+
+    async def _update_prompt(self, old_prompt, analysis):
+        update_prompt = PROMPT_UPDATE_TEMPLATE.format(
+            old=old_prompt,
+            analysis=analysis,
+        )
+        return await self.optimizer.complete(update_prompt)
+</code></pre>
+<p>We walk through the actual ACON paper's prompts (or paraphrase if licensing constraints — verify when drafting). Key design decisions:
+- Use a strong model as judge and optimizer (Opus / GPT-5)
+- Train on ~50-100 representative tasks
+- Optimize for 3-5 rounds; gains saturate
+- Distill the optimized compressor into a smaller model for deployment (preserves 95% of accuracy at lower per-call cost)</p>
+<p><strong>Why this matters beyond the numbers:</strong> ACON proves that compression is a <em>learnable</em> problem in natural-language space. You don't need a research team or GPUs. You need an eval set and an optimizer model.</p>
+<div class="brain">
+<p>ACON requires running every training task twice (with and without compression). For 100 training tasks averaging $0.50 each, that's $100 to optimize the prompt. Worth it?</p>
+<p>(Almost always. The optimized prompt then runs on every production task, indefinitely. If you save $0.05 per production task and you have 10K+ tasks, the math is overwhelming. ACON's economics favor anyone with enough volume to need compression in the first place.)</p>
+</div>
+<div class="code-exercise">
+<p><strong>Exercise 8.2 — Run ACON on your own task set.</strong></p>
+<p>Implement the ACON optimization loop. Use a small synthetic eval set (10 tasks we provide). Optimize the compression prompt for 3 rounds. Compare task success rate before vs after.</p>
+<p>Realistic expectation: with a small eval set you may not see big gains, but you'll understand the loop. The point is the <em>mechanism</em> — you can scale it later with real production tasks.</p>
+</div>
+<hr />
+<h2>Section 5 — Budget-Aware Compression (≈4 pages)</h2>
+<p>The newer wrinkle (ContextBudget, 2025/2026 research). Most compression methods are <em>budget-free</em> — they compress to a fixed target. But agent context budgets vary across the trajectory:</p>
+<ul>
+<li>Early turns: lots of headroom; minimal compression needed</li>
+<li>Middle turns: tightening; compress historically</li>
+<li>Late turns: tight; aggressive compression of everything pre-recent</li>
+</ul>
+<p>Budget-aware compression conditions every compression decision on remaining capacity. Reinforcement learning (GRPO-extension) can train this end-to-end, but a simpler rule-based version captures most of the win:</p>
+<pre><code class="language-python">class BudgetAwareCompressor:
+    def __init__(self, base: AnchoredSummarizer, total_budget: int):
+        self.base = base
+        self.total_budget = total_budget
+
+    async def compress(self, messages: list[dict], turn_idx: int) -&gt; list[dict]:
+        current_size = count_tokens(messages)
+        headroom = self.total_budget - current_size
+
+        if headroom &gt; self.total_budget * 0.5:
+            # Plenty of room — no compression
+            return messages
+        elif headroom &gt; self.total_budget * 0.2:
+            # Moderate — compress old turns, keep generous recent window
+            return await self.base.compress(messages, recent_window=8)
+        else:
+            # Tight — aggressive compression
+            return await self.base.compress(messages, recent_window=3, summary_target=1000)
+</code></pre>
+<p>We discuss the more sophisticated RL-trained version, where the agent itself learns <em>when</em> to compress and <em>what</em> to preserve given remaining budget. This is research-frontier (Hu et al. 2026); reader is unlikely to deploy it but should know it exists.</p>
+<div class="nodumbq">
+<p><strong>Q: Why isn't this just "compress when context is full"?</strong></p>
+<p>Because by the time context is full, you've already paid for all those tokens this turn. Budget-aware compression looks ahead: how many more turns might this task need? At current rate of growth, when will I run out? Compress proactively to leave room for the next 3 turns of expected growth, not reactively after every turn.</p>
+</div>
+<hr />
+<h2>Section 6 — Distilled Compressors (≈3 pages)</h2>
+<p>Running compression with a strong LLM is expensive. ACON's distillation contribution: take an optimized strong-LLM compressor, generate (input, output) training pairs, fine-tune a small model on them. The smaller model preserves 95%+ of the strong model's compression quality at a fraction of the cost.</p>
+<pre><code class="language-python"># Conceptual distillation pipeline
+def distill_compressor(strong_model_compressor, training_data):
+    pairs = []
+    for messages in training_data:
+        compressed = strong_model_compressor(messages)
+        pairs.append({&quot;input&quot;: messages, &quot;output&quot;: compressed})
+
+    # Fine-tune a small model (Haiku-class, or even open-source 3B-7B) on pairs
+    fine_tuned = fine_tune_model(base=&quot;haiku-class&quot;, data=pairs)
+    return fine_tuned
+</code></pre>
+<p>When this matters: high-volume agents where compression overhead is itself non-trivial. If your agent runs 10K times/day and each compression costs $0.01 with Sonnet, that's $100/day in compression alone. Distill to Haiku-class (or a small open-source model you self-host), and that drops 5-10×.</p>
+<p>We don't actually fine-tune in the exercise (out of scope), but we discuss the architecture and when to invest in it.</p>
+<div class="pullquote">
+<p>ACON shows you can teach a small model to compress as well as a big model. This isn't a magic trick — it's the same teacher-student distillation that's worked across ML for a decade. It just took until 2025 to apply it to agent compression.</p>
+</div>
+<hr />
+<h2>Section 7 — Benchmark: All Methods on a Real Task (≈5 pages)</h2>
+<p>The payoff section. We define a representative long-horizon agent task and benchmark every method. (Numbers are illustrative — we re-run with current models and current pricing when drafting.)</p>
+<p><strong>Task:</strong> a research agent answering 20 questions that each require 15-25 tool calls (search, fetch, read, synthesize). Each question's answer must be verifiable against a known correct answer.</p>
+<p><strong>Methods compared:</strong>
+- No compression (baseline)
+- FIFO truncation
+- Sliding window with system pin
+- Retrieval-based
+- LLMLingua-style token pruning
+- Anchored iterative summarization (Section 3)
+- ACON-optimized summarization (Section 4)
+- Budget-aware (Section 5)</p>
+<p><strong>Metrics:</strong>
+- Average peak tokens per task
+- Average task cost
+- Task success rate (vs verified correct answers)
+- p95 latency per turn
+- Number of tasks where critical info was lost</p>
+<p>Sample expected results (illustrative):</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Peak tokens</th>
+<th>Cost / task</th>
+<th>Success</th>
+<th>p95 latency</th>
+<th>Info loss</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No compression</td>
+<td>142K</td>
+<td>$1.42</td>
+<td>87%</td>
+<td>6.2s</td>
+<td>0%</td>
+</tr>
+<tr>
+<td>FIFO</td>
+<td>50K</td>
+<td>$0.31</td>
+<td>53%</td>
+<td>4.1s</td>
+<td>38%</td>
+</tr>
+<tr>
+<td>Sliding window</td>
+<td>50K</td>
+<td>$0.32</td>
+<td>61%</td>
+<td>4.2s</td>
+<td>31%</td>
+</tr>
+<tr>
+<td>Retrieval</td>
+<td>50K</td>
+<td>$0.34</td>
+<td>64%</td>
+<td>4.4s</td>
+<td>27%</td>
+</tr>
+<tr>
+<td>LLMLingua</td>
+<td>70K</td>
+<td>$0.51</td>
+<td>68%</td>
+<td>5.0s</td>
+<td>22%</td>
+</tr>
+<tr>
+<td>Anchored summarization</td>
+<td>55K</td>
+<td>$0.42</td>
+<td>81%</td>
+<td>4.7s</td>
+<td>9%</td>
+</tr>
+<tr>
+<td>ACON-optimized</td>
+<td>48K</td>
+<td>$0.39</td>
+<td>86%</td>
+<td>4.6s</td>
+<td>4%</td>
+</tr>
+<tr>
+<td>Budget-aware</td>
+<td>52K</td>
+<td>$0.41</td>
+<td>85%</td>
+<td>4.5s</td>
+<td>5%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The headline:</strong> ACON-optimized summarization recovers ~99% of no-compression task success at ~27% of the cost. That's the math that makes compression an unambiguous win when implemented well.</p>
+<p><strong>The footnote:</strong> every method has tasks where it fails. The right choice depends on your workload — read failure modes, not just averages.</p>
+<div class="brain">
+<p>Look at the table. The naive baselines (FIFO, sliding window) are 50-65% success. The good algorithms (anchored, ACON, budget-aware) are 81-86%. Why such a gap?</p>
+<p>(Because the naive methods drop information without considering relevance. The good methods preserve task-critical signals (anchors, action-outcome pairs, success preconditions) explicitly. The 30+ point success gap is the entire reason this module exists.)</p>
+</div>
+<hr />
+<h2>Section 8 — Choosing a Method (≈3 pages)</h2>
+<p>Decision framework. Match algorithm to workload.</p>
+<p><strong>Use anchored iterative summarization when:</strong>
+- You have moderate volume (100s-1000s of tasks/day)
+- Tasks have clear "anchor" facts (IDs, constraints, decisions)
+- You don't want to invest in eval infrastructure yet
+- Default starting point for most teams</p>
+<p><strong>Use ACON-optimized when:</strong>
+- You have an eval set (or can build one)
+- Volume justifies the upfront optimization cost
+- Failure modes from generic summarization are biting you
+- You want measurable wins beyond default summarization</p>
+<p><strong>Use budget-aware when:</strong>
+- Context budgets vary wildly across tasks
+- Some tasks are short (no compression needed); others very long
+- You're already running anchored or ACON; this is an upgrade</p>
+<p><strong>Use distilled compressors when:</strong>
+- High volume (10K+ tasks/day)
+- Compression cost itself is non-trivial
+- You have ML infrastructure for fine-tuning</p>
+<p><strong>Use naive baselines when:</strong>
+- Prototyping
+- Workload is so simple you genuinely don't need compression yet
+- You want a known-bad baseline to measure against</p>
+<div class="gotcha">
+<p>Don't optimize compression in isolation. The right metric isn't "smallest context" — it's "task success per dollar." A method that gets you to 30K tokens but tanks success isn't winning. Always benchmark on the actual task, not just on token count.</p>
+</div>
+<hr />
+<h2>Section 9 — Integrating With the Context Builder (≈3 pages)</h2>
+<p>We wire the compressor into the Module 7 Context Builder. The builder now calls <code>Compressor.compress()</code> with the appropriate budget, and the agent loop is unchanged from Module 2 — all the complexity hides in the builder.</p>
+<pre><code class="language-python">class ContextBuilder:
+    def __init__(self, memory, compressor: Compressor, budget):
+        self.memory = memory
+        self.compressor = compressor
+        self.budget = budget
+
+    async def build(self, system, tools, working_memory, ...):
+        # Compress working memory if needed
+        if count_tokens(working_memory) &gt; self.budget.working_target:
+            working_memory = await self.compressor.compress(
+                working_memory,
+                target_tokens=self.budget.working_target,
+            )
+
+        # Retrieve memory (Module 9 fills this)
+        retrieved = await self.memory.retrieve(...)
+
+        return assemble_messages(system, tools, retrieved, working_memory)
+</code></pre>
+<p>We swap compressor implementations to compare. Same agent code; different <code>Compressor</code> instance; different cost-quality profile.</p>
+<div class="code-exercise">
+<p><strong>Exercise 8.3 — Wire and benchmark.</strong></p>
+<p>Take the Context Builder from Module 7. Plug in three compressors: <code>FIFOCompressor</code>, <code>AnchoredSummarizer</code>, and <code>ACONCompressor</code> (using a simple synthetic optimization). Run the same set of agent tasks under each. Generate a results table. Decide which to use for production.</p>
+</div>
+<hr />
+<h2>Section 10 — What's Next (≈1 page)</h2>
+<p>Module 9 builds the <strong>Memory System</strong> — the storage layer that compression relies on. Once compression discards old turns, the facts in those turns need somewhere to live. That's memory.</p>
+<p>Module 10 covers hallucination — relevant here because aggressive compression can introduce hallucinations (the model invents details about what was compressed away).</p>
+<p>By Module 12 (guardrails) we'll add output checks that validate compressed-context outputs against original facts.</p>
+<p>The capstone (Module 18) uses ACON-optimized compression in the production agent.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>2 No Dumb Questions</li>
+<li>2 Brain Power prompts</li>
+<li>1 Production Postmortem (compressed-away customer ID)</li>
+<li>2 Watch It! / Gotcha blocks</li>
+<li>3 Code Exercises (anchored, ACON, integrated benchmark)</li>
+<li>2 Pullquotes</li>
+<li>1 benchmark results table</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam's agent now has the Context Builder from Module 7 — but it's a passthrough. Long tasks are still expensive and slow. Sam ships FIFO compression first ("seemed simple"), then loses a customer ID and gets paged at 2am (the postmortem in Section 2). Sam then implements anchored summarization (much better), reads the ACON paper (Section 4), and runs the optimization loop on a small eval set. By the end of Section 9, Sam has a Compressor that's saving 70% of token cost at 99% of original task success. Sam's arc this module: <strong>the right algorithm pays for the engineering time it took to find it</strong>.</p>
+</div>
+<div class="page-budget">
+<p>S1 (Problem stated): 3p
+S2 (Naive baselines): 4p
+S3 (Anchored summarization): 5p
+S4 (ACON): 6p
+S5 (Budget-aware): 4p
+S6 (Distilled compressors): 3p
+S7 (Benchmark): 5p
+S8 (Choosing method): 3p
+S9 (Integration): 3p
+S10 (Next): 1p
+TOTAL: ~37 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting (heavy verification — research-frontier):</strong></p>
+<ul>
+<li>ACON paper (Kang et al., arXiv:2510.00615, v2 Oct 17 2025) — primary source, all numbers</li>
+<li>ACON's exact baselines (FIFO, Retrieval, LLMLingua, naive prompting) and their reported scores</li>
+<li>ContextBudget / Budget-Aware Context Management (Hu et al., 2026) — for Section 5</li>
+<li>LLMLingua paper for the token-pruning baseline characterization</li>
+<li>Claude Code's auto-compact behavior (95% threshold, was 77-78% mid-2025)</li>
+<li>OpenAI Codex server-side compaction documentation</li>
+<li>Cursor's history truncation approach</li>
+<li>Morph FlashCompact 2026 comparison piece — for the "every coding agent compresses" framing</li>
+<li>Factory.ai's 36K-message benchmark</li>
+<li>Current Anthropic Sonnet 4.6 / Opus 4.7 input pricing for cost calculations</li>
+<li>Tiktoken or equivalent tokenizer for <code>count_tokens()</code> helper</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- The general compression problem statement
+- The five signal types worth preserving (factual, action-outcome, environment, preconditions, decision cues — from ACON)
+- Distillation as a general technique
+- Decision frameworks for picking algorithms</p>
+<p><strong>Open question for drafting:</strong>
+- ACON's prompts: paraphrase from the paper or get permission to reproduce verbatim? Lean toward paraphrase + cite.
+- Budget-aware section: cite the GRPO-extension paper or just describe the approach? Probably describe + cite.</p>
+<p><strong>Cross-references:</strong>
+- Module 7 introduces compression as one of four strategies; this module is the algorithm-deep version
+- Module 9 builds the memory layer that compression discards into
+- Module 10 (hallucination) covers compressed-context hallucination
+- Module 17 (production) covers monitoring compression quality drift</p>
+</div>
+<div class="bullet-points">
+<h3>Module 8 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>Compression is a bet on what the agent won't need; good algorithms make better-calibrated bets</li>
+<li>ACON identifies five signal types worth preserving: factual, action-outcome, environment state, preconditions, decision cues</li>
+<li>Naive baselines (FIFO, sliding window, retrieval, LLMLingua) lose 30-50% task success — they drop the wrong things</li>
+<li>Anchored iterative summarization is the production default; pin entities/IDs/decisions, prose-summarize the rest</li>
+<li>ACON optimizes compression prompts in natural-language space using failure analysis — gradient-free, strong gains</li>
+<li>Budget-aware compression conditions decisions on remaining capacity; works with any base method</li>
+<li>Distilled compressors run a fine-tuned small model with ~95% of strong-model compression quality at lower cost</li>
+<li>Benchmark results: ACON-optimized recovers ~99% no-compression task success at ~27% the cost</li>
+</ul>
+</div>
+<hr style="border-top: 4px solid #c0392b; margin: 3em 0;">
+<h1>Module 9 Outline — Memory Systems and Context Graphs</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 09 — OUTLINE</div>
+<div class="module-title">Memory Systems and Context Graphs</div>
+<div class="subtitle">Compression decides what to forget.<br>Memory decides what to remember — and how to find it again.</div>
+<div class="pages">Target length: ~38 pages (architecture-heavy + code-heavy)</div>
+</div>
+<h2>What this module is</h2>
+<p>Compression (Module 8) discards information from the working window. Memory is what catches it. Without memory, an agent that compresses is just throwing facts away faster.</p>
+<p>This module builds a layered memory system from scratch and compares it to the production frameworks engineers actually use: <strong>Mem0</strong> (hybrid vector + graph, open-source), <strong>Letta / MemGPT</strong> (tiered memory inspired by OS virtual memory), <strong>Zep / Graphiti</strong> (temporal knowledge graphs), <strong>LangMem</strong> (LangGraph-integrated, three memory types). We cover the surprising 2026 finding that a plain filesystem (CLAUDE.md style) hits 74% on memory benchmarks, beating many vector-store libraries.</p>
+<p>By the end the reader can: implement working/semantic/episodic/procedural memory in code, decide vector vs graph vs filesystem for their workload, integrate a memory system into the Module 7-8 Context Builder, and avoid the most common failure mode (memory bloat — writing too much, retrieving too much, drowning the agent).</p>
+<div class="hook">
+<p>"Your agent forgets everything between sessions. The user is annoyed. You add a 'memory.' Now your agent remembers everything. The user's previous angry message comes back to haunt every conversation. You added storage. You didn't add memory."</p>
+</div>
+<hr />
+<h2>Section 1 — What Memory Actually Means for Agents (≈3 pages)</h2>
+<p>Memory is misnamed. It's not "the agent stores things and remembers them later." It's a system of:</p>
+<ul>
+<li><strong>Capture</strong> — what gets recorded? (The opposite of compression's "what gets discarded.")</li>
+<li><strong>Storage</strong> — where does it live? (Vector store? Graph? Plain files?)</li>
+<li><strong>Indexing</strong> — how is it organized for retrieval?</li>
+<li><strong>Retrieval</strong> — given the current context, what's relevant?</li>
+<li><strong>Consolidation</strong> — when does raw episodic data become consolidated semantic knowledge?</li>
+<li><strong>Forgetting</strong> — when does old information get pruned?</li>
+</ul>
+<p>A "memory system" is all six. Most teams build the first three and discover the agent's quality degrades anyway, because retrieval and consolidation are where the real engineering lives.</p>
+<div class="pullquote">
+<p>A memory system that stores everything and retrieves naively is worse than no memory. It pollutes context with noise that distracts the agent and costs you tokens.</p>
+</div>
+<div class="nodumbq">
+<p><strong>Q: Isn't this just RAG with extra steps?</strong></p>
+<p>RAG (retrieval-augmented generation) is one technique inside memory. RAG was designed for: take a user question, retrieve relevant documents, generate an answer. Agent memory is broader: retrieve relevant past interactions, retrieve learned facts about the user, retrieve procedural knowledge about how to handle this kind of task, plus retrieve documents. RAG is the document-retrieval slice of agent memory.</p>
+<p><strong>Q: Why don't I just stuff everything into a long context window?</strong></p>
+<p>Three reasons (also covered in Module 7): cost, latency, quality degradation. Plus a fourth specific to memory: across sessions, "everything" grows unbounded. There is no context window size that holds a year of conversation history times millions of users. You always need an external store; the question is just how good the retrieval is.</p>
+</div>
+<hr />
+<h2>Section 2 — The Three (Plus One) Memory Types Revisited (≈4 pages)</h2>
+<p>Module 7 introduced these conceptually. Now we build them.</p>
+<p><strong>Working memory</strong> — the current context window. Already covered (Modules 7-8). Not a separate store; it's the substrate the others feed into.</p>
+<p><strong>Semantic memory</strong> — facts and preferences. Long-lived, low write rate, high read rate.</p>
+<pre><code class="language-python">class SemanticMemory:
+    def __init__(self, store: VectorStore):
+        self.store = store
+
+    async def write_fact(self, user_id: str, fact: str, source: str, ttl: int | None = None):
+        embedding = await embed(fact)
+        await self.store.upsert(
+            id=f&quot;sem:{user_id}:{hash(fact)}&quot;,
+            vector=embedding,
+            metadata={&quot;user_id&quot;: user_id, &quot;fact&quot;: fact, &quot;source&quot;: source, &quot;ttl&quot;: ttl, &quot;ts&quot;: now()},
+        )
+
+    async def retrieve(self, user_id: str, query: str, k: int = 5) -&gt; list[Fact]:
+        query_emb = await embed(query)
+        results = await self.store.search(
+            vector=query_emb,
+            filter={&quot;user_id&quot;: user_id},
+            k=k,
+        )
+        return [Fact(**r.metadata) for r in results if not self._expired(r.metadata)]
+</code></pre>
+<p>What gets stored: "User prefers TypeScript." "User's company uses PostgreSQL 14." "User has admin access to repo X." Mostly extracted from conversations by an LLM extractor (we cover this in Section 4).</p>
+<p><strong>Episodic memory</strong> — specific past events. Higher write rate than semantic, queries often involve time and entities.</p>
+<pre><code class="language-python">class EpisodicMemory:
+    def __init__(self, store: VectorStore, time_index: TimeIndex):
+        self.store = store
+        self.time_index = time_index
+
+    async def record_episode(self, user_id: str, event: Episode):
+        # event has: timestamp, summary, entities involved, outcome
+        embedding = await embed(event.summary)
+        await self.store.upsert(
+            id=f&quot;ep:{user_id}:{event.id}&quot;,
+            vector=embedding,
+            metadata=event.dict(),
+        )
+        await self.time_index.add(user_id, event.timestamp, event.id)
+
+    async def retrieve_by_query(self, user_id, query, k=5):
+        # semantic similarity
+        ...
+
+    async def retrieve_by_time(self, user_id, start, end, limit=20):
+        # time-window query
+        ...
+
+    async def retrieve_by_entity(self, user_id, entity, k=5):
+        # entity-mention search
+        ...
+</code></pre>
+<p>The Letta paper-equivalent insight: episodic memory needs <em>three</em> retrieval modes — semantic (vector), temporal (time index), and entity (graph or inverted index). Naive vector-only retrieval misses the queries users actually ask ("what did I ask about last Thursday?").</p>
+<p><strong>Procedural memory</strong> — how to do things. Lowest write rate, highest stability, often hand-curated and machine-augmented.</p>
+<pre><code class="language-python">class ProceduralMemory:
+    &quot;&quot;&quot;Learned workflows and tool-use patterns.&quot;&quot;&quot;
+
+    def __init__(self, store: KeyValueStore):
+        self.store = store
+
+    async def write_skill(self, skill: Skill):
+        # skill has: trigger pattern, instructions, examples, success rate
+        await self.store.put(f&quot;proc:{skill.name}&quot;, skill.dict())
+
+    async def retrieve_skills_for(self, situation: str, k: int = 3) -&gt; list[Skill]:
+        # match situation against trigger patterns
+        ...
+</code></pre>
+<p>Procedural memory often manifests as agent-rewritable system prompts (LangMem's pattern: agents update their own instructions based on outcomes). Or as a library of skill templates the agent can pull in (Letta's core memory blocks; the Anthropic Skills convention).</p>
+<p><strong>Reflective memory</strong> — explicit lessons. Discussed in Module 7 as emerging; covered in depth in Module 11 (reflection). Lives alongside episodic but indexed differently.</p>
+<div class="brain">
+<p>Look at the four memory types. Which has the highest read-write ratio? Which is most expensive to query? Which would you cache aggressively?</p>
+<p>(Procedural: written rarely, read every turn — cache it in the agent's process. Episodic: written every turn, read selectively — needs good indexing. Semantic: written occasionally, read often — vector store sweet spot. Reflective: somewhere between procedural and episodic.)</p>
+</div>
+<hr />
+<h2>Section 3 — Storage Backends: Vector, Graph, Filesystem (≈5 pages)</h2>
+<p>The substrate matters. Three backends dominate.</p>
+<p><strong>Vector stores.</strong> Pinecone, Weaviate, Qdrant, ChromaDB, Postgres+pgvector, Mem0's default. Embeddings + similarity search. Sweet spot: semantic similarity queries on unstructured text.</p>
+<p>Strengths: fast similarity at scale; zero-schema setup; works with any text.</p>
+<p>Weaknesses: no native temporal queries; no relational reasoning; embedding drift over time; can return semantically-similar-but-wrong answers (hallucination via retrieval).</p>
+<p><strong>Knowledge graphs.</strong> Neo4j, TypeDB, Mem0's graph layer (Mem0g), Zep's Graphiti. Nodes (entities) and edges (relations). Sweet spot: multi-hop reasoning, entity-centric queries, temporal sequences.</p>
+<pre><code class="language-cypher">// &quot;What did Alice do with the refund I gave her last quarter?&quot;
+MATCH (u:User {email: &quot;alice@example.com&quot;})-[:HAS_INTERACTION]-&gt;(i:Interaction)
+WHERE i.timestamp &gt;= $quarter_start
+MATCH (i)-[:RELATED_TO]-&gt;(r:Refund)
+RETURN i, r ORDER BY i.timestamp;
+</code></pre>
+<p>Strengths: relationship reasoning; precise temporal queries; structured constraints.</p>
+<p>Weaknesses: schema design is hard; entity extraction is itself an LLM problem; updates are complex (consistency); often overkill for simple use cases.</p>
+<p><strong>Filesystem.</strong> CLAUDE.md, MEMORY.md, USER.md, agent skill folders, plain markdown files. Letta's surprising 2026 result: a plain filesystem hits 74% on standard memory benchmarks, beating many specialized libraries.</p>
+<p>Strengths: trivial to operate; human-readable; version-controllable; works with any tool that can read files.</p>
+<p>Weaknesses: no semantic similarity (the agent has to know to grep for the right thing); doesn't scale to massive history (millions of episodes don't fit); no built-in retrieval API.</p>
+<div class="pullquote">
+<p>Letta benchmarked their tiered memory against a plain filesystem. The filesystem won 74% to vector-store-equivalents' lower scores. The lesson isn't "use a filesystem." It's "your fancy memory system might be losing to a flat file. Benchmark."</p>
+</div>
+<p><strong>The hybrid pattern that wins in 2026</strong> (per the Digital Applied 2026 client survey):</p>
+<pre><code>Vector for fast fuzzy recall  +  Episodic buffer (rolling summary)  +  Graph for entity reasoning
+</code></pre>
+<p>Each component handles what it's best at. The agent (or a routing layer) picks which to query based on the question type.</p>
+<div class="postmortem">
+<p><strong>The Knowledge Graph That Cost Six Months and Returned the Same Answers as Vector Search</strong></p>
+<p>A team building an enterprise agent assumed they'd need a knowledge graph from day one. Spent six months designing schemas, wrote entity extractors, built ingestion pipelines, picked Neo4j, hired a graph specialist.</p>
+<p>Final benchmark: graph queries returned the right answer 78% of the time. Vector search returned the right answer 76% of the time. The 2-point difference came from a handful of multi-hop entity questions; everything else was effectively semantic similarity in disguise.</p>
+<p>Cost: six months of engineering for marginal gain. They scrapped most of the graph and kept it for the entity-heavy 5% of queries.</p>
+<p><strong>Lesson:</strong> start with the simplest backend that could work. Graduate to graphs only when you've measured that your queries genuinely need relational reasoning. "We might need it eventually" is how teams build six-month projects that recover six points of accuracy they could have gotten for free.</p>
+</div>
+<hr />
+<h2>Section 4 — Capture: What to Write, When to Write It (≈4 pages)</h2>
+<p>The first failure mode in memory systems is over-capture. Every conversation generates dozens of "facts" — most of them stale, low-signal, or specific to one moment. Storing all of them makes retrieval slower, noisier, and more confusing.</p>
+<p>The capture pipeline:</p>
+<pre><code class="language-python">class FactExtractor:
+    def __init__(self, llm):
+        self.llm = llm
+
+    async def extract(self, conversation: list[dict]) -&gt; list[Fact]:
+        prompt = EXTRACTION_PROMPT.format(conversation=format_messages(conversation))
+        resp = await self.llm.complete(prompt, max_tokens=1000)
+        candidates = parse_facts(resp)
+        return [f for f in candidates if self._is_durable(f)]
+
+    def _is_durable(self, fact: Fact) -&gt; bool:
+        # Heuristic / LLM judgment: is this a stable fact or a momentary state?
+        # &quot;User is angry&quot; — momentary, don't store.
+        # &quot;User uses Python 3.12&quot; — durable, store.
+        ...
+</code></pre>
+<p>Good capture rules:</p>
+<ul>
+<li><strong>Extract claims, not interactions.</strong> "User said X" is weak; "X is true" is strong (when the user can be trusted as a source). Store the claim, link it to the source if traceable.</li>
+<li><strong>Prefer durable over momentary.</strong> "User is frustrated" probably shouldn't persist; "User is allergic to peanuts" should.</li>
+<li><strong>Tag with source and timestamp.</strong> Always. Conflicts will arise; you need provenance.</li>
+<li><strong>Don't extract what's already in the prompt.</strong> If "user lives in NYC" is in the system prompt every turn, don't also store it as a fact.</li>
+<li><strong>Detect and resolve conflicts at write time.</strong> If new fact contradicts old, flag — don't silently overwrite (Mem0's conflict detector does this).</li>
+</ul>
+<div class="gotcha">
+<p>Don't run the extractor on every turn. It's an expensive LLM call. Run it: at session end, at compression time, or every N turns. Most facts that need extracting are stable across the conversation; extracting once per session is usually enough.</p>
+</div>
+<hr />
+<h2>Section 5 — Retrieval: The Hard Part (≈5 pages)</h2>
+<p>Most memory failures look like hallucinations but are retrieval misses. The agent doesn't have the right information in context — not because it isn't stored, but because retrieval didn't surface it.</p>
+<p>Retrieval design choices:</p>
+<p><strong>Query construction.</strong> What query do you embed/search for? Options:
+- The user's last message
+- A rewrite of the last message (LLM-generated query)
+- The accumulated conversation summary
+- A combination</p>
+<p>The right answer depends on workload. For "what is my favorite editor?" the user's question itself works fine. For "what did we discuss about that bug last week?" the question alone is too vague — you need the user's likely intent expanded.</p>
+<p><strong>Top-K selection.</strong> How many results? Too few: missed relevance. Too many: context bloat + distraction.</p>
+<p>A practical rule: k=3-5 for tight contexts, k=10 for exploratory; always re-rank.</p>
+<p><strong>Re-ranking.</strong> Vector search retrieves by similarity. Re-ranking applies a stronger (slower) signal — often a cross-encoder LLM — to reorder the top-N. Production systems often do: retrieve top 50 → re-rank to top 5. Mem0 added re-ranking as a default in v1.0.0; Cohere Rerank, BGE-Reranker, and others are common choices.</p>
+<p><strong>Filter before search.</strong> Don't search the whole store. Filter by user_id, session_id, time window first. Massive speedup and quality improvement.</p>
+<p><strong>Hybrid retrieval.</strong> Combine vector + keyword (BM25) + graph traversal. Mem0's graph mode (Mem0g) reports 68.4% LLM Score vs 66.9% for vector-only on multi-hop questions.</p>
+<pre><code class="language-python">class HybridRetriever:
+    def __init__(self, vector_store, graph_store, reranker):
+        self.vector = vector_store
+        self.graph = graph_store
+        self.reranker = reranker
+
+    async def retrieve(self, query: str, user_id: str, k: int = 5) -&gt; list[Fact]:
+        # Parallel retrieval from both stores
+        vector_task = self.vector.search(query, user_id, k=20)
+        graph_task = self.graph.find_related(query, user_id, k=20)
+        vector_results, graph_results = await asyncio.gather(vector_task, graph_task)
+
+        # Dedupe
+        candidates = dedupe(vector_results + graph_results)
+
+        # Re-rank
+        ranked = await self.reranker.rerank(query, candidates)
+
+        return ranked[:k]
+</code></pre>
+<div class="code-exercise">
+<p><strong>Exercise 9.1 — Build the layered memory system.</strong></p>
+<p>Implement: SemanticMemory (vector), EpisodicMemory (vector + time index), ProceduralMemory (key-value), HybridRetriever (vector + filter + re-rank). Wire into the Context Builder from Modules 7-8.</p>
+<p>Test on the same multi-turn conversation set used for compression benchmarks. Measure: retrieval hit rate (when relevant memories are present, are they returned?), context bloat (how many irrelevant memories make it through?).</p>
+</div>
+<hr />
+<h2>Section 6 — Consolidation: From Episodes to Knowledge (≈4 pages)</h2>
+<p>The Feb 2026 paper "Episodic Memory is the Missing Piece for Long-Term LLM Agents" argues consolidation is <em>the</em> mechanism for long-term reasoning. Storing every event is hoarding; consolidating events into reusable representations is memory.</p>
+<p>The consolidation pipeline:</p>
+<pre><code>[raw episodes accumulate over time]
+        │
+        ▼
+[periodic consolidation job]
+        │ groups related episodes
+        │ extracts patterns, recurring themes, lessons
+        ▼
+[generates consolidated semantic facts]
+        │
+        ▼
+[stored in semantic memory; original episodes optionally pruned]
+</code></pre>
+<p>When to run consolidation:
+- End of each session (consolidate that session into 1-3 semantic facts)
+- Daily / weekly batch (cross-session consolidation)
+- On retrieval, if too many similar episodes are returned (consolidate them on the fly)</p>
+<pre><code class="language-python">class Consolidator:
+    def __init__(self, llm, semantic: SemanticMemory, episodic: EpisodicMemory):
+        self.llm = llm
+        self.semantic = semantic
+        self.episodic = episodic
+
+    async def consolidate_session(self, user_id: str, session_id: str):
+        episodes = await self.episodic.retrieve_by_session(user_id, session_id)
+        if not episodes:
+            return
+
+        prompt = CONSOLIDATION_PROMPT.format(
+            episodes=format_episodes(episodes),
+        )
+        consolidated = await self.llm.complete(prompt, max_tokens=500)
+        facts = parse_consolidated_facts(consolidated)
+
+        for fact in facts:
+            await self.semantic.write_fact(
+                user_id=user_id,
+                fact=fact.statement,
+                source=f&quot;consolidated:session:{session_id}&quot;,
+            )
+</code></pre>
+<p>The consolidation prompt is where the work happens. Bad consolidation: "User did X, then Y, then Z" (just a summary). Good consolidation: "User prefers approach X for problem class Y; tried Z and abandoned it" (a reusable inference).</p>
+<div class="brain">
+<p>Consolidation generates semantic facts from episodic events. But semantic facts can become wrong over time — preferences change, situations evolve. How do you handle stale consolidated knowledge?</p>
+<p>(Source-tag every consolidated fact with the episodes it came from. When new contradicting episodes arrive, the conflict detector (Mem0 pattern) flags them. The consolidation job either overwrites the fact or adds a "as of date X" version.)</p>
+</div>
+<hr />
+<h2>Section 7 — Frameworks: Mem0, Letta, Zep, LangMem (≈4 pages)</h2>
+<p>A current map of the production frameworks. (Verify all details when drafting; this changes monthly.)</p>
+<p><strong>Mem0.</strong> Open-source (~48K GitHub stars), best for chatbot/personal-assistant memory. v1.0.0 made async writes default and added procedural memory as first-class. Hybrid vector + graph (Mem0g). Conflict detection. Hosted SaaS or self-hosted.</p>
+<pre><code class="language-python">from mem0 import Memory
+
+m = Memory()
+m.add(&quot;User prefers TypeScript&quot;, user_id=&quot;alice&quot;)
+results = m.search(&quot;what languages does the user know?&quot;, user_id=&quot;alice&quot;)
+</code></pre>
+<p>Strengths: easy to start; good defaults; good docs.
+Weaknesses: opinionated structure; harder to deeply customize.</p>
+<p><strong>Letta (formerly MemGPT).</strong> Tiered memory inspired by OS virtual memory: core memory (always in context), archival memory (vector store), recall memory (full conversation history, on-demand retrieval). Agents actively manage their own memory via tools.</p>
+<p>Strengths: very explicit memory model; agents have first-class memory awareness; strong for long-running agents.
+Weaknesses: more complex setup; the agent has to learn to use memory tools effectively.</p>
+<p><strong>Zep / Graphiti.</strong> Production-grade temporal knowledge graphs. Best for entity-heavy enterprise workloads (CRM, healthcare, legal). Combines vector search with graph traversal and temporal reasoning.</p>
+<p>Strengths: rich relational queries; temporal awareness baked in.
+Weaknesses: schema/ontology investment required; overkill for simple chat.</p>
+<p><strong>LangMem (LangChain).</strong> SDK launched early 2025. Three memory types (episodic, semantic, procedural) with first-class procedural memory (agents updating their own system instructions). Requires LangGraph's StateGraph.</p>
+<p>Strengths: integrates with LangChain ecosystem; strong procedural memory story.
+Weaknesses: tied to LangGraph; not a standalone library.</p>
+<p><strong>The simple option: filesystem + small custom code.</strong></p>
+<pre><code>/memory/
+  /alice/
+    USER.md           # core facts about the user
+    SKILLS.md         # learned workflows (procedural)
+    /episodes/
+      2026-04-15.md   # daily episode summaries
+      2026-04-16.md
+</code></pre>
+<p>Letta's benchmark: this beats many vector-store libraries. CLAUDE.md + grep is a real production pattern.</p>
+<div class="pullquote">
+<p>Pick the simplest backend that could plausibly work. Most memory deployments fail not from picking the wrong framework, but from over-investing in the framework before they understood the workload.</p>
+</div>
+<hr />
+<h2>Section 8 — Forgetting (≈3 pages)</h2>
+<p>The least-discussed memory operation. Memory that grows without bound becomes useless. You need explicit forgetting policies.</p>
+<p><strong>TTL-based forgetting.</strong> Every fact has a time-to-live. Stale facts expire automatically.</p>
+<p><strong>Conflict-based pruning.</strong> When new information contradicts old, the old gets demoted (or deleted, with a record).</p>
+<p><strong>Importance-based decay.</strong> Facts that aren't retrieved for N retrievals get demoted. Eventually deleted.</p>
+<p><strong>Capacity-based eviction.</strong> Fixed-size store; LRU-evict when full.</p>
+<p><strong>Explicit deletion.</strong> Users can request "forget that I said X" (GDPR right-to-be-forgotten; just good product design too).</p>
+<pre><code class="language-python">class ForgettingPolicy:
+    async def expire_stale(self, store: SemanticMemory, max_age_days: int = 90):
+        cutoff = now() - timedelta(days=max_age_days)
+        await store.delete_where(ts__lt=cutoff)
+
+    async def decay_unused(self, store, min_retrievals: int = 1, window_days: int = 30):
+        cutoff = now() - timedelta(days=window_days)
+        await store.delete_where(retrievals_in_window__lt=min_retrievals)
+
+    async def resolve_conflicts(self, store, new_fact: Fact):
+        existing = await store.find_contradicting(new_fact)
+        for old in existing:
+            if old.confidence &lt; new_fact.confidence:
+                await store.delete(old.id)
+            else:
+                # Keep both, mark new one as disputed
+                ...
+</code></pre>
+<div class="gotcha">
+<p>Don't aggressively forget without an audit log. Memory that disappears without explanation is debugging hell. Every forgetting decision should be traceable: what was deleted, when, why, by what policy.</p>
+</div>
+<hr />
+<h2>Section 9 — Wiring It All Together (≈3 pages)</h2>
+<p>The complete Module 7-8-9 stack:</p>
+<pre><code class="language-python">class Agent:  # Module 2 hardened agent, now with full context engineering
+    def __init__(self, client, tools, system, model, budget,
+                 memory: MemorySystem, compressor: Compressor, builder: ContextBuilder):
+        ...
+
+    async def run(self, query: str, user_id: str) -&gt; AgentResult:
+        task_id = uuid()
+        working_memory = []
+
+        # Initial turn
+        working_memory.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: query})
+
+        while not self.budget.exceeded():
+            # Module 7-8-9: build context
+            messages = await self.builder.build(
+                system=self.system,
+                tools=self.tools.schemas(),
+                working_memory=working_memory,
+                user_id=user_id,
+                task_id=task_id,
+            )
+
+            # Module 2: call model
+            resp = await self.client.messages.create(
+                model=self.model, messages=messages, tools=self.tools.schemas(),
+            )
+
+            # Update working memory; dispatch tools; etc. (Module 2 logic)
+            ...
+
+        # Session end: consolidate
+        await self.memory.consolidate_session(user_id, task_id)
+
+        return result
+</code></pre>
+<p>We run a long-horizon task end-to-end, watching:
+- Working memory grow → compress → stay manageable
+- Facts extracted into semantic memory
+- Episodes recorded into episodic memory
+- Retrieval surfacing relevant past memories on new queries
+- Consolidation at session end producing reusable knowledge</p>
+<div class="code-exercise">
+<p><strong>Exercise 9.2 — Run a multi-session benchmark.</strong></p>
+<p>Run the agent through 5 sessions with the same user, separated by simulated days. Each session involves a different but related task. Measure:</p>
+<ul>
+<li>Cross-session continuity: does the agent remember user-stated preferences from session 1 in session 5?</li>
+<li>Memory hygiene: how many memories are stored after 5 sessions? Are they all useful?</li>
+<li>Retrieval quality: in session 5, when relevant memories from session 2 should surface, do they?</li>
+</ul>
+<p>Compare with-memory vs without-memory agent on a held-out evaluation set.</p>
+</div>
+<hr />
+<h2>Section 10 — What's Next (≈2 pages)</h2>
+<p>Module 10 covers <strong>hallucinations</strong> — including failure modes specific to retrieval (the agent confidently states a fact that came from a low-relevance retrieval; the agent invents a detail that "sounds like" what was retrieved). Memory is one of the biggest hallucination sources, and the defenses live in Module 10.</p>
+<p>Module 11 covers <strong>reflection</strong> — explicitly using memory to learn from past failures. Reflective memory is a sibling of episodic memory, indexed by "lessons learned" rather than "what happened."</p>
+<p>Module 12 covers <strong>guardrails</strong> — including memory-aware guardrails ("never reveal facts about other users").</p>
+<p>By Module 14 (multi-agent), memory becomes a coordination problem: shared memory across agents vs isolated per-agent memory.</p>
+<p>The capstone (Module 18) ships an agent with full layered memory.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>2 No Dumb Questions</li>
+<li>2 Brain Power prompts</li>
+<li>1 Production Postmortem (six-month knowledge graph for 2-point gain)</li>
+<li>2 Watch It! / Gotcha blocks</li>
+<li>2 Code Exercises (build memory, multi-session benchmark)</li>
+<li>2 Pullquotes</li>
+<li>1 architecture diagram</li>
+<li>1 framework comparison table</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam ships the compressed agent from Module 8. The PM tries it across multiple sessions: "It works great until I come back tomorrow and it doesn't remember anything we discussed." Sam adds memory. First attempt: store every message. Retrieval surfaces irrelevant junk; quality drops; Sam reverts. Second attempt: extract only durable facts (Section 4), hybrid retrieval with re-ranking (Section 5), session-end consolidation (Section 6). By the end of Section 9, the agent has continuity across sessions, doesn't bloat with junk, and selectively recalls. Sam's arc this module: <strong>storage isn't memory; engineering retrieval is</strong>.</p>
+</div>
+<div class="page-budget">
+<p>S1 (What memory means): 3p
+S2 (Memory types): 4p
+S3 (Backends): 5p
+S4 (Capture): 4p
+S5 (Retrieval): 5p
+S6 (Consolidation): 4p
+S7 (Frameworks): 4p
+S8 (Forgetting): 3p
+S9 (Wiring): 3p
+S10 (Next): 2p
+TOTAL: ~37 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting:</strong></p>
+<ul>
+<li>"Episodic Memory is the Missing Piece for Long-Term LLM Agents" (arXiv:2502.06975, Feb 2026) — primary source for consolidation argument</li>
+<li>"Memory in the Age of AI Agents" survey (arXiv:2512.13564, Dec 2025) — current taxonomy</li>
+<li>Mem0 v1.0.0 release notes — async default, procedural memory, conflict detection</li>
+<li>Mem0g (graph variant) benchmark — 68.4% vs 66.9% vector-only</li>
+<li>Letta documentation — three-tier (core/archival/recall), benchmark showing filesystem at 74%</li>
+<li>Zep / Graphiti — temporal knowledge graph specifics</li>
+<li>LangMem SDK — three memory types, agent-self-rewriting procedural memory</li>
+<li>Digital Applied 2026 client survey (vector + episodic + graph hybrid pattern)</li>
+<li>Cohere Rerank v3 / BGE-Reranker — current state of re-ranking models</li>
+<li>Anthropic Skills convention — for procedural memory format</li>
+<li>Tulving 1972 (the original memory taxonomy) — academic citation</li>
+<li>Hermes OS / Hermes Agent dual-layer 2026 architecture</li>
+<li>pgvector / Pinecone / Qdrant / Weaviate — current API and pricing for vector store comparison</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- Capture / store / index / retrieve / consolidate / forget pipeline
+- Vector vs graph vs filesystem trade-offs
+- Hybrid retrieval as the production pattern
+- The forgetting policies (TTL, decay, eviction, deletion)</p>
+<p><strong>Cross-references:</strong>
+- Module 7 introduced memory types; this module builds them
+- Module 8 (compression) discards into memory; this is what catches it
+- Module 10 covers retrieval-induced hallucination
+- Module 11 (reflection) extends procedural and reflective memory
+- Module 14 covers shared vs isolated memory in multi-agent</p>
+</div>
+<div class="bullet-points">
+<h3>Module 9 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>Memory is six operations: capture, store, index, retrieve, consolidate, forget — most teams build three</li>
+<li>Working / semantic / episodic / procedural — same taxonomy as Module 7, now with implementations</li>
+<li>Three storage backends: vector (similarity), graph (relations), filesystem (simple) — hybrid wins in production</li>
+<li>Capture is over-eager by default; extract durable claims, not interactions, with provenance</li>
+<li>Retrieval is the hard part: query construction, re-ranking, filtering, hybrid sources</li>
+<li>Consolidation turns raw episodes into reusable semantic knowledge — the missing piece for long-term agents</li>
+<li>Frameworks: Mem0 (defaults), Letta (tiered), Zep (graphs), LangMem (LangChain), or filesystem (surprisingly competitive)</li>
+<li>Forgetting needs explicit policies: TTL, decay, eviction, conflict resolution — and audit logs</li>
+</ul>
+</div>
+<hr style="border-top: 4px solid #c0392b; margin: 3em 0;">
+</body>
+</html>

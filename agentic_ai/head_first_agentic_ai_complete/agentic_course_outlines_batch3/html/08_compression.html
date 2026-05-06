@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 8 Outline — Context Compression Algorithms</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 8 Outline — Context Compression Algorithms</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 08 — OUTLINE</div>
+<div class="module-title">Context Compression Algorithms</div>
+<div class="subtitle">Four real algorithms, four working implementations,<br>real benchmarks. The thing that pays the rent.</div>
+<div class="pages">Target length: ~38 pages (algorithm-heavy + code-heavy)</div>
+</div>
+<h2>What this module is</h2>
+<p>Compression is the load-bearing technique in production agent systems. Claude Code triggers auto-compact at ~95% of the 200K window. OpenAI Codex runs server-side compaction after every turn. Cursor truncates old history. Every coding agent compresses; the methods differ.</p>
+<p>This module covers four production-relevant compression algorithms in code: <strong>anchored iterative summarization</strong>, <strong>ACON's failure-driven optimization</strong> (arXiv:2510.00615), <strong>budget-aware compression</strong>, and <strong>distilled compressors</strong> for cost. We benchmark all four against naive baselines (FIFO truncation, retrieval, LLMLingua) on a long-horizon agent task. We end by integrating the best-performing into the Module 7 Context Builder.</p>
+<p>By the end the reader can pick the right compression algorithm for their workload, implement it, measure it, and avoid the most common failure mode (compressing away the one fact the agent needed).</p>
+<div class="hook">
+<p>"Naive context compression is easy. Useful context compression is hard. The hard part isn't 'how do I shrink this' — it's 'how do I shrink this without losing the one fact the agent will need three turns from now that I have no way of predicting.'"</p>
+</div>
+<hr />
+<h2>Section 1 — The Compression Problem, Stated Precisely (≈3 pages)</h2>
+<p>What we're optimizing for. Inputs:
+- A growing message history (assistant turns + tool results)
+- A token budget (e.g., "context must stay under 50K")
+- The agent's task (which determines what's relevant)</p>
+<p>Output: a compressed message sequence that:
+1. Fits the budget
+2. Preserves task-critical information
+3. Doesn't break the model's reasoning</p>
+<p>The hard constraint is #2. You don't know what's task-critical until the agent needs it, three turns from now. Compression is gambling: you bet that the discarded info won't be needed.</p>
+<div class="pullquote">
+<p>Every compression decision is a bet. Good compression algorithms make better-calibrated bets, not lossless ones.</p>
+</div>
+<p><strong>Three signal types you can preserve:</strong></p>
+<ul>
+<li><strong>Factual</strong> — entities, numbers, IDs that must be exact. Hardest to compress safely.</li>
+<li><strong>Procedural</strong> — what was tried, what worked, what failed. Compresses well into action-outcome pairs.</li>
+<li><strong>Reasoning</strong> — why the agent made decisions. Often safe to drop after the decision was made.</li>
+</ul>
+<p>The ACON paper (Kang et al., Oct 2025) names five signal types worth preserving: factual history, action-outcome relationships, evolving environment states, success preconditions, future decision cues. Naive summarization tends to keep the first two and drop the last three — which is exactly why agents fail after compression.</p>
+<div class="nodumbq">
+<p><strong>Q: Can't I just use a longer-context model and skip compression?</strong></p>
+<p>You can — at the cost of money and quality. A 1M context Sonnet call costs ~$3 per turn on input tokens alone. Across a 30-turn task that's $90, before output. Compression buys you 50-80% reduction in those costs (per ACON's 26-54% peak token reduction, plus what you save on every subsequent turn). And research consistently shows long-context degradation — models reason more reliably on focused 30K than dumped 500K.</p>
+<p><strong>Q: Isn't this what providers do server-side already?</strong></p>
+<p>Some do. Anthropic supports prompt caching which helps on repeated context, but that's caching, not compression. OpenAI Codex does server-side compaction. But in agent code where you control the message history, you compress better than the provider can — because you know what's task-relevant.</p>
+</div>
+<hr />
+<h2>Section 2 — Naive Baselines and Their Failure Modes (≈4 pages)</h2>
+<p>Before the good algorithms, the bad ones — so we know what we're improving on. ACON benchmarks against these; we'll do the same.</p>
+<p><strong>FIFO truncation.</strong> Drop oldest turns until you fit the budget.</p>
+<pre><code class="language-python">def compress_fifo(messages: list[dict], target_tokens: int) -&gt; list[dict]:
+    while count_tokens(messages) &gt; target_tokens and len(messages) &gt; 1:
+        messages.pop(0)  # drop oldest non-system message
+    return messages
+</code></pre>
+<p>Failure mode: the original task description and any early-established facts (user identity, key constraints) get dropped first. The agent forgets what it's doing.</p>
+<p><strong>Sliding window with system pin.</strong> Pin the system prompt and original user query; FIFO the rest.</p>
+<pre><code class="language-python">def compress_window(messages: list[dict], target_tokens: int, pin_first_n: int = 2) -&gt; list[dict]:
+    pinned = messages[:pin_first_n]
+    rest = messages[pin_first_n:]
+    while count_tokens(pinned + rest) &gt; target_tokens and len(rest) &gt; 1:
+        rest.pop(0)
+    return pinned + rest
+</code></pre>
+<p>Failure mode: middle-turn facts get dropped. If turn 8 established something important and you're at turn 30, that's gone.</p>
+<p><strong>Retrieval-based selection.</strong> Embed past turns; retrieve the top-k most similar to current state.</p>
+<pre><code class="language-python">def compress_retrieval(messages, current_query, target_tokens, k=10):
+    candidates = messages[1:-1]  # everything but first and last
+    embeddings = embed_all(candidates)
+    query_emb = embed(current_query)
+    ranked = rank_by_similarity(candidates, embeddings, query_emb)
+    selected = top_k_within_budget(ranked, k=k, budget=target_tokens)
+    return [messages[0]] + selected + [messages[-1]]
+</code></pre>
+<p>Failure mode: agent state often doesn't look like the answer's content. "I need to confirm the order" doesn't retrieve "confirmed order #12345 yesterday."</p>
+<p><strong>LLMLingua-style token pruning.</strong> Encoder-only LM scores each token; drop low-importance tokens.</p>
+<p>Failure mode: works well for static prompts, breaks for agent contexts where exact tokens (function call args, tool result values) matter and "low importance" tokens are often the critical ones.</p>
+<div class="postmortem">
+<p><strong>The Agent That Compressed Away Its Customer ID</strong></p>
+<p>A team built FIFO compression into their support agent. Worked fine in tests. In production, by turn 25 of a long debugging session, the agent forgot which customer it was helping. It started returning answers about the wrong account. Customer was furious. Compliance flagged it.</p>
+<p>Cause: the customer ID was established in turn 1's tool result ("identified user as alice@example.com, account_id=12345"). FIFO dropped turn 1 around turn 20. Nothing in subsequent turns repeated it. By turn 25, the agent's context started in the middle of a debugging conversation with no anchor.</p>
+<p>Fix: switched to compression that pins facts (Section 3) and writes IDs to working memory (Module 7) so they survive compression.</p>
+<p><strong>Lesson:</strong> FIFO without semantic awareness is dangerous. The "old" turns often contain the anchors.</p>
+</div>
+<hr />
+<h2>Section 3 — Anchored Iterative Summarization (≈5 pages)</h2>
+<p>The first real compression algorithm. The pattern most production systems implement — Claude Code's auto-compact, OpenAI Codex's compaction, and similar — is some variant of this.</p>
+<p><strong>The idea:</strong> maintain a running summary of "everything before turn N" alongside the most recent K turns verbatim. As the budget tightens, increase the summary's coverage; shrink the verbatim window.</p>
+<p><strong>The "anchored" variant:</strong> explicitly extract and preserve a set of anchor facts (entities, IDs, constraints, decisions made) that always survive compression, separate from the prose summary.</p>
+<pre><code class="language-python">@dataclass
+class CompressedHistory:
+    anchors: dict[str, str]   # stable facts: user_id, task_id, key constraints
+    summary: str              # prose summary of compressed turns
+    recent: list[dict]        # K most recent turns verbatim
+
+class AnchoredSummarizer:
+    def __init__(self, llm, recent_window=4, summary_target=2000):
+        self.llm = llm
+        self.recent_window = recent_window
+        self.summary_target = summary_target
+
+    async def compress(self, messages: list[dict], target_tokens: int) -&gt; CompressedHistory:
+        # Always keep last N turns verbatim
+        recent = messages[-self.recent_window:]
+        to_summarize = messages[:-self.recent_window]
+
+        # Extract anchors (entities, IDs, decisions)
+        anchors = await self._extract_anchors(to_summarize)
+
+        # Generate prose summary
+        summary = await self._summarize(to_summarize, target=self.summary_target)
+
+        return CompressedHistory(anchors=anchors, summary=summary, recent=recent)
+
+    async def _extract_anchors(self, messages):
+        prompt = ANCHOR_EXTRACTION_PROMPT.format(history=format_messages(messages))
+        resp = await self.llm.complete(prompt, max_tokens=500)
+        return parse_anchors(resp)  # returns dict like {&quot;user_id&quot;: &quot;12345&quot;, &quot;task&quot;: &quot;...&quot;}
+
+    async def _summarize(self, messages, target):
+        prompt = SUMMARY_PROMPT.format(
+            history=format_messages(messages),
+            target_tokens=target,
+        )
+        return await self.llm.complete(prompt, max_tokens=target)
+
+    def to_messages(self, compressed: CompressedHistory) -&gt; list[dict]:
+        anchor_block = &quot;\n&quot;.join(f&quot;- {k}: {v}&quot; for k, v in compressed.anchors.items())
+        return [
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: (
+                f&quot;&lt;context&gt;\n&quot;
+                f&quot;&lt;anchors&gt;\n{anchor_block}\n&lt;/anchors&gt;\n&quot;
+                f&quot;&lt;summary&gt;\n{compressed.summary}\n&lt;/summary&gt;\n&quot;
+                f&quot;&lt;/context&gt;&quot;
+            )},
+            *compressed.recent,
+        ]
+</code></pre>
+<p>We walk through the prompts. Anchor extraction is a structured-output call (use tool-use for reliability — Module 4's structured-output pattern). Summary generation is straightforward but the prompt matters a lot — we'll show good vs bad summary prompts.</p>
+<p><strong>The iterative part:</strong> when the compressed result still doesn't fit, summarize again with a tighter target. Re-summarization is lossy — be careful — but sometimes necessary.</p>
+<div class="code-exercise">
+<p><strong>Exercise 8.1 — Implement anchored summarization.</strong></p>
+<p>Build the <code>AnchoredSummarizer</code> class. Test it on a provided 30-turn agent transcript. Verify: anchors preserved across compressions, recent window intact, summary fits target. Compare resulting context size vs naive FIFO.</p>
+</div>
+<div class="gotcha">
+<p>The recent window matters more than people realize. Anthropic and OpenAI both default to keeping ~3-5 most recent turns verbatim. Drop below that and the agent loses local coherence (forgets what it just did). Go above 8-10 and you've barely compressed.</p>
+</div>
+<hr />
+<h2>Section 4 — ACON: Failure-Driven Compression (≈6 pages)</h2>
+<p>The Oct 2025 paper (Kang et al., arXiv:2510.00615) introduced <strong>Agent Context Optimization</strong> — a meta-algorithm that <em>learns</em> good compression by analyzing failures. ACON is the most important compression-research result of 2025.</p>
+<p><strong>The insight:</strong> compression prompts can be optimized in natural-language space (no fine-tuning) by:</p>
+<ol>
+<li>Run a task with full (uncompressed) context. Record success/failure.</li>
+<li>Run the same task with current compression. Record success/failure.</li>
+<li>Find tasks where full succeeded but compressed failed.</li>
+<li>For each failure, ask a capable LLM: "what information did the compression drop that caused this failure?"</li>
+<li>Update the compression prompt to preserve that class of information.</li>
+<li>Re-run. The compression prompt now generates better summaries.</li>
+</ol>
+<p>This is gradient-free (no model training), works with any API-accessible model, and ACON reports 26-54% peak token reduction while preserving task performance — across AppWorld, OfficeBench, and Multi-objective QA.</p>
+<pre><code class="language-python">class ACON:
+    def __init__(self, base_compressor: Compressor, judge_llm, optimizer_llm):
+        self.compressor = base_compressor
+        self.judge = judge_llm
+        self.optimizer = optimizer_llm
+        self.compression_prompt = INITIAL_COMPRESSION_PROMPT
+
+    async def optimize(self, train_tasks: list[Task], rounds: int = 5):
+        for round_i in range(rounds):
+            failures = []
+            for task in train_tasks:
+                # Run with full context (ground truth)
+                full_result = await run_agent(task, compressor=NoOp())
+                # Run with current compression
+                comp_result = await run_agent(task, compressor=self._with_prompt())
+
+                if full_result.succeeded and not comp_result.succeeded:
+                    failures.append((task, full_result, comp_result))
+
+            if not failures:
+                break
+
+            # Analyze failures
+            analysis = await self._analyze_failures(failures)
+
+            # Update prompt
+            self.compression_prompt = await self._update_prompt(
+                old_prompt=self.compression_prompt,
+                analysis=analysis,
+            )
+
+    async def _analyze_failures(self, failures):
+        prompts = []
+        for task, full, comp in failures:
+            prompts.append(FAILURE_ANALYSIS_PROMPT.format(
+                task=task.description,
+                full_trajectory=full.trajectory,
+                comp_trajectory=comp.trajectory,
+                comp_compressed=comp.compressed_history,
+            ))
+        analyses = await asyncio.gather(*[self.judge.complete(p) for p in prompts])
+        return aggregate(analyses)
+
+    async def _update_prompt(self, old_prompt, analysis):
+        update_prompt = PROMPT_UPDATE_TEMPLATE.format(
+            old=old_prompt,
+            analysis=analysis,
+        )
+        return await self.optimizer.complete(update_prompt)
+</code></pre>
+<p>We walk through the actual ACON paper's prompts (or paraphrase if licensing constraints — verify when drafting). Key design decisions:
+- Use a strong model as judge and optimizer (Opus / GPT-5)
+- Train on ~50-100 representative tasks
+- Optimize for 3-5 rounds; gains saturate
+- Distill the optimized compressor into a smaller model for deployment (preserves 95% of accuracy at lower per-call cost)</p>
+<p><strong>Why this matters beyond the numbers:</strong> ACON proves that compression is a <em>learnable</em> problem in natural-language space. You don't need a research team or GPUs. You need an eval set and an optimizer model.</p>
+<div class="brain">
+<p>ACON requires running every training task twice (with and without compression). For 100 training tasks averaging $0.50 each, that's $100 to optimize the prompt. Worth it?</p>
+<p>(Almost always. The optimized prompt then runs on every production task, indefinitely. If you save $0.05 per production task and you have 10K+ tasks, the math is overwhelming. ACON's economics favor anyone with enough volume to need compression in the first place.)</p>
+</div>
+<div class="code-exercise">
+<p><strong>Exercise 8.2 — Run ACON on your own task set.</strong></p>
+<p>Implement the ACON optimization loop. Use a small synthetic eval set (10 tasks we provide). Optimize the compression prompt for 3 rounds. Compare task success rate before vs after.</p>
+<p>Realistic expectation: with a small eval set you may not see big gains, but you'll understand the loop. The point is the <em>mechanism</em> — you can scale it later with real production tasks.</p>
+</div>
+<hr />
+<h2>Section 5 — Budget-Aware Compression (≈4 pages)</h2>
+<p>The newer wrinkle (ContextBudget, 2025/2026 research). Most compression methods are <em>budget-free</em> — they compress to a fixed target. But agent context budgets vary across the trajectory:</p>
+<ul>
+<li>Early turns: lots of headroom; minimal compression needed</li>
+<li>Middle turns: tightening; compress historically</li>
+<li>Late turns: tight; aggressive compression of everything pre-recent</li>
+</ul>
+<p>Budget-aware compression conditions every compression decision on remaining capacity. Reinforcement learning (GRPO-extension) can train this end-to-end, but a simpler rule-based version captures most of the win:</p>
+<pre><code class="language-python">class BudgetAwareCompressor:
+    def __init__(self, base: AnchoredSummarizer, total_budget: int):
+        self.base = base
+        self.total_budget = total_budget
+
+    async def compress(self, messages: list[dict], turn_idx: int) -&gt; list[dict]:
+        current_size = count_tokens(messages)
+        headroom = self.total_budget - current_size
+
+        if headroom &gt; self.total_budget * 0.5:
+            # Plenty of room — no compression
+            return messages
+        elif headroom &gt; self.total_budget * 0.2:
+            # Moderate — compress old turns, keep generous recent window
+            return await self.base.compress(messages, recent_window=8)
+        else:
+            # Tight — aggressive compression
+            return await self.base.compress(messages, recent_window=3, summary_target=1000)
+</code></pre>
+<p>We discuss the more sophisticated RL-trained version, where the agent itself learns <em>when</em> to compress and <em>what</em> to preserve given remaining budget. This is research-frontier (Hu et al. 2026); reader is unlikely to deploy it but should know it exists.</p>
+<div class="nodumbq">
+<p><strong>Q: Why isn't this just "compress when context is full"?</strong></p>
+<p>Because by the time context is full, you've already paid for all those tokens this turn. Budget-aware compression looks ahead: how many more turns might this task need? At current rate of growth, when will I run out? Compress proactively to leave room for the next 3 turns of expected growth, not reactively after every turn.</p>
+</div>
+<hr />
+<h2>Section 6 — Distilled Compressors (≈3 pages)</h2>
+<p>Running compression with a strong LLM is expensive. ACON's distillation contribution: take an optimized strong-LLM compressor, generate (input, output) training pairs, fine-tune a small model on them. The smaller model preserves 95%+ of the strong model's compression quality at a fraction of the cost.</p>
+<pre><code class="language-python"># Conceptual distillation pipeline
+def distill_compressor(strong_model_compressor, training_data):
+    pairs = []
+    for messages in training_data:
+        compressed = strong_model_compressor(messages)
+        pairs.append({&quot;input&quot;: messages, &quot;output&quot;: compressed})
+
+    # Fine-tune a small model (Haiku-class, or even open-source 3B-7B) on pairs
+    fine_tuned = fine_tune_model(base=&quot;haiku-class&quot;, data=pairs)
+    return fine_tuned
+</code></pre>
+<p>When this matters: high-volume agents where compression overhead is itself non-trivial. If your agent runs 10K times/day and each compression costs $0.01 with Sonnet, that's $100/day in compression alone. Distill to Haiku-class (or a small open-source model you self-host), and that drops 5-10×.</p>
+<p>We don't actually fine-tune in the exercise (out of scope), but we discuss the architecture and when to invest in it.</p>
+<div class="pullquote">
+<p>ACON shows you can teach a small model to compress as well as a big model. This isn't a magic trick — it's the same teacher-student distillation that's worked across ML for a decade. It just took until 2025 to apply it to agent compression.</p>
+</div>
+<hr />
+<h2>Section 7 — Benchmark: All Methods on a Real Task (≈5 pages)</h2>
+<p>The payoff section. We define a representative long-horizon agent task and benchmark every method. (Numbers are illustrative — we re-run with current models and current pricing when drafting.)</p>
+<p><strong>Task:</strong> a research agent answering 20 questions that each require 15-25 tool calls (search, fetch, read, synthesize). Each question's answer must be verifiable against a known correct answer.</p>
+<p><strong>Methods compared:</strong>
+- No compression (baseline)
+- FIFO truncation
+- Sliding window with system pin
+- Retrieval-based
+- LLMLingua-style token pruning
+- Anchored iterative summarization (Section 3)
+- ACON-optimized summarization (Section 4)
+- Budget-aware (Section 5)</p>
+<p><strong>Metrics:</strong>
+- Average peak tokens per task
+- Average task cost
+- Task success rate (vs verified correct answers)
+- p95 latency per turn
+- Number of tasks where critical info was lost</p>
+<p>Sample expected results (illustrative):</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Peak tokens</th>
+<th>Cost / task</th>
+<th>Success</th>
+<th>p95 latency</th>
+<th>Info loss</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No compression</td>
+<td>142K</td>
+<td>$1.42</td>
+<td>87%</td>
+<td>6.2s</td>
+<td>0%</td>
+</tr>
+<tr>
+<td>FIFO</td>
+<td>50K</td>
+<td>$0.31</td>
+<td>53%</td>
+<td>4.1s</td>
+<td>38%</td>
+</tr>
+<tr>
+<td>Sliding window</td>
+<td>50K</td>
+<td>$0.32</td>
+<td>61%</td>
+<td>4.2s</td>
+<td>31%</td>
+</tr>
+<tr>
+<td>Retrieval</td>
+<td>50K</td>
+<td>$0.34</td>
+<td>64%</td>
+<td>4.4s</td>
+<td>27%</td>
+</tr>
+<tr>
+<td>LLMLingua</td>
+<td>70K</td>
+<td>$0.51</td>
+<td>68%</td>
+<td>5.0s</td>
+<td>22%</td>
+</tr>
+<tr>
+<td>Anchored summarization</td>
+<td>55K</td>
+<td>$0.42</td>
+<td>81%</td>
+<td>4.7s</td>
+<td>9%</td>
+</tr>
+<tr>
+<td>ACON-optimized</td>
+<td>48K</td>
+<td>$0.39</td>
+<td>86%</td>
+<td>4.6s</td>
+<td>4%</td>
+</tr>
+<tr>
+<td>Budget-aware</td>
+<td>52K</td>
+<td>$0.41</td>
+<td>85%</td>
+<td>4.5s</td>
+<td>5%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The headline:</strong> ACON-optimized summarization recovers ~99% of no-compression task success at ~27% of the cost. That's the math that makes compression an unambiguous win when implemented well.</p>
+<p><strong>The footnote:</strong> every method has tasks where it fails. The right choice depends on your workload — read failure modes, not just averages.</p>
+<div class="brain">
+<p>Look at the table. The naive baselines (FIFO, sliding window) are 50-65% success. The good algorithms (anchored, ACON, budget-aware) are 81-86%. Why such a gap?</p>
+<p>(Because the naive methods drop information without considering relevance. The good methods preserve task-critical signals (anchors, action-outcome pairs, success preconditions) explicitly. The 30+ point success gap is the entire reason this module exists.)</p>
+</div>
+<hr />
+<h2>Section 8 — Choosing a Method (≈3 pages)</h2>
+<p>Decision framework. Match algorithm to workload.</p>
+<p><strong>Use anchored iterative summarization when:</strong>
+- You have moderate volume (100s-1000s of tasks/day)
+- Tasks have clear "anchor" facts (IDs, constraints, decisions)
+- You don't want to invest in eval infrastructure yet
+- Default starting point for most teams</p>
+<p><strong>Use ACON-optimized when:</strong>
+- You have an eval set (or can build one)
+- Volume justifies the upfront optimization cost
+- Failure modes from generic summarization are biting you
+- You want measurable wins beyond default summarization</p>
+<p><strong>Use budget-aware when:</strong>
+- Context budgets vary wildly across tasks
+- Some tasks are short (no compression needed); others very long
+- You're already running anchored or ACON; this is an upgrade</p>
+<p><strong>Use distilled compressors when:</strong>
+- High volume (10K+ tasks/day)
+- Compression cost itself is non-trivial
+- You have ML infrastructure for fine-tuning</p>
+<p><strong>Use naive baselines when:</strong>
+- Prototyping
+- Workload is so simple you genuinely don't need compression yet
+- You want a known-bad baseline to measure against</p>
+<div class="gotcha">
+<p>Don't optimize compression in isolation. The right metric isn't "smallest context" — it's "task success per dollar." A method that gets you to 30K tokens but tanks success isn't winning. Always benchmark on the actual task, not just on token count.</p>
+</div>
+<hr />
+<h2>Section 9 — Integrating With the Context Builder (≈3 pages)</h2>
+<p>We wire the compressor into the Module 7 Context Builder. The builder now calls <code>Compressor.compress()</code> with the appropriate budget, and the agent loop is unchanged from Module 2 — all the complexity hides in the builder.</p>
+<pre><code class="language-python">class ContextBuilder:
+    def __init__(self, memory, compressor: Compressor, budget):
+        self.memory = memory
+        self.compressor = compressor
+        self.budget = budget
+
+    async def build(self, system, tools, working_memory, ...):
+        # Compress working memory if needed
+        if count_tokens(working_memory) &gt; self.budget.working_target:
+            working_memory = await self.compressor.compress(
+                working_memory,
+                target_tokens=self.budget.working_target,
+            )
+
+        # Retrieve memory (Module 9 fills this)
+        retrieved = await self.memory.retrieve(...)
+
+        return assemble_messages(system, tools, retrieved, working_memory)
+</code></pre>
+<p>We swap compressor implementations to compare. Same agent code; different <code>Compressor</code> instance; different cost-quality profile.</p>
+<div class="code-exercise">
+<p><strong>Exercise 8.3 — Wire and benchmark.</strong></p>
+<p>Take the Context Builder from Module 7. Plug in three compressors: <code>FIFOCompressor</code>, <code>AnchoredSummarizer</code>, and <code>ACONCompressor</code> (using a simple synthetic optimization). Run the same set of agent tasks under each. Generate a results table. Decide which to use for production.</p>
+</div>
+<hr />
+<h2>Section 10 — What's Next (≈1 page)</h2>
+<p>Module 9 builds the <strong>Memory System</strong> — the storage layer that compression relies on. Once compression discards old turns, the facts in those turns need somewhere to live. That's memory.</p>
+<p>Module 10 covers hallucination — relevant here because aggressive compression can introduce hallucinations (the model invents details about what was compressed away).</p>
+<p>By Module 12 (guardrails) we'll add output checks that validate compressed-context outputs against original facts.</p>
+<p>The capstone (Module 18) uses ACON-optimized compression in the production agent.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>2 No Dumb Questions</li>
+<li>2 Brain Power prompts</li>
+<li>1 Production Postmortem (compressed-away customer ID)</li>
+<li>2 Watch It! / Gotcha blocks</li>
+<li>3 Code Exercises (anchored, ACON, integrated benchmark)</li>
+<li>2 Pullquotes</li>
+<li>1 benchmark results table</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam's agent now has the Context Builder from Module 7 — but it's a passthrough. Long tasks are still expensive and slow. Sam ships FIFO compression first ("seemed simple"), then loses a customer ID and gets paged at 2am (the postmortem in Section 2). Sam then implements anchored summarization (much better), reads the ACON paper (Section 4), and runs the optimization loop on a small eval set. By the end of Section 9, Sam has a Compressor that's saving 70% of token cost at 99% of original task success. Sam's arc this module: <strong>the right algorithm pays for the engineering time it took to find it</strong>.</p>
+</div>
+<div class="page-budget">
+<p>S1 (Problem stated): 3p
+S2 (Naive baselines): 4p
+S3 (Anchored summarization): 5p
+S4 (ACON): 6p
+S5 (Budget-aware): 4p
+S6 (Distilled compressors): 3p
+S7 (Benchmark): 5p
+S8 (Choosing method): 3p
+S9 (Integration): 3p
+S10 (Next): 1p
+TOTAL: ~37 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting (heavy verification — research-frontier):</strong></p>
+<ul>
+<li>ACON paper (Kang et al., arXiv:2510.00615, v2 Oct 17 2025) — primary source, all numbers</li>
+<li>ACON's exact baselines (FIFO, Retrieval, LLMLingua, naive prompting) and their reported scores</li>
+<li>ContextBudget / Budget-Aware Context Management (Hu et al., 2026) — for Section 5</li>
+<li>LLMLingua paper for the token-pruning baseline characterization</li>
+<li>Claude Code's auto-compact behavior (95% threshold, was 77-78% mid-2025)</li>
+<li>OpenAI Codex server-side compaction documentation</li>
+<li>Cursor's history truncation approach</li>
+<li>Morph FlashCompact 2026 comparison piece — for the "every coding agent compresses" framing</li>
+<li>Factory.ai's 36K-message benchmark</li>
+<li>Current Anthropic Sonnet 4.6 / Opus 4.7 input pricing for cost calculations</li>
+<li>Tiktoken or equivalent tokenizer for <code>count_tokens()</code> helper</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- The general compression problem statement
+- The five signal types worth preserving (factual, action-outcome, environment, preconditions, decision cues — from ACON)
+- Distillation as a general technique
+- Decision frameworks for picking algorithms</p>
+<p><strong>Open question for drafting:</strong>
+- ACON's prompts: paraphrase from the paper or get permission to reproduce verbatim? Lean toward paraphrase + cite.
+- Budget-aware section: cite the GRPO-extension paper or just describe the approach? Probably describe + cite.</p>
+<p><strong>Cross-references:</strong>
+- Module 7 introduces compression as one of four strategies; this module is the algorithm-deep version
+- Module 9 builds the memory layer that compression discards into
+- Module 10 (hallucination) covers compressed-context hallucination
+- Module 17 (production) covers monitoring compression quality drift</p>
+</div>
+<div class="bullet-points">
+<h3>Module 8 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>Compression is a bet on what the agent won't need; good algorithms make better-calibrated bets</li>
+<li>ACON identifies five signal types worth preserving: factual, action-outcome, environment state, preconditions, decision cues</li>
+<li>Naive baselines (FIFO, sliding window, retrieval, LLMLingua) lose 30-50% task success — they drop the wrong things</li>
+<li>Anchored iterative summarization is the production default; pin entities/IDs/decisions, prose-summarize the rest</li>
+<li>ACON optimizes compression prompts in natural-language space using failure analysis — gradient-free, strong gains</li>
+<li>Budget-aware compression conditions decisions on remaining capacity; works with any base method</li>
+<li>Distilled compressors run a fine-tuned small model with ~95% of strong-model compression quality at lower cost</li>
+<li>Benchmark results: ACON-optimized recovers ~99% no-compression task success at ~27% the cost</li>
+</ul>
+</div>
+</body>
+</html>

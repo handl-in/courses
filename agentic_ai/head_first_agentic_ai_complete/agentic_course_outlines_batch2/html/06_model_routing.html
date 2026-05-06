@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 6 Outline — Choosing Models: Routing as Architecture</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 6 Outline — Choosing Models: Routing as Architecture</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 06 — OUTLINE</div>
+<div class="module-title">Choosing Models: Routing as Architecture</div>
+<div class="subtitle">Stop using one model for everything.<br>Routing is now first-class agent design — not optimization.</div>
+<div class="pages">Target length: ~36 pages</div>
+</div>
+<h2>What this module is</h2>
+<p>Most agent code uses one model — usually the strongest available — for every call. This is the simplest thing to write and almost always wrong. By 2026, <strong>model routing is architectural</strong>: which model handles which call is as fundamental a design decision as which tools live in your registry.</p>
+<p>This module covers three layers of routing: <strong>static</strong> (hard-code per role/agent), <strong>rule-based</strong> (heuristics on prompt features), <strong>classifier-based</strong> (a small model decides). Plus the cascading pattern, the cost/quality tradeoff curves, when each approach earns its keep, and a hardened router we plug into the Module 2 agent.</p>
+<p>By the end, the reader can take their existing single-model agent and route to a mix of Haiku/Sonnet/Opus (or equivalents) with a measured 40-70% cost reduction at equal or better quality — a number now well-documented in production case studies.</p>
+<div class="hook">
+<p>"You're paying for a brain surgeon to read your text messages. The surgeon is great at brain surgery and overqualified for everything else. The router is the receptionist who knows when to call the surgeon and when to handle it themselves."</p>
+</div>
+<hr />
+<h2>Section 1 — Why Model Routing Now Matters (≈3 pages)</h2>
+<p>The landscape has changed. In 2024, model choice was mostly: pick the strongest model you can afford. By 2026, the gap between tiers has both <strong>shrunk</strong> (smaller models are very capable) and <strong>grown</strong> (Opus/GPT-5 frontier models are genuinely better at hard reasoning).</p>
+<p>Two facts that drive routing economics:</p>
+<p><strong>Cost-per-token differs by 10-30×</strong> between tiers (Haiku vs Opus, Sonnet vs Opus, etc.). A million tokens through Opus at frontier pricing is meaningfully different from a million through Haiku.</p>
+<p><strong>Capability gap is task-dependent</strong>, not uniform. Recent research ("Scaling Small Agents Through Strategy Auctions," 2026): small agents hit ~87% of large agents' performance on simple tasks but only ~21% on complex tasks. Model size is a per-task decision, not a global choice.</p>
+<p>The architectural implication: an agent that uses one model for everything is leaving 40-70% cost on the table (a number consistently reported across LiteLLM, Portkey, OpenRouter, and Bifrost case studies in 2025-2026). And often quality on the table too — because the strong model is sometimes overkill (slower, more verbose) when a faster model would actually be better UX.</p>
+<div class="pullquote">
+<p>"Use the strongest model" is a confession that you haven't measured your workload.</p>
+</div>
+<div class="nodumbq">
+<p><strong>Q: Doesn't routing add latency? You're calling a classifier before every model call.</strong></p>
+<p>Yes — typically 50-200ms (per Augment Code's 2026 routing guide). For short, latency-sensitive calls, that overhead matters. For agent calls (typically 1-30 seconds each), it's noise. We discuss when routing latency is unacceptable in Section 7.</p>
+<p><strong>Q: My team uses one provider. Is routing only useful for multi-provider setups?</strong></p>
+<p>No. Within Anthropic alone you have Haiku, Sonnet, Opus — three tiers with ~20× cost spread. Same within OpenAI. Routing within a single provider is the most common case.</p>
+</div>
+<hr />
+<h2>Section 2 — Three Routing Strategies (≈4 pages)</h2>
+<p>A taxonomy. Each strategy fits different workloads.</p>
+<p><strong>Static routing.</strong> Per agent role, hardcode the model. The supervisor uses Opus, the workers use Sonnet, the validators use Haiku.</p>
+<pre><code class="language-python">ROLE_MODELS = {
+    &quot;supervisor&quot;: &quot;claude-opus-4-7&quot;,
+    &quot;worker&quot;: &quot;claude-sonnet-4-6&quot;,
+    &quot;validator&quot;: &quot;claude-haiku-4-5-20251001&quot;,
+    &quot;summarizer&quot;: &quot;claude-haiku-4-5-20251001&quot;,
+}
+
+def call(role: str, **kwargs):
+    return client.messages.create(model=ROLE_MODELS[role], **kwargs)
+</code></pre>
+<p>When it works: predictable workloads where roles map cleanly to complexity.
+When it breaks: complexity varies within a role (some validation tasks are trivial, some require deep reasoning).</p>
+<p><strong>Rule-based routing.</strong> Heuristics on the input itself.</p>
+<pre><code class="language-python">def pick_model(prompt: str, role: str) -&gt; str:
+    if role == &quot;supervisor&quot;:
+        return &quot;claude-opus-4-7&quot;
+    if &quot;analyze&quot; in prompt.lower() or &quot;compare&quot; in prompt.lower():
+        return &quot;claude-sonnet-4-6&quot;
+    if len(prompt) &gt; 5000:
+        return &quot;claude-sonnet-4-6&quot;
+    return &quot;claude-haiku-4-5-20251001&quot;
+</code></pre>
+<p>When it works: clear correlation between observable signals and model needs.
+When it breaks: silently — the rules are wrong on edge cases and you don't notice until quality degrades.</p>
+<p><strong>Classifier-based routing.</strong> A small model (or a fine-tuned BERT-class classifier) predicts complexity and routes accordingly. This is what RouteLLM (LMSYS), vLLM Semantic Router (Red Hat), and most production gateways use.</p>
+<pre><code class="language-python">async def pick_model_classifier(prompt: str) -&gt; str:
+    classification = await complexity_classifier.predict(prompt)
+    # classification.complexity ∈ [&quot;simple&quot;, &quot;moderate&quot;, &quot;complex&quot;]
+    # classification.confidence ∈ [0, 1]
+    if classification.confidence &lt; 0.7:
+        return &quot;claude-sonnet-4-6&quot;  # default to middle tier when uncertain
+    return {
+        &quot;simple&quot;:   &quot;claude-haiku-4-5-20251001&quot;,
+        &quot;moderate&quot;: &quot;claude-sonnet-4-6&quot;,
+        &quot;complex&quot;:  &quot;claude-opus-4-7&quot;,
+    }[classification.complexity]
+</code></pre>
+<p>When it works: workloads with enough variance to make rules unreliable; high enough volume to justify classifier training.
+When it breaks: classifier drift over time (workload changes, model evals shift), uncalibrated confidence scores.</p>
+<div class="brain">
+<p>You have three routing strategies and 100,000 calls/day. Which would you start with? Why? When would you upgrade to the next?</p>
+<p>(Hint: start static. Measure cost and quality per role. Add rules only when static breaks. Add a classifier only when rules can't capture the variance and the math justifies the engineering.)</p>
+</div>
+<hr />
+<h2>Section 3 — The Cascade Pattern (≈4 pages)</h2>
+<p>The most production-ready routing pattern. Try the cheapest model first; escalate only if needed.</p>
+<pre><code class="language-python">async def cascade_call(prompt: str, tools: list, judge_threshold: float = 0.7) -&gt; str:
+    # Tier 1: try Haiku
+    result_haiku = await call_model(&quot;claude-haiku-4-5-20251001&quot;, prompt, tools)
+
+    # Quality gate: did it actually work?
+    confidence = await judge_quality(prompt, result_haiku)
+    if confidence &gt;= judge_threshold:
+        return result_haiku
+
+    # Tier 2: escalate to Sonnet
+    result_sonnet = await call_model(&quot;claude-sonnet-4-6&quot;, prompt, tools)
+    confidence = await judge_quality(prompt, result_sonnet)
+    if confidence &gt;= judge_threshold:
+        return result_sonnet
+
+    # Tier 3: Opus
+    return await call_model(&quot;claude-opus-4-7&quot;, prompt, tools)
+</code></pre>
+<p>The economics: if 70% of calls succeed at Tier 1, you pay (0.7 × Haiku) + (0.3 × Haiku + Sonnet) for an effective cost much closer to Haiku than Sonnet, and you pay full Opus only for the hardest 5-10%.</p>
+<p><strong>Quality gates</strong> — how do you know Tier 1 succeeded?
+- Heuristic: did the response include all expected elements? (Length, format, mentioned all required entities.)
+- Self-evaluation: ask the model "did you answer this confidently?"
+- Judge model: a separate (cheap) call evaluates the response.
+- Tool failure: if the model gave up and returned "I don't know," escalate.
+- Schema validation: if structured output failed validation, escalate.</p>
+<p><strong>Pitfalls of cascade:</strong>
+- Quality gate is itself an LLM call → adds cost and latency
+- If the gate is wrong, you either escalate too much (cost) or not enough (quality)
+- Calibrating threshold is empirical — measure on your workload</p>
+<div class="postmortem">
+<p><strong>The Cascade That Cascaded Wrong</strong></p>
+<p>A team built a cascade with Haiku → Sonnet → Opus. They used self-evaluation as the gate ("rate your confidence 1-10"). After deployment, they discovered Haiku was rating itself 9/10 on every response — including responses that were obviously wrong. The cascade never escalated. They were paying Haiku prices and getting Haiku quality, but had told leadership they had "Opus quality with cost optimization."</p>
+<p><strong>Lesson:</strong> never use the same model to evaluate its own output. Use a different (often stronger) model as the judge, OR use heuristics, OR use a fine-tuned classifier — but not self-evaluation.</p>
+</div>
+<hr />
+<h2>Section 4 — Routing for Agents Specifically (≈4 pages)</h2>
+<p>Routing in chat is one thing. Routing in agents is harder because:</p>
+<p><strong>1. Each turn has different needs.</strong> The first turn (planning) is hard reasoning. Middle turns (executing) might be straightforward. The final turn (synthesis) is hard again. Static per-agent model choice can't capture this.</p>
+<p><strong>2. Tool selection complexity varies.</strong> "Should I use search or fetch?" is easy. "Given these 50 tools, which combination accomplishes the goal in the fewest steps?" is hard. Different turns need different reasoning depth.</p>
+<p><strong>3. Context grows.</strong> Token cost per turn rises monotonically. By turn 20, a single Opus call might cost $0.50. If you can drop to Sonnet for routine middle turns, you win big.</p>
+<p>A pattern: <strong>per-turn routing inside the agent loop.</strong></p>
+<pre><code class="language-python">class Agent:
+    def run(self, query: str) -&gt; AgentResult:
+        messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: query}]
+        for turn in range(self.budget.max_turns):
+            # Decide model for this turn
+            model = self.router.pick(
+                turn_index=turn,
+                messages=messages,
+                last_tool_result=self._last_tool_result(messages),
+            )
+
+            resp = self.client.messages.create(
+                model=model,
+                tools=self.tools.schemas(),
+                messages=messages,
+            )
+            ...
+</code></pre>
+<p>The router can use signals like:
+- Turn index (first/last turns get stronger models)
+- Last tool result (errors → strong model to recover; successful retrieval → cheap model to summarize)
+- Message count (later turns with more context might need stronger model OR might be routine)
+- Tools called so far (specific tool patterns indicate planning vs execution)</p>
+<div class="code-exercise">
+<p><strong>Exercise 6.1 — Per-turn router.</strong></p>
+<p>Take the hardened agent from Module 2. Add a <code>Router</code> class. Implement static-by-default with rule overrides for first turn (Opus), error recovery turns (Opus), and routine middle turns (Sonnet or Haiku). Measure cost and task completion on a provided eval set.</p>
+</div>
+<p><strong>A different pattern: sub-agent routing.</strong> When the orchestrator-workers pattern (Module 3) is involved, route at the worker-spawn level. A worker spawned to do "fact extraction" gets Haiku; a worker spawned to do "comparative analysis" gets Sonnet; the orchestrator that decided what workers to spawn used Opus.</p>
+<p>This is what Anthropic's Sub-Agents API supports natively (<code>model: sonnet | opus | haiku | &lt;full-id&gt; | inherit</code>).</p>
+<hr />
+<h2>Section 5 — Building a Production Router (≈5 pages)</h2>
+<p>We design a <code>Router</code> class for the agent. Requirements:</p>
+<ul>
+<li>Pluggable strategy (static, rules, classifier, cascade)</li>
+<li>Per-call cost tracking</li>
+<li>Per-call latency tracking</li>
+<li>Quality monitoring (samples N% of cheap-route calls for judge evaluation)</li>
+<li>Drift detection (cheap-route quality scores over time)</li>
+<li>Fallback on errors (if Opus is rate-limited, fall back to Sonnet rather than fail)</li>
+</ul>
+<pre><code class="language-python">class RoutingStrategy(Protocol):
+    def pick(self, context: RoutingContext) -&gt; str: ...
+
+class StaticStrategy:
+    def __init__(self, role_model_map: dict[str, str]): ...
+    def pick(self, context): return self.role_model_map[context.role]
+
+class RuleStrategy:
+    def __init__(self, rules: list[Rule], default: str): ...
+    def pick(self, context):
+        for rule in self.rules:
+            if rule.matches(context):
+                return rule.model
+        return self.default
+
+class ClassifierStrategy:
+    def __init__(self, classifier, model_map, confidence_threshold=0.7): ...
+    async def pick(self, context):
+        c = await self.classifier.predict(context)
+        if c.confidence &lt; self.confidence_threshold:
+            return self.model_map[&quot;default&quot;]
+        return self.model_map[c.complexity]
+
+class CascadeStrategy:
+    def __init__(self, tiers: list[str], judge): ...
+    async def execute(self, context):
+        for model in self.tiers:
+            result = await call_model(model, context)
+            if await self.judge.acceptable(context, result):
+                return model, result
+        return self.tiers[-1], result  # final tier wins by default
+
+class Router:
+    def __init__(self, strategy: RoutingStrategy, monitor: RouterMonitor): ...
+    async def call(self, context: RoutingContext, **kwargs):
+        model = await self._pick(context)
+        with self.monitor.track(model, context):
+            try:
+                return await call_model(model, **kwargs)
+            except RateLimitError:
+                fallback = self._fallback_for(model)
+                return await call_model(fallback, **kwargs)
+</code></pre>
+<p>We also build the <code>RouterMonitor</code> — Prometheus-style metrics for: model selection distribution, cost-per-route, escalation rate, judge-sampled quality scores per route, drift alarms.</p>
+<div class="gotcha">
+<p><strong>Don't optimize too early.</strong> Build static first. Measure. Only add complexity when measurement shows the simpler strategy is leaving real money on the table or hitting real quality issues. A team that ships a classifier-based router on day one usually spends three months tuning it before realizing their workload was simple enough that static would have done 90% as well.</p>
+</div>
+<hr />
+<h2>Section 6 — Cost &amp; Quality Measurement (≈4 pages)</h2>
+<p>You can't route what you don't measure. We build the measurement layer.</p>
+<p><strong>Per-route cost tracking.</strong> Every call, log: model, input tokens, output tokens, dollar cost (computed), wall-clock time. Aggregate by route, by hour, by user, by task type.</p>
+<p><strong>Quality measurement.</strong> Three approaches:</p>
+<ol>
+<li><strong>Outcome metrics</strong> (when available): did the agent complete the task? Did the user accept the output? Did downstream code run without errors?</li>
+<li><strong>Sampling judge.</strong> Take 1-5% of cheap-route calls, run them through a judge model (often Opus), score quality. Track over time.</li>
+<li><strong>Side-by-side eval.</strong> Periodically (weekly?) re-run a representative eval set with the cheap and expensive models. Compare. If the gap widens, the cheap route is degrading.</li>
+</ol>
+<p><strong>Drift detection.</strong> A classifier trained on Q3 data may not match Q1 workloads. A rule that worked in pilot might be wrong at scale. Alert on:
+- Sudden change in route distribution (was 60% Haiku, now 90% — what changed?)
+- Sudden change in escalation rate
+- Drop in judge-sampled quality
+- Increase in user-reported issues correlated with route</p>
+<div class="brain">
+<p>You're routing 1M calls/day. Sampling 1% for judge evaluation = 10K judge calls/day at, say, $0.05 each = $500/day in eval costs.</p>
+<p>Is this worth it? When would it not be?</p>
+<p>(Worth it almost always. The 1% sample tells you whether the other 99% is degrading. The alternative is finding out from angry users.)</p>
+</div>
+<hr />
+<h2>Section 7 — When NOT to Route (≈3 pages)</h2>
+<p>The contrarian section. Routing is great until it isn't.</p>
+<p><strong>Don't route when:</strong>
+- Latency budget is tight (&lt;1s end-to-end). Even 50ms classifier overhead is too much.
+- Volume is low (&lt;10K calls/day). The savings don't justify the complexity.
+- Workload is uniform. If 95% of your calls are the same task type, just pick the right model and skip the router.
+- You can't measure quality. If you have no signal whether the cheap route worked, you're flying blind. Build measurement first, then route.
+- The cost difference doesn't matter. If your spend is $50/month, optimizing routing is engineering theater.</p>
+<p><strong>Do route when:</strong>
+- Your bill is meaningful and your workload has variance
+- You have clear quality signals (outcome metrics, judge feasibility)
+- You're at scale where cost optimization compounds</p>
+<p>Routing is a real tool for real cost problems. It's also where teams over-engineer when they should just be picking the right model once and shipping.</p>
+<hr />
+<h2>Section 8 — Beyond Cost: Routing for Other Reasons (≈3 pages)</h2>
+<p>Cost is the obvious driver but not the only one.</p>
+<p><strong>Latency routing.</strong> When the user is waiting, prefer faster models. Haiku-class models often have 3-5× lower TTFT and are noticeably snappier. For interactive flows, route by latency budget regardless of cost.</p>
+<p><strong>Capability routing.</strong> Some tasks need multimodal (vision); route to a multimodal model. Some need very long context; route to a long-context model. Some need code generation; route to a code-specialized model.</p>
+<p><strong>Provider redundancy routing.</strong> When Provider A is down or rate-limiting, fall back to Provider B with comparable quality. This is a <em>resilience</em> concern, not a cost one. (LiteLLM, Portkey, OpenRouter all support this natively.)</p>
+<p><strong>Compliance/locality routing.</strong> EU users → EU-hosted models for GDPR. Sensitive content → on-prem model. PII detection → route around providers that log.</p>
+<div class="pullquote">
+<p>The router is your traffic policy layer. Cost is one policy. Latency is another. Compliance is another. Don't conflate them.</p>
+</div>
+<hr />
+<h2>Section 9 — What's Next (≈1 page)</h2>
+<p>Module 7 begins context engineering — once your agent is routing models well, the next leverage point is what each model sees in its context window.</p>
+<p>Module 8 covers compression algorithms (ACON, anchored summarization, budget-aware compression) — directly relevant to cost, since smaller context = lower cost regardless of which model you route to.</p>
+<p>Modules 9-12 build out memory, hallucination handling, reflection, and guardrails — each interacting with routing decisions.</p>
+<p>By Module 14 (multi-agent architectures) routing is everywhere: per-agent, per-role, per-turn, per-task.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>2 No Dumb Questions</li>
+<li>2 Brain Power prompts</li>
+<li>1 Production Postmortem (cascade self-eval failure)</li>
+<li>2 Watch It! / Gotcha blocks</li>
+<li>1 Code Exercise (per-turn router)</li>
+<li>2 Pullquotes</li>
+<li>~6 substantial code blocks</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam looks at the OpenRouter bill again — Module 1's bill, but worse now that the agent has more tools. PM asks: "Can you cut costs without sacrificing quality?" Sam adds static routing in Section 2 (saves 40%). Tries a classifier in Section 3 and accidentally builds the self-evaluation cascade from Section 3's postmortem (loses quality, doesn't notice for three weeks). Eventually settles on cascade with judge sampling in Section 6. Sam's arc this module: <strong>measure before optimizing, and never trust a model to grade itself</strong>.</p>
+</div>
+<div class="page-budget">
+<p>S1 (Why routing matters): 3p
+S2 (Three strategies): 4p
+S3 (Cascade): 4p
+S4 (Agent-specific routing): 4p
+S5 (Production router): 5p
+S6 (Measurement): 4p
+S7 (When not to): 3p
+S8 (Beyond cost): 3p
+S9 (Next): 1p
+Recurring elements: 5p
+TOTAL: ~36 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting (heavy verification needed — pricing and model specifics):</strong></p>
+<ul>
+<li>Current Anthropic model pricing (input/output per token for Haiku 4.5, Sonnet 4.6, Opus 4.7)</li>
+<li>Current OpenAI/Google/etc. pricing for cross-provider examples</li>
+<li>"Scaling Small Agents Through Strategy Auctions" (2026) — exact figures for the 87% / 21% claim</li>
+<li>RouteLLM (LMSYS) current API and capabilities</li>
+<li>vLLM Semantic Router (Iris v0.1, Jan 2026) — features, benchmarks</li>
+<li>LiteLLM, Portkey, OpenRouter, Bifrost — current feature comparison</li>
+<li>The "40-70% cost cut" headline — verify across multiple production case studies (Akshay Ghalme's 2026 piece is one source; find more)</li>
+<li>Augment Code's 2026 routing guide — for the 50-200ms classifier latency figure</li>
+<li>Anthropic Sub-Agents API model field options (sonnet, opus, haiku, full ID, inherit)</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- The cost-per-token tier structure (will exist in some form)
+- Static vs rule-based vs classifier-based taxonomy
+- Cascade pattern with quality gates
+- Self-evaluation failure mode
+- Drift detection principles</p>
+<p><strong>Cross-reference checks:</strong>
+- Module 3's "routing" workflow pattern is single-prompt routing; this module's routing is model selection. Make the distinction explicit
+- Module 14 will route per-agent in multi-agent systems; foreshadow but don't preempt</p>
+</div>
+<div class="bullet-points">
+<h3>Module 6 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>Model routing is now architecture, not optimization — driven by 10-30× cost spread between tiers</li>
+<li>Three strategies: static (per role), rule-based (heuristics), classifier-based (small model decides)</li>
+<li>The cascade pattern (Haiku → Sonnet → Opus with quality gates) is the most production-ready</li>
+<li>Quality gates can be heuristic, judge-model, or schema validation — never self-evaluation</li>
+<li>Per-turn routing inside the agent loop captures variance static routing misses</li>
+<li>Build static first. Measure. Add complexity only when measurement justifies it</li>
+<li>Don't route when latency-tight, low-volume, uniform workload, or no quality signal</li>
+<li>Routing serves cost, latency, capability, redundancy, and compliance — not all the same policy</li>
+</ul>
+</div>
+</body>
+</html>

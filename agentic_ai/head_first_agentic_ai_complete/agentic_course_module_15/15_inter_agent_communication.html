@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 15 — Inter-Agent Communication</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 15 — Inter-Agent Communication</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 15</div>
+<div class="module-title">Inter-Agent Communication</div>
+<div class="subtitle">The architecture from M14 says where the agents sit. Communication is what flows between them.<br>Get the protocols wrong and the architecture doesn't matter.</div>
+<div class="pages">~38 pages · the contracts, channels, and consensus mechanisms that distinguish working multi-agent systems from chaos</div>
+</div>
+<div class="hook">
+<p>The regulatory-research system shipped on a Tuesday. Sam's team had built it as orchestrator-worker, exactly per M14's framework: one orchestrator, four jurisdiction subagents (US, EU, APAC, Latin America), structured returns to a synthesizer.</p>
+<p>By Friday it was producing weird outputs.</p>
+<p>A compliance officer flagged the first case: a brief on cross-border data-flow regulation. The US subagent had returned that the relevant regulation "applied to all transfers of personal data exceeding 100 records." The EU subagent had returned that the <em>same</em> regulation "applied only to transfers exceeding 10,000 records, with exemptions for entities certified under the Adequacy Framework." The synthesizer, doing what it was prompted to do, had produced a single statement: "The regulation applies to transfers above a threshold; specific limits vary by jurisdiction."</p>
+<p>That sentence was, technically, true. It was also useless. The compliance officer wanted to know which threshold applied to <em>their</em> situation. The synthesizer had papered over the contradiction by abstracting it.</p>
+<p>Sam pulled the trace. Both subagents had grounded their findings in real sources — the US one had read the Cross-Border Data Flow Act; the EU one had read GDPR Article 45. They were reading <em>different regulations</em> and reporting them as the same one. The orchestrator's task description said "research the cross-border data-flow regulation," and each subagent had interpreted "the regulation" through the lens of its own jurisdiction.</p>
+<p>The architecture was right. The communication was wrong. The subagents had no way to <em>coordinate</em> on what they meant by "the regulation." The structured returns were structured but the <em>content</em> of those structures had silently diverged.</p>
+<p>Sam wrote the line: <em>"the architecture says where the agents sit. The communication says what flows between them. We got the architecture right and the communication wrong."</em></p>
+<p>The next thing Sam wrote was the title of a doc: <em>Inter-agent communication patterns for the regulatory-research system.</em> That doc became Module 15.</p>
+</div>
+<hr />
+<h2>What this module is</h2>
+<p>M14 covered the four canonical multi-agent architectures: orchestrator-worker, hierarchical, peer collaboration, swarm. The architectures define <em>where the agents sit</em> — the topology, the roles, the dispatch. This module covers <em>what flows between them</em> — the contracts, channels, protocols, and consensus mechanisms that turn an architecture into a working system.</p>
+<p>The cold open is a real failure mode. Two subagents producing structured outputs that <em>type-checked</em> but <em>contradicted</em> each other, with no mechanism to surface or resolve the contradiction. The architecture can't fix this on its own. Communication discipline can.</p>
+<p>This module covers:</p>
+<ul>
+<li><strong>Section 1</strong> — structured handoffs. The contract between agents that does more than just "return JSON"</li>
+<li><strong>Section 2</strong> — shared state and blackboard patterns. When agents need to read/write coordinated state, with the concurrency disciplines that prevent corruption</li>
+<li><strong>Section 3</strong> — voting and consensus mechanisms. When peer agents need to agree, including the underrated "tool-grounded consensus" pattern</li>
+<li><strong>Section 4</strong> — message-passing and async coordination. Idempotency, deduplication, the patterns from distributed systems that apply</li>
+<li><strong>Section 5</strong> — A2A and the cross-vendor protocols. Google's Agent2Agent standard, the relationship to MCP, when to use which</li>
+<li><strong>Section 6</strong> — emergent-behavior controls. Budget caps, deadlock prevention, observable coordination — the disciplines that distinguish working multi-agent systems from chaos</li>
+<li><strong>Section 7</strong> — Sam's regulatory-research system, post-fix</li>
+<li><strong>Section 8</strong> — the framework</li>
+</ul>
+<p>By the end of this module:</p>
+<ul>
+<li>You'll have working code for structured handoffs that do more than type-check — they enforce semantic agreement</li>
+<li>You'll know when blackboards beat point-to-point communication and when they don't</li>
+<li>You'll understand the four consensus mechanisms (majority voting, weighted voting, deliberation, tool-grounded) and which to use when</li>
+<li>You'll be able to design multi-agent systems whose communication patterns are debuggable, observable, and bounded</li>
+</ul>
+<p>The connection to M14: M14 tells you which architecture. M15 tells you how to make that architecture actually work in production. Together they cover the multi-agent design space.</p>
+<div class="pullquote">
+<p>The best multi-agent architecture in the world fails if the agents can't communicate cleanly. Structured returns aren't enough — they enforce types, not meaning. The communication discipline is what closes the gap between "the system runs" and "the system produces correct results."</p>
+</div>
+<hr />
+<h2>Section 1 — Structured Handoffs Beyond Type Safety</h2>
+<p>M14's <code>WorkerTask</code> and <code>WorkerResult</code> Pydantic models are the starting point. They're necessary but not sufficient.</p>
+<p>The Sam case from the cold open shows why. Both jurisdiction subagents returned valid <code>WorkerResult</code> objects with correctly-typed <code>findings</code> dicts. The Pydantic validation passed. The synthesizer accepted the results. The contradiction was invisible to the type system because the <em>meaning</em> of "the regulation" had drifted between subagents.</p>
+<p>Effective handoffs do four things, not one:</p>
+<p><strong>1. Type-check the structure</strong> (Pydantic, JSON Schema)
+<strong>2. Anchor the semantics</strong> (shared identifiers, explicit references)
+<strong>3. Surface uncertainty and disagreement</strong> (confidence, obstacles, contested claims)
+<strong>4. Make context portable</strong> (everything the receiver needs, with no implicit assumptions)</p>
+<p>The Pydantic schemas from M14 handle (1). Sections 1.1-1.4 add the rest.</p>
+<h3>1.1 Anchor the semantics</h3>
+<p>The fix for Sam's contradiction wasn't a better type system. It was <em>grounding the references</em>. Each subagent's findings had to be tagged with the <em>specific regulation</em> it was about, not "the regulation" generically.</p>
+<pre><code class="language-python">from pydantic import BaseModel, Field
+from typing import Literal
+
+
+class RegulationReference(BaseModel):
+    &quot;&quot;&quot;A specific, identifiable regulation. Not 'the regulation' generically.&quot;&quot;&quot;
+    jurisdiction: Literal[&quot;US&quot;, &quot;EU&quot;, &quot;APAC&quot;, &quot;LATAM&quot;]
+    short_name: str  # e.g., &quot;GDPR Article 45&quot;
+    full_citation: str  # &quot;Regulation (EU) 2016/679 Article 45&quot;
+    effective_date: str  # ISO date
+    source_url: str | None = None
+
+
+class JurisdictionFinding(BaseModel):
+    finding_id: str  # globally unique
+    regulation: RegulationReference  # WHICH regulation this finding is about
+    claim: str  # what the finding says
+    confidence: float = Field(ge=0.0, le=1.0)
+    source_quote: str  # verbatim text from the source
+    source_location: str  # paragraph, section, page
+
+    # Cross-reference: does this finding contradict, complement, or extend
+    # findings from other jurisdictions about adjacent regulations?
+    relates_to: list[str] = []  # finding_ids from other jurisdictions
+    relationship_type: Literal[&quot;contradicts&quot;, &quot;complements&quot;, &quot;extends&quot;, &quot;independent&quot;] | None = None
+</code></pre>
+<p>Two structural changes from a naive <code>findings: dict</code>:</p>
+<p><strong>The <code>RegulationReference</code> is its own type.</strong> Subagents can't drop free-text "the regulation" — they have to specify which one. Two subagents reporting on different regulations now produce findings that visibly reference different <code>RegulationReference</code> objects. The contradiction in Sam's cold open becomes visible at the schema layer.</p>
+<p><strong>The <code>relates_to</code> and <code>relationship_type</code> fields make cross-jurisdiction relationships explicit.</strong> A subagent that finds a regulation similar to one another subagent reported on flags the relationship: <em>"this complements US Cross-Border Data Flow Act," "this contradicts the threshold reported by the EU subagent," etc.</em> The synthesizer now has structured information about how findings relate, not just isolated structured returns.</p>
+<p>This is the M10 lesson from hallucinations applied to inter-agent communication: <strong>provenance and explicit identity prevent the model from silently conflating distinct things.</strong></p>
+<h3>1.2 Surface uncertainty and disagreement</h3>
+<p>A handoff that says "here's my finding" omits the most important production information: <em>how confident is this finding, and what couldn't I figure out?</em></p>
+<pre><code class="language-python">class WorkerOutput(BaseModel):
+    task_id: str
+    status: Literal[&quot;complete&quot;, &quot;partial&quot;, &quot;blocked&quot;]
+
+    findings: list[JurisdictionFinding]
+
+    # The &quot;what I couldn't do&quot; channel
+    obstacles: list[str] = []
+    open_questions: list[str] = []
+    information_gaps: list[str] = []
+
+    # Self-assessment
+    overall_confidence: float = Field(ge=0.0, le=1.0)
+    recommended_followups: list[str] = []
+</code></pre>
+<p>The discipline: workers must report what they didn't accomplish, not just what they did. A subagent that says "complete" with <code>obstacles=[]</code> and <code>confidence=1.0</code> has either done excellent work or hidden problems. A subagent that says "partial" with explicit <code>obstacles=["Could not find effective date for EU Adequacy Framework decision"]</code> is being honest about the limits of its work — and the synthesizer can act on that information.</p>
+<p>Anthropic's Claude Code subagents documentation makes this explicit: <em>"If you can't complete the task, return partial results with explicit obstacles."</em> The "obstacles" channel is part of the contract, not an exception path.</p>
+<h3>1.3 Make context portable</h3>
+<p>The receiver of a handoff has no access to the sender's context. They see only what's in the handoff. So the handoff must be self-contained.</p>
+<p>The mistake teams make: a worker's output assumes the synthesizer "knows" something — knows the user's original question, knows the worker's task scope, knows what the worker tried that didn't work. The worker's context has all this; the synthesizer's context has only the structured handoff.</p>
+<p>The fix: every handoff includes the relevant context. Not the worker's full context (that defeats the purpose of context isolation), but the <em>specific framing the receiver needs</em>.</p>
+<pre><code class="language-python">class CompleteHandoff(BaseModel):
+    # The output (Section 1.2)
+    output: WorkerOutput
+
+    # The context that travels with it
+    original_task: WorkerTask  # what was asked
+    interpretation: str  # how the worker understood the task
+    scope_decisions: list[str] = []  # what the worker decided was in/out of scope
+    methodology: str  # how the worker approached it (in 1-2 sentences)
+    sources_consulted: list[str]  # references to what was read/queried
+</code></pre>
+<p>The <code>interpretation</code> field is doing important work. It surfaces the moment when a subagent might silently misinterpret the task. In Sam's regulatory case, each subagent's <code>interpretation</code> would have read something like <em>"researched cross-border data-flow regulation in [my jurisdiction]"</em> — making the divergence visible to the synthesizer rather than hidden in the findings.</p>
+<p>When the synthesizer sees four <code>interpretation</code> strings that point to different actual regulations, that's a signal to surface the discrepancy to the user, not paper over it.</p>
+<h3>1.4 The handoff lifecycle</h3>
+<p>A handoff isn't a single message. It's a lifecycle:</p>
+<p><strong>1. Dispatch</strong> — orchestrator hands a task to worker (the M14 <code>WorkerTask</code>)
+<strong>2. Acknowledgment</strong> — worker confirms receipt and intended interpretation
+<strong>3. Progress</strong> (optional) — worker reports milestones for long-running work
+<strong>4. Return</strong> — worker delivers the structured output (<code>CompleteHandoff</code> above)
+<strong>5. Reception</strong> — orchestrator validates and integrates</p>
+<p>The acknowledgment step is the underrated one. For high-stakes work, asking the worker to <em>restate the task in their own words before starting</em> catches misinterpretations early — much cheaper than discovering them after the worker has done the wrong work.</p>
+<pre><code class="language-python">async def dispatch_with_acknowledgment(
+    worker_id: str,
+    task: WorkerTask,
+) -&gt; WorkerOutput:
+    # Step 1: send task
+    # Step 2: get acknowledgment with interpretation
+    ack = await worker_acknowledge(worker_id, task)
+
+    # Optional: validate interpretation matches intent
+    if not interpretation_matches(task, ack.interpretation):
+        # Re-dispatch with clarifying context, or escalate to user
+        clarified_task = await clarify_task(task, ack.interpretation)
+        return await dispatch_with_acknowledgment(worker_id, clarified_task)
+
+    # Step 3: actual execution; step 4: return; step 5: reception
+    return await worker_execute(worker_id, task)
+</code></pre>
+<p>For Sam's regulatory case, this would have caught the problem at step 2: when each subagent's acknowledgment said "I will research [the specific regulation in my jurisdiction]," the orchestrator would have noticed the divergence — four different regulations being researched under one task description — and either clarified ("Yes, research each jurisdiction's analogous regulation") or split into four explicitly different tasks.</p>
+<div class="nodumbq">
+<p><strong>Q: This adds a lot of overhead to handoffs. Isn't it overkill for routine work?</strong></p>
+<p>For routine work, yes. The four-element handoff (semantic anchoring, uncertainty, portable context, lifecycle) earns its place when handoffs are <em>high-stakes</em> — when getting them wrong has real consequences. For low-stakes coordination (a worker that does a quick lookup and returns a value), simple Pydantic returns are fine. The discipline scales with the cost of misunderstanding. Sam's regulatory system is high-stakes; the customer-success bot's tool calls are not. Different handoffs need different rigor.</p>
+<p><strong>Q: Doesn't the acknowledgment step double the latency?</strong></p>
+<p>It adds a roundtrip, yes. For interactive systems, that's often unacceptable. For batch systems (research, analysis, planning), the roundtrip is rounding error and the misinterpretation prevention is worth it. For high-volume systems, you can use the acknowledgment pattern selectively — for the first dispatch of a new task type, then trust the pattern for repeated dispatches once you've validated worker interpretation is reliable.</p>
+</div>
+<hr />
+<h2>Section 2 — Shared State and Blackboards</h2>
+<p>The handoff patterns from Section 1 are point-to-point: orchestrator to worker, worker back to orchestrator. They work well when communication is bilateral and structured.</p>
+<p>Some multi-agent patterns require <em>shared state</em> — a place where multiple agents can read each other's work in progress, post findings as they're discovered, and converge on solutions incrementally. The classic name for this is the <strong>blackboard architecture</strong>, dating back to 1970s AI research. It's enjoyed a renaissance in 2024-2026 multi-agent LLM systems.</p>
+<h3>What blackboard architecture is</h3>
+<p>A blackboard is a shared data store. Agents:</p>
+<ul>
+<li><strong>Read</strong> the blackboard to see what other agents have contributed</li>
+<li><strong>Write</strong> their own findings, claims, or partial solutions to the blackboard</li>
+<li><strong>Watch</strong> the blackboard for changes and respond when relevant</li>
+</ul>
+<p>Communication is <em>indirect</em>: agents don't message each other directly. They post to the shared store and read others' posts. The blackboard is the medium.</p>
+<p>The bMAS paper (July 2025) showed blackboard-based LLM multi-agent systems outperforming static MAS designs by an average 4.33% on reasoning benchmarks while using fewer tokens. The architecture lets agents contribute <em>opportunistically</em> — whichever agent has relevant insight at any moment can post it; others read and build on it.</p>
+<h3>When blackboards earn their place</h3>
+<p>Three cases:</p>
+<p><strong>1. The right decomposition isn't known up front.</strong> Orchestrator-worker requires the orchestrator to plan: "Worker A does X, Worker B does Y." For tasks where the structure emerges as you work — exploratory research, collaborative debugging, open-ended design — the blackboard's opportunistic contribution model handles the dynamism better.</p>
+<p><strong>2. Agents naturally have overlapping but distinct expertise.</strong> A team of specialists where any one of them might have the relevant insight at any moment. The blackboard lets each post when their expertise applies; the system doesn't have to predict ahead of time which specialist matters when.</p>
+<p><strong>3. Iterative refinement of a shared artifact.</strong> A document being drafted by multiple agents, each contributing a section. A plan being refined by multiple perspectives. The blackboard <em>is</em> the artifact, and the agents shape it together.</p>
+<h3>When blackboards don't</h3>
+<ul>
+<li><strong>When orchestrator-worker would have worked.</strong> If the decomposition is clean, the centralized control of orchestrator-worker is easier to reason about.</li>
+<li><strong>High-volume routine work.</strong> Blackboard's opportunistic model has overhead; for tasks where the structure is well-known, point-to-point handoffs are cheaper.</li>
+<li><strong>When concurrency is hard to manage.</strong> Multiple agents writing to a blackboard simultaneously creates concurrency issues. Section 2.3 covers the discipline; if your team can't operate it, blackboards are a liability.</li>
+</ul>
+<h3>A working blackboard implementation</h3>
+<pre><code class="language-python">from datetime import datetime
+from typing import Optional
+
+
+class BlackboardEntry(BaseModel):
+    entry_id: str
+    author_agent: str  # which agent posted this
+    timestamp: datetime
+    section: str  # which part of the blackboard (see schema discussion below)
+    content: dict
+    references: list[str] = []  # other entry_ids this builds on
+    confidence: float = Field(ge=0.0, le=1.0)
+    revision_of: Optional[str] = None  # if this revises a prior entry
+
+
+class Blackboard:
+    &quot;&quot;&quot;
+    A simple in-memory blackboard. Production version would use a database
+    with proper concurrency control (Section 2.3).
+    &quot;&quot;&quot;
+    def __init__(self):
+        self._entries: dict[str, BlackboardEntry] = {}
+        self._lock = asyncio.Lock()
+        self._subscribers: dict[str, list[callable]] = {}  # section -&gt; callbacks
+
+    async def post(self, entry: BlackboardEntry):
+        async with self._lock:
+            self._entries[entry.entry_id] = entry
+            # Notify subscribers
+            for subscriber in self._subscribers.get(entry.section, []):
+                asyncio.create_task(subscriber(entry))
+
+    async def read(
+        self,
+        *,
+        section: str | None = None,
+        author: str | None = None,
+        since: datetime | None = None,
+    ) -&gt; list[BlackboardEntry]:
+        async with self._lock:
+            results = list(self._entries.values())
+            if section:
+                results = [e for e in results if e.section == section]
+            if author:
+                results = [e for e in results if e.author_agent == author]
+            if since:
+                results = [e for e in results if e.timestamp &gt; since]
+            return results
+
+    def subscribe(self, section: str, callback: callable):
+        &quot;&quot;&quot;Register a callback that fires when entries are posted to a section.&quot;&quot;&quot;
+        self._subscribers.setdefault(section, []).append(callback)
+</code></pre>
+<p>The <code>Blackboard</code> class is the medium. Each agent reads relevant sections, performs its work, and posts back. The <code>subscribe</code> mechanism lets agents react to specific updates rather than polling.</p>
+<h3>2.1 Designing the blackboard schema</h3>
+<p>The single most important decision in a blackboard architecture is the <em>schema</em> — what sections exist, what writes go where, what each section contains.</p>
+<p>The mindra production wisdom from December 2025: <em>"Design your blackboard schema so that different agents write to different, non-overlapping sections wherever possible."</em> Conflict-free design beats conflict-resolution code.</p>
+<p>For a research-style blackboard:</p>
+<pre><code class="language-python">BLACKBOARD_SCHEMA = {
+    &quot;facts&quot;: {
+        &quot;description&quot;: &quot;Established factual claims with sources&quot;,
+        &quot;writers&quot;: [&quot;jurisdiction_subagents&quot;, &quot;fact_checker&quot;],
+        &quot;readers&quot;: [&quot;all&quot;],
+    },
+    &quot;open_questions&quot;: {
+        &quot;description&quot;: &quot;Questions that have surfaced but aren't yet answered&quot;,
+        &quot;writers&quot;: [&quot;all&quot;],
+        &quot;readers&quot;: [&quot;all&quot;],
+    },
+    &quot;contradictions&quot;: {
+        &quot;description&quot;: &quot;Conflicting claims that need adjudication&quot;,
+        &quot;writers&quot;: [&quot;all&quot;],
+        &quot;readers&quot;: [&quot;orchestrator&quot;, &quot;synthesizer&quot;],
+    },
+    &quot;synthesis_drafts&quot;: {
+        &quot;description&quot;: &quot;Partial syntheses that the orchestrator builds incrementally&quot;,
+        &quot;writers&quot;: [&quot;orchestrator&quot;, &quot;synthesizer&quot;],
+        &quot;readers&quot;: [&quot;all&quot;],
+    },
+    &quot;metadata&quot;: {
+        &quot;description&quot;: &quot;Coordination state: who's doing what, what's complete&quot;,
+        &quot;writers&quot;: [&quot;orchestrator&quot;],
+        &quot;readers&quot;: [&quot;all&quot;],
+    },
+}
+</code></pre>
+<p>Each section has clear writers and readers. Most writes are isolated to specific sections by author class. Conflicts are minimized structurally.</p>
+<h3>2.2 The blackboard cycle</h3>
+<p>A typical blackboard system follows a cycle:</p>
+<ol>
+<li><strong>Orchestrator posts the goal</strong> to the metadata section</li>
+<li><strong>Specialists read</strong> what's been posted; some find their expertise applies</li>
+<li><strong>Specialists post</strong> findings to relevant sections</li>
+<li><strong>Other specialists read</strong> new posts; build on or contradict them</li>
+<li><strong>Orchestrator monitors</strong> the contradictions section; adjudicates</li>
+<li><strong>Synthesizer reads</strong> facts + adjudicated contradictions; posts synthesis_drafts</li>
+<li><strong>Cycle continues</strong> until termination criteria met</li>
+</ol>
+<p>The bMAS paper formalizes this: <em>"This iterative, context-driven orchestration allows the system to adapt collaboration patterns to each task instance, providing substantial flexibility when problem structures are ill-defined or evolve over time."</em></p>
+<p>Termination is the under-discussed part. A blackboard cycle can run forever if there's no clear stopping criterion. Common patterns:</p>
+<ul>
+<li><strong>Decider agent</strong> explicitly signals termination based on blackboard state</li>
+<li><strong>Majority consensus</strong> — agents vote that the synthesis is complete</li>
+<li><strong>Bounded iterations</strong> — hard cap (e.g., 4 cycles per the bMAS implementation)</li>
+<li><strong>Convergence detection</strong> — if the last N cycles produced no new entries, stop</li>
+</ul>
+<p>For production, all four are typically used together: bounded iterations as a safety cap, convergence detection as the primary signal, decider agent as the explicit termination, majority consensus as a check on the decider.</p>
+<h3>2.3 Concurrency: the operational reality</h3>
+<p>Blackboards introduce concurrency problems that point-to-point handoffs avoid. Multiple agents writing simultaneously can:</p>
+<ul>
+<li><strong>Conflict on the same section.</strong> Two agents posting findings about the same fact at once.</li>
+<li><strong>Race on revisions.</strong> Agent A reads entry X, plans a revision; Agent B reads X first, posts a revision; Agent A's revision (based on the now-stale X) overwrites B's.</li>
+<li><strong>Deadlock through dependencies.</strong> Agent A waits for Agent B's post; Agent B waits for Agent A's. Neither posts.</li>
+</ul>
+<p>The disciplines:</p>
+<p><strong>Schema-based isolation.</strong> Different agents write to different sections by design. If specialist A writes only to <code>facts</code>, specialist B writes only to <code>synthesis_drafts</code>, they never conflict.</p>
+<p><strong>Optimistic concurrency.</strong> Each entry has a version number. When revising, the revising agent specifies which version it's revising. If the version has changed, the revision is rejected and the agent re-reads. Standard CAS pattern from distributed systems.</p>
+<p><strong>Append-only patterns.</strong> Don't update entries; post new ones that reference the old. The history is preserved; the latest is the authoritative. Trades storage for simplicity.</p>
+<p><strong>Bounded iterations and timeouts.</strong> Every blackboard operation has a timeout. Every cycle has a maximum duration. Deadlocks become timeouts; the system makes progress (possibly with degraded results) rather than hanging.</p>
+<pre><code class="language-python">async def post_with_optimistic_concurrency(
+    blackboard: Blackboard,
+    entry: BlackboardEntry,
+    *,
+    expected_predecessor_version: int | None = None,
+):
+    &quot;&quot;&quot;Post with optimistic concurrency check.&quot;&quot;&quot;
+    if entry.revision_of and expected_predecessor_version is not None:
+        async with blackboard._lock:
+            existing = blackboard._entries.get(entry.revision_of)
+            if existing and existing.version != expected_predecessor_version:
+                raise ConcurrencyConflict(
+                    f&quot;Entry {entry.revision_of} has been modified &quot;
+                    f&quot;(expected version {expected_predecessor_version}, &quot;
+                    f&quot;actual {existing.version})&quot;
+                )
+    await blackboard.post(entry)
+</code></pre>
+<div class="gotcha">
+<p>A common blackboard failure: agents that don't watch for relevance. The blackboard accumulates many entries; agents read everything every cycle. The token cost explodes; the agents lose the signal in noise. The fix: agents subscribe to <em>specific sections</em> relevant to their expertise, not the whole blackboard. The "monitor everything" pattern is exactly the M7 context-rot problem at the multi-agent layer.</p>
+</div>
+<hr />
+<h2>Section 3 — Voting and Consensus</h2>
+<p>When multiple agents work on the same problem (peer collaboration from M14, or a blackboard with multiple specialists posting to the same section), the question becomes: <em>how do we decide which answer wins?</em></p>
+<p>Four canonical mechanisms.</p>
+<h3>Mechanism 1: Majority voting</h3>
+<p>The simplest. N agents independently produce an answer; the most common answer wins.</p>
+<pre><code class="language-python">from collections import Counter
+
+
+async def majority_vote(
+    question: str,
+    *,
+    n_agents: int = 5,
+    model: str = &quot;claude-sonnet-4-6&quot;,
+) -&gt; dict:
+    &quot;&quot;&quot;Run N agents on the same question; majority wins.&quot;&quot;&quot;
+    answers = await asyncio.gather(*[
+        run_agent(question, model=model, temperature=0.7)  # diversity from temperature
+        for _ in range(n_agents)
+    ])
+
+    # Cluster similar answers; pick most common
+    clustered = cluster_semantic_answers(answers)  # group by similarity
+    counts = Counter(c.canonical_form for c in clustered)
+    winner, count = counts.most_common(1)[0]
+
+    return {
+        &quot;answer&quot;: winner,
+        &quot;vote_count&quot;: count,
+        &quot;total_agents&quot;: n_agents,
+        &quot;agreement_rate&quot;: count / n_agents,
+        &quot;all_answers&quot;: answers,
+    }
+</code></pre>
+<p>Strengths: simple, robust against single-agent errors, the agreement_rate is itself signal (low agreement → low confidence).</p>
+<p>Weaknesses: <strong>all agents weighted equally</strong>. A weak agent's vote counts as much as a strong one's. <strong>Consensus on wrong answers is possible</strong> — if the model has a systematic bias, all agents might produce the same wrong answer.</p>
+<p>When to use: classification tasks, multiple-choice, structured outputs where "is the answer X or Y?" has a clean comparison.</p>
+<h3>Mechanism 2: Weighted voting</h3>
+<p>Different agents have different weights based on their reliability or expertise.</p>
+<pre><code class="language-python">class WeightedAgent(BaseModel):
+    agent_id: str
+    weight: float
+    expertise_areas: list[str]
+
+
+async def weighted_vote(
+    question: str,
+    agents: list[WeightedAgent],
+    relevant_expertise: str | None = None,
+) -&gt; dict:
+    &quot;&quot;&quot;Weight votes by agent reliability and expertise relevance.&quot;&quot;&quot;
+    answers = await asyncio.gather(*[
+        run_agent_by_id(agent.agent_id, question)
+        for agent in agents
+    ])
+
+    # Compute effective weights: base weight × expertise relevance
+    weights = []
+    for agent, answer in zip(agents, answers):
+        weight = agent.weight
+        if relevant_expertise and relevant_expertise in agent.expertise_areas:
+            weight *= 1.5  # boost agents with relevant expertise
+        weights.append(weight)
+
+    # Sum weights by answer cluster
+    clustered = cluster_semantic_answers(answers)
+    weighted_counts = {}
+    for cluster, weight in zip(clustered, weights):
+        weighted_counts[cluster.canonical_form] = (
+            weighted_counts.get(cluster.canonical_form, 0) + weight
+        )
+
+    winner = max(weighted_counts.items(), key=lambda x: x[1])
+    return {
+        &quot;answer&quot;: winner[0],
+        &quot;weighted_score&quot;: winner[1],
+        &quot;total_weight&quot;: sum(weights),
+        &quot;confidence&quot;: winner[1] / sum(weights),
+    }
+</code></pre>
+<p>Strengths: incorporates known reliability differences, handles heterogeneous agent quality.</p>
+<p>Weaknesses: <strong>the weights themselves can be wrong</strong>. Bad weight calibration is worse than uniform weights — you've systematically tilted toward an unreliable agent.</p>
+<p>When to use: when you have empirical evidence about agent reliability (from past evaluations), or genuine expertise differences (the medical agent's vote on medical questions outweighs the general agent's).</p>
+<h3>Mechanism 3: Deliberation</h3>
+<p>Agents see each other's outputs and can revise their positions before a final vote. The 2024-2026 literature on multi-agent debate is essentially this.</p>
+<pre><code class="language-python">async def deliberation_vote(
+    question: str,
+    agents: list[str],
+    rounds: int = 2,
+) -&gt; dict:
+    &quot;&quot;&quot;
+    Round 1: each agent independent answer.
+    Round 2+: each agent sees others' answers, can revise.
+    Final: vote on revised answers.
+    &quot;&quot;&quot;
+    # Round 1: independent answers
+    current_answers = await asyncio.gather(*[
+        run_agent(agent, question) for agent in agents
+    ])
+
+    # Subsequent rounds: revise with knowledge of others
+    for round_num in range(rounds - 1):
+        revised = await asyncio.gather(*[
+            revise_answer(
+                agent, question,
+                my_answer=current_answers[i],
+                other_answers=[a for j, a in enumerate(current_answers) if j != i],
+            )
+            for i, agent in enumerate(agents)
+        ])
+        current_answers = revised
+
+    # Final vote on the deliberated answers
+    return majority_vote_from_answers(current_answers)
+</code></pre>
+<p>Strengths: agents can correct each other; captures the M11 reflection benefit at the consensus layer.</p>
+<p>Weaknesses: <strong>convergence to majority can suppress correct minority views</strong> — if 4 of 5 agents are wrong, the 5th may revise toward the wrong consensus. The classic groupthink failure mode applies. Also costs more (rounds × n_agents calls).</p>
+<p>When to use: open-ended questions where reasoning matters, where seeing others' arguments has real value. Don't use when the right answer is unambiguous and you just need verification.</p>
+<h3>Mechanism 4: Tool-grounded consensus</h3>
+<p>The Fastio framing from February 2026: <em>"Sometimes consensus is about fact, not opinion. If Agent A says X = 5 and Agent B says X = 7, you don't need a vote; you need a calculator."</em></p>
+<p>When agents disagree on something <em>verifiable</em>, don't vote — query a deterministic source.</p>
+<pre><code class="language-python">async def tool_grounded_consensus(
+    question: str,
+    agents: list[str],
+    verification_tools: dict[str, callable],
+) -&gt; dict:
+    &quot;&quot;&quot;
+    Run agents; if they disagree on facts, query tools for ground truth.
+    &quot;&quot;&quot;
+    answers = await asyncio.gather(*[run_agent(agent, question) for agent in agents])
+
+    # Extract claims from each answer
+    claims = await extract_claims_from_answers(answers)
+
+    # For each disputed claim, find a tool that can verify
+    disputes = identify_disputes(claims)
+    verifications = []
+    for dispute in disputes:
+        tool = find_relevant_tool(dispute, verification_tools)
+        if tool:
+            ground_truth = await tool(dispute.subject)
+            verifications.append({
+                &quot;dispute&quot;: dispute,
+                &quot;ground_truth&quot;: ground_truth,
+                &quot;agents_aligned_with_truth&quot;: [
+                    a for a in agents if a.claim_matches(ground_truth)
+                ],
+            })
+
+    return {
+        &quot;agent_answers&quot;: answers,
+        &quot;verifications&quot;: verifications,
+        &quot;final_answer&quot;: construct_answer_from_verified_facts(answers, verifications),
+    }
+</code></pre>
+<p>Strengths: <strong>grounds consensus in objective reality rather than statistical agreement</strong>. When the facts are checkable, this is strictly better than voting.</p>
+<p>Weaknesses: requires verification tools for the relevant facts. For purely subjective questions ("is this design elegant?") no tool helps.</p>
+<p>When to use: any disagreement that's verifiable. Math, logic, queries against authoritative sources, computations. <em>Always prefer this over voting when it applies.</em></p>
+<h3>Choosing the right mechanism</h3>
+<p>A decision tree:</p>
+<ol>
+<li><strong>Is the disagreement about something verifiable?</strong> → Tool-grounded consensus. Don't vote on facts.</li>
+<li><strong>Are the agents heterogeneous in known reliability?</strong> → Weighted voting.</li>
+<li><strong>Does the question benefit from agents seeing each other's reasoning?</strong> → Deliberation. Carefully — watch for groupthink.</li>
+<li><strong>None of the above?</strong> → Majority voting. Simple; robust against individual errors.</li>
+</ol>
+<p>The Sam regulatory case from the cold open is a tool-grounded consensus problem dressed up as a contradiction. The subagents weren't disagreeing on opinion; they were grounded in <em>different actual regulations</em>. The fix wasn't to vote — it was to make explicit which regulation each was grounded in (Section 1's semantic anchoring), then surface the difference to the user. No vote needed; the underlying facts were verifiable through citation.</p>
+<div class="brain">
+<p>A peer-collaboration system has three explorers each propose an architecture for a new feature. Two propose using a queue-based pattern; one proposes a synchronous RPC pattern. Should the system majority-vote, deliberate, or use tool-grounded consensus?</p>
+<p>(Probably deliberation, possibly weighted voting if the explorers have known reliability differences. Definitely not naive majority voting — architecture is not a popularity contest. Tool-grounded consensus doesn't apply because there's no objective "correct architecture." The right move: round-2 revision where each explorer sees the others' arguments. If after revision two still favor queue-based and the third has updated reasons for synchronous RPC, the critic synthesizes the trade-off. The vote isn't the answer; the <em>reasoning</em> is.)</p>
+</div>
+<hr />
+<h2>Section 4 — Message-Passing and Async Coordination</h2>
+<p>The patterns above are coordination <em>within</em> a request. Some multi-agent systems need coordination <em>across</em> requests, across time, across separate sessions. This is the territory where distributed-systems patterns from the past 30 years apply directly.</p>
+<h3>4.1 Idempotency</h3>
+<p>A message processed twice should produce the same result as processing once. This matters because in any real system, messages will sometimes be delivered twice.</p>
+<pre><code class="language-python">class IdempotencyKey(BaseModel):
+    request_id: str
+    operation: str
+    timestamp: datetime
+
+
+async def process_with_idempotency(
+    message: Message,
+    *,
+    seen_keys: set[str],
+):
+    key = f&quot;{message.request_id}:{message.operation}&quot;
+    if key in seen_keys:
+        # Already processed; return cached result
+        return get_cached_result(key)
+
+    result = await actually_process(message)
+    seen_keys.add(key)
+    cache_result(key, result)
+    return result
+</code></pre>
+<p>For LLM agent operations, idempotency is harder than for simple CRUD: an agent's response depends on context, and "processing twice" might involve a stale context. The discipline:</p>
+<ul>
+<li><strong>Tag every message with a unique request_id.</strong> Agents check this before processing.</li>
+<li><strong>Cache results keyed by (request_id, operation).</strong> Repeated requests return cached results.</li>
+<li><strong>For state-mutating operations</strong>, idempotency is non-negotiable. M16's saga discipline relies on it.</li>
+</ul>
+<h3>4.2 Message ordering and causality</h3>
+<p>When agents send messages to each other asynchronously, ordering matters. Two patterns:</p>
+<p><strong>FIFO per-source.</strong> Messages from agent A to agent B are processed in order. Messages between <em>different</em> source-destination pairs may interleave. This is the cheapest discipline that maintains within-channel causality.</p>
+<p><strong>Causal ordering.</strong> Messages have explicit dependencies; the receiver waits until prerequisites have been processed before processing the dependent message.</p>
+<pre><code class="language-python">class CausalMessage(BaseModel):
+    message_id: str
+    sender: str
+    receiver: str
+    payload: dict
+    depends_on: list[str] = []  # message_ids that must be processed first
+
+
+async def process_causal_message(
+    message: CausalMessage,
+    *,
+    processed_ids: set[str],
+):
+    # Wait for dependencies
+    while not all(dep in processed_ids for dep in message.depends_on):
+        await asyncio.sleep(0.1)
+
+    # Now safe to process
+    result = await handle_message(message)
+    processed_ids.add(message.message_id)
+    return result
+</code></pre>
+<p>For most multi-agent systems, FIFO per-source is sufficient. Causal ordering is for cases where messages have explicit dependencies that span agents.</p>
+<h3>4.3 Backpressure and flow control</h3>
+<p>If one agent produces messages faster than another can consume them, queues grow without bound. Backpressure is the discipline that prevents this.</p>
+<p>Standard patterns from distributed systems apply:</p>
+<ul>
+<li><strong>Bounded queues.</strong> When the queue is full, the producer blocks (or is rejected, or drops oldest). Producers can't outrun consumers indefinitely.</li>
+<li><strong>Rate limiting.</strong> Producers are capped at N messages per second. Hard limit; doesn't depend on queue state.</li>
+<li><strong>Token-based flow control.</strong> Consumers issue tokens; producers can only send when they hold a token. The consumer controls the rate.</li>
+</ul>
+<p>For LLM agent systems specifically, backpressure usually shows up at the rate-limit boundary (Anthropic API rate limits) or at the cost-budget boundary (we don't want to run more than $X/minute of inference). Backpressure mechanisms tied to those budgets prevent runaway costs.</p>
+<pre><code class="language-python">class TokenBucket:
+    &quot;&quot;&quot;Simple token bucket for rate limiting agent dispatches.&quot;&quot;&quot;
+    def __init__(self, rate_per_second: float, burst: int):
+        self.rate = rate_per_second
+        self.burst = burst
+        self.tokens = burst
+        self.last_refill = time.monotonic()
+        self.lock = asyncio.Lock()
+
+    async def acquire(self):
+        async with self.lock:
+            now = time.monotonic()
+            elapsed = now - self.last_refill
+            self.tokens = min(self.burst, self.tokens + elapsed * self.rate)
+            self.last_refill = now
+            if self.tokens &lt; 1:
+                # Wait until we have a token
+                wait_time = (1 - self.tokens) / self.rate
+                await asyncio.sleep(wait_time)
+                self.tokens = 0
+            else:
+                self.tokens -= 1
+</code></pre>
+<h3>4.4 Timeouts and circuit breakers</h3>
+<p>Every cross-agent operation has a timeout. No exceptions. This is the single most important operational discipline in multi-agent systems.</p>
+<pre><code class="language-python">async def call_agent_with_timeout(
+    agent_id: str,
+    request: dict,
+    *,
+    timeout_seconds: float = 60,
+) -&gt; dict:
+    try:
+        return await asyncio.wait_for(
+            call_agent(agent_id, request),
+            timeout=timeout_seconds,
+        )
+    except asyncio.TimeoutError:
+        logger.warning(f&quot;Agent {agent_id} timed out after {timeout_seconds}s&quot;)
+        return {&quot;status&quot;: &quot;timeout&quot;, &quot;agent_id&quot;: agent_id}
+</code></pre>
+<p>The orchestrator handles timeouts as partial failures (Section 1's <code>status: "blocked"</code>) rather than crashes. The synthesis layer is built to accept partial results.</p>
+<p>For repeated failures, <strong>circuit breakers</strong> prevent cascading degradation. If agent X has failed 5 times in 60 seconds, stop calling it; route around it for a cool-down period.</p>
+<pre><code class="language-python">class CircuitBreaker:
+    def __init__(self, failure_threshold: int = 5, recovery_seconds: float = 60):
+        self.failure_threshold = failure_threshold
+        self.recovery_seconds = recovery_seconds
+        self.failures = []
+        self.opened_at: float | None = None
+
+    def is_open(self) -&gt; bool:
+        # Clean up old failures
+        now = time.monotonic()
+        cutoff = now - self.recovery_seconds
+        self.failures = [f for f in self.failures if f &gt; cutoff]
+
+        if self.opened_at and (now - self.opened_at) &gt; self.recovery_seconds:
+            # Half-open: allow one trial request
+            self.opened_at = None
+            self.failures.clear()
+            return False
+
+        return self.opened_at is not None
+
+    def record_failure(self):
+        self.failures.append(time.monotonic())
+        if len(self.failures) &gt;= self.failure_threshold:
+            self.opened_at = time.monotonic()
+
+    def record_success(self):
+        self.failures.clear()
+        self.opened_at = None
+</code></pre>
+<p>Standard circuit-breaker pattern, applied to agent calls.</p>
+<div class="pullquote">
+<p>Multi-agent systems that don't bound timeouts, rate limits, and failure handling become operational nightmares. The discipline isn't optional; it's the difference between "the system works in dev" and "the system survives Friday afternoon production traffic."</p>
+</div>
+<hr />
+<h2>Section 5 — A2A and the Cross-Vendor Protocols</h2>
+<p>A relatively recent development worth knowing about. Through 2024-2025, every multi-agent framework invented its own coordination protocol — LangChain had one, AutoGen another, CrewAI another. The result: agents from different frameworks couldn't easily communicate.</p>
+<p>In April 2025, Google announced the <strong>Agent2Agent (A2A) Protocol</strong>, an open standard for inter-agent communication. By April 2026, it had been adopted by 50+ industry partners and donated (along with MCP) to the Agentic AI Foundation as community-governed standards.</p>
+<h3>What A2A is</h3>
+<p>An HTTP/JSON-RPC protocol for agents to discover each other's capabilities and exchange structured messages. Key concepts:</p>
+<ul>
+<li><strong>Agent Cards</strong> at <code>/.well-known/agent.json</code> — every A2A-compliant agent exposes a description of its capabilities at this well-known URL</li>
+<li><strong>Tasks</strong> — units of work passed between agents, with explicit goals and outputs</li>
+<li><strong>Messages</strong> — individual exchanges within a task</li>
+<li><strong>Event Queues</strong> — temporary state holding for async coordination</li>
+</ul>
+<p>A simplified A2A flow:</p>
+<ol>
+<li>Agent A wants to delegate to Agent B</li>
+<li>Agent A reads Agent B's agent card to understand B's capabilities</li>
+<li>Agent A creates a Task with explicit objective</li>
+<li>Agent A sends the Task to Agent B's HTTP endpoint</li>
+<li>Agent B processes; sends back updates via SSE, polling, or webhooks</li>
+<li>Agent B returns the final result</li>
+</ol>
+<h3>A2A vs MCP</h3>
+<p>A common confusion. The two protocols address different things:</p>
+<table>
+<thead>
+<tr>
+<th>Protocol</th>
+<th>What it standardizes</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MCP</strong> (M5)</td>
+<td>Agent-to-tool communication</td>
+<td>Agent calls a database query tool</td>
+</tr>
+<tr>
+<td><strong>A2A</strong></td>
+<td>Agent-to-agent communication</td>
+<td>One agent delegates to another</td>
+</tr>
+</tbody>
+</table>
+<p>They compose: An A2A-coordinated multi-agent system might use MCP for each agent's tool access. The agents talk to each other via A2A; each agent talks to its tools via MCP.</p>
+<h3>When to use A2A</h3>
+<p>A2A earns its place when:</p>
+<ul>
+<li><strong>Cross-vendor coordination is needed.</strong> Your orchestrator agent (built on Claude) needs to delegate to a specialist agent (built on a different model) maintained by a different team.</li>
+<li><strong>Agent discovery is dynamic.</strong> New specialist agents come online; your orchestrator needs to discover and use them without hardcoded integration.</li>
+<li><strong>Long-running async coordination is required.</strong> A2A's task-based model with event queues handles long workflows natively.</li>
+</ul>
+<p>When <em>not</em> to use A2A:</p>
+<ul>
+<li><strong>Single-vendor systems.</strong> If all your agents are built in one framework on Claude, framework-native coordination is simpler.</li>
+<li><strong>Synchronous request-response only.</strong> A2A's async model adds overhead you might not need.</li>
+<li><strong>Operational maturity isn't there.</strong> A2A introduces another protocol layer to operate, monitor, debug. For small teams, framework-native is often easier.</li>
+</ul>
+<h3>Implementation note</h3>
+<pre><code class="language-python"># Conceptual sketch — actual A2A SDK syntax varies
+from a2a import A2AClient, AgentCard
+
+# Discover an agent
+agent_b_card = await fetch_agent_card(&quot;https://agents.example.com/specialist&quot;)
+print(agent_b_card.capabilities)  # what can this agent do?
+
+# Delegate a task
+client = A2AClient(&quot;https://agents.example.com/specialist&quot;)
+task = await client.create_task(
+    objective=&quot;Analyze regulatory landscape for fintech in Q1 2026&quot;,
+    context={&quot;focus&quot;: &quot;EU jurisdiction&quot;},
+)
+
+# Stream updates
+async for update in task.stream():
+    print(update)
+
+# Get final result
+result = await task.wait_for_completion()
+</code></pre>
+<p>For most production multi-agent systems on Claude, you won't need A2A directly — the architectures from M14 (orchestrator-worker, peer collaboration) implemented in your own code are simpler. But if you're building cross-vendor systems or expecting your agents to be discoverable by external systems, A2A is the relevant standard.</p>
+<div class="nodumbq">
+<p><strong>Q: Should I bet on A2A becoming the dominant standard?</strong></p>
+<p>It's the most credible candidate. Google's backing, 50+ partners, donation to the Agentic AI Foundation, and complementary positioning to MCP (which is well-established) all suggest it has staying power. But "industry standard" status takes time. As of mid-2026, A2A is the right standard to watch and adopt for cross-vendor scenarios. For single-vendor work on Claude, framework-native coordination remains simpler and more flexible.</p>
+<p><strong>Q: What about ACP (Agent Communication Protocol)?</strong></p>
+<p>ACP is a third standard that's emerged for lightweight messaging — closer to a message-bus protocol than A2A's task-coordination protocol. The roles divide roughly: MCP for tools, A2A for full task delegation, ACP for lightweight async messaging. For most agent systems, MCP + A2A covers the territory; ACP is a more niche choice for high-volume async messaging needs.</p>
+</div>
+<hr />
+<h2>Section 6 — Emergent-Behavior Controls</h2>
+<p>The hardest part of multi-agent operations. Emergent behaviors don't show up in any individual agent's logs; they emerge from interactions. The disciplines that prevent chaos:</p>
+<h3>6.1 Per-agent budget caps</h3>
+<p>Every agent in a multi-agent system has hard caps:</p>
+<ul>
+<li><strong>Maximum turns</strong> (M2's discipline)</li>
+<li><strong>Maximum tokens consumed</strong></li>
+<li><strong>Maximum tool calls</strong></li>
+<li><strong>Maximum dollars spent</strong></li>
+<li><strong>Maximum wall-clock time</strong></li>
+</ul>
+<p>These are non-negotiable. When the cap is hit, the agent returns whatever it has with status <code>partial</code> or <code>blocked</code>. The synthesis layer handles partial results.</p>
+<pre><code class="language-python">class AgentBudget(BaseModel):
+    max_turns: int = 20
+    max_input_tokens: int = 200_000
+    max_output_tokens: int = 30_000
+    max_tool_calls: int = 30
+    max_dollars: float = 5.0
+    max_seconds: float = 600.0
+
+
+class BudgetTracker:
+    &quot;&quot;&quot;Track budget consumption; raise if exceeded.&quot;&quot;&quot;
+    def __init__(self, budget: AgentBudget):
+        self.budget = budget
+        self.turns = 0
+        self.input_tokens = 0
+        self.output_tokens = 0
+        self.tool_calls = 0
+        self.dollars = 0.0
+        self.start_time = time.monotonic()
+
+    def check_and_increment_turn(self):
+        self.turns += 1
+        if self.turns &gt; self.budget.max_turns:
+            raise BudgetExceeded(&quot;max_turns&quot;)
+        if (time.monotonic() - self.start_time) &gt; self.budget.max_seconds:
+            raise BudgetExceeded(&quot;max_seconds&quot;)
+
+    def record_usage(self, input_tokens: int, output_tokens: int, tool_calls: int):
+        self.input_tokens += input_tokens
+        self.output_tokens += output_tokens
+        self.tool_calls += tool_calls
+        # ... enforce caps; raise BudgetExceeded if any exceeded
+</code></pre>
+<p>The discipline: every agent loop checks the budget on every iteration. The first cap exceeded ends the agent. The orchestrator gets a partial result; synthesis proceeds with what's available.</p>
+<h3>6.2 Total system budget</h3>
+<p>Beyond per-agent caps, the orchestrator enforces a <em>system-wide</em> budget. The sum of agent costs + coordination overhead can't exceed a system-level cap.</p>
+<p>This catches the case where many agents stay individually under their caps but collectively blow through your unit economics.</p>
+<pre><code class="language-python">class SystemBudget:
+    def __init__(self, max_total_dollars: float, max_total_seconds: float):
+        self.max_total_dollars = max_total_dollars
+        self.max_total_seconds = max_total_seconds
+        self.total_dollars = 0.0
+        self.start_time = time.monotonic()
+        self.lock = asyncio.Lock()
+
+    async def reserve_for_agent(self, estimated_cost: float):
+        async with self.lock:
+            if self.total_dollars + estimated_cost &gt; self.max_total_dollars:
+                raise SystemBudgetExceeded(
+                    f&quot;Adding {estimated_cost:.2f} would exceed system cap &quot;
+                    f&quot;of {self.max_total_dollars:.2f}&quot;
+                )
+            self.total_dollars += estimated_cost
+
+    async def report_actual(self, actual_cost: float, estimated_cost: float):
+        async with self.lock:
+            self.total_dollars += (actual_cost - estimated_cost)
+</code></pre>
+<p>This catches the case where the orchestrator's plan calls for 8 workers, each with $1 budget, plus synthesis costs — the system budget says "you have $10 total" and the orchestrator must trim its plan.</p>
+<h3>6.3 Deadlock prevention</h3>
+<p>Multi-agent systems can deadlock when agent A waits for agent B's output and agent B waits for agent A's. The standard disciplines:</p>
+<p><strong>Acyclic dependency graphs.</strong> No agent can depend on the output of an agent that depends on it. Statically enforceable in many architectures (orchestrator-worker is naturally acyclic; only the orchestrator depends on workers, never the reverse).</p>
+<p><strong>Total timeouts.</strong> Even if dependencies form cycles, every wait has a timeout. Deadlock becomes degraded performance rather than hung systems.</p>
+<p><strong>Bounded retry counts.</strong> If agent A times out waiting for agent B and retries N times, the retry stops. The orchestrator handles the failure.</p>
+<p>For orchestrator-worker (the M14 default), deadlock prevention is mostly automatic — the architecture doesn't allow cycles. For peer collaboration with deliberation, bounded rounds prevent the agents from waiting on each other indefinitely. For blackboards, schema-based isolation prevents most cycle conditions; timeouts catch the rest.</p>
+<h3>6.4 Observable coordination</h3>
+<p>You cannot debug what you cannot see. Multi-agent systems require structured tracing of all coordination events:</p>
+<ul>
+<li><strong>Every dispatch</strong> — orchestrator → worker, with task_id, timestamps, context size</li>
+<li><strong>Every return</strong> — worker → orchestrator, with result, status, costs</li>
+<li><strong>Every blackboard write</strong> — author, section, content size, timestamp</li>
+<li><strong>Every consensus event</strong> — vote breakdown, deliberation rounds, ground-truth verifications</li>
+<li><strong>Every budget exceeded</strong> — which agent, which cap, what state</li>
+</ul>
+<p>The trace should be enough to reconstruct what happened. M17 will cover observability comprehensively; for M15, the principle: log every cross-agent event with enough structure to be queryable. Free-form logs aren't enough; structured events with consistent fields are.</p>
+<pre><code class="language-python"># Minimum coordination event log
+class CoordinationEvent(BaseModel):
+    event_id: str
+    timestamp: datetime
+    event_type: Literal[
+        &quot;dispatch&quot;, &quot;return&quot;, &quot;blackboard_post&quot;, &quot;blackboard_read&quot;,
+        &quot;consensus_vote&quot;, &quot;budget_exceeded&quot;, &quot;timeout&quot;, &quot;circuit_open&quot;,
+    ]
+    actor_agent: str
+    target_agent: str | None = None
+    correlation_id: str  # ties events together within a request
+    payload: dict
+</code></pre>
+<p>When you ship multi-agent, ship the event log. The first time you debug a multi-agent failure without it, you'll wish you had it. The first time you debug with it, you'll wish you'd had it sooner.</p>
+<div class="postmortem">
+<p><strong>The Multi-Agent System That Couldn't Be Debugged</strong></p>
+<p>A team built a 6-agent collaborative content-generation system: writer, editor, fact-checker, formatter, SEO optimizer, final reviewer. Used a blackboard for coordination. Shipped to production.</p>
+<p>For the first three weeks, it worked. Then customers started complaining about specific articles having factual errors that hadn't been caught. The team tried to debug. They couldn't.</p>
+<p>Their logs showed each agent's outputs but not the coordination — which agent had read which other agent's blackboard entries, which entries had been revised by whom, which contradictions had been adjudicated by which agent. The trace was a flat sequence of LLM calls; the coordination structure was invisible.</p>
+<p>It took two weeks of work to add structured coordination logging — by which point three more flawed articles had shipped. The retrofit revealed the actual problem: the fact-checker agent was <em>not</em> reading the writer's most recent revision before checking. It was checking an earlier draft. The blackboard schema let multiple writer revisions exist; the fact-checker had a bug where it always read the first one.</p>
+<p>The team's two fixes:</p>
+<ol>
+<li><strong>Coordination event logging from day one for any future system.</strong></li>
+<li><strong>Blackboard schema constraint:</strong> only the latest revision of any writer entry is visible to fact-checkers. Older revisions go to an <code>archive</code> section the fact-checker doesn't read.</li>
+</ol>
+<p>Both fixes were obvious in retrospect. Both were <em>not obvious</em> until the team had structured coordination logs to expose the actual flow. The lesson: structured logging is not optional infrastructure; it's a prerequisite for operating multi-agent systems.</p>
+</div>
+<hr />
+<h2>Section 7 — Sam's Regulatory-Research System, Post-Fix</h2>
+<p>Returning to the cold open. Sam rebuilt the regulatory-research system using the disciplines from this module:</p>
+<h3>7.1 Semantic anchoring (Section 1.1)</h3>
+<p>Each subagent's findings now reference a specific <code>RegulationReference</code>:</p>
+<pre><code class="language-python">class RegulationFinding(BaseModel):
+    finding_id: str
+    regulation: RegulationReference  # WHICH regulation; not &quot;the regulation&quot;
+    jurisdiction: str
+    claim: str
+    confidence: float
+    source_quote: str
+    source_citation: str
+
+    relates_to: list[str] = []  # finding_ids from other jurisdictions
+    relationship_type: Literal[&quot;analogous&quot;, &quot;contradicts&quot;, &quot;complements&quot;, &quot;independent&quot;] | None = None
+</code></pre>
+<p>The orchestrator's task description was rewritten:</p>
+<pre><code>&quot;Research the cross-border data-flow regulation.&quot;
+</code></pre>
+<p>became:</p>
+<pre><code>&quot;Research the cross-border data-flow regulations applicable in your
+jurisdiction. Each jurisdiction has its own analogous regulation; identify
+the SPECIFIC regulation that applies in your jurisdiction and ground all
+findings in that specific text. Tag findings with the regulation_reference
+of what you actually researched.&quot;
+</code></pre>
+<p>Subagents now <em>can't</em> silently report on different regulations under one umbrella term. The schema makes the divergence visible.</p>
+<h3>7.2 Cross-jurisdiction relationship tagging (Section 1.1)</h3>
+<p>When a US subagent finds the Cross-Border Data Flow Act and the EU subagent finds GDPR Article 45, both reference the same <em>topic</em> (cross-border data flow) but different <em>regulations</em>. The new schema captures both:</p>
+<pre><code class="language-python">us_finding = RegulationFinding(
+    finding_id=&quot;us-001&quot;,
+    regulation=us_cbdfa_reference,  # specific
+    jurisdiction=&quot;US&quot;,
+    claim=&quot;Applies to transfers exceeding 100 records&quot;,
+    relates_to=[&quot;eu-001&quot;],
+    relationship_type=&quot;analogous&quot;,  # similar topic, different specific rule
+)
+
+eu_finding = RegulationFinding(
+    finding_id=&quot;eu-001&quot;,
+    regulation=gdpr_45_reference,  # specific, different
+    jurisdiction=&quot;EU&quot;,
+    claim=&quot;Applies to transfers exceeding 10,000 records, with Adequacy exemptions&quot;,
+    relates_to=[&quot;us-001&quot;],
+    relationship_type=&quot;analogous&quot;,
+)
+</code></pre>
+<p>Both findings are correct; both are well-grounded; the synthesizer now sees that they're analogous (same topic) rather than contradictory (different topics).</p>
+<h3>7.3 Synthesis discipline</h3>
+<p>The synthesizer's prompt was rewritten to handle the analogous-but-different case:</p>
+<pre><code>When findings from multiple jurisdictions reference DIFFERENT regulations on
+the same topic (relationship_type=&quot;analogous&quot;), do NOT synthesize them into
+a single statement. Present each jurisdiction's specific regulation
+separately, with its own threshold/exemptions/details. The user needs to
+know which regulation applies to their situation.
+
+If the user's task description doesn't specify a jurisdiction, surface the
+multi-jurisdictional landscape rather than picking one or averaging across.
+</code></pre>
+<p>The synthesizer that previously produced <em>"specific limits vary by jurisdiction"</em> now produces structured per-jurisdiction summaries.</p>
+<h3>7.4 Emergent-behavior controls (Section 6)</h3>
+<p>Each subagent has a hard budget: 30 turns max, 200K input tokens, $4 max. The system has a total budget: $25 per request, 8 minutes wall-clock max. Coordination events are logged structurally.</p>
+<p>In the first week post-fix, the structured logs caught two cases of subagents hitting their budget cap mid-research. Both produced partial results with explicit obstacles ("Could not complete review of APAC jurisdictions; required additional research time"). The synthesizer flagged the gaps to the user. No more silent quality degradation.</p>
+<h3>7.5 Metrics</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Before fix</th>
+<th>After fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Briefs flagged for factual issues</td>
+<td>4 of 30 (13%)</td>
+<td>0 of 30 (0%)</td>
+</tr>
+<tr>
+<td>Briefs with explicit gaps surfaced</td>
+<td>0 of 30</td>
+<td>6 of 30 (20%)</td>
+</tr>
+<tr>
+<td>Median latency</td>
+<td>6.2 minutes</td>
+<td>6.4 minutes</td>
+</tr>
+<tr>
+<td>Median cost per brief</td>
+<td>$14</td>
+<td>$15</td>
+</tr>
+</tbody>
+</table>
+<p>The cost increase was minor; the latency increase was rounding error. The quality improvement was meaningful. More striking: the <em>gap surfacing</em> — 20% of briefs now explicitly mentioned what couldn't be researched, where before the system silently produced briefs that papered over gaps.</p>
+<p>The compliance officer who'd flagged the original failure sent a follow-up note: <em>"This is the kind of brief I can actually use. When you say 'we couldn't determine X,' I know to investigate X separately. When you said 'specific limits vary by jurisdiction' before, I had to redo the research myself."</em></p>
+<p>Sam wrote one more lesson for the playbook: <em>"the synthesizer should never paper over disagreements. Visible disagreement is a feature; hidden disagreement is a bug."</em></p>
+<div class="code-exercise">
+<p><strong>Exercise 15.1 — Communication audit.</strong></p>
+<p>Pick a multi-agent system you're working on (or a planned one). Audit its communication patterns:</p>
+<ol>
+<li><strong>Are handoffs semantically anchored?</strong> Do worker outputs reference specific identifiers (entities, regulations, files) rather than generic terms? Or does "the X" mean different things to different agents?</li>
+<li><strong>Are uncertainty and obstacles surfaced?</strong> Do workers have explicit channels for "what I couldn't do" — or does the schema only support "what I did"?</li>
+<li><strong>Are concurrency disciplines in place?</strong> If using shared state, is the schema partitioned by author? Are there optimistic concurrency checks?</li>
+<li><strong>Are budgets enforced per-agent and system-wide?</strong> What happens when a worker hits its cap? What happens when the system hits its cap?</li>
+<li><strong>Are coordination events logged structurally?</strong> Could you reconstruct "what happened" from logs alone, or would you need to read individual agent traces?</li>
+</ol>
+<p>For any "no" answers, sketch the fix. The patterns in this module address each one specifically. The cost of adding them upfront is small; the cost of retrofitting after a production incident is substantial.</p>
+</div>
+<hr />
+<h2>Section 8 — The Framework</h2>
+<p>Adding communication discipline to multi-agent systems:</p>
+<p><strong>1. Structured handoffs go beyond Pydantic.</strong> Type-check structure (necessary). Anchor semantics with explicit identifiers (essential for high-stakes work). Surface uncertainty and obstacles (operational discipline). Make context portable (no implicit assumptions).</p>
+<p><strong>2. Use blackboards selectively.</strong> When the right decomposition isn't known up front, when agents have overlapping expertise, when iterative refinement is the work. For cleanly-decomposable tasks, orchestrator-worker's point-to-point handoffs are simpler.</p>
+<p><strong>3. Design blackboard schemas for conflict-free writes.</strong> Different agents → different sections by author class. Optimistic concurrency for unavoidable conflicts. Append-only patterns where possible. Bounded iterations and timeouts.</p>
+<p><strong>4. Pick the right consensus mechanism.</strong> Tool-grounded for verifiable disagreements (always prefer this when applicable). Weighted voting for known-heterogeneous reliability. Deliberation for reasoning that benefits from seeing others. Majority voting for simple structured comparisons.</p>
+<p><strong>5. Distributed-systems patterns apply.</strong> Idempotency (every operation safe to retry). Bounded queues (backpressure). Timeouts on every cross-agent call (no exceptions). Circuit breakers for repeated failures.</p>
+<p><strong>6. A2A for cross-vendor coordination.</strong> Single-vendor multi-agent systems don't need it; cross-vendor systems benefit. MCP for agent-to-tool, A2A for agent-to-agent. Watch the standards space; both are now community-governed.</p>
+<p><strong>7. Per-agent and system-wide budgets.</strong> Hard caps on turns, tokens, tool calls, dollars, time. Sum-of-budgets bounded by system-level cap. Partial results when caps exceeded; never silent degradation.</p>
+<p><strong>8. Structured coordination logs from day one.</strong> Every dispatch, return, blackboard write, vote, budget event. Correlation IDs linking events within requests. Without this, multi-agent debugging is impossible.</p>
+<p><strong>9. Visible disagreement is a feature.</strong> Synthesizers should surface contradictions, not paper over them. Sam's regulatory case is the canonical lesson: hidden disagreement is the bug; visible disagreement is the system working correctly.</p>
+<p><strong>10. The architecture (M14) and the communication (M15) compose.</strong> Pick the right architecture for the work structure. Pick the right communication patterns for the coordination structure. Both have to be right; either alone isn't sufficient.</p>
+<p>The discipline this enforces: <strong>multi-agent systems are coordination systems first, model systems second.</strong> The models are excellent. The architecture from M14 is sound. What turns these into production-grade systems is the communication discipline from M15. The patterns in this module aren't optional decoration; they're load-bearing infrastructure.</p>
+<hr />
+<h2>Recap: Module 15 in eight bullets</h2>
+<div class="bullet-points">
+<ul>
+<li>Structured handoffs need to do four things: type-check structure, anchor semantics with explicit identifiers, surface uncertainty and obstacles, make context portable. Pydantic alone is necessary but not sufficient. Sam's regulatory case showed the failure mode: type-checked outputs that silently referenced different regulations.</li>
+<li>Blackboard architecture earns its place when decomposition isn't known up front, when agents have overlapping expertise, or when iterative refinement is the work. Schema-design-for-conflict-avoidance beats conflict-resolution code. Bounded iterations + decider agents for termination.</li>
+<li>Four consensus mechanisms: tool-grounded (always prefer for verifiable disagreements), weighted voting (heterogeneous reliability), deliberation (reasoning benefits from seeing others; watch for groupthink), majority voting (simple structured comparisons). Sam's regulatory case was a tool-grounded problem dressed up as a vote — fix was anchoring, not voting.</li>
+<li>Distributed-systems patterns transfer directly: idempotency for retry safety, bounded queues for backpressure, timeouts on every cross-agent call (non-negotiable), circuit breakers for repeated failures. Multi-agent operations is distributed-systems operations.</li>
+<li>A2A protocol is the emerging cross-vendor standard for agent-to-agent communication. MCP for tools, A2A for agents, ACP for lightweight messaging. For single-vendor systems on Claude, framework-native coordination is simpler. Watch the standards space.</li>
+<li>Per-agent budgets (turns, tokens, tool calls, dollars, time) and system-wide budgets (sum-of-agents bounded). Hard caps. Partial results when caps exceeded. Never silent degradation.</li>
+<li>Structured coordination logs are not optional. Every dispatch, return, blackboard write, vote, budget event with correlation IDs. The first time you debug multi-agent without these, you'll wish you had them; the first time with them, you'll wish you'd had them sooner.</li>
+<li>Visible disagreement is a feature; hidden disagreement is a bug. Synthesizers should surface contradictions explicitly. Multi-agent systems that paper over conflicts produce statements that type-check but don't help users — Sam's "specific limits vary by jurisdiction" was technically true and operationally useless.</li>
+</ul>
+</div>
+<hr />
+<div class="sam-arc">
+<p><strong>Sam, after the regulatory-research fix.</strong></p>
+<p>A month after the fix shipped, Sam pulled up the dashboard. The regulatory-research system was now processing 60-80 briefs per week. Zero factual issues flagged in the latest 60. About 20% of briefs explicitly surfaced gaps ("could not determine X for jurisdiction Y; recommend separate research"). Compliance officers had stopped redoing the research themselves; the briefs were now actionable starting points rather than misleading summaries.</p>
+<p>The platform team lead asked Sam what they'd learned beyond the technical fix. Sam thought about it.</p>
+<p>"Two things. First, M14's architecture wasn't wrong. Orchestrator-worker was the right pattern. The bug was in the <em>communication</em> between the orchestrator and workers — specifically that 'the regulation' was an ambiguous reference that resolved differently for each worker. The architecture was correct; the communication discipline was missing.</p>
+<p>"Second, the synthesizer's job changed. Before the fix, I thought of it as 'combine the workers' findings into one answer.' After the fix, I think of it as 'preserve the structure of disagreement when disagreement exists; surface gaps when gaps exist.' The synthesizer's job isn't to produce confident-sounding output. It's to be honest about what the workers found and didn't find."</p>
+<p>The team lead nodded. "Document that for the playbook?"</p>
+<p>Sam did. Three additions to the multi-agent design review checklist:</p>
+<ol>
+<li><strong>Run M13 framework first.</strong> Multi-agent earns its complexity? Yes/no.</li>
+<li><strong>Run M14 framework next.</strong> Which architecture? Pick one.</li>
+<li><strong>Run M15 audit next.</strong> Are handoffs semantically anchored? Are uncertainty channels in the schema? Are budgets bounded? Are coordination logs structured?</li>
+</ol>
+<p>Three more agents went through this checklist over the next quarter. Each one shipped without the failure modes Sam had encountered. The patterns from M13-M14-M15 were now the platform's standard approach to multi-agent design.</p>
+<p>Sam's arc this module: <strong>the architecture says where the agents sit; the communication says what flows between them; both have to be right.</strong> M2-M12 had been about each agent's individual rigor. M13 had been about <em>whether</em> to use multiple agents. M14 had been about <em>how to arrange</em> them. M15 was about <em>how they talk</em> — and how they don't, when communication discipline is missing. Together M13-M14-M15 formed the multi-agent triad: when, where, how.</p>
+<p>Friday afternoon, looking at the dashboards. The deal-research workflow, the customer-success bot, the deal Q&amp;A agent, the research-on-demand packets, the regulatory-research briefs — all running. All defensible. All operating with the disciplines from the first 15 modules. Three modules left in the book: operations (M16-17) and the capstone (M18).</p>
+<p>The book had built one careful step at a time. The agent loop, the workflows, the tools, the protocols, the models, the context, the trajectories, the memory, the hallucinations, the reflection, the guardrails, the multi-agent decision, the multi-agent architecture, the multi-agent communication. Each module's discipline composed with all the others. Sam's systems weren't impressive because of any single module's pattern; they were impressive because they applied <em>all</em> of them, layer on layer, with the architectural restraint to use each layer only when it earned its place.</p>
+<p>Sam closed the laptop. The hardest engineering work in agent systems, Sam had come to realize, wasn't building any one component well. It was the <em>discipline of when to use what</em> — when to add a layer, when to remove one, when to ship single-agent, when to escalate to multi-agent, when to add a guardrail, when to add reflection. The book was teaching that discipline as much as it was teaching the patterns themselves.</p>
+<p>Three more modules. Then the system Sam had been building all along would be complete.</p>
+</div>
+<hr />
+<h2>What's next</h2>
+<p>Module 16 covers sagas — the transactional safety pattern for agent systems that take real-world actions across multiple steps. When an agent has spent $50 sending three emails and the fourth one fails, what's the right behavior? The saga discipline answers that question and the broader class of "compensating actions for partial failures."</p>
+<p>Module 17 covers observability for production agents. Distributed tracing for multi-agent systems. Cost dashboards. Quality monitoring. The instrumentation that turns "the system works in dev" into "the system survives at 3 a.m. on a Friday."</p>
+<p>Module 18 is the capstone: a complete system pulling together every layer from M1-M17. Sam's deal-research workflow, customer-success bot, deal Q&amp;A agent, research-on-demand packets, regulatory-research briefs — operating together as one production agent platform.</p>
+<p>For now: take the framework from Section 8. If you have a multi-agent system in production, run the audit. If you're designing one, design with these patterns from day one. The single-agent disciplines from M2-M12 plus the multi-agent disciplines from M13-M15 are the foundation; M16-M17 are the operations layer; M18 is the integration. Six modules out of eighteen are about how to build them; the other twelve — including this one — are about how to think about them.</p>
+<p>The architecture from M14 needs the communication from M15. Together they're the multi-agent half of the book. The first half (M2-M12) was building one agent well. The second half started with the gate (M13), proceeded to the architectures (M14), and now closes the design space (M15). What's left is making it all run reliably in production. M16 next.</p>
+</body>
+</html>

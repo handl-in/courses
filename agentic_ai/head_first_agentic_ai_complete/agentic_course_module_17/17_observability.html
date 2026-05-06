@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 17 — Observability for Production Agents</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 17 — Observability for Production Agents</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 17</div>
+<div class="module-title">Observability for Production Agents</div>
+<div class="subtitle">Sagas (M16) make failures recoverable.<br>Observability makes failures visible — and diagnosable in minutes instead of hours.</div>
+<div class="pages">~38 pages · the operational discipline that turns "agents that work" into "agents you can debug at 3 a.m."</div>
+</div>
+<div class="hook">
+<p>Wednesday morning, two months after the saga rollout from M16. Sam was reviewing the on-call queue. The structured escalations from compensation failures were arriving as designed — about 3 per month, exactly as the metrics from M16 had predicted. The system was catching real problems and routing them to humans before customers noticed.</p>
+<p>But the on-call team was unhappy.</p>
+<p>Sam pulled up the logs from yesterday's escalation. The saga had failed during a customer-credit application; specifically, <code>update_billing_record</code> step had returned a permanent error during compensation. The escalation contained the saga ID, the failed step, the error message ("billing record version conflict"), and a structured suggested-actions block.</p>
+<p>What the on-call engineer had needed to figure out:</p>
+<ul>
+<li><em>When did the original action sequence start?</em></li>
+<li><em>Which agent invoked the saga, in what conversation, after what reasoning?</em></li>
+<li><em>Was the version conflict caused by another agent acting concurrently? Or by a human in the admin panel?</em></li>
+<li><em>What did the agent's earlier tool calls show about the billing record state at start of the saga?</em></li>
+<li><em>Has this happened before? How often?</em></li>
+</ul>
+<p>The escalation contained none of that. It contained the saga's structured failure, which was useful for understanding <em>what</em> failed. It contained nothing about <em>why</em>. To answer "why," the engineer had spent forty minutes pulling correlated logs from six different services: the agent's reasoning trace, the orchestrator's saga state, the billing service's audit log, the admin panel's activity log, the conversation history, and the metrics dashboard. Each of those had a different format, a different timestamp scheme, and a different way of identifying the customer or the saga.</p>
+<p>Forty minutes to diagnose one escalation. The team was hitting three escalations per month. That meant two hours per month per engineer just on diagnosis — not counting fix time, not counting the cognitive load of context-switching into trace archaeology mode.</p>
+<p>Sam wrote it: <em>"M16 made failures recoverable. We need the failures to also be DIAGNOSABLE. The compensations are running; the on-call queue is working; the system is structurally sound. But every failure is still a forty-minute investigation. That's not sustainable."</em></p>
+<p>The next thing Sam wrote: a list of every system that should have been emitting structured traces at every step, and wasn't.</p>
+</div>
+<hr />
+<h2>What this module is</h2>
+<p>Module 16 built the discipline that makes failures <em>recoverable</em>. This module is about the discipline that makes failures <em>visible</em> — and crucially, <em>diagnosable</em> without forty-minute archaeology expeditions.</p>
+<p>The relationship matters. Sagas tell you <em>what</em> failed; observability tells you <em>why</em> and <em>what was happening when it did</em>. Without observability, sagas catch the symptom but the diagnosis still takes hours. With observability, the saga's escalation arrives in the on-call queue with the full context, and the diagnosis collapses from forty minutes to forty seconds.</p>
+<p>The structural insight from the buildfastwithai writeup: <em>"In 2026, the competitive advantage in AI development has shifted from prompt engineering to observability — the ability to see exactly why an agent succeeded or failed in a multi-step task is now more valuable than the initial instruction."</em></p>
+<p>That's strong, but it's directionally right. Production agents fail in ways pure software doesn't:</p>
+<ul>
+<li><strong>Non-determinism.</strong> Same prompt, different output. Reproducing an issue requires capturing the exact input, model, parameters, and tool results at the time of the call.</li>
+<li><strong>Multi-step reasoning.</strong> A single user request triggers 10-50 LLM calls, each with their own context, tool calls, and decisions. Without trace continuity, the trajectory is invisible.</li>
+<li><strong>Multi-agent coordination.</strong> When subagents run in parallel, you have N timelines that need to be correlated. Standard logs don't reconstruct the topology.</li>
+<li><strong>Token and cost economics.</strong> Latency and cost track tokens, not request counts. A "slow request" can mean "the agent burned 80K tokens looping" — different problem than "the network was slow."</li>
+<li><strong>Emergent behaviors.</strong> Multi-agent systems develop coordination patterns no individual agent created. These only show up in aggregate.</li>
+</ul>
+<p>Standard application observability (logs, metrics, traces) needs adaptation to address these. The good news: by 2026 the adaptation is well-understood. OpenTelemetry's <code>gen_ai.*</code> semantic conventions landed as stable in early 2026. Anthropic's Managed Agents includes observability built in. The Agent SDK exports OTLP traces to any compatible backend. The infrastructure exists; the question is using it well.</p>
+<p>This module:</p>
+<ul>
+<li><strong>Section 1</strong> — what makes agent observability different from regular observability</li>
+<li><strong>Section 2</strong> — the three pillars (logs, metrics, traces) for agent systems</li>
+<li><strong>Section 3</strong> — distributed tracing across agents, with OpenTelemetry GenAI conventions</li>
+<li><strong>Section 4</strong> — the metrics that matter: leading vs lagging, per-agent dimensions, what to alert on</li>
+<li><strong>Section 5</strong> — structured event logging: every reasoning step, tool call, handoff as a queryable event</li>
+<li><strong>Section 6</strong> — alerting patterns: catching degradation before it becomes failure</li>
+<li><strong>Section 7</strong> — debugging multi-agent emergent behaviors</li>
+<li><strong>Section 8</strong> — Anthropic's first-party observability: Claude Console, Managed Agents tracing, Agent SDK OTLP</li>
+<li><strong>Section 9</strong> — Sam's customer-success bot post-observability rollout</li>
+<li><strong>Section 10</strong> — the framework</li>
+</ul>
+<p>By the end of this module:</p>
+<ul>
+<li>You'll know which signals to instrument and which to skip</li>
+<li>You'll have working examples of OpenTelemetry-based agent tracing</li>
+<li>You'll be able to design alert hierarchies that catch problems before customers do</li>
+<li>You'll know how to debug emergent multi-agent behaviors from production traces</li>
+</ul>
+<p>This is the third operational discipline (after M12 guardrails and M16 sagas). M12 prevented bad inputs/outputs/actions; M16 made failures recoverable; M17 makes them diagnosable. Together they're the difference between agent systems that ship and agent systems that survive in production.</p>
+<div class="pullquote">
+<p>The discipline that distinguishes "agents that work" from "agents you can debug at 3 a.m." isn't sophistication of model or cleverness of prompt. It's whether the system tells you what it was doing when it broke. Observability is the difference between "we'll figure out what happened" and "the trace shows exactly what happened."</p>
+</div>
+<hr />
+<h2>Section 1 — Why Agent Observability Is Different</h2>
+<p>Standard application observability handles deterministic systems where the same input reliably produces the same output. Logs tell you what happened; metrics tell you how the system behaves over time; traces show the request flow. The discipline is mature, the tooling is excellent, and most teams know how to use it.</p>
+<p>Agent systems break the determinism assumption. The Uptrace 2026 piece named it directly: <em>"The same prompt produces different outputs. You can't reproduce an issue without capturing the exact input, model parameters, and temperature at the time of the call."</em> That single property cascades into multiple observability requirements that don't apply to standard services.</p>
+<h3>Five things that make agent observability harder</h3>
+<p><strong>1. Inputs and outputs are large and unstructured.</strong> A standard API call has a JSON request and JSON response that fit in a log line. An LLM call has potentially 100K+ tokens of input context and a free-form response. You can't log them in full at production volume; you can't log them in summary and reproduce issues.</p>
+<p><strong>2. Multi-step trajectories are the unit of work.</strong> A standard request maps to one operation. An agent request maps to 5-50 LLM calls, tool executions, and decisions, all of which together form one user-perceived operation. Tracing each call independently doesn't show the trajectory; tracing the whole request as one span loses the steps.</p>
+<p><strong>3. Tool calls span systems.</strong> A single agent turn might query your database, hit three external APIs, call an MCP server, and process results. The trace needs to span all of those, with proper parent-child relationships, while still being readable as one logical agent operation.</p>
+<p><strong>4. Cost is a first-class metric.</strong> Token usage isn't an implementation detail; it's the cost driver and a leading indicator of problems. Tokens-per-request, tokens-per-step, tokens-per-tool-call are first-class signals, not derived metrics.</p>
+<p><strong>5. Emergent behaviors only appear in aggregate.</strong> A single agent's trace might look normal. The same agent across thousands of conversations might show a pattern — context bloat, increasing latency over time, gradual policy drift. Observability has to support both per-request debugging and aggregate analysis.</p>
+<h3>What this means for instrumentation</h3>
+<p>Three implications:</p>
+<p><strong>Capture inputs and outputs at the trace level, not the log level.</strong> Logs are unstructured noise; traces are structured events. The full prompt, full response, full tool call payload should be on the trace, queryable by trace ID.</p>
+<p><strong>Treat multi-step trajectories as first-class.</strong> Every LLM call gets a child span; every tool call gets a child span; every saga step gets a child span. The root span represents the user-perceived operation. The trace tree shows the full trajectory.</p>
+<p><strong>Standardize attributes across the stack.</strong> OpenTelemetry's <code>gen_ai.*</code> semantic conventions exist exactly for this. <code>gen_ai.system</code>, <code>gen_ai.request.model</code>, <code>gen_ai.usage.input_tokens</code>, <code>gen_ai.usage.output_tokens</code> — standardized names that work across vendors.</p>
+<p>The Uptrace piece is direct: <em>"OpenTelemetry instruments LLM applications by wrapping API calls in spans with standardized gen_ai.</em> attributes — model name, token counts, finish reason — defined by the OpenTelemetry GenAI semantic conventions."*</p>
+<div class="nodumbq">
+<p><strong>Q: My team uses Datadog/Honeycomb/New Relic for the rest of our stack. Do I need a separate observability platform for agents?</strong></p>
+<p>You probably don't. The 2026 landscape has converged on OpenTelemetry as the export protocol, and most major observability platforms support OTLP. Your existing platform almost certainly accepts OpenTelemetry traces with <code>gen_ai.*</code> attributes. You may need to set up dashboards and alerts specifically for agent metrics, but the data plumbing reuses what you have. The exception: if you need very deep LLM-specific features (prompt diffing, evaluation tracking, regression detection), tools like Langfuse layer on top of your existing observability rather than replacing it.</p>
+<p><strong>Q: Anthropic's Managed Agents has observability built in. Do I still need OpenTelemetry?</strong></p>
+<p>Yes, for systems that span beyond the agent itself. Managed Agents gives you excellent observability for the agent's reasoning, tool calls, and lifecycle events — within the Claude Console. For tracing that spans your application code, your downstream services, your sagas, and the agent, you need a unified backend. Most teams use both: Managed Agents Console for deep agent diagnostics, OpenTelemetry for the cross-system view. The Agent SDK exports OTLP directly so the trace tree is unified.</p>
+</div>
+<hr />
+<h2>Section 2 — The Three Pillars for Agent Systems</h2>
+<p>Standard observability rests on three pillars: logs, metrics, traces. The same applies to agents, but each pillar has agent-specific patterns.</p>
+<h3>Logs</h3>
+<p>The least-changed pillar. Agent systems still need standard application logs for non-LLM concerns: HTTP errors, database failures, infrastructure issues. The agent-specific addition: structured events at decision points (Section 5).</p>
+<p>What changes for agents:</p>
+<ul>
+<li><strong>Don't log full prompts and responses to standard logs.</strong> They're too large, too noisy, and they leak into log retention systems where you don't want them. Use traces instead.</li>
+<li><strong>Log the boundary events.</strong> Saga start, saga complete, escalation created, agent invoked, agent completed. These are queryable, indexable, and small.</li>
+<li><strong>Use correlation IDs religiously.</strong> Every log line for a given user request includes the same correlation ID, propagated from the entry point through every system the request touches.</li>
+</ul>
+<h3>Metrics</h3>
+<p>The pillar where agent systems diverge most. Standard metrics — request counts, error rates, p50/p99 latency — apply but don't capture the LLM-specific dimensions.</p>
+<p>Agent-specific metrics by category:</p>
+<p><strong>Token metrics:</strong>
+- <code>gen_ai.usage.input_tokens</code> — input tokens per LLM call
+- <code>gen_ai.usage.output_tokens</code> — output tokens per LLM call
+- <code>gen_ai.usage.total_tokens_per_request</code> — sum across the trajectory
+- Cost in dollars (derived: tokens × per-model rate)</p>
+<p><strong>Latency metrics:</strong>
+- <code>gen_ai.client.operation.duration</code> — per-LLM-call latency
+- <code>agent.trajectory.duration</code> — full trajectory latency
+- <code>agent.tool_call.duration</code> — per-tool-call latency</p>
+<p><strong>Loop and reasoning metrics:</strong>
+- <code>agent.turns_per_request</code> — how many model calls per user request
+- <code>agent.tool_calls_per_request</code> — how many tool calls per user request
+- <code>agent.context_size</code> — context tokens at start of each turn
+- <code>agent.compaction_events</code> — how often the system compacted (M8)</p>
+<p><strong>Action metrics:</strong>
+- <code>agent.action.attempted</code> — by action name and outcome (success/failure)
+- <code>agent.saga.duration</code> — per-saga latency
+- <code>agent.saga.compensation_invocations</code> — how often compensation ran
+- <code>agent.saga.escalation_to_human</code> — count by reason</p>
+<p><strong>Quality metrics (where measurable):</strong>
+- <code>agent.guardrail.blocks</code> — by category (Section 6, M12)
+- <code>agent.refusal_rate</code> — model declining to respond
+- <code>agent.confidence_distribution</code> — when the agent reports confidence</p>
+<p>The metrics matter because they're how you alert (Section 6) and how you spot drift over time. Without them, you're flying blind on cost and quality.</p>
+<h3>Traces</h3>
+<p>The pillar agent systems most depend on. The trace is what reconstructs the trajectory: every LLM call, tool call, saga step, handoff, all in their proper hierarchy.</p>
+<p>OpenTelemetry's GenAI conventions define the standard span structure:</p>
+<pre><code class="language-python"># Pseudocode showing OpenTelemetry GenAI span shape
+with tracer.start_as_current_span(
+    &quot;chat.claude-sonnet-4-6&quot;,
+    attributes={
+        &quot;gen_ai.system&quot;: &quot;anthropic&quot;,
+        &quot;gen_ai.operation.name&quot;: &quot;chat&quot;,
+        &quot;gen_ai.request.model&quot;: &quot;claude-sonnet-4-6&quot;,
+        &quot;gen_ai.request.max_tokens&quot;: 4096,
+        &quot;gen_ai.request.temperature&quot;: 0.7,
+    }
+) as span:
+    response = await client.messages.create(...)
+    span.set_attribute(&quot;gen_ai.response.model&quot;, response.model)
+    span.set_attribute(&quot;gen_ai.response.id&quot;, response.id)
+    span.set_attribute(&quot;gen_ai.usage.input_tokens&quot;, response.usage.input_tokens)
+    span.set_attribute(&quot;gen_ai.usage.output_tokens&quot;, response.usage.output_tokens)
+    span.set_attribute(&quot;gen_ai.response.finish_reasons&quot;, [response.stop_reason])
+</code></pre>
+<p>Each LLM call is a span. Each tool call is a span. Each saga step is a span. They nest under the user-request root span.</p>
+<p>The Anthropic Agent SDK's OpenTelemetry integration handles this automatically:</p>
+<pre><code class="language-bash"># From Anthropic's Agent SDK docs
+export OTEL_EXPORTER_OTLP_ENDPOINT=&quot;https://your-otlp-endpoint&quot;
+export OTEL_SERVICE_NAME=&quot;my-customer-success-agent&quot;
+export OTEL_RESOURCE_ATTRIBUTES=&quot;deployment.environment=production,service.version=2.4.1&quot;
+</code></pre>
+<p>With those environment variables set, the Agent SDK exports traces, metrics, and structured events to any OTLP-compatible backend. From the Anthropic docs: <em>"It records spans around each model request and tool execution, emits metrics for token and cost counters, and emits structured log events for prompts and tool results."</em></p>
+<p>The auto-instrumentation captures most of what you need. Custom instrumentation fills in the application-specific events: saga steps, business operations, domain-specific metrics.</p>
+<div class="brain">
+<p>What's the right span structure for Sam's customer-credit application from M16's saga? Sketch the trace tree.</p>
+<p>(Root span: <code>customer.support.request</code> (the user's ticket). Child: <code>agent.turn</code> (one model call analyzing the ticket). Child: <code>tool.fetch_account_state</code>. Child: <code>agent.turn</code> (model decides credit warranted). Child: <code>tool.apply_customer_credit</code> — which itself starts a saga. The saga is a child span: <code>saga.customer_credit</code>. Inside that: <code>saga.step.apply_credit</code>, <code>saga.step.update_billing_record</code>, <code>saga.step.send_confirmation_email</code>, <code>saga.step.schedule_followup</code>. If a step fails, sibling spans for compensations: <code>saga.compensation.update_billing_record</code> (failed), <code>saga.compensation.apply_credit</code>. Above the saga step spans, the underlying API calls to billing service, email service, etc. The trace tree is essentially a visual reconstruction of the full trajectory; one trace ID spans all of it; the on-call engineer reading the trace sees exactly what happened in what order.)</p>
+</div>
+<hr />
+<h2>Section 3 — Distributed Tracing Across Agents</h2>
+<p>The single most important observability artifact for agent systems. A trace tells the story of one user request as it flows through the system, with every decision, tool call, and saga step in proper order.</p>
+<p>For multi-agent systems, the trace gets more complex but more valuable. Multiple agents running in parallel create multiple branches in the trace tree; the structure shows orchestrator-worker handoffs, peer collaboration, sagas, and any retries.</p>
+<h3>Building a multi-agent trace</h3>
+<p>The pattern: every agent's execution carries a parent trace context. When an orchestrator spawns a worker, the worker's trace is a child of the orchestrator's trace. The trace IDs propagate explicitly.</p>
+<pre><code class="language-python">from opentelemetry import trace
+from opentelemetry.propagate import inject, extract
+
+
+tracer = trace.get_tracer(__name__)
+
+
+async def orchestrator(user_request: str) -&gt; str:
+    &quot;&quot;&quot;Orchestrator with explicit trace context propagation to workers.&quot;&quot;&quot;
+    with tracer.start_as_current_span(&quot;agent.orchestrator&quot;) as span:
+        span.set_attribute(&quot;agent.role&quot;, &quot;orchestrator&quot;)
+        span.set_attribute(&quot;user.request&quot;, user_request[:500])  # truncated
+
+        plan = await create_plan(user_request)
+
+        # Capture trace context to pass to workers
+        carrier: dict[str, str] = {}
+        inject(carrier)
+
+        # Workers run in parallel; each carries the orchestrator's trace context
+        worker_results = await asyncio.gather(*[
+            run_worker_with_context(task, trace_carrier=carrier)
+            for task in plan.subtasks
+        ])
+
+        return await synthesize(user_request, worker_results)
+
+
+async def run_worker_with_context(task: WorkerTask, trace_carrier: dict[str, str]) -&gt; dict:
+    &quot;&quot;&quot;Worker that joins the orchestrator's trace.&quot;&quot;&quot;
+    # Extract the parent context from the carrier
+    parent_context = extract(trace_carrier)
+
+    # Start a child span that's parented to the orchestrator
+    with tracer.start_as_current_span(
+        f&quot;agent.worker.{task.task_id}&quot;,
+        context=parent_context,
+    ) as span:
+        span.set_attribute(&quot;agent.role&quot;, &quot;worker&quot;)
+        span.set_attribute(&quot;worker.task_id&quot;, task.task_id)
+        span.set_attribute(&quot;worker.objective&quot;, task.objective[:500])
+
+        result = await execute_worker_loop(task)
+
+        span.set_attribute(&quot;worker.status&quot;, result.status)
+        span.set_attribute(&quot;worker.confidence&quot;, result.confidence)
+        span.set_attribute(&quot;worker.tokens_used&quot;, result.tokens_used)
+
+        return result.dict()
+</code></pre>
+<p>Three things in this code worth noting:</p>
+<p><strong>Explicit context propagation.</strong> <code>inject()</code> serializes the trace context into a carrier dict; <code>extract()</code> reconstructs it on the receiving side. This works whether workers are in the same process or remote.</p>
+<p><strong>Per-agent attributes.</strong> Every span has <code>agent.role</code> so you can filter traces by role. Multi-agent systems with many roles (planner, generator, evaluator, critic) become navigable.</p>
+<p><strong>Bounded payloads.</strong> <code>[:500]</code> truncations on the request and objective. Don't put unbounded text on spans; truncate explicitly. For full text capture, use a dedicated event field with size limits, or store in a separate system referenced by ID.</p>
+<h3>Trace continuity across sagas</h3>
+<p>Sagas (M16) span multiple steps; the trace must continue across them. With Temporal, each activity is automatically a child span of its workflow. Hand-rolled sagas need explicit propagation:</p>
+<pre><code class="language-python">async def execute_saga_traced(saga: Saga) -&gt; dict:
+    &quot;&quot;&quot;Saga execution with full trace coverage.&quot;&quot;&quot;
+    with tracer.start_as_current_span(f&quot;saga.{saga.saga_type}&quot;) as saga_span:
+        saga_span.set_attribute(&quot;saga.id&quot;, saga.saga_id)
+        saga_span.set_attribute(&quot;saga.type&quot;, saga.saga_type)
+        saga_span.set_attribute(&quot;saga.step_count&quot;, len(saga.steps))
+
+        completed = []
+        try:
+            for i, step in enumerate(saga.steps):
+                with tracer.start_as_current_span(
+                    f&quot;saga.step.{step.name}&quot;
+                ) as step_span:
+                    step_span.set_attribute(&quot;saga.step.index&quot;, i)
+                    step_span.set_attribute(&quot;saga.step.name&quot;, step.name)
+                    step_span.set_attribute(&quot;saga.step.idempotency_key&quot;, step.idempotency_key)
+
+                    result = await step.forward(saga.context)
+                    step_span.set_attribute(&quot;saga.step.status&quot;, &quot;completed&quot;)
+
+                    saga.context[step.name] = result
+                    completed.append(step)
+
+            saga_span.set_attribute(&quot;saga.status&quot;, &quot;success&quot;)
+            return {&quot;status&quot;: &quot;success&quot;, &quot;context&quot;: saga.context}
+
+        except Exception as e:
+            saga_span.set_attribute(&quot;saga.status&quot;, &quot;compensating&quot;)
+            saga_span.record_exception(e)
+
+            # Compensate with traced spans
+            for step in reversed(completed):
+                with tracer.start_as_current_span(
+                    f&quot;saga.compensation.{step.name}&quot;
+                ) as comp_span:
+                    try:
+                        await step.compensate(saga.context)
+                        comp_span.set_attribute(&quot;compensation.status&quot;, &quot;completed&quot;)
+                    except Exception as comp_error:
+                        comp_span.set_attribute(&quot;compensation.status&quot;, &quot;failed&quot;)
+                        comp_span.record_exception(comp_error)
+                        # Section 7 from M16: escalation
+                        raise
+
+            saga_span.set_attribute(&quot;saga.status&quot;, &quot;compensated&quot;)
+            return {&quot;status&quot;: &quot;compensated&quot;, &quot;error&quot;: str(e)}
+</code></pre>
+<p>The trace now shows the full saga structure: forward steps that succeeded, the failure point, the compensations that ran. When the on-call engineer pulls the trace by saga ID, they see the entire story in one tree.</p>
+<h3>Sampling for cost control</h3>
+<p>Production agent systems generate enormous trace volume. Every LLM call is a span; every tool call is a span; every multi-step trajectory has dozens of spans. At scale, the trace storage cost can rival the LLM inference cost.</p>
+<p>The DEV.to OTel piece is direct: <em>"Trace volume can surprise you. Agents that loop — retries, multi-turn conversations — generate a lot of spans. Set up sampling early. A simple tail-based sampler that keeps error traces and samples 10% of success traces works well."</em></p>
+<p>The sampling discipline:</p>
+<ul>
+<li><strong>Keep all error traces.</strong> These are the ones you actually need.</li>
+<li><strong>Keep all traces with anomalies.</strong> Unusual token counts, unusual durations, unusual tool call patterns.</li>
+<li><strong>Sample successful traces at a low rate.</strong> 10% works; 1% is enough for very high volumes.</li>
+<li><strong>Always keep traces for specific high-value operations.</strong> Customer-impact transactions, financial operations, escalations.</li>
+</ul>
+<pre><code class="language-python">class TailSampler:
+    &quot;&quot;&quot;
+    Tail-based sampling: decide what to keep AFTER the trace completes.
+    Knows the outcome before deciding whether to retain.
+    &quot;&quot;&quot;
+    def should_keep(self, trace: Trace) -&gt; bool:
+        # Always keep errors
+        if trace.has_errors:
+            return True
+
+        # Always keep escalations
+        if trace.has_attribute(&quot;saga.status&quot;, &quot;escalated&quot;):
+            return True
+
+        # Always keep anomalies
+        if trace.tokens &gt; self.token_anomaly_threshold:
+            return True
+        if trace.duration &gt; self.duration_anomaly_threshold:
+            return True
+
+        # Always keep customer-impacting operations
+        if trace.has_attribute(&quot;operation.customer_facing&quot;, True):
+            return True
+
+        # Sample a percentage of normal successful traces
+        return random.random() &lt; self.success_sample_rate  # e.g., 0.10
+</code></pre>
+<p>Without tail sampling, your trace storage costs grow linearly with traffic. With it, costs grow with anomaly volume — much slower in practice.</p>
+<div class="pullquote">
+<p>The trace is the single most useful observability artifact for agent systems. Properly structured, one trace tells the story of one user request — the reasoning, the tool calls, the saga execution, the failures, the compensations. The on-call engineer reads the trace and sees what happened. Without it, the same diagnosis takes hours of correlated log archaeology.</p>
+</div>
+<hr />
+<h2>Section 4 — The Metrics That Matter</h2>
+<p>Logs and traces are for debugging individual requests. Metrics are for spotting trends, alerting on degradation, and understanding aggregate behavior over time.</p>
+<h3>The hierarchy of agent metrics</h3>
+<p><strong>Tier 1: Always alert on these.</strong>
+- <strong>Error rate</strong> — agents failing to complete requests
+- <strong>Saga escalation rate</strong> — sagas escalating to humans (M16)
+- <strong>Guardrail block rate</strong> — by category (M12); spike indicates either attack or behavior change
+- <strong>Cost per request</strong> — tokens × rate; spike indicates context bloat or loops</p>
+<p><strong>Tier 2: Watch for trends, alert on significant drift.</strong>
+- <strong>Trajectory length</strong> — turns per request, tool calls per request; drift indicates degraded reasoning
+- <strong>p99 latency</strong> — for the full trajectory
+- <strong>Compensation invocation rate</strong> — sagas hitting compensation paths (vs success path)
+- <strong>Refusal rate</strong> — model declining to respond; drift indicates prompt issues
+- <strong>Token usage distribution</strong> — input and output tokens per request; right-shifted distribution indicates context bloat</p>
+<p><strong>Tier 3: Diagnostic, not alerting.</strong>
+- <strong>Per-tool latency and error rate</strong> — to identify slow tools
+- <strong>Per-model usage</strong> — when using multiple models (M6)
+- <strong>Confidence distribution</strong> — when the agent reports confidence</p>
+<h3>Per-agent dimensions</h3>
+<p>For multi-agent systems, every metric should be dimensioned by agent role:</p>
+<pre><code class="language-python"># Example: emit metrics with dimensions
+from opentelemetry import metrics
+
+meter = metrics.get_meter(__name__)
+
+agent_request_counter = meter.create_counter(
+    &quot;agent.request.count&quot;,
+    description=&quot;Number of agent invocations&quot;,
+    unit=&quot;1&quot;,
+)
+
+agent_token_counter = meter.create_counter(
+    &quot;agent.tokens.total&quot;,
+    description=&quot;Total tokens consumed&quot;,
+    unit=&quot;token&quot;,
+)
+
+agent_request_duration = meter.create_histogram(
+    &quot;agent.request.duration&quot;,
+    description=&quot;Agent request duration&quot;,
+    unit=&quot;ms&quot;,
+)
+
+
+async def record_agent_metrics(
+    agent_role: str,
+    model: str,
+    duration_ms: float,
+    input_tokens: int,
+    output_tokens: int,
+    status: str,
+):
+    attributes = {
+        &quot;agent.role&quot;: agent_role,
+        &quot;gen_ai.request.model&quot;: model,
+        &quot;agent.status&quot;: status,
+    }
+
+    agent_request_counter.add(1, attributes)
+    agent_token_counter.add(input_tokens, {**attributes, &quot;token.type&quot;: &quot;input&quot;})
+    agent_token_counter.add(output_tokens, {**attributes, &quot;token.type&quot;: &quot;output&quot;})
+    agent_request_duration.record(duration_ms, attributes)
+</code></pre>
+<p>With these metrics, you can answer:</p>
+<ul>
+<li><em>"What's the error rate for orchestrators vs workers?"</em></li>
+<li><em>"Which agent role uses the most tokens?"</em></li>
+<li><em>"Did our latest deployment change the worker's tool-call patterns?"</em></li>
+<li><em>"Is the compensation rate climbing for any specific saga type?"</em></li>
+</ul>
+<h3>The metrics that matter most</h3>
+<p>If you're starting from scratch, instrument these first:</p>
+<ol>
+<li><strong><code>agent.request.count</code></strong> by <code>agent.role</code> and <code>agent.status</code> — visibility into volume and success</li>
+<li><strong><code>agent.request.duration</code></strong> by <code>agent.role</code> — visibility into latency</li>
+<li><strong><code>gen_ai.usage.tokens</code></strong> by <code>gen_ai.request.model</code> and <code>token.type</code> — visibility into cost</li>
+<li><strong><code>agent.saga.outcome</code></strong> by <code>saga.type</code> — visibility into action durability (M16)</li>
+<li><strong><code>agent.guardrail.blocks</code></strong> by <code>block.category</code> — visibility into boundary events (M12)</li>
+</ol>
+<p>Five metrics, dimensioned correctly, give you enough signal to operate the system. More metrics are better, but not at the cost of getting these five right.</p>
+<div class="gotcha">
+<p>A common metric anti-pattern: high-cardinality dimensions. Adding <code>customer_id</code> or <code>request_id</code> as a metric dimension produces metric series that explode storage and break dashboards. Use them in <em>traces</em> (where they're indexed differently) or <em>logs</em> (where they're queryable). Never as metric labels. The right metric labels are: agent role, model, tool name, saga type, status — bounded vocabularies. Customer ID and request ID are infinite vocabularies.</p>
+</div>
+<hr />
+<h2>Section 5 — Structured Event Logging</h2>
+<p>Beyond metrics and traces, agent systems benefit from a third class of observability data: structured events at decision points. The Claude Code hooks pattern (and the broader observability-via-hooks approach) shows what these look like.</p>
+<h3>What events to capture</h3>
+<p>The decision points in agent execution where structured events earn their place:</p>
+<ul>
+<li><strong>Agent invocation start/end</strong> — with the user request, the role, the model</li>
+<li><strong>LLM call start/end</strong> — already covered by traces; events provide queryable summaries</li>
+<li><strong>Tool call start/end</strong> — name, params, result, error</li>
+<li><strong>Saga events</strong> — start, step start/end, compensation start/end, escalation</li>
+<li><strong>Handoff events</strong> — orchestrator dispatching, worker returning, synthesizer receiving</li>
+<li><strong>Guardrail events</strong> — block, allow with caveats, modify (PII redaction, etc.)</li>
+<li><strong>Memory events</strong> — load, save, retrieval (M9)</li>
+<li><strong>Reflection events</strong> — critique generated, revision applied (M11)</li>
+</ul>
+<p>Each event has:</p>
+<ul>
+<li>A unique event ID</li>
+<li>A trace ID linking to the broader trace</li>
+<li>A timestamp</li>
+<li>A structured payload specific to the event type</li>
+<li>A correlation ID (saga ID, conversation ID, customer ID where applicable)</li>
+</ul>
+<h3>Schema design</h3>
+<p>Structured events benefit from typed schemas:</p>
+<pre><code class="language-python">from pydantic import BaseModel
+from typing import Literal
+from datetime import datetime
+
+
+class BaseAgentEvent(BaseModel):
+    event_id: str
+    event_type: str
+    timestamp: datetime
+    trace_id: str
+    span_id: str
+    agent_role: str
+    correlation_ids: dict[str, str]  # e.g., {&quot;saga_id&quot;: ..., &quot;conversation_id&quot;: ...}
+
+
+class ToolCallEvent(BaseAgentEvent):
+    event_type: Literal[&quot;tool.call.start&quot;, &quot;tool.call.complete&quot;, &quot;tool.call.error&quot;]
+    tool_name: str
+    tool_input: dict  # or reference if too large
+    tool_output: dict | None = None
+    tool_error: str | None = None
+    duration_ms: float | None = None
+
+
+class SagaEvent(BaseAgentEvent):
+    event_type: Literal[
+        &quot;saga.start&quot;, &quot;saga.step.complete&quot;, &quot;saga.step.error&quot;,
+        &quot;saga.compensation.start&quot;, &quot;saga.compensation.complete&quot;,
+        &quot;saga.escalation&quot;,
+    ]
+    saga_id: str
+    saga_type: str
+    step_name: str | None = None
+    step_status: str | None = None
+    error: str | None = None
+
+
+class GuardrailEvent(BaseAgentEvent):
+    event_type: Literal[&quot;guardrail.block&quot;, &quot;guardrail.modify&quot;, &quot;guardrail.allow&quot;]
+    layer: Literal[&quot;input&quot;, &quot;output&quot;, &quot;action&quot;]  # M12 layers
+    category: str  # the rule category that triggered
+    severity: Literal[&quot;low&quot;, &quot;medium&quot;, &quot;high&quot;]
+    confidence: float
+</code></pre>
+<p>The events are queryable: <em>"show me all <code>saga.escalation</code> events in the last 24 hours, grouped by saga_type."</em> Or: <em>"show me all <code>guardrail.block</code> events with category='off_topic' for customer X."</em> Without structured events, the same query requires log parsing.</p>
+<h3>Where events go</h3>
+<p>Three destinations:</p>
+<p><strong>1. Trace backend.</strong> Events attach to spans as span events. They're queryable through the trace UI, contextually linked to the trace they belong to.</p>
+<p><strong>2. Event streaming platform.</strong> For high-volume use cases, events go to Kafka, Kinesis, or equivalent for stream processing. This enables real-time alerting on event patterns.</p>
+<p><strong>3. Searchable storage.</strong> Events stored in a structured event store (Elasticsearch, ClickHouse, Snowflake) for ad-hoc analysis. <em>"How many compensation events happened across all saga types last quarter?"</em></p>
+<p>For most teams, the trace backend is enough — modern observability platforms (Honeycomb, Datadog, New Relic) handle structured events on spans well. Streaming and searchable storage add value for advanced use cases (real-time fraud detection on guardrail events, longitudinal analysis of agent behavior).</p>
+<h3>The Claude Code hooks pattern</h3>
+<p>Anthropic's Claude Code instruments observability via hooks: lifecycle event handlers that fire at agent execution boundaries. The disler/claude-code-hooks-multi-agent-observability open-source project shows the pattern in action — every hook event becomes a structured event, exported to a backend, visualized in real-time.</p>
+<p>Hook events Claude Code emits (per the docs):</p>
+<ul>
+<li><code>PreToolUse</code> — before any tool call</li>
+<li><code>PostToolUse</code> — after a tool call completes</li>
+<li><code>PostToolUseFailure</code> — after a tool call fails</li>
+<li><code>SubagentStop</code> — when a subagent completes</li>
+<li><code>Stop</code> — when the main agent completes</li>
+<li><code>PermissionRequest</code> — when the agent requests elevated permissions</li>
+</ul>
+<p>For Claude Code-based agents, you get this instrumentation by writing hook scripts that emit structured events. For Agent SDK-based deployments, the OpenTelemetry integration covers most of the same ground via standard span events.</p>
+<div class="nodumbq">
+<p><strong>Q: Don't traces already capture all this? Why do I need separate events?</strong></p>
+<p>Traces capture the call structure and timing; events capture the semantically-meaningful business actions. A trace shows "tool call to apply_credit completed in 230ms"; an event captures "saga step apply_credit succeeded with idempotency key X for customer Y." The event is structured, queryable, and aggregatable in ways the trace span isn't. Most observability platforms support both — traces and events on traces — and the discipline is to use each for what it's best at: traces for trajectory understanding, events for business-level analysis.</p>
+</div>
+<hr />
+<h2>Section 6 — Alerting Patterns</h2>
+<p>The point of metrics is to know when something's wrong. The discipline is alerting on the right signals at the right thresholds.</p>
+<h3>Leading vs lagging indicators</h3>
+<p>The distinction matters more for agent systems than most.</p>
+<p><strong>Lagging indicators</strong> measure outcomes after they've happened: customer complaints, support tickets, payment errors. They're reliable but late — by the time you alert, the damage is done.</p>
+<p><strong>Leading indicators</strong> measure conditions that predict outcomes: token bloat, latency drift, error rate trends, guardrail block patterns. They're noisier but earlier — they let you fix problems before customers see them.</p>
+<p>For agent systems specifically, leading indicators include:</p>
+<table>
+<thead>
+<tr>
+<th>Leading indicator</th>
+<th>What it predicts</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rising token-per-request</td>
+<td>Increased cost; possibly degraded quality</td>
+<td>Context bloat; loops; over-tooling</td>
+</tr>
+<tr>
+<td>Rising p99 latency</td>
+<td>User experience degradation</td>
+<td>Same causes; or model latency issues</td>
+</tr>
+<tr>
+<td>Rising tool call count per request</td>
+<td>Inefficiency; possibly wrong reasoning</td>
+<td>Agent struggling to complete tasks</td>
+</tr>
+<tr>
+<td>Rising guardrail block rate</td>
+<td>Drift in user behavior or agent behavior</td>
+<td>Either users testing edges or agent interpretation drifting</td>
+</tr>
+<tr>
+<td>Falling confidence in agent outputs</td>
+<td>Quality degradation</td>
+<td>Agent uncertain on cases it used to handle</td>
+</tr>
+<tr>
+<td>Rising compensation rate</td>
+<td>Action durability degrading</td>
+<td>Underlying services flaking</td>
+</tr>
+</tbody>
+</table>
+<p>Each one is alertable when it deviates significantly from baseline. The alert is "investigate," not "page someone." But over a few hours of drift, the leading indicator is what tells you the system is degrading before customers notice.</p>
+<h3>Alert hierarchy</h3>
+<p>Production agent systems benefit from tiered alerting:</p>
+<p><strong>Tier 1: Page immediately.</strong>
+- Error rate &gt; X% for Y minutes
+- Saga escalation rate &gt; N per hour
+- p99 latency &gt; customer SLO threshold
+- Customer-facing failures detected</p>
+<p><strong>Tier 2: Notify on-call channel; investigate next business day if not actively impactful.</strong>
+- Token-per-request 50%+ above baseline
+- Tool error rate for any single tool above N%
+- Guardrail block rate for any category above 2× baseline
+- Refusal rate above baseline</p>
+<p><strong>Tier 3: Track on dashboard; investigate during regular operations review.</strong>
+- Per-tool latency drift
+- Trajectory length distribution shifts
+- Per-model usage shifts (might indicate routing issues)</p>
+<p>The discipline of tiered alerts: Tier 1 is sacred (paging means waking someone up; reserve for actual problems). Tier 2 is useful (catches drift before it becomes Tier 1). Tier 3 is informational (useful for trending, not alerting).</p>
+<h3>Anomaly detection on traces</h3>
+<p>Beyond threshold-based alerts, anomaly detection on individual traces catches outliers that don't fit aggregate patterns. The OpenObserve writeup on AI-powered observability frames it well: <em>"AI-powered RCA, log clustering, trace correlation, and LLM-powered anomaly detection."</em></p>
+<p>The pattern: a baseline of normal trace shapes (LLM call counts, tool call counts, token usage, structure) is computed. Traces that deviate significantly from baseline are flagged for investigation. This catches:</p>
+<ul>
+<li><strong>Reasoning loops.</strong> A trace with 50 LLM calls when baseline is 5 — agent is stuck.</li>
+<li><strong>Excessive tool use.</strong> A trace with 20 tool calls when baseline is 3 — possible reasoning failure.</li>
+<li><strong>Context bloat.</strong> Token count 5× baseline — context isn't being compacted properly (M8).</li>
+<li><strong>Unusual paths.</strong> Trace structure that doesn't match any baseline cluster — novel scenario worth reviewing.</li>
+</ul>
+<p>For modest-scale agent systems, threshold-based alerting on aggregate metrics suffices. For high-scale or high-stakes systems, anomaly detection on traces catches the long tail of problems thresholds miss.</p>
+<div class="postmortem">
+<p><strong>The Token Bloat That Hit a Cost Alert at 2 a.m.</strong></p>
+<p>A team had a customer-support agent running on Sonnet 4.6. Their cost monitoring alerted when daily spend exceeded a threshold. One Tuesday, the cost alert fired at 2 a.m. — daily spend was 4× normal.</p>
+<p>The on-call engineer pulled traces. The pattern: median trajectory length had drifted from 3 turns per request to 8 turns. Token usage per request had drifted from 12K to 38K. The cost spike was real.</p>
+<p>Why? A deploy three days prior had updated a tool's description (a cosmetic change, the team thought) in a way that confused the agent. The agent started calling the tool, getting unexpected results, calling it again with different parameters, and gradually using more turns per request. The aggregate had drifted slowly enough that no single request looked anomalous, but the cumulative cost was 4× normal.</p>
+<p>Two fixes:</p>
+<ol>
+<li>
+<p><strong>Token-per-request alert at Tier 2.</strong> A 50%+ deviation from baseline trip a notification (not page). Would have caught this within hours of the deploy, not three days.</p>
+</li>
+<li>
+<p><strong>Tool description rollback.</strong> The cosmetic change was reverted; trajectory length returned to normal within an hour.</p>
+</li>
+</ol>
+<p><strong>Lesson:</strong> cost alerts (lagging) catch problems after they've cost you money. Token-per-request drift (leading) catches the same problems hours earlier, when they're cheaper to fix. Instrument both; alert on the leading indicator at lower threshold than the lagging one.</p>
+</div>
+<hr />
+<h2>Section 7 — Debugging Multi-Agent Emergent Behaviors</h2>
+<p>The hardest observability challenge. Multi-agent systems develop behaviors no individual agent created — coordination patterns, drift, echo chambers, cascading failures. These only show up in aggregate.</p>
+<h3>Patterns that only emerge with multiple agents</h3>
+<p><strong>1. Cascading failures.</strong> Worker A fails; orchestrator retries; retry has slightly different parameters; worker B (which had succeeded) now produces different output because the orchestrator's context changed. The original failure cascaded into a different failure pattern.</p>
+<p><strong>2. Coordination drift.</strong> Over thousands of interactions, the orchestrator and workers develop a "style" of communication that diverges from what the prompts specify. Workers start including more (or less) detail than expected; orchestrators start trusting (or distrusting) certain workers more. Hard to detect; harder to correct.</p>
+<p><strong>3. Echo chamber effects.</strong> Subagents that read each other's outputs reinforce each other's biases. The synthesizer amplifies what they all agreed on, even when they were all wrong in the same way (M11's MAR finding).</p>
+<p><strong>4. Coordination deadlocks.</strong> Agents waiting for each other in patterns that work in development but emerge under production conditions.</p>
+<h3>Detecting emergent behaviors</h3>
+<p>The discipline: aggregate analysis on per-agent dimensions, looking for distributional shifts.</p>
+<p><strong>Trajectory shape clustering.</strong> Cluster traces by their structure (LLM call counts, tool calls, hierarchy depth). Healthy systems have a few stable clusters representing different operation types. Drift shows up as new clusters or shifting cluster sizes.</p>
+<p><strong>Cross-agent correlation analysis.</strong> Are workers that should be independent actually correlated? If subagent A's output predicts subagent B's output more than chance, you have echo chamber risk.</p>
+<p><strong>Per-saga compensation patterns.</strong> Are compensations clustering on certain saga types or steps? That's a leading indicator of underlying service degradation.</p>
+<p><strong>Latency distribution drift.</strong> Is p99 latency for orchestrator increasing while worker latencies are stable? Suggests orchestrator coordination overhead growing — possibly emergent.</p>
+<h3>A diagnostic dashboard for multi-agent systems</h3>
+<p>The metrics that distinguish working multi-agent systems from emergent-failure-mode systems:</p>
+<ul>
+<li><strong>Worker independence:</strong> Pearson correlation between sibling workers' outputs over time. Should be low (they're investigating different things). Rising correlation indicates echo chamber.</li>
+<li><strong>Trajectory diversity:</strong> Number of distinct trace cluster shapes. Should be roughly stable. Rising diversity indicates novel scenarios; falling indicates collapse.</li>
+<li><strong>Coordination overhead:</strong> Time spent in orchestrator synthesis vs workers doing actual work. Should be a stable ratio. Rising indicates coordination drift.</li>
+<li><strong>Error origination distribution:</strong> Which agents produce errors. If errors shift from "any agent" to "always synthesizer," the synthesizer is becoming a bottleneck or has degraded.</li>
+</ul>
+<p>These aren't alerts (most teams don't need to alert on them); they're dashboard metrics for periodic operational review. Once a quarter, the team reviews the dashboard, asks "are there any drift patterns?", and intervenes if needed.</p>
+<div class="brain">
+<p>A multi-agent system's per-quarter review shows: trajectory diversity stable, coordination overhead stable, but worker independence has dropped from 0.15 to 0.42 over six months. What does this suggest, and what's the right intervention?</p>
+<p>(Workers' outputs have become 3× more correlated than they were six months ago. Most likely causes: (1) the orchestrator's task descriptions to workers have drifted to be more similar, (2) workers are reading shared context that's biasing them similarly, (3) the synthesizer's preferences are leaking back into worker behavior through prompt updates. Intervention: audit recent prompt changes; check whether worker mandates have become more similar; consider re-establishing prompt diversity and explicitly instructing workers to investigate from different angles. The metric won't tell you the cause directly; it tells you to look.)</p>
+</div>
+<hr />
+<h2>Section 8 — Anthropic's First-Party Observability</h2>
+<p>Anthropic ships observability infrastructure across two primary products. Worth dedicated treatment because they're the canonical implementations.</p>
+<h3>Claude Console session tracing</h3>
+<p>For Claude Managed Agents (April 2026 GA), the Claude Console provides session-level observability. From Anthropic's docs:</p>
+<blockquote>
+<p><em>"Claude Managed Agents provides observability tools in the Claude Console to help you monitor, debug, and understand your agent sessions. The Console provides a visual timeline view of your agent sessions."</em></p>
+</blockquote>
+<p>What's visible:</p>
+<ul>
+<li><strong>Session list</strong> — all sessions with status, creation time, model</li>
+<li><strong>Tracing view</strong> — chronological view of events (content, timestamps, token usage) within a session</li>
+<li><strong>Tool execution</strong> — details of each tool call and its result</li>
+</ul>
+<p>The interface is designed for debugging individual sessions. For "what happened in this specific saga that escalated to the on-call queue," the Claude Console gives you the agent's reasoning, tool calls, and decisions in a single timeline view.</p>
+<p>The reviews from the buildfastwithai and unicodeveloper writeups are direct: <em>"Session tracing, integration analytics, and troubleshooting guidance are built into the Claude Console. You can see every tool call, every decision point, every failure mode."</em> For DIY agent setups, this kind of observability typically takes months to build; Managed Agents includes it.</p>
+<h3>Claude Agent SDK OpenTelemetry export</h3>
+<p>For self-hosted agents using the Claude Agent SDK, OpenTelemetry export is built in. From the SDK docs:</p>
+<blockquote>
+<p><em>"The Agent SDK can export this data as OpenTelemetry traces, metrics, and log events to any backend that accepts the OpenTelemetry Protocol (OTLP), such as Honeycomb, Datadog, Grafana, Langfuse, or a self-hosted collector."</em></p>
+</blockquote>
+<p>The integration is environment-variable-driven:</p>
+<pre><code class="language-bash">export OTEL_EXPORTER_OTLP_ENDPOINT=&quot;https://otlp.honeycomb.io&quot;
+export OTEL_EXPORTER_OTLP_HEADERS=&quot;x-honeycomb-team=$HC_API_KEY&quot;
+export OTEL_SERVICE_NAME=&quot;customer-success-agent&quot;
+export OTEL_RESOURCE_ATTRIBUTES=&quot;deployment.environment=production,service.version=2.4.1&quot;
+</code></pre>
+<p>What gets exported:</p>
+<ul>
+<li><strong>Spans</strong> around each model request and tool execution</li>
+<li><strong>Metrics</strong> for token and cost counters</li>
+<li><strong>Structured log events</strong> for prompts and tool results</li>
+</ul>
+<p>The key advantage: the SDK does the instrumentation; your application code doesn't change. Whether you use Honeycomb, Datadog, Langfuse, or a self-hosted Tempo+Grafana stack, the same data flows through.</p>
+<h3>Claude Code hooks for custom observability</h3>
+<p>For Claude Code-based agents, observability happens via hooks — lifecycle event handlers that fire at execution boundaries. The disler/claude-code-hooks-multi-agent-observability project demonstrates the pattern: every hook event becomes a structured event posted to a backend, visualized in real-time.</p>
+<p>Hook events Claude Code emits:</p>
+<ul>
+<li><code>PreToolUse</code> — before any tool call</li>
+<li><code>PostToolUse</code> — after a tool call completes</li>
+<li><code>PostToolUseFailure</code> — after a tool call fails</li>
+<li><code>SubagentStop</code> — when a subagent completes</li>
+<li><code>Stop</code> — when the main agent completes</li>
+<li><code>PermissionRequest</code> — when the agent requests elevated permissions</li>
+</ul>
+<p>For multi-agent observability specifically, the hooks pattern shines. Each agent emits events as it runs; the events flow to a central observability system; the dashboard shows the entire swarm in real-time.</p>
+<h3>Choosing among Anthropic's observability options</h3>
+<p>For most production deployments, the stack is:</p>
+<ol>
+<li><strong>Claude Managed Agents</strong> for the agent runtime — observability built in via Console</li>
+<li><strong>Anthropic Agent SDK</strong> for self-hosted agents — OpenTelemetry export to your existing backend</li>
+<li><strong>OpenTelemetry standard semantic conventions</strong> for everything that spans your app and the agents</li>
+</ol>
+<p>This gives you both the deep agent-specific debugging (Managed Agents Console) and the unified cross-system view (OpenTelemetry to a backend like Honeycomb or Datadog).</p>
+<p>The specific recommendation for Sam's customer-success bot: run on Managed Agents (durability + saga support + observability), export OTLP to the team's existing Datadog deployment for cross-system correlation, use the Console for deep-dive debugging when escalations require it.</p>
+<div class="pullquote">
+<p>The infrastructure for production agent observability is mature in 2026. Anthropic ships it built into Managed Agents; OpenTelemetry standardizes it across vendors; major observability platforms support agent-specific dashboards. The work for production teams isn't building observability — it's instrumenting deliberately and using what's there.</p>
+</div>
+<hr />
+<h2>Section 9 — Sam's Customer-Success Bot, Post-Observability Rollout</h2>
+<p>Returning to the cold open. Sam's team had M16's saga discipline working: failures were recoverable, escalations were structured, the on-call queue was receiving them as designed. The diagnosis time was the gap. Sam applied the M17 patterns:</p>
+<h3>The observability rollout</h3>
+<p><strong>1. Migrated the agent runtime to Managed Agents.</strong> The customer-success bot moved from self-hosted Agent SDK to Managed Agents, gaining the Claude Console session tracing automatically.</p>
+<p><strong>2. Wired OpenTelemetry through the entire stack.</strong> Every service in the customer-success path — billing, email, ticketing, CRM — got OpenTelemetry instrumentation. Trace context propagation from the agent through every downstream call.</p>
+<p><strong>3. Defined the trace tree explicitly.</strong> Root span: customer support request. Children: agent turns, tool calls, saga executions. Spans for every step of every saga, with idempotency keys, status, attempts.</p>
+<p><strong>4. Standardized correlation IDs.</strong> Every observability artifact — traces, metrics, events, logs — included the same correlation IDs: customer_id, ticket_id, conversation_id, saga_id where applicable. Cross-system queries became instant.</p>
+<p><strong>5. Implemented tail sampling.</strong> All error traces kept; all escalation traces kept; all customer-facing operation traces kept; 10% of routine successful traces kept. Trace storage costs were 8% of what they would have been with full sampling.</p>
+<p><strong>6. Built tier-based alerting.</strong> Tier 1 paged on customer-facing failures and escalation rate. Tier 2 notified on token-per-request drift, p99 latency drift, tool error rates. Tier 3 went to a weekly dashboard review.</p>
+<p><strong>7. Added the multi-agent diagnostic dashboard.</strong> Even though the customer-success bot is single-agent, Sam added the diagnostic dashboard pattern in case the team built multi-agent systems later. The other teams' multi-agent systems immediately benefited.</p>
+<h3>The escalation-to-resolution time</h3>
+<p>The metric that mattered most:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Pre-observability</th>
+<th>Post-observability</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Median time from escalation arrival to root cause identified</td>
+<td>~38 minutes</td>
+<td>~4 minutes</td>
+</tr>
+<tr>
+<td>Median time from root cause to fix (or fix-deferred decision)</td>
+<td>~25 minutes</td>
+<td>~12 minutes</td>
+</tr>
+<tr>
+<td>Median total time on escalation per engineer</td>
+<td>~63 minutes</td>
+<td>~16 minutes</td>
+</tr>
+<tr>
+<td>On-call engineer hours per month on agent escalations</td>
+<td>~8 hours</td>
+<td>~2 hours</td>
+</tr>
+</tbody>
+</table>
+<p>The gain wasn't preventing failures (M16 already did that); it was <em>diagnosing</em> them. The on-call engineer who used to spend 40 minutes pulling correlated logs from six services now pulled one trace, saw the entire trajectory, identified the root cause, and either applied a fix or filed a deferred-action ticket.</p>
+<h3>The leading-indicator catches</h3>
+<p>In the first three months post-rollout, the Tier 2 alerts caught:</p>
+<ul>
+<li><strong>Two cases of token-per-request drift</strong> — both due to prompt changes that increased context size; flagged within 6 hours; reverted before customer impact</li>
+<li><strong>One case of guardrail block rate spiking</strong> — a new customer pattern (asking about competitor pricing in unusual phrasings); the input filter was tuned to handle the new pattern</li>
+<li><strong>Three cases of tool error rate elevation</strong> — all transient infrastructure issues; alerted within minutes; resolved by tool team within an hour</li>
+</ul>
+<p>None of these became customer-facing problems. Pre-observability, all three patterns would have manifested as customer complaints over a multi-day window.</p>
+<p>Sam wrote one line for the playbook: <em>"M16 made failures recoverable. M17 made failures fast to diagnose. Together: failures stop being mysteries."</em></p>
+<div class="code-exercise">
+<p><strong>Exercise 17.1 — Observability audit.</strong></p>
+<p>Pick an agent system in your stack. Run the audit:</p>
+<ol>
+<li><strong>Trace coverage.</strong> Can you reconstruct a single user request as a trace tree spanning the agent, tools, sagas, and downstream services? If not, what's missing?</li>
+<li><strong>Correlation IDs.</strong> Pick a recent customer issue. Could you query all observability artifacts (traces, logs, metrics, events) for that issue's correlation ID and get the full picture? If not, the IDs aren't propagating.</li>
+<li><strong>Metrics dimensions.</strong> Are your metrics dimensioned by <code>agent.role</code>, <code>gen_ai.request.model</code>, and other agent-specific dimensions? Or are they generic request-rate and error-rate metrics that don't tell you about agent behavior?</li>
+<li><strong>Sampling.</strong> Do you keep all error traces? All escalation traces? What percentage of successful traces? Calculate your storage costs vs your debugging usefulness.</li>
+<li><strong>Alert hierarchy.</strong> What pages on-call (Tier 1)? What notifies (Tier 2)? What goes to dashboards (Tier 3)? Are leading indicators in Tier 2 or only lagging indicators?</li>
+<li><strong>Time-to-diagnosis.</strong> Pick the last three escalations. How long did diagnosis take? If it's measured in tens of minutes per escalation, observability is the gap.</li>
+</ol>
+<p>The goal is calibration. Most production agent systems have observability that worked in development and degrades silently as the system grows. The audit surfaces where the gaps are; the patterns from this module fix them.</p>
+</div>
+<hr />
+<h2>Section 10 — The Framework</h2>
+<p>Adding observability discipline to production agent systems:</p>
+<p><strong>1. Treat observability as core infrastructure, not an afterthought.</strong> It's the difference between agents that ship and agents that survive. Budget engineering time for it from day one.</p>
+<p><strong>2. Use OpenTelemetry as the foundation.</strong> The <code>gen_ai.*</code> semantic conventions are stable as of early 2026. Auto-instrumentation exists for major LLM SDKs. Vendor-neutral export to any backend.</p>
+<p><strong>3. Make traces the primary debugging artifact.</strong> Every user request is a trace tree spanning agent reasoning, tool calls, saga steps, and downstream services. Properly structured, one trace tells the full story.</p>
+<p><strong>4. Propagate correlation IDs religiously.</strong> customer_id, ticket_id, conversation_id, saga_id — propagated through every observability artifact, queryable across systems. The on-call engineer should be able to pull everything related to one issue with one query.</p>
+<p><strong>5. Standardize metric dimensions.</strong> <code>agent.role</code>, <code>gen_ai.request.model</code>, <code>tool.name</code>, <code>saga.type</code>, <code>agent.status</code>. Bounded vocabularies. Never use unbounded values like customer_id as metric dimensions.</p>
+<p><strong>6. Capture structured events at decision points.</strong> Saga events, guardrail events, handoff events, memory events — typed schemas, queryable, aggregatable. They complement traces; they don't replace them.</p>
+<p><strong>7. Implement tail sampling.</strong> All errors, all escalations, all anomalies, all customer-facing operations. Sample successful routine traces at 10%. Storage costs become tractable.</p>
+<p><strong>8. Tier alerts: page on critical, notify on drift, dashboard on diagnostics.</strong> Tier 1 for customer-impacting failures. Tier 2 for leading indicators (token drift, latency drift, error rate trends). Tier 3 for periodic operational review.</p>
+<p><strong>9. Build dashboards for emergent multi-agent behaviors.</strong> Worker independence, trajectory diversity, coordination overhead, error origination distribution. Periodic review catches drift before it becomes failure.</p>
+<p><strong>10. Use Anthropic's first-party observability when available.</strong> Managed Agents Console for deep agent debugging; Agent SDK OTLP export for cross-system correlation; Claude Code hooks for custom event flows. Don't reinvent what's already shipped.</p>
+<p>The discipline this enforces: <strong>failures get visible before customers see them, and diagnosable in minutes when they happen.</strong> Sam's customer-success bot reached this state through M16 (recoverable) + M17 (diagnosable). Every production agent system needs both layers; the question is whether you build them deliberately or discover them through painful incidents.</p>
+<hr />
+<h2>Recap: Module 17 in eight bullets</h2>
+<div class="bullet-points">
+<ul>
+<li>Agent observability is different from standard application observability. Five things make it harder: large unstructured inputs/outputs, multi-step trajectories as the unit of work, tool calls spanning systems, token economics as a first-class metric, emergent behaviors only visible in aggregate.</li>
+<li>The three pillars (logs, metrics, traces) all need agent-specific patterns. Traces are the most important — properly structured, one trace tells the story of one user request including reasoning, tool calls, and saga execution.</li>
+<li>OpenTelemetry's <code>gen_ai.*</code> semantic conventions are the de facto standard as of early 2026. Vendor-neutral export, auto-instrumentation packages, and stable conventions for model name, token counts, finish reason. Anthropic's Agent SDK exports OTLP directly.</li>
+<li>Distributed tracing across multi-agent systems requires explicit context propagation. Every agent's execution carries the parent trace context; workers' traces nest under orchestrators'; sagas span trace tree branches; the trace tree is the visual reconstruction of the full trajectory.</li>
+<li>The metrics that matter: error rate, escalation rate, guardrail block rate, cost per request (Tier 1 alerts); token-per-request drift, p99 latency, compensation rate, refusal rate (Tier 2 notifications); per-tool diagnostics and per-model usage (Tier 3 dashboard). Bounded dimensions only — never customer_id or request_id as metric labels.</li>
+<li>Structured events at decision points complement traces. Typed schemas for saga events, guardrail events, handoff events. Queryable and aggregatable in ways trace spans aren't. Anthropic's Claude Code hooks pattern shows the canonical implementation.</li>
+<li>Tail sampling controls trace storage costs while preserving debugging usefulness. Keep all errors, all escalations, all anomalies, all customer-facing operations. Sample 10% of routine successes. Storage costs grow with anomaly volume, not with traffic.</li>
+<li>Sam's customer-success bot post-rollout: median time from escalation to root cause dropped from 38 minutes to 4 minutes; on-call engineer hours per month on agent escalations dropped from 8 to 2. Leading indicators (Tier 2) caught 6+ issues in 3 months that would have become customer complaints pre-observability. The combination of M16 (recoverable failures) and M17 (diagnosable failures) is the foundation of production-grade agent operations.</li>
+</ul>
+</div>
+<hr />
+<div class="sam-arc">
+<p><strong>Sam, after the observability rollout.</strong></p>
+<p>Three months in. Sam was reviewing the on-call rotation metrics. The team had become noticeably less stressed about agent escalations. The pattern had inverted: escalations used to be dreaded ("oh god, another forty-minute trace dive"); now they were routine ("trace shows the issue, fix takes ten minutes, done").</p>
+<p>The CTO asked Sam to present the work at the engineering all-hands. Sam thought about how to frame it. The honest framing wasn't <em>"we built better observability."</em> The honest framing was: <em>"we built the operational maturity that makes agent systems sustainable."</em></p>
+<p>Sam pulled up a slide showing four numbers across three months:</p>
+<ul>
+<li><strong>0 customer-facing incidents</strong> caused by agent failures (M16 caught everything)</li>
+<li><strong>9 escalations to the on-call queue</strong> (the structured failures M16 surfaced)</li>
+<li><strong>All 9 diagnosed in under 10 minutes each</strong> (M17 made diagnosis fast)</li>
+<li><strong>6 leading-indicator alerts</strong> caught issues before they became customer-impacting (M17 made drift visible)</li>
+</ul>
+<p>The CTO's question: <em>"How does this scale to the next 10 agent systems we're going to build?"</em></p>
+<p>Sam thought about that. The patterns from M16 and M17 weren't customer-success-bot-specific. They were <em>agent-system-specific</em> — the operational discipline that turns any agent system from "works in dev" into "works in production at 3 a.m." The platform team had built the patterns; now they were reusable. The next agent system would inherit the saga discipline, the observability infrastructure, the alert hierarchy, the diagnostic dashboards. The cost of operating it would be the cost of building it well — not the cost of recovering from incidents nobody anticipated.</p>
+<p>Sam said something like that. The CTO nodded. <em>"Make it the platform standard. Every agent system gets this from day one."</em></p>
+<p>That became the next platform documentation update: <em>Required for production agents — saga discipline (M16), observability instrumentation (M17), tier-based alerting, structured escalations.</em> Not optional. Not deferred until later. Required from day one.</p>
+<p>Sam's arc this module: <strong>the operational discipline that makes agents sustainable is the actual deliverable.</strong> The agent's reasoning, the architecture, the prompts — those are necessary but not sufficient. M2 through M15 made the agent capable; M16 and M17 made the agent operable. The first half of the work made the agent <em>possible</em>; the second half made it <em>sustainable</em>. Both layers were the actual deliverable; the team had now built both.</p>
+<p>One module left in the book — M18, the capstone. A complete system pulling together every layer Sam had learned over the seventeen modules. The full arc, from M2's hardened loop through M17's observability discipline. Sam closed the laptop. The platform was ready. The patterns were ready. The capstone would be the synthesis.</p>
+</div>
+<hr />
+<h2>What's next</h2>
+<p>Module 18 is the capstone. A complete system pulling together every layer from the book — M2's hardened loop, M3's workflows, M4's tools, M5's MCP, M6's model selection, M7's context engineering, M8's compaction, M9's memory, M10's hallucination prevention, M11's reflection, M12's guardrails, M13's multi-agent decision, M14's architectures, M15's communication, M16's sagas, and M17's observability.</p>
+<p>The capstone won't introduce new patterns — those are all in M2 through M17. The capstone will <em>synthesize</em> — show how the patterns compose into a complete production agent system, how the layers interact, where the trade-offs surface, and how to know when the system is ready for production.</p>
+<p>Sam's customer-success bot, by M17's close, embodies most of the layers. The capstone takes a fresh problem (a deal-research-and-brief system) and walks through the full design from M2 through M17, showing how each layer's discipline contributes to the whole.</p>
+<p>For now: take the audit exercise from Section 9. Pick a production agent system. Audit its trace coverage, correlation IDs, metric dimensions, sampling, alert hierarchy, and time-to-diagnosis. The patterns from M17 are mature; the infrastructure exists; the work for production teams isn't building observability but using what's available deliberately. Sam's team's escalation diagnosis time dropped 90% from instrumenting the patterns from this module. Yours probably can too.</p>
+</body>
+</html>

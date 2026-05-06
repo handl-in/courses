@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 2 Outline — The Agent Loop, Hardened</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 2 Outline — The Agent Loop, Hardened</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 02 — OUTLINE</div>
+<div class="module-title">The Agent Loop, Hardened</div>
+<div class="subtitle">Everyone reimplements this badly.<br>Yours is going to be the one that doesn't.</div>
+<div class="pages">Target length: ~38 pages (longer; heavy code)</div>
+</div>
+<h2>What this module is</h2>
+<p>The first heavy-code module. We build a production-grade agent loop in raw Python with the Anthropic SDK — no LangGraph, no CrewAI, no AutoGen. By the end the reader has a ~250-line <code>Agent</code> class they understand line-by-line, complete with token accounting, retry logic, max-iteration safety, structured tool dispatch, error recovery, and observability hooks.</p>
+<p>The key pedagogical move: we build it <strong>twice</strong>. First the naive 20-line version (the one in every blog post). Then we break it on purpose with five different failure modes, and harden it.</p>
+<div class="hook">
+<p>"The naive agent loop is 20 lines. The production agent loop is 250. The other 230 lines are the difference between 'works in a demo' and 'doesn't bankrupt your startup.'"</p>
+</div>
+<hr />
+<h2>Section 1 — The 20-Line Agent (≈4 pages)</h2>
+<p>We start with the textbook ReAct loop. Everyone has seen this. We reproduce it with no apologies.</p>
+<pre><code class="language-python">from anthropic import Anthropic
+
+client = Anthropic()
+tools = [...]  # defined elsewhere
+
+def agent(query: str) -&gt; str:
+    messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: query}]
+    while True:
+        resp = client.messages.create(
+            model=&quot;claude-sonnet-4-6&quot;,
+            max_tokens=4096,
+            tools=tools,
+            messages=messages,
+        )
+        if resp.stop_reason == &quot;end_turn&quot;:
+            return resp.content[0].text
+        messages.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: resp.content})
+        tool_results = []
+        for block in resp.content:
+            if block.type == &quot;tool_use&quot;:
+                result = dispatch_tool(block.name, block.input)
+                tool_results.append({
+                    &quot;type&quot;: &quot;tool_result&quot;,
+                    &quot;tool_use_id&quot;: block.id,
+                    &quot;content&quot;: str(result),
+                })
+        messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: tool_results})
+</code></pre>
+<p>Walk through it line-by-line. <code>stop_reason == "end_turn"</code> is the agent's way of saying "I'm done." Tool results come back as a <code>user</code> message. The model sees them on the next turn.</p>
+<div class="nodumbq">
+<p><strong>Q: Why does the tool result get a <code>user</code> role?</strong></p>
+<p>That's the API's convention. Tool results are content that wasn't generated by the model, so it's wrapped in a <code>user</code> turn. Mentally, model the conversation as: user asks → assistant decides + maybe asks tools → "user" returns tool results → assistant continues.</p>
+<p><strong>Q: What if the model returns text AND a tool_use in the same response?</strong></p>
+<p>It can. <code>resp.content</code> is a list of blocks. Iterate through. Show the text to the user (or log it as the model's "thinking"), execute the tools, return results. The next response will continue the chain.</p>
+</div>
+<hr />
+<h2>Section 2 — Five Ways It Breaks (≈6 pages)</h2>
+<p>We deploy the naive loop and watch it explode. Each failure mode gets a <code>Watch It!</code> block, a reproduction case, and the fix-preview (full fixes come in Section 3).</p>
+<p><strong>Failure 1: Infinite loop.</strong> Model keeps calling tools without ever ending. The 20-line version has no max-iteration guard. Real example: agent tasked with "find a recent article on X" keeps calling search with slight query variations because the first results don't match its preconception. 47 search calls, $4.20, no answer.</p>
+<p><strong>Failure 2: Token exhaustion.</strong> Conversation grows unbounded. Around turn 30, the message history is 80K tokens. Around turn 50, you hit context window. The 20-line version has no compression. We don't fix this here (that's Module 8) but we add the <em>detection</em>.</p>
+<p><strong>Failure 3: Tool hallucination.</strong> Model calls a tool that doesn't exist (<code>get_user_email_v2</code> instead of <code>get_user_email</code>). Naive code crashes. Production code returns the error to the model so it can retry.</p>
+<p><strong>Failure 4: Malformed tool input.</strong> Model calls the right tool with wrong-shaped JSON. Same fix family: catch, return error to model.</p>
+<p><strong>Failure 5: Transient API errors.</strong> 529 overloaded, 500 internal, network blip. Naive code crashes the whole task. Production code retries with backoff.</p>
+<div class="postmortem">
+<p><strong>The Loop That Cost $1,400 in 90 Minutes</strong></p>
+<p>A team's "research agent" was deployed Friday afternoon. By Monday, finance had flagged unusual spend on the Anthropic account. The agent had been called once Friday at 4:50pm — the user asked about a topic the model didn't know well. The model called <code>web_search</code>. Results were partial. Model called <code>web_search</code> again. Same results. Again. Again. 1,847 search calls before the customer's session timeout (60 minutes wall-clock) finally killed it.</p>
+<p>The fix took five minutes: <code>if turn &gt; 25: break</code>. The lesson took longer.</p>
+</div>
+<hr />
+<h2>Section 3 — Hardening Pass 1: Safety Rails (≈5 pages)</h2>
+<p>We add the cheap, must-have guards.</p>
+<p><strong>Max iterations.</strong> A hard cap on turns. We default to 25; configurable per task.</p>
+<p><strong>Token accounting.</strong> Track input + output tokens per turn, cumulative for the whole loop. Print a running tally. (Foreshadows Module 17 observability.)</p>
+<p><strong>Cost ceiling.</strong> Convert tokens to dollars per turn. Abort if cumulative cost crosses a per-task budget.</p>
+<p><strong>Wall-clock timeout.</strong> <code>start_time</code> plus a max duration (default 5 minutes for a single agent task).</p>
+<pre><code class="language-python">class AgentBudget:
+    def __init__(self, max_turns=25, max_cost_usd=1.0, max_seconds=300):
+        self.max_turns = max_turns
+        self.max_cost = max_cost_usd
+        self.max_seconds = max_seconds
+        self.turns = 0
+        self.cost = 0.0
+        self.start = time.time()
+
+    def check(self):
+        if self.turns &gt;= self.max_turns:
+            raise BudgetExceeded(&quot;turn cap&quot;)
+        if self.cost &gt;= self.max_cost:
+            raise BudgetExceeded(f&quot;cost cap (${self.cost:.4f})&quot;)
+        if time.time() - self.start &gt;= self.max_seconds:
+            raise BudgetExceeded(&quot;wall-clock cap&quot;)
+
+    def record(self, usage, model_pricing):
+        self.turns += 1
+        self.cost += (
+            usage.input_tokens * model_pricing.input_per_token
+            + usage.output_tokens * model_pricing.output_per_token
+        )
+</code></pre>
+<div class="brain">
+<p>What's the right default for <code>max_turns</code>? Why is the answer "it depends" insufficient?</p>
+<p>Hint: think about what the <em>budget</em> is for vs. what the <em>expected length</em> is.</p>
+</div>
+<hr />
+<h2>Section 4 — Hardening Pass 2: Tool Dispatch (≈6 pages)</h2>
+<p>The tool dispatcher is the most accident-prone surface. We build it properly.</p>
+<p><strong>Registration:</strong> tools register their schema and handler in one place. No drift between "what we told the model" and "what we actually run."</p>
+<pre><code class="language-python">@dataclass
+class Tool:
+    name: str
+    description: str
+    input_schema: dict
+    handler: Callable[[dict], str]
+
+class ToolRegistry:
+    def __init__(self):
+        self._tools: dict[str, Tool] = {}
+
+    def register(self, tool: Tool):
+        self._tools[tool.name] = tool
+
+    def schemas(self) -&gt; list[dict]:
+        return [
+            {&quot;name&quot;: t.name, &quot;description&quot;: t.description, &quot;input_schema&quot;: t.input_schema}
+            for t in self._tools.values()
+        ]
+
+    def dispatch(self, name: str, input: dict) -&gt; str:
+        tool = self._tools.get(name)
+        if tool is None:
+            return f&quot;ERROR: unknown tool '{name}'. Available: {list(self._tools.keys())}&quot;
+        try:
+            return tool.handler(input)
+        except Exception as e:
+            return f&quot;ERROR executing {name}: {type(e).__name__}: {e}&quot;
+</code></pre>
+<p><strong>Error returns vs. exceptions.</strong> Errors come back to the model as tool_result content. Exceptions abort the loop. Get this wrong and you'll either crash on every typo or hide real bugs. Rule: anything the model could fix by calling differently is an error-result. Anything indicating system failure (DB down, OOM) is an exception.</p>
+<p><strong>Schema validation.</strong> Use <code>jsonschema</code> to validate the model's input against the declared schema <em>before</em> dispatch. Saves you from "the model hallucinated a field and your handler exploded."</p>
+<div class="gotcha">
+<p>Don't return <code>str(exception)</code> blindly. Stack traces leak internals. PII in error messages becomes part of the conversation history. Sanitize before returning to the model.</p>
+</div>
+<div class="code-exercise">
+<p><strong>Exercise 2.1 — Build the registry.</strong></p>
+<p>Implement <code>ToolRegistry</code> with: registration, schema export, dispatch with schema validation, error wrapping. Then register three tools (calculator, web_fetch, get_current_time) and test that an unknown-tool call returns a clean error to the model rather than crashing.</p>
+<p>Provide stub tests; reader implements until tests pass.</p>
+</div>
+<hr />
+<h2>Section 5 — Hardening Pass 3: Retries and Resilience (≈4 pages)</h2>
+<p>API errors happen. We classify and handle.</p>
+<p><strong>Retryable:</strong> 429 (rate limit), 500 (server), 502/503/504 (gateway), 529 (Anthropic-specific overloaded), connection errors.</p>
+<p><strong>Non-retryable:</strong> 400 (bad request), 401 (auth), 403 (forbidden), 404 (model not found).</p>
+<p>Exponential backoff with jitter. Cap retries (default 3). Different backoff for rate limits (longer) vs. transient (shorter).</p>
+<pre><code class="language-python">@retry(
+    retry=retry_if_exception_type((
+        anthropic.RateLimitError,
+        anthropic.APITimeoutError,
+        anthropic.InternalServerError,
+        anthropic.APIConnectionError,
+    )),
+    wait=wait_exponential_jitter(initial=1, max=60),
+    stop=stop_after_attempt(3),
+    reraise=True,
+)
+def call_model(self, **kwargs):
+    return self.client.messages.create(**kwargs)
+</code></pre>
+<p>We use <code>tenacity</code> here; reader can adapt.</p>
+<div class="nodumbq">
+<p><strong>Q: Why retry inside the loop instead of letting the whole task fail and retry from outside?</strong></p>
+<p>Both have a place. Retry-inside is for transient blips during a task — the user shouldn't see the agent restart from scratch. Retry-outside is for persistent failures (downstream services down for hours). Different triggers, different timeframes.</p>
+</div>
+<hr />
+<h2>Section 6 — Hardening Pass 4: Streaming and Backpressure (≈4 pages)</h2>
+<p>For interactive agents, streaming changes UX. The Anthropic SDK supports <code>client.messages.stream(...)</code>. We adapt the loop:</p>
+<ul>
+<li>Stream text deltas to the user as they arrive.</li>
+<li>Hold tool_use blocks until they're complete (you can't dispatch a half-formed tool call).</li>
+<li>Yield events to a callback so the UI can show "thinking..." vs "calling tool X..." vs "got result."</li>
+</ul>
+<pre><code class="language-python">with client.messages.stream(...) as stream:
+    for event in stream:
+        if event.type == &quot;content_block_delta&quot; and event.delta.type == &quot;text_delta&quot;:
+            yield TextChunk(event.delta.text)
+        elif event.type == &quot;content_block_stop&quot;:
+            block = stream.current_message_snapshot.content[event.index]
+            if block.type == &quot;tool_use&quot;:
+                yield ToolStart(block.name, block.input)
+</code></pre>
+<p>The hardened version exposes events: <code>TextChunk</code>, <code>ToolStart</code>, <code>ToolResult</code>, <code>TurnComplete</code>, <code>LoopComplete</code>, <code>BudgetExceeded</code>. Downstream code can do anything with them — print to terminal, push to WebSocket, log to traces.</p>
+<div class="brain">
+<p>Why can't you start dispatching a tool the moment you see <code>tool_use</code> start in the stream, even though you have its name?</p>
+<p>Because the input is built incrementally. You'd dispatch with empty arguments. Wait for <code>content_block_stop</code> for that block.</p>
+</div>
+<hr />
+<h2>Section 7 — Hardening Pass 5: Observability Hooks (≈4 pages)</h2>
+<p>Tracing for free if you build it right. We hook every interesting event:</p>
+<ul>
+<li><code>on_turn_start(turn_num, message_count)</code></li>
+<li><code>on_model_request(model, message_count, tool_count)</code></li>
+<li><code>on_model_response(usage, stop_reason)</code></li>
+<li><code>on_tool_call(name, input)</code></li>
+<li><code>on_tool_result(name, result_or_error)</code></li>
+<li><code>on_turn_end(turn_num, cost)</code></li>
+<li><code>on_loop_end(reason, total_cost, total_turns)</code></li>
+</ul>
+<p>Default implementation logs to stdout. Easy to swap with OpenTelemetry, Langfuse, or your own collector. We don't go deep here — Module 17 is the full observability module — but the hooks need to exist now so we can use them later.</p>
+<div class="postmortem">
+<p><strong>The Agent That Worked In Dev</strong></p>
+<p>Sam shipped the hardened loop. Worked fine in dev. In prod, occasionally an agent would just... stop responding. No error. No exception. The loop variable just stopped advancing.</p>
+<p>Cause: the <code>on_tool_call</code> hook was synchronously logging to a metrics service. The metrics service occasionally took 30 seconds to ack. The async Python framework had a 10-second timeout on the surrounding request. The framework gave up before the hook returned. The agent loop never received the response. No error fired because nothing actually crashed — the request just got dropped.</p>
+<p>Fix: hooks are async, fire-and-forget, never block the loop.</p>
+</div>
+<hr />
+<h2>Section 8 — The Full Hardened Agent (≈3 pages)</h2>
+<p>We assemble everything into one <code>Agent</code> class. ~250 lines, fully annotated. This is the reference implementation we'll extend in every subsequent module:</p>
+<ul>
+<li>Module 4 adds richer tool definitions</li>
+<li>Module 6 adds model routing</li>
+<li>Module 8 adds context compression</li>
+<li>Module 9 adds memory</li>
+<li>Module 10 adds hallucination detection</li>
+<li>Module 11 adds reflection</li>
+<li>Module 12 adds guardrails</li>
+<li>Module 17 swaps the basic hooks for full tracing</li>
+</ul>
+<pre><code class="language-python">class Agent:
+    def __init__(
+        self,
+        client: Anthropic,
+        tools: ToolRegistry,
+        system: str,
+        model: str = &quot;claude-sonnet-4-6&quot;,
+        budget: AgentBudget | None = None,
+        hooks: AgentHooks | None = None,
+    ):
+        ...
+
+    def run(self, query: str) -&gt; AgentResult:
+        ...
+</code></pre>
+<p>We show one full run end-to-end against a non-trivial task ("find the most-cited paper on long-context compression from 2025 and summarize the method").</p>
+<hr />
+<h2>Section 9 — Sync vs. Async (≈2 pages)</h2>
+<p>The hardened loop above is synchronous. For real workloads, you want async. We show the diff:</p>
+<ul>
+<li><code>Anthropic</code> → <code>AsyncAnthropic</code></li>
+<li><code>client.messages.create</code> → <code>await client.messages.create</code></li>
+<li>Tool dispatch can be <code>async def</code> (and probably should be, for I/O tools)</li>
+<li>Hook callbacks become <code>async</code></li>
+</ul>
+<p>We don't rewrite the whole thing — just the pieces that change. Reader has both versions in the repo.</p>
+<div class="gotcha">
+<p>If your tools mix sync and async, the dispatcher has to handle both. Use <code>inspect.iscoroutinefunction(handler)</code> to decide whether to <code>await</code>. Or just declare a convention: all tools are async, sync handlers wrap with <code>asyncio.to_thread</code>.</p>
+</div>
+<hr />
+<h2>Section 10 — What's Next (≈1 page)</h2>
+<p>Module 3 builds the five workflow patterns using this same SDK foundation. You'll see workflows are often what you should have used.</p>
+<p>Module 4 makes tools first-class. The tool registry from this module gets richer descriptions, schema validation, and security hardening.</p>
+<p>By Module 10 (hallucination), our hardened agent is doing real work. By Module 18 (capstone), it's running multi-agent.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>3 No Dumb Questions</li>
+<li>2 Brain Power</li>
+<li>2 Production Postmortems (Friday meltdown, dev-vs-prod hooks)</li>
+<li>2 Watch It! blocks</li>
+<li>1 Code Exercise (build the registry)</li>
+<li>~12 code blocks</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam ships the naive 20-line version in Section 1, watches it burn $1,400 in Section 2, hardens it across Sections 3-7, and by Section 8 has something they trust enough to deploy. Sam's arc this module: <strong>competence</strong>. Still going to fail later — but for new reasons, not these reasons.</p>
+</div>
+<div class="page-budget">
+<p>S1 (20-line): 4p
+S2 (Five failures): 6p
+S3 (Safety rails): 5p
+S4 (Tool dispatch): 6p
+S5 (Retries): 4p
+S6 (Streaming): 4p
+S7 (Observability hooks): 4p
+S8 (Full agent): 3p
+S9 (Async): 2p
+S10 (Next): 1p
+TOTAL: ~39 pages (slight over; we'll trim S6 streaming to 3p if needed)</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting:</strong></p>
+<ul>
+<li>Anthropic SDK current API — <code>messages.create</code>, <code>messages.stream</code>, error class names, model strings</li>
+<li>Current pricing for token/cost calculations (input/output per-token rates for Sonnet, Haiku, Opus)</li>
+<li><code>tenacity</code> library current API for the retry decorator</li>
+<li>Anthropic's documented retry guidance (529 overloaded, etc.)</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- ReAct loop pattern
+- Tool result conventions in Anthropic API (user role wrapping)
+- General resilience patterns (exponential backoff, circuit breakers)
+- The five failure modes (these are universal)</p>
+<p><strong>Open question to resolve at drafting:</strong>
+- Should we introduce LangGraph here as a "if you don't want to build this yourself" sidebar? Or save entirely for Module 14? Lean toward saving — this module's whole point is understanding what's under the hood.</p>
+</div>
+<div class="bullet-points">
+<h3>Module 2 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>The 20-line naive loop is everywhere; it breaks five ways</li>
+<li>Budget guards: max turns, max cost, max wall-clock</li>
+<li>Tool dispatch: registry, schema validation, error-vs-exception split</li>
+<li>Retry: classify errors, exponential backoff with jitter</li>
+<li>Streaming changes UX, not loop structure (mostly)</li>
+<li>Observability hooks: cheap to add now, expensive to retrofit</li>
+<li>The 250-line hardened Agent class is our running reference</li>
+<li>Sync vs async: mostly a dispatch pattern, not a redesign</li>
+</ul>
+</div>
+</body>
+</html>

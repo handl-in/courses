@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 1 — Reframing: Workflows in a Trench Coat</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 1 — Reframing: Workflows in a Trench Coat</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 1</div>
+<div class="module-title">Reframing: Workflows in a Trench Coat</div>
+<div class="subtitle">Most of what gets called an "agent" in 2026 is actually a workflow with better marketing.<br>Before we build agents, let's figure out what we're building.</div>
+<div class="pages">~32 pages · the foundation</div>
+</div>
+<div class="hook">
+<p>A staff engineer stares at a Slack thread her CEO posted twenty minutes ago. The thread is three articles deep on "agentic AI transforming the enterprise." There's a quote about agents that book flights, write code, run companies. There's an architecture diagram with seven boxes labeled "Agent A," "Agent B," and so on, with arrows pointing in every direction.</p>
+<p>At the bottom, the CEO has typed: <em>"Should we be doing more of this?"</em></p>
+<p>She has two open browser tabs. One is the Anthropic engineering blog from December 2024, where Erik Schluntz and Barry Zhang carefully define agents as systems "where LLMs dynamically direct their own processes and tool usage." The other is her team's actual codebase — a two-step LLM pipeline that classifies an incoming ticket, then routes it to one of three specialist prompts. It works well. Customers are happy. It's been running in production for six months without incident.</p>
+<p>The Slack thread says her two-step pipeline is a "rudimentary agent." The CEO seems to think she should be building something with more arrows.</p>
+<p>She closes the laptop. She wants to write back: <em>what we have is fine; the problem is the vocabulary.</em> But she doesn't know how to say that without sounding defensive.</p>
+<p>This is the reframing problem. It's where this book begins.</p>
+</div>
+<hr />
+<h2>What this module is</h2>
+<p>This module exists because the word "agent" is doing too much work. It's been stretched across an enormous category — anything from a single LLM call with a search tool, to a multi-agent collective that spans data centers — and the stretching has left engineers without a clean way to think about what they're actually building.</p>
+<p>The goal here isn't to police vocabulary. It's to give you a working mental model that distinguishes the things that genuinely behave differently in production: what fails differently, what costs differently, what scales differently, what needs different debugging tools.</p>
+<p>By the end of this module, you'll be able to:</p>
+<ul>
+<li>Distinguish workflows from agents using a single concrete criterion that survives contact with marketing material</li>
+<li>Recognize the five workflow patterns that solve most "agent" problems</li>
+<li>Identify the three properties that genuinely require an agent (not a workflow with an agent-shaped UI)</li>
+<li>Push back, with specifics, on a manager or stakeholder who insists on agents for a problem that doesn't need one</li>
+</ul>
+<p>We're going to be contrarian in this module — not for sport, but because the field's vocabulary is currently incentivizing engineers to build the wrong thing. Once we've reframed, the rest of the book can talk straight about what agents <em>are</em>, what they're <em>for</em>, and how to build them when the answer is yes.</p>
+<hr />
+<h2>Section 1 — A Definition That Holds Up</h2>
+<p>The most useful definition of "agent" comes from Anthropic itself, post-refinement of their original December 2024 essay. In a follow-up post on context engineering, they wrote:</p>
+<blockquote>
+<p><em>"We've gravitated towards a simple definition for agents: LLMs autonomously using tools in a loop."</em></p>
+</blockquote>
+<p>Six words. Three load-bearing concepts. We're going to unpack each one because the loose use of any of them is where the vocabulary breaks down.</p>
+<p><strong>"LLMs"</strong> — plural is fine, but a system isn't more agentic just because there are more LLMs. Five LLMs in a fixed pipeline is a workflow with five steps. One LLM that decides what to do next is closer to an agent.</p>
+<p><strong>"Autonomously"</strong> — this is the discriminator. The model itself is choosing what happens next. Not a planner that the model drafted last Tuesday and now executes deterministically. Not an <code>if</code>/<code>else</code> over a routing classifier's output. The model, <em>during</em> the run, <em>deciding</em>.</p>
+<p><strong>"Using tools"</strong> — the model can affect the world. Read files, query APIs, execute code, navigate web pages, call other models. Without tools, the LLM is generating text that sits in a buffer; with tools, it's an active participant in a feedback loop with reality.</p>
+<p><strong>"In a loop"</strong> — the loop is what makes failure modes interesting. One pass through tool-call-and-observe is a single decision. Many passes is a trajectory, with all the compounding error, drift, and cost behavior that trajectories bring.</p>
+<div class="pullquote">
+<p>An agent is an LLM autonomously using tools in a loop. Six words. If your system isn't all four — LLM, autonomy, tools, loop — it's a workflow that's borrowing the word "agent" for marketing reasons.</p>
+</div>
+<p>Now look at the staff engineer's two-step pipeline from the cold open. Classify ticket → route to specialist prompt. Is it an agent?</p>
+<ul>
+<li>✅ LLMs (two of them, even)</li>
+<li>❌ Autonomously — the routing is <code>if classified=="billing" then call billing_prompt</code>. The model classifies; deterministic code routes.</li>
+<li>❌ Tools — neither model uses tools; they emit text.</li>
+<li>❌ Loop — one pass. Classify, route, respond, done.</li>
+</ul>
+<p>It's not an agent. It's a workflow. A two-step prompt pipeline. And — this is the important part — that's <em>fine</em>. The system works. Customers are happy. Calling it an agent doesn't make it better; it makes it harder to talk about.</p>
+<div class="nodumbq">
+<p><strong>Q: Doesn't the field disagree on this definition? I've seen people call workflows agents and vice versa.</strong></p>
+<p>The field absolutely disagrees on this definition. People call workflows agents because "agent" sounds more impressive. People call agents workflows because they want to downplay risk. The definition we're using here is Anthropic's own post-refinement formulation; it's the closest thing the field has to a standard. We're using it because it draws a line that maps to actual differences in how these systems behave — failure modes, cost, debuggability — not because it's the only line you'll see drawn in the wild.</p>
+<p><strong>Q: If my system has tool calls but the orchestration is hardcoded, is it an agent?</strong></p>
+<p>No. That's a workflow with tools. Tools are necessary for an agent but not sufficient. The discriminator is whether the <em>model</em> is choosing what to do next. If a <code>for</code> loop is iterating over a fixed list of steps and each step calls a tool, that's a workflow even if every step has tool access.</p>
+<p><strong>Q: Is "agent" a bad word, then? Should we stop using it?</strong></p>
+<p>No, just use it precisely. When you have an LLM autonomously using tools in a loop, call it an agent. When you have a deterministic pipeline with LLM calls, call it a workflow. The book uses both words a lot; it tries hard not to mix them up.</p>
+</div>
+<hr />
+<h2>Section 2 — The Augmented LLM: The Foundational Building Block</h2>
+<p>Before we get to workflows and agents, there's one layer underneath both: the augmented LLM. Anthropic's essay calls it "the basic building block of agentic systems." We'll call it that too, because the framing matters.</p>
+<p>An augmented LLM is just a model with one or more of:</p>
+<ul>
+<li><strong>Retrieval</strong> — the ability to pull in relevant context (RAG, semantic search, file reads)</li>
+<li><strong>Tools</strong> — the ability to call functions and observe results</li>
+<li><strong>Memory</strong> — the ability to retain information across turns or sessions</li>
+</ul>
+<p>The augmented LLM is not an agent. It's a <em>capability layer</em>. A single API call with a search tool attached is an augmented LLM call. A workflow built on top might invoke that augmented call multiple times in a fixed pattern. An agent built on top might invoke it autonomously in a loop.</p>
+<p>Why does this matter? Because most "AI features" you'll encounter — and most "AI features" you'll <em>build</em> — live at this layer. They're not workflows. They're not agents. They're a single LLM call, augmented appropriately, that does one thing well.</p>
+<pre><code class="language-python">from anthropic import Anthropic
+
+client = Anthropic()
+
+# Augmented LLM: a single call with retrieval and tools.
+# Not a workflow, not an agent — just a capability.
+response = client.messages.create(
+    model=&quot;claude-sonnet-4-6&quot;,
+    max_tokens=1024,
+    tools=[
+        {
+            &quot;name&quot;: &quot;search_internal_docs&quot;,
+            &quot;description&quot;: &quot;Search the company's documentation.&quot;,
+            &quot;input_schema&quot;: {
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {&quot;query&quot;: {&quot;type&quot;: &quot;string&quot;}},
+                &quot;required&quot;: [&quot;query&quot;],
+            },
+        },
+    ],
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;What's our policy on parental leave?&quot;},
+    ],
+)
+</code></pre>
+<p>That's the building block. If you can stop here for your use case, <em>stop here</em>. Most user-facing AI features ship as augmented LLMs and never need anything more. The complexity tax of going further — workflows, then agents — is real. Anthropic's own framing is direct about this:</p>
+<blockquote>
+<p><em>"When building applications with LLMs, we recommend finding the simplest solution possible, and only increasing complexity when needed. This might mean not building agentic systems at all."</em></p>
+</blockquote>
+<p>If you've internalized one thing from this module, let it be that quote. Most AI features don't need workflows. Most that do don't need agents. The hierarchy of complexity goes:</p>
+<ol>
+<li>Single augmented LLM call</li>
+<li>Workflow (orchestrated multi-call pipeline)</li>
+<li>Agent (autonomous loop)</li>
+<li>Multi-agent system (multiple agents coordinating)</li>
+</ol>
+<p>You climb only when the level you're at can't do the job. Not when the architecture diagram looks more impressive.</p>
+<div class="gotcha">
+<p>The single most expensive mistake in early-2026 agent engineering is reaching for an agent when an augmented LLM call would have done the job. The agent will work — sometimes — but at 10-50× the cost, with worse latency, more failure modes, and harder debugging. The "agent" version doesn't even necessarily produce better results; it produces <em>more variable</em> results that occasionally outperform on edge cases. For most use cases, that variance is a bug, not a feature.</p>
+</div>
+<hr />
+<h2>Section 3 — Workflows: The Five Patterns That Cover 80% of Cases</h2>
+<p>Anthropic's "Building Effective Agents" essay catalogs five workflow patterns. They're worth memorizing because most "agent" projects could ship as one of them — faster, cheaper, more reliably.</p>
+<p>We'll spend Module 3 on the deep treatment. Here, we're sketching them so you have the vocabulary by the end of this module.</p>
+<h3>Pattern 1: Prompt chaining</h3>
+<p>A task is decomposed into a fixed sequence of LLM calls, each operating on the previous one's output. Optional programmatic checks ("gates") between calls verify intermediate state.</p>
+<pre><code>[Input] → [LLM Call 1] → [Gate?] → [LLM Call 2] → [Output]
+</code></pre>
+<p><strong>When to use:</strong> the task can be cleanly decomposed into ordered subtasks, and trading some latency for better accuracy is worth it. Generating an outline → writing from the outline. Translating English → polishing the translation. Drafting a marketing email → rewriting it for a different audience.</p>
+<h3>Pattern 2: Routing</h3>
+<p>An initial LLM (or classifier) decides which downstream prompt or model handles the request. Used for separation of concerns and for cost optimization.</p>
+<pre><code>[Input] → [Router LLM] → [one of: Specialist A, B, or C] → [Output]
+</code></pre>
+<p><strong>When to use:</strong> distinct categories of input genuinely benefit from specialized handling, and the categories are stable enough that classification can be reliable. Anthropic's own example, refreshed for the current model lineup: route easy/common questions to Haiku 4.5; route hard ones to Sonnet 4.6 or Opus 4.7. Different specialist prompts for billing, technical, and account questions.</p>
+<p>The staff engineer's pipeline from the cold open is exactly this pattern. It's a perfectly fine workflow.</p>
+<h3>Pattern 3: Parallelization</h3>
+<p>A task is run by multiple LLM calls simultaneously, with their outputs aggregated. Two flavors:</p>
+<ul>
+<li><strong>Sectioning:</strong> the task is split into independent subtasks; each runs in parallel; results are combined.</li>
+<li><strong>Voting:</strong> the same task runs multiple times with different prompts or configurations; results are aggregated (majority vote, scoring, etc.).</li>
+</ul>
+<pre><code>              ┌─→ [LLM Call A] ─┐
+[Input] ──────┼─→ [LLM Call B] ─┼─→ [Aggregator] → [Output]
+              └─→ [LLM Call C] ─┘
+</code></pre>
+<p><strong>When to use:</strong> subtasks are genuinely independent (sectioning) or you need diverse perspectives for confidence (voting). Reviewing code with separate prompts for security, performance, and style. Running content moderation in parallel with response generation. Aggregating multiple votes on a difficult classification.</p>
+<h3>Pattern 4: Orchestrator-Workers</h3>
+<p>A central LLM dynamically decomposes the task and delegates to worker LLMs, then synthesizes their results. Looks like an agent — and is, sort of, depending on how dynamic the decomposition is.</p>
+<pre><code>                  ┌─→ [Worker A] ─┐
+[Orchestrator] ───┼─→ [Worker B] ─┼─→ [Synthesis] → [Output]
+                  └─→ [Worker C] ─┘
+</code></pre>
+<p><strong>When to use:</strong> the structure of the work isn't known in advance. The orchestrator looks at the input and decides how to split it. This is the closest workflow pattern to "agentic" — and Anthropic's research system (covered in Module 13) is essentially a scaled-up version of this. We'll come back to it.</p>
+<h3>Pattern 5: Evaluator-Optimizer</h3>
+<p>One LLM produces an output; another LLM evaluates it and provides feedback; the producer revises. Loop until the evaluator approves or a cap is hit.</p>
+<pre><code>[Input] → [Producer] → [Evaluator] → [pass? done : revise]
+              ↑___________________________|
+</code></pre>
+<p><strong>When to use:</strong> quality criteria are clear, iterative refinement provides measurable value, and the producer is variable enough that evaluation catches real issues. Literary translation with a separate evaluator for nuance. Code generation with a separate critic for correctness. Long-form writing with a separate editor.</p>
+<p>This is the same shape as Module 11's reflection, by the way. Reflection in agents is the evaluator-optimizer workflow living <em>inside</em> an agent loop.</p>
+<div class="brain">
+<p>Look at those five patterns. Pick a "AI feature" you've built, used, or seen demoed recently. Which pattern is it? Or is it actually just an augmented LLM call?</p>
+<p>Most teams will find that what they've been calling an "agent" is actually one of these five patterns. The vocabulary upgrade — from "we built an agent" to "we built an evaluator-optimizer workflow" — is not a downgrade. It's a clarity gain. The team that knows which pattern they shipped can debug it, scale it, and improve it. The team that calls everything an agent debugs it by reading runes.</p>
+</div>
+<hr />
+<h2>Section 4 — Agents: When the Loop Earns Its Cost</h2>
+<p>Now we can talk about agents honestly.</p>
+<p>An agent — by the six-word definition — is an LLM autonomously using tools in a loop. Concretely, this means: at each turn, the model decides whether to call a tool, which tool to call, and with what arguments. It observes the result. It decides what to do next. It might call more tools. It might respond to the user. It might keep going for many turns.</p>
+<p>Here's the minimal agent loop in code:</p>
+<pre><code class="language-python">from anthropic import Anthropic
+
+client = Anthropic()
+TOOLS = [...]  # tool schemas
+TOOL_HANDLERS = {...}  # maps tool name to a Python callable
+
+def run_agent(user_query: str, max_turns: int = 20) -&gt; str:
+    messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_query}]
+
+    for turn in range(max_turns):
+        response = client.messages.create(
+            model=&quot;claude-sonnet-4-6&quot;,
+            max_tokens=4096,
+            tools=TOOLS,
+            messages=messages,
+        )
+
+        # If the model is done, return its final message.
+        if response.stop_reason == &quot;end_turn&quot;:
+            return extract_text(response)
+
+        # If the model called tools, execute them and feed results back.
+        if response.stop_reason == &quot;tool_use&quot;:
+            messages.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: response.content})
+            tool_results = []
+            for block in response.content:
+                if block.type == &quot;tool_use&quot;:
+                    handler = TOOL_HANDLERS[block.name]
+                    result = handler(**block.input)
+                    tool_results.append({
+                        &quot;type&quot;: &quot;tool_result&quot;,
+                        &quot;tool_use_id&quot;: block.id,
+                        &quot;content&quot;: str(result),
+                    })
+            messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: tool_results})
+            continue
+
+        # Anything else: bail.
+        break
+
+    return &quot;Agent exhausted turn limit.&quot;
+</code></pre>
+<p>That's it. That's an agent. Module 2 hardens this loop — adds proper error handling, budget caps, observability, the works — but the <em>shape</em> doesn't change. Tool call, observe, decide, repeat.</p>
+<p>What makes this fundamentally different from a workflow: at no point does the <em>programmer</em> decide what happens next. The programmer wires up the tools, sets the budget, and lets the model drive. The model can take three turns or thirty. It can call the same tool five times in a row. It can decide it's done before doing anything. It can decide it can't be done and explain why.</p>
+<p>This flexibility is the agent's value proposition. It's also the agent's whole problem.</p>
+<h3>When the loop earns its cost</h3>
+<p>The loop is expensive. Each turn is a full LLM call with growing context. Tool results add tokens. Multiple agents compound this. Anthropic's own research found that their multi-agent research system uses roughly <strong>15× the tokens</strong> of a single chat interaction (we'll cover the numbers in detail in Module 13).</p>
+<p>So when does the loop earn its cost? Three properties — all three, not just one:</p>
+<p><strong>Property 1: The number of steps can't be predicted in advance.</strong> If you can write down the steps, write a workflow. If genuinely you can't — because it depends on what you find along the way — that's an agent shape.</p>
+<p>A research task is a good example. The first source you find changes which sources you look for next. The user's follow-up question changes the plan. You can't write a fixed pipeline that handles "answer arbitrary research questions" the way you can write one that handles "translate this document and check the translation."</p>
+<p><strong>Property 2: There's a feedback loop with the world that the model needs to drive.</strong> The agent needs to see the result of its last action to decide the next one. A coding agent runs the test suite, reads the failures, decides what to fix, edits the code, runs again. The "decides" is doing work that no fixed pipeline could replicate without knowing every possible failure shape in advance.</p>
+<p><strong>Property 3: The trust budget for the model is high enough.</strong> The agent will operate for many turns, each turn with potential to compound an error. Anthropic's essay calls this out explicitly: <em>"The autonomous nature of agents means higher costs, and the potential for compounding errors. We recommend extensive testing in sandboxed environments, along with the appropriate guardrails."</em></p>
+<p>If your task fails any of these three — predictable steps, no real feedback loop, low trust budget — you don't have an agent shape. You have a workflow shape with an agent costume.</p>
+<div class="pullquote">
+<p>Agents earn their cost on three properties together: unpredictable step count, real environmental feedback, sufficient trust budget. Two-out-of-three is a workflow. All three is an agent.</p>
+</div>
+<h3>What agent shapes actually look like in production</h3>
+<p>A few real examples, with the property check:</p>
+<p><strong>Coding agents (Cursor, Claude Code, Copilot agent mode).</strong>
+- Unpredictable steps? ✅ The number of edits to fix a bug isn't knowable upfront.
+- Feedback loop? ✅ Tests run, errors return, agent reacts.
+- Trust budget? ✅ User reviews each diff or approves the session.</p>
+<p>Yes, agent.</p>
+<p><strong>Customer support routing.</strong>
+- Unpredictable steps? ❌ Almost always: classify, route, respond.
+- Feedback loop? ❌ The "feedback" is "did the user ask a follow-up?"
+- Trust budget? Doesn't matter; first two failed.</p>
+<p>Workflow (specifically, routing).</p>
+<p><strong>Research-and-report (Anthropic's research feature).</strong>
+- Unpredictable steps? ✅ Sub-questions emerge as evidence is gathered.
+- Feedback loop? ✅ Each search result reshapes the next search.
+- Trust budget? ✅ User pays for a deep report and tolerates 5 minutes of work.</p>
+<p>Yes, agent (and a multi-agent one — Module 13).</p>
+<p><strong>E-commerce chatbot that answers FAQ.</strong>
+- Unpredictable steps? ❌ Match question, return answer.
+- Feedback loop? ❌ One-shot.
+- Trust budget? Doesn't matter.</p>
+<p>Augmented LLM call. Maybe a workflow with a router.</p>
+<div class="nodumbq">
+<p><strong>Q: My CEO/manager wants me to build "an agent." But I think the right thing is a workflow. How do I push back?</strong></p>
+<p>Specifically. "What problem are we solving?" If the answer is "we want to be more agentic," the conversation is about marketing, not engineering. If the answer is a real problem, walk through the three properties: are the steps predictable? Is there a real feedback loop? Is the trust budget sufficient?</p>
+<p>Then map the alternatives: augmented LLM call, then five workflow patterns, then agent. Show what each costs and what each delivers. The case for the simplest solution that works is almost always defensible on cost grounds alone. Most stakeholders care about cost; very few want to spend 15× more for the same outcome.</p>
+<p><strong>Q: What if the answer is "the simplest solution doesn't work"?</strong></p>
+<p>Then climb the ladder. But check carefully — sometimes "doesn't work" means "isn't sophisticated enough to demo well." Production cares about whether it serves users; demos care about whether it impresses observers. Build for production.</p>
+</div>
+<hr />
+<h2>Section 5 — A Worked Example: Reframing a "Multi-Agent" System</h2>
+<p>The staff engineer from the cold open isn't fictional, exactly. The pattern is everywhere. Here's a slightly disguised version of a real conversation.</p>
+<p>A team had built what they called a "multi-agent customer success system." Architecture diagram on the whiteboard had five boxes: an "Orchestrator Agent," a "Billing Agent," a "Technical Support Agent," an "Escalation Agent," and a "Sentiment Analysis Agent." Arrows in every direction.</p>
+<p>The implementation, when you looked at the actual code:</p>
+<pre><code class="language-python">def handle_message(message: str) -&gt; str:
+    # &quot;Sentiment Analysis Agent&quot;
+    sentiment = call_llm(SENTIMENT_PROMPT, message)
+
+    # &quot;Orchestrator Agent&quot;
+    category = call_llm(CATEGORY_PROMPT, message)
+
+    if sentiment == &quot;angry&quot; or category == &quot;complaint&quot;:
+        # &quot;Escalation Agent&quot;
+        return call_llm(ESCALATION_PROMPT, message)
+
+    if category == &quot;billing&quot;:
+        # &quot;Billing Agent&quot;
+        return call_llm(BILLING_PROMPT, message)
+
+    if category == &quot;technical&quot;:
+        # &quot;Technical Support Agent&quot;
+        return call_llm(TECHNICAL_PROMPT, message)
+
+    return call_llm(GENERAL_PROMPT, message)
+</code></pre>
+<p>Let's count agents: zero. There are no agents in this system.</p>
+<p>There are five LLM calls, orchestrated by Python <code>if</code>/<code>else</code> logic. The "Sentiment Analysis Agent" is one prompt. The "Orchestrator Agent" is another prompt. The router is a Python function. None of the LLMs autonomously use tools in a loop — none of them use tools at all.</p>
+<p>What this system <em>is</em>, in workflow vocabulary: it's a parallelization workflow (sentiment + category run together) feeding into a routing workflow. Two well-understood patterns composed together. It's a fine system. It works.</p>
+<p>What changed when the team reframed:</p>
+<ol>
+<li>They stopped trying to "make the agents communicate better" (the agents were prompts; prompts don't communicate). They started thinking about prompt quality and routing accuracy, which were the actual problems.</li>
+<li>They stopped trying to add observability for "agent-to-agent calls" (there were none). They added it for the LLM calls and the routing decisions, which were the things that could fail.</li>
+<li>They stopped budgeting for "multi-agent token costs" (a 15× multiplier they didn't actually pay; their system was sequential workflow calls, not parallel research workers). They budgeted accurately and discovered they had headroom for a more capable router model.</li>
+<li>The Slack thread to the CEO became "we ship a routing-and-parallelization workflow that handles 87% of tickets autonomously, with sentiment-aware escalation for the angry path." That sentence describes what they actually built, what it does, and why it works. The previous sentence ("we built a multi-agent system") described nothing.</li>
+</ol>
+<div class="postmortem">
+<p><strong>The Re-architecture That Wasn't</strong></p>
+<p>A team I'll call Acme spent six weeks "re-architecting their workflow into a true multi-agent system" at the request of their VP of engineering. They added an "agent loop" around their existing routing pipeline. They added tools the agents "could" use. They paid for sub-agent-style prompts that handed off to each other.</p>
+<p>End-state behavior was identical to the original workflow. The orchestrator agent's loop ran exactly once per request (because the task didn't actually require iteration). The handoffs were structured the same way the routing had been. Latency went up 40%. Cost went up 3×. Quality went up 1.2 points on their internal eval — within noise.</p>
+<p>Six weeks later, they reverted to the workflow. The VP asked what had gone wrong. The answer: nothing went wrong. The original pipeline was already the right shape for the problem. The "re-architecture" was vocabulary tourism.</p>
+<p>The lesson isn't that multi-agent is bad. It's that <em>building the wrong shape for your problem</em> is bad, regardless of how the shape is labeled. If the problem is one-shot routing, build one-shot routing. If you call it an agent, you'll spend like one.</p>
+</div>
+<hr />
+<h2>Section 6 — The Decision: A Field Guide</h2>
+<p>Here's the field guide you can carry into your next project meeting.</p>
+<h3>Step 1 — Can a single LLM call do it?</h3>
+<p>Not "can it do it perfectly" — can it do it <em>well enough that users would pay for it</em>? If yes, ship that. Augmented with retrieval and tools as needed. Don't climb the ladder.</p>
+<p>Examples that stop here: drafting an email, summarizing a document, classifying an intent, extracting structured data, answering a single factual question.</p>
+<h3>Step 2 — Can a workflow do it?</h3>
+<p>If a single call isn't enough, the next question: can you write down the steps? If yes, you have a workflow. Pick the pattern:</p>
+<ul>
+<li>One step depends on the output of another? <strong>Prompt chaining</strong>.</li>
+<li>Different inputs need different handling? <strong>Routing</strong>.</li>
+<li>Subtasks are independent? <strong>Parallelization</strong> (sectioning).</li>
+<li>Need diverse perspectives? <strong>Parallelization</strong> (voting).</li>
+<li>Structure of the work depends on the input? <strong>Orchestrator-workers</strong>.</li>
+<li>Need iterative quality refinement? <strong>Evaluator-optimizer</strong>.</li>
+</ul>
+<p>Most "AI features" stop here. Workflows are predictable, debuggable, cheap to scale, easy to monitor. They have a fixed cost per request that you can model.</p>
+<h3>Step 3 — Are all three agent properties present?</h3>
+<p>If a workflow can't do it, check the three properties:</p>
+<ol>
+<li><strong>Steps unpredictable in advance</strong> — you genuinely don't know what the agent will do next.</li>
+<li><strong>Feedback loop with the world</strong> — the agent's next action depends on its last action's result.</li>
+<li><strong>Trust budget sufficient</strong> — you can tolerate the agent operating for many turns with potential for compounding error, and you have the eval/observability to know when it goes wrong.</li>
+</ol>
+<p>Two out of three is not enough. All three. If you have all three: you have an agent shape.</p>
+<h3>Step 4 — One agent or multiple?</h3>
+<p>We don't even ask this in Module 1. The default is one agent. Multi-agent has its own threshold (15× cost as the headline number from Anthropic's research) and we treat it in Modules 13-15. Don't add agents because the diagram looks impressive.</p>
+<h3>The three questions to ask before "let's build an agent"</h3>
+<p>When someone proposes an agent — at your standup, in a roadmap doc, on the whiteboard — ask three questions:</p>
+<ol>
+<li><strong>What's the augmented-LLM version of this?</strong> Force the simplest case to be considered.</li>
+<li><strong>Which workflow pattern fits, if any?</strong> Force the workflow consideration before agent.</li>
+<li><strong>Which of the three agent properties does the task require?</strong> Force explicit articulation of why this needs an agent.</li>
+</ol>
+<p>If the answer to question 1 is "an augmented LLM doesn't work because X," good — you've articulated a real requirement. If question 2 is "no workflow fits because Y," good. If question 3 produces all three properties cleanly, you have a defensible case for an agent.</p>
+<p>If the answers are "an agent is what's modern" or "an agent will look better to investors" or "we want to be agentic" — those aren't requirements. They're decoration.</p>
+<div class="code-exercise">
+<p><strong>Exercise 1.1 — Reframe an "agent" you've encountered.</strong></p>
+<p>Pick an "AI agent" project you've built, used, or seen described in a blog post / case study / vendor pitch.</p>
+<ol>
+<li>Write down what the system actually does, mechanically. (Not what it's called — what it does.)</li>
+<li>Apply the six-word definition: is it an LLM autonomously using tools in a loop?</li>
+<li>If not, which of the five workflow patterns is it?</li>
+<li>If yes, which of the three agent properties does it satisfy? All three, or fewer?</li>
+<li>Write one sentence describing the system in workflow/agent vocabulary that's accurate.</li>
+</ol>
+<p>Goal: by the end of this exercise, you should be able to talk about the system without using the word "agent" until it's actually warranted.</p>
+</div>
+<hr />
+<h2>Section 7 — What This Book Does (and Doesn't) Do</h2>
+<p>A short directional note before Module 2.</p>
+<p>This book is about agents — the real shape, the autonomous-loop kind. We'll spend most of the book on them. But we got here by clearing away the things that <em>aren't</em> agents: augmented LLM calls, workflows, multi-LLM systems with deterministic orchestration. Those things are valuable; they're just not what this book is about.</p>
+<p>What you'll see in the next 17 modules:</p>
+<ul>
+<li><strong>Module 2 hardens the agent loop.</strong> All the things the minimal loop in Section 4 doesn't do: errors, budgets, instrumentation, partial failures.</li>
+<li><strong>Module 3 covers the five workflow patterns properly.</strong> Because — even in this book — most of what you build will be workflows or augmented calls. Knowing the patterns well is non-negotiable.</li>
+<li><strong>Modules 4-9</strong> are the building blocks: tools, MCP, model routing, context engineering, compression, memory.</li>
+<li><strong>Modules 10-12</strong> are the reliability layer: hallucinations, reflection, guardrails.</li>
+<li><strong>Modules 13-15</strong> are multi-agent: when it earns its cost, the architectures, the swarm patterns.</li>
+<li><strong>Modules 16-17</strong> are operational: transactional safety (sagas), production observability and evals.</li>
+<li><strong>Module 18</strong> is the capstone: build a real one, end to end.</li>
+</ul>
+<p>What this book doesn't do:</p>
+<ul>
+<li>It doesn't sell agents. We're going to be honest about when they don't earn their cost.</li>
+<li>It doesn't favor a framework. We use Anthropic's SDK as the primary code surface (because the book is built around Claude), with LangGraph and CrewAI for comparison where they earn their place. The patterns are framework-neutral.</li>
+<li>It doesn't promise that agents will replace your team. They won't. Most of them won't even reliably replace one of your team's existing scripts without a lot of operational work.</li>
+</ul>
+<p>What it tries to do is leave you, after Module 18, able to build agents that work — and able to refuse to build the ones that don't.</p>
+<div class="pullquote">
+<p>Most "agent" projects in 2026 should not be agents. The discipline of figuring out which ones should — and shipping those well — is what this book is teaching.</p>
+</div>
+<hr />
+<h2>Recap: Module 1 in eight bullets</h2>
+<div class="bullet-points">
+<ul>
+<li>An agent is an LLM autonomously using tools in a loop. Six words. All four parts matter.</li>
+<li>The hierarchy of complexity goes: augmented LLM → workflow → agent → multi-agent. Climb only when the level you're at can't do the job.</li>
+<li>The augmented LLM (retrieval + tools + memory) is the foundational building block; most "AI features" should ship as augmented calls and stop there.</li>
+<li>Five workflow patterns cover most "agent" use cases: prompt chaining, routing, parallelization, orchestrator-workers, evaluator-optimizer.</li>
+<li>Agents earn their cost when three properties are all present: unpredictable steps, real feedback loop, sufficient trust budget. Two out of three is a workflow.</li>
+<li>Most "multi-agent systems" in production are workflows in agent costumes. Reframing reveals what to actually optimize.</li>
+<li>Four questions to ask before building an agent: what's the augmented-LLM version, which workflow pattern fits, which of the three agent properties applies, and why is none of the simpler options enough?</li>
+<li>The vocabulary upgrade — "we built an X workflow" instead of "we built an agent" — is a clarity gain, not a downgrade. Teams that know what they shipped can debug, scale, and improve it.</li>
+</ul>
+</div>
+<hr />
+<div class="sam-arc">
+<p><strong>Sam, our recurring character, makes their first appearance.</strong></p>
+<p>Sam is a staff engineer at a mid-sized SaaS company. They've been shipping production systems for ten years, the last two of which have involved increasing amounts of LLM glue. Last quarter they shipped a customer-support routing pipeline that's been running quietly and well — the same pipeline from this module's cold open.</p>
+<p>This week, Sam's CEO posted the agentic AI Slack thread. Sam read this module — or its outline equivalent — and went into the next 1:1 with a clear answer.</p>
+<p>"What we shipped last quarter is a routing workflow with sentiment-aware escalation. It works. It's cheap. It scales linearly. Most of what's described in those articles as 'agentic transformation' is the same shape we already shipped, with different vocabulary. Where we <em>would</em> benefit from a real agent — autonomous loop, tool use, unpredictable trajectories — is in the deal-research workflow that the AEs have been asking for. That one has the right shape. Want me to scope it?"</p>
+<p>The CEO said yes.</p>
+<p>Sam's arc this module: <strong>the realization that workflows in a trench coat is most of the field, and that naming things accurately is the first engineering act.</strong></p>
+<p>Sam will appear in every module. The arc compounds. By Module 18, Sam will have shipped a real multi-agent system — but only after building all the things that aren't agents first, and learning when not to.</p>
+</div>
+<hr />
+<h2>What's next</h2>
+<p>Module 2 takes the minimal agent loop from Section 4 and hardens it into something you'd ship. Error handling, budget caps, partial failures, observability, the agent's relationship with its own context, and the operational instincts that turn "code that runs once successfully in a notebook" into "code that survives production." It's where the book stops talking about what agents are and starts talking about how to build them.</p>
+<p>Before Module 2 — really sit with the field guide in Section 6. The next 17 modules assume you can apply it. If you can't, the rest of the book is going to feel like it's solving the wrong problems. The discrimination between augmented call, workflow, and agent is the foundation. Build on it.</p>
+<p>Go ship something simple first. Then come back.</p>
+</body>
+</html>

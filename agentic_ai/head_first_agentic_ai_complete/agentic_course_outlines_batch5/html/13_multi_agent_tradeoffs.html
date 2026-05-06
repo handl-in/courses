@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 13 Outline — Multi-Agent: The Honest Trade-offs</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 13 Outline — Multi-Agent: The Honest Trade-offs</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 13 — OUTLINE</div>
+<div class="module-title">Multi-Agent: The Honest Trade-offs</div>
+<div class="subtitle">15× the tokens. 80% of performance variance from token use alone.<br>"Just add more agents" is the most expensive bug in the field.</div>
+<div class="pages">Target length: ~36 pages</div>
+</div>
+<h2>What this module is</h2>
+<p>This is the contrarian module that earns the right to teach the next two. Multi-agent has the largest hype-to-reality gap in the agent field. Anthropic's own research published the canonical numbers: their multi-agent research system outperformed single-agent Opus by <strong>90.2%</strong> on internal evaluations — at <strong>15× the tokens</strong>, with token usage explaining <strong>80% of performance variance</strong>. That's the math everyone quotes. Almost nobody quotes the rest of the same paper: multi-agent systems are <em>less</em> effective for tightly-interdependent tasks like coding, the orchestration is hard, and Anthropic explicitly says they're "best suited for tasks where result value far exceeds cost."</p>
+<p>This module covers when multi-agent genuinely wins, when it's expensive theater, and the decision framework for picking. It's the necessary throat-clearing before Modules 14 (architectures) and 15 (swarms). By the end the reader can defend — to a skeptical engineering manager — exactly why a particular task should or shouldn't be multi-agent.</p>
+<div class="hook">
+<p>"You give the agent harder problems. It struggles. The thought arrives: 'maybe two agents would be better.' Then three. Then a supervisor coordinating five workers. By the time the architecture diagram has a dozen boxes, the bill has gone up 15× and the quality has gone up 7%. You needed better tools, not more agents."</p>
+</div>
+<hr />
+<h2>Section 1 — The Numbers Everyone Should Have Memorized (≈4 pages)</h2>
+<p>The Anthropic multi-agent research system, June 2025 engineering blog. Internal eval. The findings:</p>
+<ul>
+<li><strong>+90.2%</strong> improvement over single-agent Opus on the BrowseComp eval</li>
+<li><strong>~15× more tokens</strong> vs standard chat use</li>
+<li><strong>~80% of performance variance</strong> explained by token usage alone</li>
+<li><strong>Strongly linked to ability to spread reasoning across multiple independent context windows</strong></li>
+<li><strong>Less effective for tightly-interdependent tasks like coding</strong> (where serial reasoning matters more than parallel breadth)</li>
+<li><strong>Best suited for tasks where result value far exceeds cost</strong></li>
+</ul>
+<p>These are stunning numbers in both directions. If you cherry-pick the +90.2%, multi-agent is the future. If you cherry-pick the 15× cost, it's a disaster. Both are real. The answer is: it depends on what the task is worth.</p>
+<p>A simple economic test: <strong>if the task's value-of-success is greater than 15× the single-agent cost, multi-agent wins on expected value. Otherwise it loses.</strong></p>
+<p>For Anthropic's research feature, this works: a deep research report a customer pays for, that takes a person hours to assemble manually, is easily worth $5-50 of API cost. For "summarize this email" it doesn't: the task value is sub-$0.01, and 15× still rounds to nothing.</p>
+<div class="pullquote">
+<p>"Multi-agent uses 15× the tokens" is not an indictment. "Multi-agent uses 15× the tokens for a task that's worth less than the original 1×" is.</p>
+</div>
+<div class="nodumbq">
+<p><strong>Q: Does the 15× number apply to all multi-agent systems, or just Anthropic's research one?</strong></p>
+<p>It's a representative ratio for <strong>orchestrator-worker</strong> systems with parallel exploration. Different patterns have different multipliers. Sequential pipelines might be 2-4×. Debate patterns can be 5-10×. Group chats can be 10-30×. The 15× is a useful default to remember; the actual ratio depends on architecture, agent count, and how much the agents talk to each other.</p>
+<p><strong>Q: Doesn't model improvement reduce this gap?</strong></p>
+<p>It changes the absolute cost, not the multiplier. Better/cheaper models reduce the dollar cost of both single-agent and multi-agent setups proportionally. The 15× ratio is structural — it comes from agents independently exploring (which is the source of the gain) and accumulating context across coordination (which is the source of the cost).</p>
+</div>
+<hr />
+<h2>Section 2 — Where Multi-Agent Genuinely Wins (≈5 pages)</h2>
+<p>Five categories where the math works.</p>
+<p><strong>1. Parallelizable research / exploration.</strong> The Anthropic case. One question, many independent sub-questions, each researchable in parallel. Token spend is high; quality gain is large. Worth it for high-value tasks.</p>
+<p>Examples:
+- "What are the top three competitors to X, with detailed analysis of pricing, feature gaps, and customer sentiment?"
+- "Find primary sources on event Y from at least 5 different perspectives."
+- Deep research reports, due-diligence packages, literature reviews.</p>
+<p><strong>2. Genuinely specialized expertise.</strong> Different sub-tasks need different model personas, tools, or context. A code-review system: security specialist + performance specialist + style specialist + correctness specialist. Each has a focused prompt and tool set. The orchestrator's job is to assign and merge.</p>
+<p>When this isn't multi-agent: when "specialization" is just "different prompt for the same model with the same tools." That's a workflow (Module 3 routing or sectioning).</p>
+<p><strong>3. Isolated context for security or scale.</strong> A sub-agent processes untrusted external content (web pages, customer documents, emails). The sub-agent has minimal tools and can't escalate. The main agent never sees the untrusted content directly — only the sanitized output. This is sub-agent isolation as a security pattern (cross-references Module 5 MCP, Module 12 guardrails).</p>
+<p><strong>4. Long-horizon tasks that exceed a single context window.</strong> Even with 1M token contexts, some tasks accumulate so much state that fitting it in one window becomes impractical. Distributing state across sub-agents (each with their own window) is sometimes the only viable approach.</p>
+<p><strong>5. Adversarial / critique cycles.</strong> Debate, jury-of-many, writer/critic loops. The structural diversity of multiple agents catches errors that any single agent would miss. Module 11 covered intra-agent reflection; this is the inter-agent version.</p>
+<div class="brain">
+<p>Look at the five categories. Which two are the strongest cost justifications? Which one is the most commonly <strong>mis-applied</strong> as multi-agent when it shouldn't be?</p>
+<p>(Strongest: parallelizable research and isolated-context-for-security — the math is clear. Most mis-applied: "specialized expertise" — most teams call any prompt variation "specialization" and conclude they need multi-agent. They usually need a workflow.)</p>
+</div>
+<hr />
+<h2>Section 3 — Where Multi-Agent Loses (≈5 pages)</h2>
+<p>The cases where adding agents makes things worse, not better.</p>
+<p><strong>1. Tightly-interdependent tasks (coding being the canonical example).</strong> Anthropic explicitly found multi-agent less effective for tasks like coding. Why: each step depends on the exact state of previous steps. Splitting across agents introduces translation loss between them. Coding agents work better as single agents with strong tools (Cursor, Claude Code) — these <em>use</em> sub-agents for narrow sub-tasks (search, file reads) but the main reasoning loop is one agent.</p>
+<p><strong>2. Low task value.</strong> Anything where the unit economics don't allow 15× the per-call cost. Customer-support classification at $0.0003 per call cannot become a $0.005 multi-agent system without breaking the business model.</p>
+<p><strong>3. Latency-sensitive flows.</strong> Multi-agent adds coordination overhead. Even with parallel execution, the "wait for all sub-agents to return" plus "synthesize" plus "possibly re-dispatch" is measured in tens of seconds, not single digits. For interactive flows where the user is waiting, this is unacceptable.</p>
+<p><strong>4. Unbounded growth.</strong> Sub-agents that spawn sub-agents that spawn sub-agents. Each layer adds cost. Without a hard cap, runaway is plausible. We covered the "sub-agent cascade that 10x'd the bill" postmortem in Module 7; the same dynamic at higher scope is worse here.</p>
+<p><strong>5. Communication-fragile tasks.</strong> When the natural decomposition has high information density between steps that doesn't compress well. The supervisor in a hierarchical pattern compresses each specialist's rich output into a summary for the next step, and meaningful information is lost in translation. (The April 2026 "Multi-Agent in Production" piece names this "translation/paraphrase loss at the center.")</p>
+<p><strong>6. Single-skill tasks.</strong> If the entire task could be done by one capable agent with good tools, adding agents introduces coordination overhead with no offsetting benefit. The coordination IS the cost; the cost has to be earned.</p>
+<div class="postmortem">
+<p><strong>The Customer Service "Crew" That Ran 4× the Cost for Marginal Gain</strong></p>
+<p>A team built a CrewAI-style multi-agent system for customer support: triage agent, billing specialist, technical specialist, escalation agent. Marketed as "specialized expert team."</p>
+<p>Reality: the triage agent was 95% accurate. The "specialists" were just different prompts on the same model with the same tools. Most queries went through 2-3 agents. The supervisor's translation between agents lost detail (specialist outputs got compressed into one-line summaries for the next agent). End-to-end accuracy was 1.8 points higher than a single well-prompted agent — at 4× the cost and 3× the latency.</p>
+<p>Fix: switched to single-agent with conditional routing within the agent (Module 3 routing pattern). Same tools. Better prompt for the routing logic. Quality matched the multi-agent version at 25% of the cost.</p>
+<p><strong>Lesson:</strong> "specialization" via different prompts on the same model is a workflow pattern, not multi-agent. Don't pay multi-agent costs for workflow benefits.</p>
+</div>
+<div class="gotcha">
+<p>The "agent envy" anti-pattern: teams add agents because the architecture diagram looks more sophisticated, makes for better demos, sounds better in fundraising decks. None of these are reasons that survive contact with the bill.</p>
+</div>
+<hr />
+<h2>Section 4 — The Decision Framework (≈5 pages)</h2>
+<p>When you should consider multi-agent, in order of decisiveness.</p>
+<p><strong>Step 1: Can it be a single LLM call?</strong> Most "AI features" can. Don't even use a workflow if you don't need to.</p>
+<p><strong>Step 2: Can it be a workflow?</strong> Reach for the five workflow patterns (Module 3) before reaching for an agent. Most multi-step tasks decompose this way.</p>
+<p><strong>Step 3: Can it be a single agent with great tools?</strong> Most "agent" use cases stop here. Coding agents (Cursor, Claude Code), customer support agents, research-lite agents — single agent + great tools is the default.</p>
+<p><strong>Step 4: Does it meet ALL of the multi-agent criteria?</strong></p>
+<ul>
+<li>☐ Task is parallelizable (sub-tasks are largely independent)</li>
+<li>☐ Task value &gt; 15× single-agent cost</li>
+<li>☐ Latency budget allows multi-second coordination</li>
+<li>☐ Sub-tasks need genuinely different tools/personas/contexts (not just different prompts)</li>
+<li>☐ You have eval infrastructure to know whether multi-agent is actually winning</li>
+<li>☐ You have observability to debug when it's not</li>
+</ul>
+<p>If ANY of these are no: don't go multi-agent. The combination is what justifies the cost.</p>
+<p><strong>Step 5: If yes, which architecture?</strong> That's Module 14.</p>
+<p>We provide a decision flowchart that the reader can apply to their own task:</p>
+<pre><code>┌────────────────────────────────────┐
+│  Can a single LLM call do it?      │
+└──────────┬──────────┬──────────────┘
+       Yes │       No │
+           ▼          ▼
+    ┌─────────┐  ┌────────────────────┐
+    │   DO    │  │  Decomposes into   │
+    │  THAT   │  │  known steps?      │
+    └─────────┘  └────┬──────────┬────┘
+                  Yes │       No │
+                      ▼          ▼
+              ┌──────────┐  ┌────────────────────────┐
+              │ WORKFLOW │  │  Tool selection IS the │
+              │ (M3)     │  │  hard part?            │
+              └──────────┘  └─────┬──────────┬───────┘
+                              Yes │       No │
+                                  ▼          ▼
+                          ┌────────────┐  ┌─────────────┐
+                          │ AGENT      │  │ Same answer:│
+                          │ (M2)       │  │ AGENT (M2)  │
+                          └────┬───────┘  └─────────────┘
+                               │
+                       Hits ceiling on
+                       breadth/parallelism?
+                               │
+                            Yes ▼
+                          ┌────────────┐
+                          │ All M-A    │
+                          │ criteria   │  ← Step 4
+                          │ satisfied? │
+                          └────┬───────┘
+                            Yes ▼
+                          ┌────────────┐
+                          │MULTI-AGENT │  ← Module 14
+                          └────────────┘
+</code></pre>
+<div class="code-exercise">
+<p><strong>Exercise 13.1 — Audit a multi-agent codebase.</strong></p>
+<p>Given a sample multi-agent system (we provide one — the customer-support "crew" from the postmortem in Section 3), apply the decision framework. For each agent: is it earning its cost? What would replacing this agent with a workflow step look like? Estimate the cost reduction.</p>
+<p>Bonus: estimate quality impact. (Often: minimal.)</p>
+</div>
+<hr />
+<h2>Section 5 — Sub-Agents vs Multi-Agent (≈3 pages)</h2>
+<p>A distinction the field is converging on. Worth being precise about.</p>
+<p><strong>Sub-agent.</strong> A focused agent invoked by a parent agent for a narrow task, with isolated context, returning a result. Examples: Anthropic's Sub-Agents API, Cursor's "agent that reads files for me," Claude Code's task subagents. Sub-agents have:
+- Limited tool set (often just one or two)
+- Isolated context window (don't see parent's full context)
+- Bounded lifespan (single task, return result)
+- Parent treats them like an expensive function call</p>
+<p><strong>Multi-agent system.</strong> Multiple peer (or hierarchical) agents that coordinate over time, often with shared state, ongoing communication, mutual reasoning about each other's actions.</p>
+<p>The key difference: sub-agents are a <em>context engineering</em> technique (Module 7's "isolate"). Multi-agent systems are an <em>architectural</em> commitment with all the coordination overhead.</p>
+<p>Most production systems use sub-agents heavily and multi-agent sparingly. A coding agent might spawn 50 sub-agents in a session (each "go read this file and summarize it") without ever being a multi-agent system. Cursor and Claude Code do this — they look like single agents with great context engineering.</p>
+<div class="pullquote">
+<p>Sub-agents are a feature you add to a single agent. Multi-agent is an architecture you commit to. Most teams need the former and accidentally build the latter.</p>
+</div>
+<hr />
+<h2>Section 6 — When the Math Works: Doing It Right (≈4 pages)</h2>
+<p>If you've passed the decision framework, here's how to do multi-agent well.</p>
+<p><strong>1. Plan the orchestrator carefully.</strong> The orchestrator is where most multi-agent systems fail. It's not a thin wrapper — it's the most important agent in the system. It needs:
+- Clear understanding of which sub-agents exist and what they do
+- Ability to decompose tasks accurately
+- Ability to handle sub-agent failures gracefully
+- Synthesis logic that doesn't lose detail in translation</p>
+<p><strong>2. Use the strongest model for the orchestrator.</strong> Anthropic uses Opus as the lead, Sonnet as workers. Cheaper-on-leader / stronger-on-workers usually fails: the leader makes plan errors, propagates them, and you pay 15× to be wrong.</p>
+<p><strong>3. Give sub-agents focused tool sets.</strong> A sub-agent with the same tools as the parent has nothing distinctive. Each sub-agent should have a tool subset matched to its purpose.</p>
+<p><strong>4. Cap depth and breadth.</strong> Hard limits on:
+- Number of sub-agent levels (typically 2-3)
+- Number of sub-agents at each level
+- Total budget per task (cost + tokens + wall-clock)
+- Time per sub-agent</p>
+<p><strong>5. Design the communication protocol.</strong> What information goes between agents? Free-form text loses too much. Structured outputs (JSON with explicit fields) preserve more. Sub-agents return structured data; orchestrator decides what to do with it.</p>
+<p><strong>6. Trace everything.</strong> Module 17 covers observability in depth. Multi-agent systems are debugging hell without traces. Every sub-agent invocation, every message between agents, every state transition needs to be inspectable.</p>
+<p><strong>7. Eval at the system level, not the agent level.</strong> It's easy to test "is sub-agent X working?" It's much harder and much more important to test "is the system as a whole producing better results than a simpler alternative?" Without system-level eval, you'll over-engineer agents that don't move the metric you care about.</p>
+<div class="postmortem">
+<p><strong>The Multi-Agent System That Was Better Than the Single-Agent (and Could Prove It)</strong></p>
+<p>A research-tools company built a deep research agent. They had a working single-agent version. They built a multi-agent version (Anthropic-style: Opus orchestrator + 4-8 Sonnet workers).</p>
+<p>Before deploying, they ran 100 representative research tasks through both. Multi-agent: 87% acceptable, $4.20 average cost. Single-agent: 71% acceptable, $0.40 average cost. Then they asked: of the 16 percentage points multi-agent won by, how many were on tasks where the customer would pay more for the better result?</p>
+<p>Answer: most of them. Their pricing tier separated "quick research" ($1) from "deep research" ($25). Multi-agent for deep tier; single-agent for quick tier. Routing based on tier. Both stable in production for a year.</p>
+<p><strong>Lesson:</strong> the multi-agent decision is a tier decision. You can have both, route by task value, charge accordingly.</p>
+</div>
+<hr />
+<h2>Section 7 — Anti-Patterns and Hype Patterns (≈4 pages)</h2>
+<p>Patterns we see often. Most are mistakes.</p>
+<p><strong>The "Specialist" anti-pattern.</strong> Same model, same tools, different prompts. Called "billing specialist" and "tech specialist." Should have been routing within one agent.</p>
+<p><strong>The "Group Chat" anti-pattern.</strong> Five agents arguing in a shared conversation. Tokens explode (each agent sees all others' messages every turn). Quality is rarely better than a single critic. Survives in research papers; rarely ships in production. (April 2026 "What Survived in Production" article: "Free mesh survived mostly as a controlled subroutine inside a supervisor, not as the outer architecture.")</p>
+<p><strong>The "More Agents More Better" anti-pattern.</strong> Linear belief that adding agents linearly improves quality. Reality: diminishing returns, then negative returns from coordination overhead.</p>
+<p><strong>The "Demo-Driven Architecture" anti-pattern.</strong> System designed to look impressive in a demo (many agents, lots of activity, visible coordination). Production cost-to-benefit doesn't survive scrutiny.</p>
+<p><strong>The "Microservices Cargo Cult" anti-pattern.</strong> "We have services-per-domain in our backend; we should have agents-per-domain in our agent system." This conflates organizational boundaries with architectural ones. Microservices solved a deployment / team-scaling problem; multi-agent solves a context-isolation / parallelism problem. They're different.</p>
+<p>The hype patterns to recognize in conference talks and demos:</p>
+<ul>
+<li>"Our agent team..." (often: one agent)</li>
+<li>"We orchestrate dozens of agents..." (often: dozens of prompt templates)</li>
+<li>"Emergent intelligence from agent interaction..." (often: the supervisor reads all the worker outputs and synthesizes; "emergent" is doing a lot of work)</li>
+</ul>
+<div class="brain">
+<p>The 90.2% Anthropic improvement number is real. So is the 15× cost. Why does almost every conference talk cite the first number and not the second?</p>
+<p>(Survivorship bias and incentives. Talks that say "we used multi-agent and it worked great" sell better than "we tried multi-agent, the bill quintupled, we reverted to single agent." The latter is more common but less photogenic. As a builder, weight the bill-quintupled stories more heavily — they're the rare ones that get to be honest.)</p>
+</div>
+<hr />
+<h2>Section 8 — A Threshold Test (≈2 pages)</h2>
+<p>Before reading Module 14 — try this on your own current or planned project.</p>
+<p><strong>The 5-question test:</strong></p>
+<ol>
+<li>What is one task instance worth, in dollars or business value?</li>
+<li>What does the task currently cost (or would cost) as a single agent?</li>
+<li>Is the ratio (1)/(2) &gt; 15? If no, multi-agent is unlikely to pay back.</li>
+<li>Is the task naturally parallelizable into independent sub-questions? If no, multi-agent gains will be smaller than the headline 90.2%.</li>
+<li>Do you have eval infrastructure that can compare multi-agent vs single-agent on YOUR task (not Anthropic's)? If no, you'll never know if multi-agent is winning.</li>
+</ol>
+<p>If you score 5/5: read Module 14, build it.
+If 3-4/5: read Module 14 with skepticism; build a small comparison study first.
+If &lt;3/5: stay with single agent + great tools + great workflow patterns. Multi-agent will not earn its keep on your workload.</p>
+<div class="pullquote">
+<p>The most expensive sentence in agent engineering is "let's add another agent." The cheapest is "we don't need another agent."</p>
+</div>
+<hr />
+<h2>Section 9 — What's Next (≈1 page)</h2>
+<p>Module 14 codes the four multi-agent architectures (supervisor, hierarchical, network/peer, sequential pipeline, debate/critique) — same task, multiple ways. Now that we've established when multi-agent is worth it, Module 14 is about doing it well when it is.</p>
+<p>Module 15 covers swarms — the most overhyped corner of the field. Stigmergy, OpenAI Swarm-style handoffs, when emergence is real, when it's theater.</p>
+<p>Module 17 (production) covers the observability and eval infrastructure that makes multi-agent debuggable.</p>
+<p>The capstone (Module 18) builds a multi-agent research system that's <em>actually</em> multi-agent — passing the threshold test deliberately.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>2 No Dumb Questions</li>
+<li>2 Brain Power prompts</li>
+<li>2 Production Postmortems (CrewAI customer support, the system that justified itself)</li>
+<li>1 Watch It! / Gotcha block</li>
+<li>1 Code Exercise (audit a multi-agent codebase)</li>
+<li>3 Pullquotes</li>
+<li>1 decision flowchart</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam, riding the high of shipping a working hardened/reflective/guarded agent (Modules 2-12), reads about Anthropic's multi-agent research system and proposes going multi-agent. CFO asks for a back-of-envelope cost estimate for the full company workload. Sam runs the numbers, applies the threshold test from Section 8, and discovers the company's main use case (customer support tickets) is unambiguously not a multi-agent fit — too low value-per-task, too tightly interdependent. Sam pivots: multi-agent for the new "deep analysis" premium tier; single agent for everything else. CFO buys it. Sam's arc this module: <strong>the most expensive sentence is "let's add another agent" — and the second most expensive is "everyone else is doing it."</strong></p>
+</div>
+<div class="page-budget">
+<p>S1 (The numbers): 4p
+S2 (Where it wins): 5p
+S3 (Where it loses): 5p
+S4 (Decision framework): 5p
+S5 (Sub-agents vs multi-agent): 3p
+S6 (Doing it right): 4p
+S7 (Anti-patterns): 4p
+S8 (Threshold test): 2p
+S9 (Next): 1p
+Recurring elements: 3p
+TOTAL: ~36 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting (the headline numbers are the most important to lock in):</strong></p>
+<ul>
+<li>Anthropic engineering blog "How We Built Our Multi-Agent Research System" (June 2025) — primary source for 90.2%, 15×, 80% of variance</li>
+<li>BrowseComp benchmark — verify the eval Anthropic used and the exact numbers</li>
+<li>Anthropic Sub-Agents API documentation — current model field options, mechanics</li>
+<li>Vellum's analysis of Anthropic's results — for the explicit "single-agent vs multi-agent for product descriptions" example</li>
+<li>ByteByteGo's writeup of Anthropic's system (Sep 2025) — corroborating source</li>
+<li>Anthropic API current pricing — to make the cost examples concrete</li>
+<li>"Multi-Agent in Production in 2026: What Actually Survived" (Lanham, Apr 2026) — for the supervisor/collaboration pattern survival analysis</li>
+<li>Digital Applied Q2 2026 architecture taxonomy — for the "graph and hierarchy survive; swarm/blackboard are theater" framing</li>
+<li>ZenML LLMOps database entry on Anthropic's research system — for production engineering details</li>
+<li>Per-pattern token multipliers (sequential 2-4×, debate 5-10×, group chat 10-30×) — verify or moderate these as estimates</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- The economic test (task value &gt; 15× single-agent cost)
+- The five categories where multi-agent wins
+- The six categories where it loses
+- The sub-agent vs multi-agent distinction
+- The decision flowchart structure</p>
+<p><strong>Cross-references:</strong>
+- Module 3 — workflow patterns are the alternative to multi-agent for most use cases
+- Module 7 — sub-agent isolation as a context engineering technique
+- Module 11 — debate/critique cycles are a multi-agent reflection variant
+- Module 14 — codes the architectures
+- Module 15 — swarms get the dedicated treatment
+- Module 17 — observability is non-negotiable for multi-agent
+- Module 18 — capstone applies these decisions to a real build</p>
+</div>
+<div class="bullet-points">
+<h3>Module 13 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>Anthropic's canonical numbers: +90.2% improvement at 15× tokens; 80% of variance from token use</li>
+<li>Multi-agent is best when result value far exceeds cost; explicitly worse for tightly-interdependent tasks like coding</li>
+<li>Five categories where it wins: parallelizable research, true specialization, isolated context for security, long-horizon, adversarial cycles</li>
+<li>Six categories where it loses: tight interdependence, low task value, latency-sensitive, unbounded growth, communication-fragile, single-skill</li>
+<li>Decision framework: single LLM call → workflow → single agent + tools → multi-agent (only if all criteria pass)</li>
+<li>Sub-agents are a context engineering feature; multi-agent is an architectural commitment — don't confuse them</li>
+<li>Doing multi-agent right: strong orchestrator model, focused sub-agent tools, hard caps, structured comms, system-level eval</li>
+<li>Threshold test: 5/5 = build it; &lt;3/5 = stay with single agent + better tools</li>
+</ul>
+</div>
+</body>
+</html>

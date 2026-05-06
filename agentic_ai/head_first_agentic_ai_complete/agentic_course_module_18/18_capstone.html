@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 18 — The Capstone</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 18 — The Capstone</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 18</div>
+<div class="module-title">The Capstone</div>
+<div class="subtitle">Sixteen modules of disciplines, layered.<br>One system, designed deliberately, embodying all of them.</div>
+<div class="pages">~50 pages · the synthesis · how the layers compose into a complete production agent system</div>
+</div>
+<div class="hook">
+<p>Monday morning, six months after the customer-success bot's M17 rollout. The CRO walked into Sam's office (rare; the CRO didn't usually do walk-ins).</p>
+<p><em>"I need a deal-research-and-brief system. End-to-end. Sales has been asking for it for a year. Whatever you built for customer-success — I want that level of polish for sales. Six months. Real budget. Real headcount if you need it. What do you need from me to make it happen?"</em></p>
+<p>Sam thought for a moment. <em>"I need three things. First, the time to do this deliberately — I want to design from scratch using everything we've learned, not bolt features onto an existing system. Second, sign-off that we'll build it the way the platform team builds things — saga discipline, observability, the full operational stack. Third, an explicit decision from you about which compromises you're willing to accept. There are real trade-offs in this kind of system. I want them surfaced, not hidden."</em></p>
+<p>The CRO nodded. <em>"Get me the design. We'll work through the trade-offs together."</em></p>
+<p>Sam pulled up a blank document and stared at the cursor. The customer-success bot had grown layer by layer over fifteen months — first the loop, then workflows, then tools, then memory, then guardrails, then sagas, then observability. Each layer had been added because the previous version had failed in some specific way. The system was good now, but the path to it had been reactive.</p>
+<p>This was different. Sam had a clean slate and seventeen modules of disciplines. The question wasn't <em>"how do I make this work?"</em> The question was <em>"how do I design this so the disciplines compose deliberately, so the trade-offs are visible from the start, so the system is ready for production from day one rather than after months of incidents?"</em></p>
+<p>Sam wrote at the top of the document: <em>"Deal Research and Brief Generation System — Design Doc v0.1."</em> And then, below it: <em>"This is the capstone. Every layer from the book applies. The question is which ones earn their place here, in what configuration, with what trade-offs."</em></p>
+<p>This module is that design doc, written long.</p>
+</div>
+<hr />
+<h2>What this module is</h2>
+<p>This is the synthesis. No new patterns. No new frameworks. Every discipline in this module has appeared in M2 through M17. The capstone's job is to show how they <em>compose</em> into a complete production system — how the layers interact, where trade-offs surface, how to make the right decisions about which patterns to apply at what altitude.</p>
+<p>The system Sam is designing: a deal-research-and-brief generation tool for the sales team. AEs (account executives) request research on target companies before customer calls; the system produces a structured brief covering the company's profile, financials, leadership, recent news, competitive position, and conversation hooks specific to the AE's deal stage.</p>
+<p>Why this case fits the capstone:</p>
+<ul>
+<li><strong>It's complex enough to exercise most layers.</strong> Single-agent versus multi-agent decisions; tool design; memory; reflection; guardrails; sagas; observability. All land here.</li>
+<li><strong>It's high-stakes enough to require operational discipline.</strong> Briefs feed real customer conversations on $50K-$500K deals. Wrong information produces wrong sales positioning. Reliability matters.</li>
+<li><strong>It's bounded enough to be tractable.</strong> Not "build a complete sales platform." A specific feature with specific inputs, outputs, and quality requirements.</li>
+<li><strong>It's similar to but distinct from prior systems.</strong> Sam's already-built customer-success bot, deal-research workflow, and regulatory-research system inform the design, but this is its own product with its own constraints.</li>
+</ul>
+<p>The structure of this module:</p>
+<ul>
+<li><strong>Section 1</strong> — system requirements: what's being built and why</li>
+<li><strong>Section 2</strong> — the architecture decision: workflow, single-agent, or multi-agent? (M3, M13, M14)</li>
+<li><strong>Section 3</strong> — the agent loop, hardened (M2)</li>
+<li><strong>Section 4</strong> — tool design (M4, M5)</li>
+<li><strong>Section 5</strong> — model selection and routing (M6)</li>
+<li><strong>Section 6</strong> — context engineering and memory (M7, M8, M9)</li>
+<li><strong>Section 7</strong> — reliability layer (M10, M11, M12)</li>
+<li><strong>Section 8</strong> — operational layer (M16, M17)</li>
+<li><strong>Section 9</strong> — putting it together: the system end to end</li>
+<li><strong>Section 10</strong> — the readiness checklist</li>
+</ul>
+<p>The module is longer than typical. It's the synthesis; longer is appropriate.</p>
+<div class="pullquote">
+<p>Most agent failures in production are architecture failures, not model failures. The disciplines from this book aren't gates to pass; they're a vocabulary for <em>making the architecture decisions deliberately</em>. The capstone shows what that looks like when applied from the start, not retrofitted after incidents.</p>
+</div>
+<hr />
+<h2>Section 1 — System Requirements</h2>
+<p>Before writing any code or sketching any diagrams, the requirements. The first discipline Sam learned in M3 was that the agent loop is the most expensive primitive — reach for it deliberately, not by default. The same applies here at the system level: clarify what the system needs to do before deciding how it does it.</p>
+<h3>What the AEs actually want</h3>
+<p>Sam interviewed eight AEs. The pattern across the conversations:</p>
+<ul>
+<li><strong>A pre-call brief that takes 5 minutes to read</strong> — not a 30-page research dump</li>
+<li><strong>Structured sections AEs can scan quickly</strong> — company profile, financials snapshot, leadership context, recent news, competitive position, conversation hooks specific to the deal</li>
+<li><strong>Specificity to the deal stage</strong> — a brief for a discovery call differs from a brief for a renewal negotiation</li>
+<li><strong>Confidence about what's known vs uncertain</strong> — AEs hate confident-sounding briefs that turn out wrong on the call</li>
+<li><strong>Updated recently</strong> — months-old data is worse than no data</li>
+<li><strong>Handoff-ready</strong> — the brief should be skimmable by an SE joining the call cold</li>
+</ul>
+<p>What AEs explicitly do not want:</p>
+<ul>
+<li>A full strategic analysis (their VP does that level)</li>
+<li>Auto-drafted email templates (they have their own voice)</li>
+<li>Generic platitudes about "the company's growth potential"</li>
+<li>Long research summaries they have to summarize themselves</li>
+</ul>
+<h3>The constraints</h3>
+<p>Beyond AE requirements, the constraints from the business:</p>
+<ul>
+<li><strong>Latency:</strong> AEs queue up briefs in batches. P50 latency target: 5 minutes per brief. P99: 15 minutes. They can do other work while waiting; they can't wait an hour.</li>
+<li><strong>Cost:</strong> Sales operations has approved a budget of ~$8 per brief. At 50-100 briefs per day across the team, that's a manageable run-rate.</li>
+<li><strong>Quality:</strong> Every brief should be defensible. If an AE walks into a customer call and says something based on the brief, the brief should support what was said.</li>
+<li><strong>Reliability:</strong> AEs preparing for calls in 30 minutes can't wait for a system outage. Target: 99% successful brief generation; structured failure mode for the 1%.</li>
+<li><strong>Compliance:</strong> No competitor pricing, no insider information, no claims that can't be sourced. Same M12 guardrails Sam built for customer-success.</li>
+</ul>
+<h3>What this means for the design</h3>
+<p>The requirements pre-determine several decisions:</p>
+<ul>
+<li><strong>The output is structured and bounded</strong> — not free-form research. That tells us the synthesis problem is well-bounded; the agent isn't writing a strategic essay.</li>
+<li><strong>The work is parallelizable</strong> — different brief sections can be researched independently. M14's orchestrator-worker fits the structure.</li>
+<li><strong>High-stakes outcome justifies M14's cost</strong> — briefs gate customer conversations. The 15× token cost (vs single-agent) is justified by the quality and parallelism gains.</li>
+<li><strong>AE expectations match what good agent systems can do</strong> — structured outputs, confidence reports, clear sourcing. Not "write me a 30-page treatise" (which agents do badly) or "tell me what to say to close the deal" (which agents shouldn't do at all).</li>
+</ul>
+<p>The discipline from M13: <em>the architecture decision should follow from the work's structure, not from architectural ambition.</em> Sam runs through the M13 framework explicitly in Section 2.</p>
+<div class="nodumbq">
+<p><strong>Q: Aren't requirements gathering and constraints just standard product work? Why is this part of the capstone?</strong></p>
+<p>Because most agent failures trace back to skipped requirements work. Teams build agents to "do research" or "automate support" without specifying what the output should look like, what success means, or what the business actually values. The agent is then optimized against an unclear target, and surprises everyone when production reveals the gap. Spending time on requirements isn't optional discipline — it's the prerequisite to applying any of the M2-M17 patterns correctly.</p>
+</div>
+<hr />
+<h2>Section 2 — The Architecture Decision</h2>
+<p>Now the M13 framework, run explicitly:</p>
+<p><strong>Q1: Is the task parallelizable?</strong> <strong>Yes (strong).</strong> Each company brief is independent of the others. Within a brief, the sections (profile, financials, leadership, news, competitive position) are largely independent — researched in parallel, synthesized into the final brief.</p>
+<p><strong>Q2: Does the value of the outcome justify 15× token cost?</strong> <strong>Yes.</strong> Each brief feeds a sales call worth $50K-$500K in deal value. At ~$8 per brief, the cost is rounding error against the deal size. The quality gain from parallel research justifies the multiplier.</p>
+<p><strong>Q3: Can you specify clear subagent boundaries?</strong> <strong>Yes.</strong> Each section has a clear mandate. The "financials worker" investigates financial signals. The "leadership worker" investigates leadership context. Boundaries are well-defined, outputs are structured.</p>
+<p><strong>Q4: Can your team operate the resulting system?</strong> <strong>Yes.</strong> Sam's team has built and operated multi-agent systems (the regulatory-research from M14, the research-on-demand from M14's closing). The operational infrastructure exists.</p>
+<p><strong>Q5: Have you tried single-agent first?</strong> <strong>Yes</strong> — Sam's earlier deal-research workflow was single-agent. It worked but had a hard ceiling on parallelism; AEs preparing back-to-back calls hit the latency wall.</p>
+<p>The framework verdict: <strong>multi-agent earns its place.</strong> Now M14's framework: which architecture?</p>
+<p><strong>Section 6 of M14:</strong>
+- Q1 work structure: Independent subtasks with synthesis at end → orchestrator-worker
+- Q2 synthesis problem: Combining structured outputs into a coherent brief → orchestrator-worker
+- Q3 operational tolerance: Match team's existing capability → orchestrator-worker</p>
+<p>Verdict: <strong>orchestrator-worker.</strong> Not hierarchical (no domain-deep tree of sub-investigations), not peer collaboration (no contested-approach problem), not swarm (5-7 sections isn't massive parallelism).</p>
+<h3>The architectural sketch</h3>
+<pre><code>                    ┌──────────────────────────┐
+                    │   Brief Orchestrator     │
+                    │  (Opus 4.7; M14 Section 2)│
+                    └────────────┬─────────────┘
+                                 │ plans, dispatches
+              ┌──────────┬───────┼───────┬──────────┐
+              │          │       │       │          │
+          ┌───┴───┐  ┌──┴───┐  ┌─┴────┐  ┴───┐  ┌──┴───┐
+          │ Profile│  │ Fin │  │ Lead │  │News│  │Comp. │
+          │ Worker │  │Wkr  │  │ Wkr  │  │Wkr │  │ Wkr  │
+          │(Sonnet)│  │(Son)│  │(Son) │  │(Son│  │(Son) │
+          └───┬───┘  └──┬───┘  └─┬────┘  └─┬──┘  └──┬───┘
+              │         │        │         │        │
+              └─────────┴────────┼─────────┴────────┘
+                                 │ structured returns
+                    ┌────────────┴─────────────┐
+                    │   Brief Synthesizer       │
+                    │  (Opus 4.7; M15 Section 2)│
+                    │  + critic pass (M11)      │
+                    │  + guardrails (M12)       │
+                    └────────────┬─────────────┘
+                                 │ final brief
+                    ┌────────────┴─────────────┐
+                    │   AE delivery            │
+                    └──────────────────────────┘
+
+    Cross-cutting layers:
+    - Saga orchestration (M16) wraps multi-step actions
+    - Observability (M17) traces every span
+    - Memory (M9) reads existing briefs, writes new ones
+    - Tools via MCP (M5) for external services
+</code></pre>
+<p>Five workers, one orchestrator, one synthesizer with critic pass. Each agent fully M2-M12 disciplined. Cross-cutting saga and observability layers.</p>
+<p>This is the load-bearing architecture. Everything else in this module fills it in.</p>
+<div class="brain">
+<p>Why one orchestrator + one synthesizer rather than letting the orchestrator also synthesize?</p>
+<p>(Two reasons. First, separation of concerns: the orchestrator's reasoning is about <em>what to research</em>; the synthesizer's reasoning is about <em>how to combine findings into a brief</em>. These are different cognitive tasks; separate prompts, separate context, better results. Second, the synthesizer + critic pass (M11) benefits from a fresh context. The orchestrator's full deliberation about decomposition would be noise to the synthesizer; starting fresh with structured worker results lets the synthesizer focus on the synthesis problem. The cost is one extra LLM call; the gain is cleaner separation and better outputs.)</p>
+</div>
+<hr />
+<h2>Section 3 — The Agent Loop, Hardened (M2)</h2>
+<p>Every agent in this system runs M2's hardened loop. This is the foundation; the patterns are unchanged from Module 2 but worth restating in the capstone context to show how they apply per role.</p>
+<h3>The orchestrator's loop</h3>
+<pre><code class="language-python">@dataclass
+class AgentBudget:
+    max_turns: int
+    max_tokens_total: int
+    max_tool_calls: int
+    max_wall_clock_seconds: int
+
+
+ORCHESTRATOR_BUDGET = AgentBudget(
+    max_turns=15,
+    max_tokens_total=200_000,
+    max_tool_calls=8,
+    max_wall_clock_seconds=180,
+)
+
+
+async def run_orchestrator(
+    request: BriefRequest,
+    *,
+    budget: AgentBudget = ORCHESTRATOR_BUDGET,
+) -&gt; OrchestrationPlan:
+    &quot;&quot;&quot;
+    Orchestrator runs M2's hardened loop.
+    Goal: produce a structured plan for worker dispatch.
+    &quot;&quot;&quot;
+    return await run_agent_loop(
+        system=ORCHESTRATOR_SYSTEM_PROMPT,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: _format_brief_request(request)}],
+        tools=ORCHESTRATOR_TOOLS,  # plan tools only, no research tools
+        model=&quot;claude-opus-4-7&quot;,
+        budget=budget,
+        on_budget_exhausted=_handle_orchestrator_budget_exhausted,
+    )
+</code></pre>
+<p>The orchestrator's tools are minimal: plan, dispatch, read worker results. It doesn't do its own research; that's the workers' job. Tool isolation prevents the orchestrator from drifting into its own investigations.</p>
+<h3>The worker's loop</h3>
+<pre><code class="language-python">WORKER_BUDGET = AgentBudget(
+    max_turns=20,
+    max_tokens_total=120_000,
+    max_tool_calls=15,
+    max_wall_clock_seconds=120,
+)
+
+
+async def run_worker(
+    handoff: HandoffBrief,
+    context: HandoffContext,
+    *,
+    budget: AgentBudget = WORKER_BUDGET,
+    role: str,
+) -&gt; HandoffReturn:
+    &quot;&quot;&quot;Worker runs M2's hardened loop scoped to handoff.&quot;&quot;&quot;
+    tools = WORKER_TOOLS_BY_ROLE[role]  # role-specific tool subset
+    return await run_agent_loop(
+        system=_get_worker_system_prompt(role),
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: _format_handoff(handoff, context)}],
+        tools=tools,
+        model=&quot;claude-sonnet-4-6&quot;,
+        budget=budget,
+        on_budget_exhausted=_partial_handoff_return,
+    )
+</code></pre>
+<p>The worker's <code>on_budget_exhausted</code> returns a partial <code>HandoffReturn</code> with explicit obstacles rather than failing the whole orchestration. The synthesizer (Section 9) handles partial returns gracefully.</p>
+<h3>The synthesizer's loop</h3>
+<p>The synthesizer is single-turn (no tool use). Reads structured worker results; produces the brief. M2's loop is overkill for single-turn; a direct API call works. But the <em>budget discipline</em> still applies — bounded output tokens, explicit error handling.</p>
+<h3>The critic's loop</h3>
+<p>After synthesis, an M11-style critic reviews the brief. Single-turn; produces structured findings (issues found, severity, suggested edits). The synthesizer reads the critic's output and revises if needed. Two-pass cycle, capped at one revision.</p>
+<h3>What this section established</h3>
+<p>Every agent in the system has explicit budget caps. Every agent's failure mode is explicit (partial handoff for workers, plan failure for orchestrator, full retry for synthesizer if critic flags issues). No agent can exhaust system resources independently. The M2 discipline scaled across roles.</p>
+<hr />
+<h2>Section 4 — Tool Design (M4, M5)</h2>
+<p>Each worker has a focused, role-specific tool set. The M4 discipline: tools should be cheap to learn correctly, expensive to use incorrectly, and have descriptions that read like API docs.</p>
+<h3>Tools by role</h3>
+<p><strong>Profile Worker tools:</strong>
+- <code>lookup_company_basics</code> — name, industry, size, funding, public/private
+- <code>fetch_company_website_summary</code> — current marketing positioning
+- <code>search_company_news</code> — recent announcements, leadership changes
+- <code>get_existing_brief</code> — prior briefs in the system (M9 memory)</p>
+<p><strong>Financials Worker tools:</strong>
+- <code>lookup_financial_basics</code> — revenue, growth rate, public filings if available
+- <code>lookup_funding_history</code> — investment rounds, investors, valuations
+- <code>lookup_employee_count</code> — company size signals
+- <code>query_news_for_financial_signals</code> — earnings reports, layoffs, hiring trends</p>
+<p><strong>Leadership Worker tools:</strong>
+- <code>lookup_executive_team</code> — current C-suite and key VPs
+- <code>lookup_leadership_changes</code> — recent hires/departures
+- <code>search_leader_public_statements</code> — recent quotes, podcasts, posts (within attribution policy)
+- <code>lookup_board_composition</code> — board members and affiliations</p>
+<p><strong>News Worker tools:</strong>
+- <code>search_recent_news</code> — date-filtered news search
+- <code>lookup_press_releases</code> — official announcements
+- <code>search_industry_news</code> — sector-level events affecting the company
+- <code>query_funding_news</code> — investment, M&amp;A activity</p>
+<p><strong>Competitive Position Worker tools:</strong>
+- <code>lookup_competitors</code> — direct and indirect competitors
+- <code>compare_offerings</code> — product/service comparisons (without competitor pricing per M12)
+- <code>lookup_market_position</code> — analyst reports if available
+- <code>query_customer_signals</code> — public customer wins/losses</p>
+<h3>Why tools, not skills</h3>
+<p>Notice these are <em>tools</em> (M4), not <em>skills</em> (the Claude Skills pattern). Tools are deterministic capabilities the agent invokes; skills are reusable workflow recipes the agent follows. For deal research, the <em>capabilities</em> (look up financials, search news) are stable; the <em>workflow</em> of investigation is the agent's reasoning. Tools fit the capability shape; skills would be overkill.</p>
+<h3>Tool descriptions matter</h3>
+<p>Each tool has a description that reads like an API doc (M4 Section 3):</p>
+<pre><code class="language-python">@tool
+async def lookup_company_basics(
+    company_name: str,
+    *,
+    use_cache: bool = True,
+) -&gt; CompanyBasics:
+    &quot;&quot;&quot;
+    Look up basic information about a company: industry, size, funding,
+    public/private status, headquarters, founded year.
+
+    Returns a CompanyBasics object with these fields:
+    - name: official company name
+    - industry: primary industry classification (NAICS or similar)
+    - size_band: employee count band (&quot;1-10&quot;, &quot;11-50&quot;, &quot;51-200&quot;, &quot;201-1000&quot;, &quot;1000+&quot;)
+    - funding_status: &quot;bootstrapped&quot;, &quot;venture-backed&quot;, &quot;public&quot;, &quot;private-equity-backed&quot;
+    - founded_year: year founded (int or None)
+    - hq_location: &quot;City, Country&quot; if known (str or None)
+    - last_updated: date the data was last refreshed (datetime)
+
+    Note: data may be stale if last_updated &gt; 30 days. Check the timestamp.
+    Use use_cache=False to force a fresh lookup (slower; ~2s vs ~50ms).
+
+    Returns None if the company cannot be uniquely identified.
+    &quot;&quot;&quot;
+</code></pre>
+<p>The discipline: agents read tool descriptions as their learning material. Good descriptions produce correct usage; vague descriptions produce hallucinated parameters.</p>
+<h3>MCP for cross-team tool access</h3>
+<p>Three of the tool servers (Financials, Leadership, News) are owned by other teams within the company. They expose their tools as MCP servers. The brief system invokes them via the MCP gateway pattern from M5 Section 7. This means:</p>
+<ul>
+<li>The brief system doesn't have to maintain or update those tools</li>
+<li>Tool descriptions stay current (the owning teams update their MCP servers)</li>
+<li>Authentication is centralized through the gateway</li>
+<li>Schema validation happens at the gateway boundary</li>
+</ul>
+<p>The M5 discipline: integration is cheap, trust is expensive. Each MCP server has explicit allow/block lists for which tools the brief system can invoke; output schemas are validated; rate limits are enforced at the gateway.</p>
+<div class="gotcha">
+<p>A common failure when reusing tools across systems via MCP: the brief system reads a tool's schema, the owning team updates the schema, the brief system breaks silently. The gateway should detect schema changes and either: (a) fail fast on schema mismatches with a clear error to the on-call team, (b) warn loudly in observability with a deprecation timeline, or (c) auto-rotate to a new schema version with a compatibility shim. Silent breakage is the worst failure mode.</p>
+</div>
+<hr />
+<h2>Section 5 — Model Selection and Routing (M6)</h2>
+<p>The system uses three models, each chosen deliberately:</p>
+<p><strong>Opus 4.7 — orchestrator and synthesizer.</strong> High-stakes coordination; the orchestrator's plans gate everything downstream; the synthesizer's brief is the customer-facing output. Use the strongest model where reasoning quality matters most.</p>
+<p><strong>Sonnet 4.6 — workers.</strong> The right cost-quality balance for focused research subtasks. Each worker has a bounded scope and clear output format; Sonnet handles the work without burning Opus budget.</p>
+<p><strong>Haiku 4.5 — guardrails and classifiers.</strong> Input topic classification, output policy checks, content safety screening. Cheap, fast, sufficient for classification work that runs on every request.</p>
+<h3>The routing table</h3>
+<pre><code class="language-python">MODEL_BY_ROLE = {
+    &quot;orchestrator&quot;: &quot;claude-opus-4-7&quot;,
+    &quot;synthesizer&quot;: &quot;claude-opus-4-7&quot;,
+    &quot;worker.profile&quot;: &quot;claude-sonnet-4-6&quot;,
+    &quot;worker.financials&quot;: &quot;claude-sonnet-4-6&quot;,
+    &quot;worker.leadership&quot;: &quot;claude-sonnet-4-6&quot;,
+    &quot;worker.news&quot;: &quot;claude-sonnet-4-6&quot;,
+    &quot;worker.competitive&quot;: &quot;claude-sonnet-4-6&quot;,
+    &quot;critic&quot;: &quot;claude-opus-4-7&quot;,  # critic catches what synthesizer misses
+    &quot;guardrail.input_classifier&quot;: &quot;claude-haiku-4-5&quot;,
+    &quot;guardrail.output_policy_check&quot;: &quot;claude-haiku-4-5&quot;,
+    &quot;guardrail.content_safety&quot;: &quot;claude-haiku-4-5&quot;,
+}
+</code></pre>
+<h3>The cost calculation</h3>
+<p>Per brief, expected token usage:</p>
+<pre><code>Orchestrator: ~15K input + ~2K output = small
+5 workers × 30K input + 8K output = ~190K
+Synthesizer: ~50K input + 6K output = ~56K
+Critic: ~60K input + 2K output = ~62K
+Guardrails (input + output + each major action): ~15K total
+
+Total: ~340K tokens per brief
+
+Cost at current rates:
+  Opus 4.7 (orchestrator + synthesizer + critic): ~80K input + ~10K output
+    = $0.40 + $0.25 = $0.65
+  Sonnet 4.6 (workers): ~150K input + ~40K output
+    = $0.45 + $0.60 = $1.05
+  Haiku 4.5 (guardrails): ~15K input + ~3K output
+    = $0.015 + $0.015 = $0.03
+
+Total per brief: ~$1.73
+</code></pre>
+<p>The team budgeted $8 per brief; actual cost projects to ~$2 with the multi-model routing. The savings from using Sonnet for workers and Haiku for guardrails (vs Opus everywhere) is substantial — about 4× cheaper than running everything on Opus.</p>
+<h3>When the routing breaks</h3>
+<p>What if a worker hits a case Sonnet can't handle? The fallback: the worker reports <code>confidence &lt; 0.5</code> in its handoff return. The orchestrator detects low-confidence returns and either re-runs that worker on Opus or escalates to a human reviewer. The route is dynamic; the default is cheap; the escalation is selective.</p>
+<p>This is M6 Section 5's "model routing as architecture" principle: the system isn't tied to one model; it routes per-step, with explicit fallback when the cheap model fails.</p>
+<div class="pullquote">
+<p>The right model selection isn't "use the best model for everything" or "use the cheapest model for everything." It's "use the right model per role, with fallback paths when the route fails." Multi-model routing is a first-class architectural decision, not an optimization.</p>
+</div>
+<hr />
+<h2>Section 6 — Context Engineering and Memory (M7, M8, M9)</h2>
+<h3>Context engineering for each role</h3>
+<p><strong>Orchestrator's context:</strong>
+- System prompt: ~1.5K tokens with the orchestration discipline
+- User request: ~500 tokens (the brief request)
+- Tool descriptions: ~2K tokens for the orchestrator-only tools
+- Memory: relevant prior briefs for the same company (M9) — capped at 3 most recent
+- Total: ~6-8K input tokens, well within budget</p>
+<p><strong>Worker's context (per worker):</strong>
+- System prompt: ~1K tokens with worker discipline + role specialization
+- Handoff brief and context: ~2K tokens (the structured task)
+- Tool descriptions: ~3K tokens for role-specific tools
+- Worker-specific reference materials: ~5K tokens (e.g., "what good profile sections look like")
+- During execution: tool results accumulate, capped by M8 compaction at 80K
+- Total: ~10K initial + tool results, M8 keeps it bounded</p>
+<p><strong>Synthesizer's context:</strong>
+- System prompt: ~1K tokens
+- Original brief request: ~500 tokens
+- 5 worker structured returns: ~30K-50K tokens
+- Brief template / format spec: ~3K tokens
+- Total: ~35K-55K input tokens</p>
+<p><strong>Critic's context:</strong>
+- System prompt: ~1K tokens
+- Brief draft from synthesizer: ~5K tokens
+- Brief quality criteria: ~2K tokens
+- Original request and worker findings: ~50K tokens
+- Total: ~58K input tokens</p>
+<p>The discipline from M7: every role has a <em>bounded</em> context budget, and the budget is split among system prompt, user content, tools, references, and runtime accumulation. None of the roles approach the 200K context limit; the discipline isn't fitting in the limit, it's spending the attention budget well within it.</p>
+<h3>Compaction (M8)</h3>
+<p>The workers are most vulnerable to context bloat because they accumulate tool results over many turns. Each worker's loop applies M8 compaction at 80K tokens — older tool results get summarized, key findings preserved.</p>
+<p>The synthesizer doesn't need compaction (single-pass; structured input). The orchestrator doesn't need compaction (small context, few turns).</p>
+<h3>Memory (M9)</h3>
+<p>Three memory patterns apply:</p>
+<p><strong>1. Cross-run memory: prior briefs.</strong> When a brief request comes in for a company that's been researched before, the orchestrator reads the prior brief's metadata: when was it generated, what did it cover, what's stale. The orchestrator may decide to refresh only certain sections rather than research everything from scratch.</p>
+<pre><code class="language-python">@tool
+async def get_existing_briefs(
+    company_name: str,
+    max_results: int = 3,
+) -&gt; list[BriefMetadata]:
+    &quot;&quot;&quot;
+    Returns prior briefs for this company, most recent first.
+    Each BriefMetadata includes: brief_id, created_at, sections, AE who requested.
+    &quot;&quot;&quot;
+</code></pre>
+<p><strong>2. Cross-run memory: AE preferences.</strong> Each AE has implicit preferences (focus areas, level of detail, tone). The system records preferences over time; future briefs apply them.</p>
+<pre><code class="language-python">@tool
+async def get_ae_preferences(ae_id: str) -&gt; AEPreferences:
+    &quot;&quot;&quot;
+    Returns what we've learned about this AE's preferences:
+    - Preferred sections (some AEs care more about leadership, others about news)
+    - Preferred detail level
+    - Tone preferences
+    &quot;&quot;&quot;
+</code></pre>
+<p><strong>3. Within-run memory: shared state across workers.</strong> This was tempting but Sam resisted it. The workers don't need to share state during execution; each has its own bounded scope. The synthesizer reads everyone's outputs at the end. M15's structured handoffs handle the integration without shared mutable state.</p>
+<p>The discipline from M9: memory earns its place when it improves outputs without unbounded growth. Both used patterns (prior briefs, AE preferences) have natural caps and decay. The unused pattern (worker shared state) was rejected because the structured-handoff alternative is simpler.</p>
+<div class="brain">
+<p>The orchestrator decides to refresh only the financials section of an existing brief because the rest is recent (less than 14 days old). What happens in the saga (Section 8) when the financials worker fails partway through?</p>
+<p>(The saga's compensation only applies to the financials worker's effects. The other sections are unchanged from the prior brief. The synthesizer regenerates the brief with the prior sections + an explicit note that financials couldn't be refreshed. The system delivers a partial-update brief rather than a complete failure. This is the saga's value at the system level: failures are scoped to what actually failed, not magnified into full-system failures.)</p>
+</div>
+<hr />
+<h2>Section 7 — The Reliability Layer (M10, M11, M12)</h2>
+<p>This is where most production agent systems either succeed or fail. The layers from M10-M12 transform "the agent works on happy paths" into "the agent works on production traffic, including the unhappy paths."</p>
+<h3>Hallucination prevention (M10)</h3>
+<p>Every worker's structured return includes <code>references_used</code>. Every claim in a worker's <code>findings</code> traces to a citation. The synthesizer can't include a claim in the brief that isn't backed by at least one worker's reference.</p>
+<pre><code class="language-python">class WorkerFindings(BaseModel):
+    findings: dict  # the structured findings
+    references_used: list[Citation]  # provenance for every claim
+    confidence: float
+    nuances: list[str]
+
+
+class Citation(BaseModel):
+    source: str  # URL or system reference
+    accessed_at: datetime
+    relevant_excerpt: str  # the specific text supporting the claim
+</code></pre>
+<p>The synthesizer's prompt explicitly forbids unattributed claims:</p>
+<pre><code>Every factual claim in the brief MUST trace to at least one citation in the
+worker findings. If you cannot find a citation supporting a claim, do NOT
+include the claim. Better to have a shorter brief with verified content than
+a longer brief with hallucinated specifics.
+</code></pre>
+<p>The critic (M11) verifies this. Any claim without a corresponding citation gets flagged. Synthesizer regenerates with the flagged claims removed or grounded.</p>
+<h3>Reflection (M11)</h3>
+<p>The critic pass is a simple peer collaboration of one — but functionally identical to M11's pattern:</p>
+<pre><code class="language-python">async def critic_pass(brief: BriefDraft, worker_findings: list[WorkerFindings]) -&gt; CriticReport:
+    &quot;&quot;&quot;Single-pass critic. Reviews brief against findings; flags issues.&quot;&quot;&quot;
+    response = await client.messages.create(
+        model=&quot;claude-opus-4-7&quot;,
+        max_tokens=4096,
+        system=CRITIC_SYSTEM_PROMPT,
+        messages=[{
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: _format_for_critic(brief, worker_findings),
+        }],
+        tools=[{
+            &quot;name&quot;: &quot;submit_critique&quot;,
+            &quot;description&quot;: &quot;Submit critique findings.&quot;,
+            &quot;input_schema&quot;: CriticReport.model_json_schema(),
+        }],
+        tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;submit_critique&quot;},
+    )
+    return CriticReport(**response.content[0].input)
+</code></pre>
+<p>Critic checks:
+- Every brief claim is grounded in worker findings
+- Worker confidence levels are reflected in brief language ("definitely" vs "likely" vs "appears to")
+- No competitor pricing or proprietary information leaked through
+- Brief is appropriately scoped to the AE's deal stage
+- Length is within target (briefs longer than 5 minutes to read get flagged)</p>
+<p>If the critic flags &gt;0 issues, the synthesizer regenerates with the critic's findings as additional context. One revision cycle; if issues persist, escalate.</p>
+<h3>Guardrails (M12)</h3>
+<p>Three guardrail layers, each from M12:</p>
+<p><strong>1. Input filter on the brief request.</strong> Confirms the request is for legitimate company research (not "research my ex" or other off-policy queries). Cheap classification on Haiku.</p>
+<p><strong>2. Output filter on the brief draft.</strong> Checks the synthesizer's output against the policy: no competitor pricing, no claims about non-public financial data beyond what's properly cited, no commitments on behalf of the company.</p>
+<p><strong>3. Action screening on tool calls.</strong> Each MCP tool call is evaluated against the worker's mandate. A leadership worker calling a financials API is flagged; the routing was wrong somewhere.</p>
+<p>Together, the three layers catch what the model's training and the prompts don't. Each is cheap; combined, they're the difference between "produces fine briefs in dev" and "produces compliant briefs in production traffic."</p>
+<h3>What makes the reliability layer work</h3>
+<p>The layers compose. M10 prevents hallucinations at the worker level. M11's critic catches what slipped through. M12 catches what's structurally outside policy. No single layer is sufficient; combined, they cover the threat surface.</p>
+<p>Each layer is a small cost on each request. M10's citation discipline costs ~5% additional tokens per worker. M11's critic costs one extra Opus call (~$0.40 per brief). M12's guardrails cost ~$0.10 per brief in Haiku calls. Total reliability layer cost: ~$0.50 per brief on top of the ~$1.73 base. Still well under the $8 budget.</p>
+<div class="pullquote">
+<p>The reliability layer is what production agent systems either build or get sued for not building. M10 grounds the claims; M11 catches the mistakes; M12 enforces the policies. Together they're the difference between "agent that produces fine output most of the time" and "agent you can defend in a customer escalation."</p>
+</div>
+<hr />
+<h2>Section 8 — The Operational Layer (M16, M17)</h2>
+<p>Sagas (M16) and observability (M17) are the operational disciplines. They don't change what the agent does; they make the system survivable and diagnosable.</p>
+<h3>Sagas at the system level</h3>
+<p>Most of the brief generation is <em>read-only</em> — looking up company info, querying news, etc. Read-only operations don't need saga discipline because there's nothing to compensate.</p>
+<p>But two operations <em>do</em> take real-world actions:</p>
+<p><strong>1. Writing the brief to memory.</strong> When a brief is generated, it's stored for future reference (M9 cross-run memory). If the storage step fails after the brief is delivered to the AE, the system loses the memory but the AE got the brief. Recoverable via re-storing on next access.</p>
+<p><strong>2. Sending the brief notification.</strong> When the brief completes, the system notifies the AE via Slack. The notification is irreversible (you can't unsend a Slack message). Compensation = sending a correction if the brief content was later flagged invalid.</p>
+<p>The saga shape:</p>
+<pre><code class="language-python">@workflow.defn
+class BriefDeliverySaga:
+    @workflow.run
+    async def run(self, params: BriefDeliveryParams) -&gt; SagaResult:
+        # Step 1: Store the brief in the brief archive
+        brief_id = await workflow.execute_activity(
+            store_brief_activity,
+            params.brief_content,
+            retry_policy=RetryPolicy(maximum_attempts=3),
+        )
+
+        # Step 2: Update AE's brief queue
+        await workflow.execute_activity(
+            update_ae_queue_activity,
+            params.ae_id, brief_id,
+            retry_policy=RetryPolicy(maximum_attempts=3),
+        )
+
+        # Step 3: Send Slack notification (irreversible)
+        try:
+            await workflow.execute_activity(
+                send_slack_notification_activity,
+                params.ae_id, brief_id,
+                retry_policy=RetryPolicy(maximum_attempts=5),
+            )
+        except Exception as e:
+            # Compensate: revert queue update and brief
+            # (Slack send was last; if it failed, no Slack to retract)
+            await workflow.execute_activity(
+                revert_ae_queue_activity, params.ae_id, brief_id,
+            )
+            await workflow.execute_activity(
+                delete_brief_activity, brief_id,
+            )
+            return SagaResult(status=&quot;compensated&quot;, error=str(e))
+
+        return SagaResult(status=&quot;success&quot;, brief_id=brief_id)
+</code></pre>
+<p>The saga is bounded. Three steps. Compensations on the first two. The Slack notification is irreversible and placed last, per M16 Section 5's discipline.</p>
+<p>Most of the brief generation runs <em>outside</em> the saga — the actual agent work, the multi-agent orchestration, the synthesis. Those are the read-only operations that don't need saga semantics. The saga wraps only the cross-system writes.</p>
+<h3>Observability layer</h3>
+<p>OpenTelemetry instrumentation throughout. Every span has the agent role, model, brief request ID, and AE ID as attributes. The trace tree:</p>
+<pre><code>brief.request (root)
+├── orchestrator.plan (Opus)
+├── workers (parallel)
+│   ├── worker.profile (Sonnet) → tools → return
+│   ├── worker.financials (Sonnet) → tools → return
+│   ├── worker.leadership (Sonnet) → tools → return
+│   ├── worker.news (Sonnet) → tools → return
+│   └── worker.competitive (Sonnet) → tools → return
+├── synthesizer.draft (Opus)
+├── critic.review (Opus)
+├── (optional) synthesizer.revise (Opus, if critic flagged issues)
+├── guardrails.output_policy_check (Haiku)
+├── saga.brief_delivery
+│   ├── saga.step.store_brief
+│   ├── saga.step.update_queue
+│   └── saga.step.send_slack
+└── brief.delivered
+</code></pre>
+<p>Every span is queryable. The trace tree reconstructs the full trajectory.</p>
+<p>Metrics dimensioned by:
+- <code>agent.role</code> (orchestrator, worker.X, synthesizer, critic, guardrail)
+- <code>gen_ai.request.model</code> (opus-4-7, sonnet-4-6, haiku-4-5)
+- <code>tool.name</code> (per tool call)
+- <code>saga.type</code> (brief_delivery)
+- <code>outcome.status</code> (success, partial, escalated)</p>
+<p>Tier 1 alerts (page on-call):
+- Brief request error rate &gt; 5% over 15 minutes
+- Saga escalation rate &gt; 3 per hour
+- p99 latency &gt; 30 minutes (well past customer SLO)</p>
+<p>Tier 2 alerts (notify on-call channel):
+- Token-per-brief 50%+ above baseline
+- Worker confidence distribution shift (more low-confidence returns)
+- Critic flag rate above baseline (more issues detected)
+- Tool error rate elevation for any specific tool</p>
+<p>Tier 3 (dashboard for periodic review):
+- Per-AE brief request patterns
+- Per-company research patterns
+- Memory hit rate (how often prior briefs are reused)
+- Cost per brief trends</p>
+<p>The observability layer doesn't prevent failures; it makes them visible and diagnosable. Per M17's data: the team can diagnose any escalation in under 10 minutes by pulling the relevant trace.</p>
+<div class="postmortem">
+<p><strong>The First Production Incident — Two Weeks After Launch</strong></p>
+<p>Sam's deal-research-and-brief system had been in production for two weeks. AEs were generating ~80 briefs per day. P50 latency was 4.2 minutes; P99 was 9.8 minutes. Things were working.</p>
+<p>Then the financials MCP server started returning 500 errors at random for about 6% of requests. The financials worker would retry (M2 hardened loop), often succeed on retry, but occasionally exhaust retries and return a partial result with explicit obstacles ("financials API is degraded; got partial data on 3 of 5 financial signals").</p>
+<p>Tier 2 alert fired on tool error rate. The on-call engineer pulled the dashboard. Saw the financials API errors. Pulled a trace. Confirmed the workers were degrading gracefully — partial returns, lower confidence, briefs still generated with explicit caveats in the financials section.</p>
+<p>Engineer messaged the financials team. They were aware; recent deploy had introduced a regression; rollback in progress. Engineer didn't wake anyone up. The system absorbed the degradation; AEs got slightly degraded briefs ("Note: financial signals are limited due to data source degradation; full financials available in 24 hours") but the service didn't go down.</p>
+<p>Total impact: 14 briefs out of ~1,100 had degraded financials sections that day. Zero incidents from the AE side. The financials team rolled back; the next morning's briefs were back to baseline quality.</p>
+<p><strong>Lesson:</strong> the disciplines from M2-M17 turned what could have been a production incident into a graceful degradation. Worker retries (M2). Partial handoff returns (M15). Critic verification that the brief still met quality bar despite incomplete sections (M11). Guardrails that didn't block on the partial data (M12). Saga that didn't escalate because the brief still delivered (M16). Observability that surfaced the issue at Tier 2 without paging (M17). Each layer's discipline contributed to the outcome.</p>
+</div>
+<hr />
+<h2>Section 9 — The System End to End</h2>
+<p>Pulling together all the sections. The full request flow:</p>
+<pre><code>1. AE submits brief request via Slack slash command
+2. Request enters input filter (M12 input guardrail; Haiku classifier)
+3. Orchestrator (Opus) reads request + AE preferences (M9) + existing briefs (M9)
+4. Orchestrator produces OrchestrationPlan with 5 worker tasks
+5. Workers run in parallel (asyncio.gather, M14 orchestrator-worker)
+   - Each worker (Sonnet) loads its system prompt + role tools + handoff
+   - Each worker runs M2 hardened loop with budget caps
+   - Tools called via MCP gateway (M5) with action screening (M12 layer 3)
+   - Worker outputs include findings, citations (M10), confidence, nuances (M15)
+6. Synthesizer (Opus) reads structured worker returns
+   - Detects contradictions (M15 Section 6)
+   - Resolves via tool-grounded lookup if possible
+   - Produces brief draft with M10 grounding discipline
+7. Critic (Opus) reviews draft against worker findings + criteria (M11)
+   - Flags ungrounded claims, miscalibrated confidence, scope violations
+   - If issues found, synthesizer regenerates (one revision cycle)
+8. Output filter (M12 output guardrail; Haiku) checks brief against policy
+9. Saga (M16) delivers brief: store + queue + Slack notification
+10. AE receives brief in Slack with link to view in detail
+11. Observability traces (M17) capture every step throughout
+</code></pre>
+<p>End-to-end latency budget:
+- Step 1-2: &lt;1 second
+- Step 3-4 (orchestrator plan): ~10 seconds
+- Step 5 (workers in parallel, slowest worker): ~120 seconds
+- Step 6-7 (synthesizer + critic): ~30 seconds
+- Step 8 (output filter): ~2 seconds
+- Step 9 (saga): ~5 seconds
+- Total: ~3 minutes median; ~5 minutes P95</p>
+<p>End-to-end cost (re-stating from Section 5):
+- ~$1.73 in inference
+- ~$0.10 in MCP tool calls (paid services)
+- ~$0.05 in observability infrastructure
+- ~$0.02 in saga infrastructure
+- ~$0.10 in Managed Agents runtime (per the M16 estimate of $0.08/hour at ~5 minutes per brief)
+- Total: ~$2.00 per brief</p>
+<p>End-to-end reliability characteristics:
+- Single worker failure → partial handoff, brief generated with explicit gaps
+- Multiple worker failures → orchestrator escalates rather than producing low-quality brief
+- Synthesizer failure → automatic retry with simplified prompt
+- Critic flagging unfixable issues → escalate to human reviewer
+- Saga delivery failure → compensation runs; AE notified of generation failure with retry option
+- Cascading downstream failures → observability alerts at Tier 2; on-call diagnoses in &lt;10 min</p>
+<h3>What gets escalated to humans</h3>
+<p>Per M12 and M16, the system escalates to humans in specific cases:
+- <strong>Compliance violations the guardrails couldn't auto-correct.</strong> Manual review of the request.
+- <strong>Critic flags persistent issues even after revision.</strong> Manual brief generation by the team.
+- <strong>Saga compensation failures.</strong> Structured escalation per M16 Section 7.
+- <strong>Confidence below threshold across multiple workers.</strong> Insufficient quality; human researcher takes over.</p>
+<p>These cases are rare (target: &lt;2% of requests) but the escalation path is structured. The AE gets a clear message: "Your brief request requires human review; expect delivery within 4 hours" rather than a confusing failure.</p>
+<h3>What the AE sees</h3>
+<p>The AE submits <code>/brief AcmeCorp deal-stage:discovery</code> and receives, ~3-5 minutes later, a Slack message:</p>
+<pre><code>🎯 Brief ready for AcmeCorp (discovery call)
+- 5 sections, all freshly researched
+- Confidence: high (4 sections), medium (1 section)
+- Generated 4m 12s ago
+[View full brief →]
+[Share with SE →]
+</code></pre>
+<p>If something degraded:</p>
+<pre><code>🎯 Brief ready for AcmeCorp (discovery call) — partial
+- 4 sections complete, 1 section degraded (financials data source unavailable)
+- Confidence: high (4 sections), N/A (1 section)
+- Generated 5m 4s ago
+- Note: financials section uses cached data from 18 days ago
+[View full brief →]
+[Request refresh in 4 hours →]
+</code></pre>
+<p>If escalated:</p>
+<pre><code>🎯 Brief request for AcmeCorp queued for human review
+- Issue: critic flagged claims that couldn't be sourced from available data
+- Senior researcher will deliver full brief within 4 hours
+- You'll receive a follow-up Slack message when complete
+</code></pre>
+<p>The AE always has a clear understanding of what they got and what to expect. The system is honest about its limits.</p>
+<div class="code-exercise">
+<p><strong>Exercise 18.1 — Design your capstone system.</strong></p>
+<p>Pick an agent system you're considering or building. Run through the M18 framework:</p>
+<ol>
+<li><strong>Section 1: Requirements.</strong> What does the user actually want? What are the constraints?</li>
+<li><strong>Section 2: Architecture.</strong> Run M13 framework. If multi-agent, run M14 framework.</li>
+<li><strong>Section 3: Loop.</strong> Define budget per role.</li>
+<li><strong>Section 4: Tools.</strong> What's the focused tool set per role? Are they MCP-shareable?</li>
+<li><strong>Section 5: Models.</strong> Per-role model selection. Cost projection.</li>
+<li><strong>Section 6: Context and memory.</strong> Per-role context budget. What memory patterns apply?</li>
+<li><strong>Section 7: Reliability.</strong> Where does M10 grounding apply? M11 reflection? M12 guardrails?</li>
+<li><strong>Section 8: Operations.</strong> What sagas wrap which actions? What observability instrumentation?</li>
+<li><strong>Section 9: End to end.</strong> Sketch the request flow with all layers integrated.</li>
+<li><strong>Section 10: Readiness.</strong> Run the readiness checklist (next section).</li>
+</ol>
+<p>The exercise is the synthesis. Most systems benefit from being designed deliberately rather than evolved reactively. The frameworks compose; the layers compose; the production system is the composition.</p>
+</div>
+<hr />
+<h2>Section 10 — The Readiness Checklist</h2>
+<p>Before any agent system goes to production, the readiness checklist. Each item is from a prior module; failing any one is a signal the system isn't ready.</p>
+<h3>Foundations (M2-M9)</h3>
+<ul>
+<li>[ ] <strong>M2:</strong> Every agent has explicit <code>max_turns</code>, <code>max_tokens_total</code>, <code>max_tool_calls</code>, <code>max_wall_clock_seconds</code> budget caps</li>
+<li>[ ] <strong>M3:</strong> Architecture decision is explicit: workflow vs single-agent vs multi-agent, with documented reasoning</li>
+<li>[ ] <strong>M4:</strong> Every tool has API-doc-quality description; parameter schemas are precise; error returns are structured</li>
+<li>[ ] <strong>M5:</strong> External tools accessed via MCP gateway with auth, schema validation, rate limits</li>
+<li>[ ] <strong>M6:</strong> Model selection per role is explicit; fallback paths defined for cheap-model failures</li>
+<li>[ ] <strong>M7:</strong> Each role has bounded context budget; context spending is deliberate</li>
+<li>[ ] <strong>M8:</strong> Long-running agents have explicit compaction triggers</li>
+<li>[ ] <strong>M9:</strong> Memory patterns are explicit; what's remembered, what's not, what's the decay/cap</li>
+</ul>
+<h3>Reliability (M10-M12)</h3>
+<ul>
+<li>[ ] <strong>M10:</strong> Every factual claim in agent outputs traces to a verifiable source</li>
+<li>[ ] <strong>M11:</strong> High-stakes outputs go through critic review before delivery</li>
+<li>[ ] <strong>M12:</strong> Three-layer guardrails (input, output, action) implemented per the specific threat surface</li>
+</ul>
+<h3>Multi-Agent (M13-M15) [if applicable]</h3>
+<ul>
+<li>[ ] <strong>M13:</strong> Multi-agent earns its complexity per the framework; documented evidence</li>
+<li>[ ] <strong>M14:</strong> Specific architecture chosen per the framework; one pattern, not several</li>
+<li>[ ] <strong>M15:</strong> Structured handoff schemas with required nuance, confidence, obstacles, references_used; contradiction detection before synthesis; tool-grounded resolution where applicable</li>
+</ul>
+<h3>Operations (M16-M17)</h3>
+<ul>
+<li>[ ] <strong>M16:</strong> Multi-step actions are sagas; idempotency keys derived from saga ID; compensations defined per action; irreversible actions placed last</li>
+<li>[ ] <strong>M17:</strong> OpenTelemetry tracing covers entire request flow; metrics dimensioned by agent role and model; tier-based alerting; correlation IDs propagated; tail sampling configured</li>
+</ul>
+<h3>Pre-launch verification</h3>
+<ul>
+<li>[ ] <strong>Compensation paths tested.</strong> Force failures at each saga step; verify compensation works.</li>
+<li>[ ] <strong>Guardrails tested.</strong> Adversarial inputs; policy-violating outputs. Each layer verified.</li>
+<li>[ ] <strong>Observability tested.</strong> Pull a recent trace; verify on-call engineer can diagnose without external context.</li>
+<li>[ ] <strong>Cost projections validated.</strong> Run 100 production-like requests; measure actual cost; compare to projection.</li>
+<li>[ ] <strong>Latency budgets validated.</strong> Same. P50, P99 measured against targets.</li>
+<li>[ ] <strong>Escalation paths tested.</strong> Simulate cases that escalate; verify queue receives structured context.</li>
+<li>[ ] <strong>Documentation reviewed.</strong> Architecture, dependencies, runbooks. New on-call engineer should be able to operate the system from documentation alone.</li>
+</ul>
+<h3>What "ready" means</h3>
+<p>Production-ready isn't "works on happy path." It's "the failure modes are explicit, recoverable, and diagnosable." The checklist surfaces gaps; passing all items means the system has the disciplines from the book applied deliberately.</p>
+<p>The honest framing: most teams skip 30-50% of this checklist on first launch and discover the gaps in production. The checklist's value is <em>forcing the conversations</em> about which gaps you're accepting and why. <em>"We're skipping M11 reflection because the budget is too tight"</em> is a defensible decision; <em>"We didn't think about M11"</em> is the failure mode.</p>
+<div class="gotcha">
+<p>The most dangerous checklist failure: assuming a layer "doesn't apply" without examining it. Teams sometimes argue <em>"we don't need M16 sagas because our agent doesn't take actions"</em> — and then discover the brief storage step is an action that needs saga discipline. Or <em>"we don't need M9 memory because each request is stateless"</em> — and then discover users want continuity across conversations. Examine each layer; document why it does or doesn't apply; don't assume.</p>
+</div>
+<hr />
+<h2>Recap: Module 18 in eight bullets</h2>
+<div class="bullet-points">
+<ul>
+<li>The capstone is synthesis: no new patterns, but the disciplines from M2-M17 composed into a complete production system. Most agent failures are architecture failures, not model failures. Designing deliberately from the start beats retrofitting after incidents.</li>
+<li>Sam's deal-research-and-brief system is the case study because it's complex enough to exercise most layers, high-stakes enough to require operational discipline, bounded enough to be tractable, and similar to but distinct from prior systems in the book.</li>
+<li>Architecture decisions follow from work structure, not architectural ambition. M13's framework picks multi-agent (parallelizable, high-stakes, bounded subagents). M14's framework picks orchestrator-worker (independent subtasks with synthesis at end). The simplest pattern that handles the structure is the right one.</li>
+<li>Each agent in the system is fully M2-M12 disciplined. Hardened loops with budget caps. Focused role-specific tools. Multi-model routing (Opus for orchestrator and synthesizer, Sonnet for workers, Haiku for guardrails). Bounded context budgets per role. Memory patterns explicit. Hallucination prevention via citations. Critic pass for reflection. Three-layer guardrails.</li>
+<li>The reliability layer is what production agent systems either build or get sued for not building. M10's grounding discipline + M11's critic + M12's guardrails compose into the difference between "agent that works in dev" and "agent you can defend in customer escalations." Each costs a small fraction of total compute; the combination justifies itself.</li>
+<li>The operational layer (M16 sagas + M17 observability) makes the system survivable and diagnosable. Sagas wrap multi-step actions with proper compensation; observability traces the full request flow with bounded sampling; tier-based alerting catches degradation before customers notice.</li>
+<li>The end-to-end system: ~3 minute median latency, ~$2 per brief cost, structured failure modes when things degrade, observability that supports &lt;10 minute diagnosis. The disciplines compose; the system is the composition.</li>
+<li>Production readiness is a checklist of explicit decisions, not a feeling. Each layer either applies or is documented as not-applicable with reasoning. Most teams skip 30-50% on first launch and discover gaps in production. The checklist's value is forcing the conversations about which gaps you're accepting and why.</li>
+</ul>
+</div>
+<hr />
+<div class="sam-arc">
+<p><strong>Sam, six months later.</strong></p>
+<p>The deal-research-and-brief system had been running for four months. AEs were generating ~120 briefs per day across the team. P50 latency was holding at 3.4 minutes. Cost per brief had stabilized at $1.92. Sales had reported a measurable improvement in deal velocity for AEs who were using the briefs heavily — not because the briefs were magic, but because AEs were prepping more deals more thoroughly than before.</p>
+<p>The CRO came back. <em>"What's next?"</em></p>
+<p>Sam thought about it. The platform team was building the next agent system — a customer-onboarding workflow — and was using the design doc Sam had written for this system as the template. The disciplines weren't customer-success-specific or sales-specific; they were <em>agent-system-specific</em>. Every new agent system inherited the M2-M17 stack as the starting point, not the destination.</p>
+<p>The book had taken Sam from M1 (workflows in a trench coat, the embarrassing realization) to M17 (operational discipline as the actual deliverable). Each module had added a layer of attention to one part of the system. The customer-success bot Sam had hardened over fifteen months had accumulated the layers reactively, in response to specific incidents. The deal-research system had inherited the layers deliberately, in advance.</p>
+<p>Both systems worked. The deal-research system worked <em>better</em>, and worked <em>faster to ship</em>, because the disciplines had been applied deliberately rather than discovered through incidents.</p>
+<p>That was the actual lesson of the book. Not specific patterns, though those mattered. Not specific models or frameworks, though those mattered too. The lesson was: <strong>agent systems are systems. They benefit from architectural discipline. They reward operational rigor. They punish reactivity. The disciplines that apply to one agent system apply to the next, and the next, and the next.</strong></p>
+<p>Sam wrote the closing line of the design doc: <em>"This is the capstone. Every layer from the book applies. The next system will inherit the layers from day one. The system after that, the same. We're not building one agent system; we're building a platform for agent systems. The disciplines from this book are the platform."</em></p>
+<p>The CRO read the doc. <em>"What's the next agent we should build?"</em></p>
+<p>Sam smiled. <em>"Whatever sales needs most. Now that the platform exists, the next system takes weeks, not quarters."</em></p>
+<p>That, in the end, was what the book had built toward. Not a single agent system. Not a single discipline. The accumulated layers of attention that turn AI agent development from an art into an engineering practice — one where the patterns compose, the operations are sustainable, the failure modes are designed for, and the next system inherits the discipline of the last.</p>
+<p>Sam closed the laptop. The book had been written, layer by layer, over many months. The system Sam was operating now embodied all of it. The next one would, too. That was the deliverable.</p>
+</div>
+<hr />
+<h2>What's next</h2>
+<p>The book has covered M2 through M18. The arc has moved from foundational disciplines through multi-agent architecture into operational maturity into deliberate system design.</p>
+<p>What this module didn't cover, on purpose:</p>
+<ul>
+<li><strong>Specific frameworks</strong> — LangGraph, CrewAI, AutoGen, and their successors. Frameworks are tooling; the patterns in this book apply across all of them. Choose the framework that fits your team; apply the patterns deliberately.</li>
+<li><strong>Specific models</strong> — beyond verifying that the right model goes to the right role, the patterns are model-agnostic. As models change (and they will), the disciplines stay the same.</li>
+<li><strong>Specific use cases</strong> — Sam's customer-success bot, deal-research workflow, regulatory-research system, and brief-generation system are illustrations. Your use cases will differ; the disciplines apply.</li>
+</ul>
+<p>The closing thought, from the production AI agents in 2026 piece that informed this module's research:</p>
+<blockquote>
+<p><em>"Most agent failures are architecture failures, not model failures."</em></p>
+</blockquote>
+<p>The disciplines in this book are the architecture. They compose into systems that work in production. The next agent you build will be better than the last because the patterns are now muscle memory.</p>
+<p>Build deliberately. Layer the disciplines. Make the trade-offs explicit. Ship systems that survive Tuesday.</p>
+<p>That's the book.</p>
+<hr />
+<div class="bullet-points">
+<p><strong>A reading guide, in case you ever need to come back:</strong></p>
+<ul>
+<li><strong>For a new project:</strong> start at M1, then M2-M3 (foundations), then jump to M13 (architecture decision) to determine which multi-agent modules apply.</li>
+<li><strong>For a struggling project:</strong> start with M11-M12 (reliability) and M16-M17 (operations). These are the layers most often missing in struggling systems.</li>
+<li><strong>For a multi-agent design:</strong> M13 first (does it earn it?), then M14 (which architecture?), then M15 (how do they communicate?).</li>
+<li><strong>For operational issues:</strong> M16 (failures recoverable?) and M17 (failures diagnosable?). Most operational gaps are in these two modules.</li>
+<li><strong>For tool design problems:</strong> M4 then M5. Most tool problems are description problems.</li>
+<li><strong>For context bloat or cost issues:</strong> M7 then M8. Most cost issues are context engineering problems.</li>
+<li><strong>For hallucination issues:</strong> M10 first; M11 if grounding alone isn't enough.</li>
+<li><strong>For "the agent does the wrong thing" issues:</strong> M12 (guardrails) before assuming a model problem.</li>
+<li><strong>For "the agent gets stuck or fails weirdly" issues:</strong> M2 (loop discipline) and M17 (observability to see what happened).</li>
+<li><strong>For new agent systems built on a mature platform:</strong> M18 readiness checklist. Apply the disciplines deliberately.</li>
+</ul>
+</div>
+</body>
+</html>

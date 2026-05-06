@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 1 Outline — Reframing: Workflows in a Trench Coat</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 1 Outline — Reframing: Workflows in a Trench Coat</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 01 — OUTLINE</div>
+<div class="module-title">Reframing: Workflows in a Trench Coat</div>
+<div class="subtitle">Most "agents" in production aren't agents.<br>Let's audit yours.</div>
+<div class="pages">Target length: ~32 pages</div>
+</div>
+<h2>What this module is</h2>
+<p>The opener. Not a "what is an agent" tutorial — your readers already shipped one. This module is the <strong>reframing</strong>: a sharp definitional cut between agents and workflows, an audit of real codebases, and the contrarian voice that runs through the rest of the book.</p>
+<p>By the end, the reader can look at any system and confidently say "that's a workflow," "that's an agent," or "that's an agent that should have been a workflow."</p>
+<div class="hook">
+<p>"Sam shipped what the team called an 'AI research agent.' It's been running in prod for six weeks. This morning, finance flagged the OpenRouter bill. Sam pulls up the code. It's a <code>for</code> loop with three <code>client.messages.create</code> calls. There is no agent. There never was."</p>
+</div>
+<hr />
+<h2>Section 1 — The Trench Coat (≈4 pages)</h2>
+<div class="hook">
+<p>Open with Sam at their laptop. The "agent" is a function. The function has a comment that says <code># Agent loop</code>. Inside is a router, then a summarizer, then a writer. Each step has a fixed prompt. There is no LLM-directed control flow anywhere.</p>
+</div>
+<p>The provocative claim: <strong>most "agents" in production are workflows.</strong> A workflow has predetermined steps; an agent has LLM-directed steps. The marketing budget for "agentic AI" is enormous, so the word has lost meaning. We're going to take it back.</p>
+<p>Cite Anthropic's "Building effective agents" definition (Dec 2024, still the cleanest): <em>agents dynamically direct their own processes and tool usage, maintaining control over how they accomplish tasks</em>. Workflows are systems where LLMs and tools are orchestrated through predefined code paths.</p>
+<div class="pullquote">
+<p>A workflow is a flowchart with LLMs in some boxes. An agent is an LLM that decides what the next box is.</p>
+</div>
+<p><strong>Why this distinction matters in practice (not in theory):</strong></p>
+<p>Cost behavior is different. Workflows have predictable token spend; agents have unbounded spend until you bound them. Latency is different. Workflows have a known critical path; agents have a tail that depends on what the model decides to do. Failure modes are different. Workflows fail at known boundaries; agents fail novel ways. Eval is different. Workflows can be unit-tested; agents need trajectory eval.</p>
+<p><strong>What's not a useful distinction:</strong> "uses tools" (workflows can too), "calls an LLM in a loop" (a <code>while</code> loop with a fixed prompt is still a workflow), "feels autonomous" (vibes are not architecture).</p>
+<div class="nodumbq">
+<p><strong>Q: So if I have a router that picks one of three prompts, that's a workflow?</strong></p>
+<p>Yes. Routing is a workflow pattern (we'll cover all five in Module 3). The LLM picks a path, but the paths are fixed.</p>
+<p><strong>Q: What if the LLM decides to call a tool, and based on the result calls another tool?</strong></p>
+<p>If the <em>set</em> of tools and <em>when to stop</em> are decided by the LLM at runtime, that's an agent. If your code has <code>if step == 1: do X; if step == 2: do Y</code>, that's a workflow even when each step has tools.</p>
+<p><strong>Q: My system uses LangGraph. Does that make it agentic?</strong></p>
+<p>LangGraph is a state-machine library. State machines are workflows by default. You can build agents in LangGraph by giving a node the freedom to choose the next node — but most LangGraph code in the wild is workflow code with extra nouns.</p>
+</div>
+<hr />
+<h2>Section 2 — Audit Your Codebase (≈5 pages)</h2>
+<p>The first hands-on section is an <strong>audit exercise</strong>, not a build. The reader takes their existing "agent" code and reclassifies it.</p>
+<div class="code-exercise">
+<p><strong>Exercise 1.1 — Audit a real agent.</strong></p>
+<p>Reader is given (or pulls in) one of their own "agent" implementations. We provide a checklist:</p>
+<ol>
+<li>Find the main loop. Is there one?</li>
+<li>Inside the loop, who decides the next action — code or model?</li>
+<li>List every tool call site. For each: is the tool selected by the model or hard-coded?</li>
+<li>Where does the loop terminate? Fixed iterations, or model-decided?</li>
+<li>Count branch points where code (not model) chooses a path.</li>
+</ol>
+<p>Score: 0-2 model-driven decisions = workflow. 3-5 = hybrid. 6+ = genuine agent.</p>
+</div>
+<p>We provide a sample codebase to audit (so readers without their own can still do the exercise). The sample is an "AI research agent" that's actually a 4-step pipeline. We walk through the audit live.</p>
+<div class="brain">
+<p>Pick your most "agentic" production system. Without looking at code, predict its score on the audit. Now look at the code. Were you right?</p>
+<p>Most engineers overestimate by 2-3 points.</p>
+</div>
+<div class="postmortem">
+<p><strong>The "Multi-Agent Research System" That Was a For Loop</strong></p>
+<p>Real production case from a Y Combinator company (anonymized). They marketed an "autonomous research agent" to enterprise. Internal name: "Kestrel." External demos showed it researching topics, citing sources, writing reports.</p>
+<p>The code: 1 router prompt → 1 fan-out to N parallel summarizers (N hardcoded to 5) → 1 reducer prompt → 1 writer prompt. Total LLM-driven decisions: zero. The router didn't even pick a path; it normalized the query so the next step's prompt would be cleaner.</p>
+<p>When complex queries broke it, they added a 6th prompt to "validate." Then a 7th to "retry." Then a 1000-line YAML config of branches. By the time the engineering team realized the agent was a workflow, they had reinvented Apache Airflow with 100x the latency and 1000x the cost.</p>
+<p><strong>Lesson:</strong> The marketing called it agentic. The code called it <code>pipeline.py</code>. Trust the code.</p>
+</div>
+<hr />
+<h2>Section 3 — The Definitional Lattice (≈4 pages)</h2>
+<p>A more rigorous taxonomy. Three axes:</p>
+<p><strong>Axis 1: Who controls the next step?</strong> Code (workflow) or model (agent).</p>
+<p><strong>Axis 2: What's the action space?</strong> Fixed (tool list known at design time) or dynamic (tools discovered at runtime, e.g., MCP).</p>
+<p><strong>Axis 3: Termination?</strong> Fixed iterations / fixed conditions (workflow) or model-decided stop (agent).</p>
+<p>Plot real systems on these axes. Examples to place:
+- ChatGPT with tools enabled: agent on all three.
+- A LangChain RAG pipeline: workflow on all three.
+- Cursor / Claude Code: agent on axes 1 and 3, mostly fixed on 2.
+- A "supervisor" pattern with hardcoded worker pool: workflow on 2, hybrid on 1, varies on 3.</p>
+<div class="fireside">
+<p><strong>FIRESIDE CHAT: "Workflow" vs "Agent" argue their merits</strong></p>
+<div class="cast">
+<div class="character workflow"><span class="name">Workflow:</span> I'm predictable. You can test me. You can budget me. You can debug me. The user always knows what's going to happen.</div>
+<div class="character agent"><span class="name">Agent:</span> You're rigid. You can't handle a query you weren't designed for. The user has to know your edges to use you.</div>
+<div class="character workflow"><span class="name">Workflow:</span> Most production systems handle queries that *were* designed for. That's why they're production systems.</div>
+<div class="character agent"><span class="name">Agent:</span> And that's why they get replaced when the product evolves. I can handle the new query without a code change.</div>
+<div class="character workflow"><span class="name">Workflow:</span> You also handle it for 15x the cost and you might decide to do something nobody asked for.</div>
+<div class="character agent"><span class="name">Agent:</span> Fair. So when do you win and when do I?</div>
+<div class="character workflow"><span class="name">Workflow:</span> I win when the task shape is known. You win when it isn't.</div>
+</div>
+</div>
+<hr />
+<h2>Section 4 — When to Reach for Each (≈4 pages)</h2>
+<p>The decision framework. We'll teach it once here, refer back to it for the rest of the book.</p>
+<p><strong>Use a workflow when:</strong> the task decomposes cleanly into known steps, latency budget is tight, cost predictability matters more than handling novelty, the action space is small, you have good test coverage requirements.</p>
+<p><strong>Use an agent when:</strong> the task shape varies query-to-query, the tool set is large or dynamic, you genuinely need exploration, partial failures should adapt rather than abort.</p>
+<p><strong>Use neither (just call the LLM once) when:</strong> the answer fits in one prompt with one response. Most "AI features" should be this and aren't.</p>
+<div class="gotcha">
+<p>The "agent first, simplify later" anti-pattern: teams reach for agents because it's exciting, then spend months adding constraints to make them behave. By the time the agent works, it's a workflow. They could have started there.</p>
+</div>
+<div class="exercise">
+<p>For each scenario, pick: single LLM call, workflow, or agent. Justify in one sentence.</p>
+<ol>
+<li>Translating user reviews from Japanese to English at scale.</li>
+<li>A code review bot that comments on PRs.</li>
+<li>A research assistant that answers ambiguous questions by searching, reading, synthesizing.</li>
+<li>Categorizing customer support tickets into 12 known categories.</li>
+<li>A debugging assistant that runs commands, reads output, decides next steps.</li>
+<li>Summarizing earnings calls into a 3-bullet brief.</li>
+</ol>
+<details class="answer">
+<summary>show answers</summary>
+
+1. **Single LLM call.** Translation is a single transform. No agent. No workflow.
+2. **Workflow.** Steps are knowable: fetch diff, route by file type, generate comments, post. Some steps use LLMs. Routing happens once.
+3. **Agent.** "Ambiguous questions" is the giveaway — you don't know the path until the model explores.
+4. **Single LLM call** with structured output. Twelve categories, one prompt.
+5. **Agent.** The model decides what to run next based on output it hasn't seen yet.
+6. **Workflow.** Fetch transcript → chunk → summarize → reduce. All steps known.
+
+</details>
+</div>
+<p>:::</p>
+<hr />
+<h2>Section 5 — The Cost of Being Wrong (≈3 pages)</h2>
+<p>Quantify the failure modes:</p>
+<p><strong>Workflow forced into agent territory:</strong> brittle to query variation, requires constant new branches, eventually rewritten anyway.</p>
+<p><strong>Agent forced into workflow territory:</strong> ~15x the token cost (we'll cite Anthropic's research in Module 13), unpredictable latency, eval becomes a research project, support tickets up.</p>
+<p>Real numbers from public post-mortems and our own measurements (which we'll re-verify when drafting). A simple categorization workflow costs ~$0.0003/query; the same task built as an agent costs ~$0.05/query — 150x — because the agent decides to "verify its answer" by re-reading the input twice.</p>
+<div class="key">
+<p>The most expensive bug in agent engineering is using an agent for a workflow's job. The second most expensive is using a workflow for an agent's job. The first is more common.</p>
+</div>
+<hr />
+<h2>Section 6 — A Working Vocabulary for the Rest of the Book (≈3 pages)</h2>
+<p>Lock terms we'll use consistently across all 18 modules:</p>
+<ul>
+<li><strong>LLM call</strong> — one <code>messages.create</code>. The atom.</li>
+<li><strong>Workflow</strong> — predetermined orchestration of LLM calls and tools.</li>
+<li><strong>Agent</strong> — an LLM that directs its own control flow over multiple turns with tools.</li>
+<li><strong>Agent loop</strong> — the iterative call-tool-observe cycle.</li>
+<li><strong>Tool</strong> — a function the model can choose to invoke, exposed via the API's tool-use mechanism.</li>
+<li><strong>Trajectory</strong> — the full sequence of (input, model output, tool calls, results) for a task.</li>
+<li><strong>Step / turn</strong> — one iteration of the agent loop.</li>
+<li><strong>Multi-agent system</strong> — multiple agents (or workflows wrapping agents) communicating.</li>
+<li><strong>Orchestrator</strong> — an agent or workflow that coordinates other agents.</li>
+<li><strong>Sub-agent</strong> — an agent invoked by another agent, typically with isolated context.</li>
+</ul>
+<p>We'll resist marketing terms ("agentic," "autonomous," "AGI-like") in our own writing. Readers are free to use them; we won't.</p>
+<hr />
+<h2>Section 7 — What's Next (≈1 page)</h2>
+<p>Module 2 builds a real agent loop in raw Python with the Anthropic SDK. Naive 20-line version vs. hardened 200-line version, side by side. The hardened version is the one your production agents should look like.</p>
+<p>Module 3 covers the five workflow patterns that should be your first reach.</p>
+<p>Modules 4–9 build the components: tools, MCP, model routing, context engineering, compression, memory, hallucination, reflection, guardrails.</p>
+<p>Modules 10–18 cover multi-agent, swarms, transactional patterns, production, and the capstone build.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>3 No Dumb Questions blocks (~8 questions total)</li>
+<li>2 Brain Power prompts</li>
+<li>1 Fireside Chat (Workflow vs Agent)</li>
+<li>1 Production Postmortem (Kestrel)</li>
+<li>1 Watch It! (agent-first anti-pattern)</li>
+<li>2 Sharpen Your Pencil exercises (audit + categorization)</li>
+<li>1 Code Exercise (audit your codebase)</li>
+<li>1 Pullquote</li>
+<li>1 Key Takeaway</li>
+<li>1 Bullet Points recap (placeholder, fills at draft time)</li>
+</ul>
+<div class="sam-arc">
+<p>Sam appears in Section 1 staring at the OpenRouter bill. By Section 4 they've audited their "agent" and discovered it's a workflow. The arc this module: <strong>realization</strong>. Sam doesn't fix anything yet. They just see what they actually built.</p>
+</div>
+<div class="page-budget">
+<p>Section 1 (Trench Coat): 4p
+Section 2 (Audit): 5p
+Section 3 (Definitional Lattice): 4p
+Section 4 (When to Reach): 4p
+Section 5 (Cost of Being Wrong): 3p
+Section 6 (Vocabulary): 3p
+Section 7 (What's Next): 1p
+Recurring elements (woven in): 8p
+TOTAL: ~32 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting (search before writing):</strong></p>
+<ul>
+<li>Anthropic, "Building effective agents" (Dec 2024) — primary source for definitions</li>
+<li>Anthropic's research on multi-agent token multiplier (15x figure) — Module 13 main source, cited briefly here</li>
+<li>Latest Anthropic SDK version + model strings (claude-opus-4-7, claude-sonnet-4-6, claude-haiku-4-5)</li>
+<li>LangGraph current API (for the "LangGraph is workflow by default" claim)</li>
+<li>Public post-mortems for the Kestrel-style story (anonymize but base on real)</li>
+<li>OWASP LLM Top 10 (2025) — for cost/security framing in Section 5</li>
+</ul>
+<p><strong>Stable knowledge (low search risk):</strong>
+- The workflow/agent definitional distinction
+- The five workflow patterns (named here, taught Module 3)
+- General taxonomy axes</p>
+</div>
+<div class="bullet-points">
+<h3>Module 1 in eight bullets</h3>
+<p>(filled at draft time — placeholder for outline review)</p>
+<ul>
+<li>Most production "agents" are workflows in marketing wrappers</li>
+<li>The cut: who decides the next step — code (workflow) or model (agent)</li>
+<li>Audit your own code with the 5-question checklist</li>
+<li>Three taxonomy axes: control, action space, termination</li>
+<li>Workflows are predictable, agents are flexible — pick by task shape</li>
+<li>The "agent first, simplify later" anti-pattern is the most expensive mistake</li>
+<li>Vocabulary lock: workflow, agent, loop, tool, trajectory, step, sub-agent</li>
+<li>Next: build a hardened agent loop in raw SDK</li>
+</ul>
+</div>
+</body>
+</html>

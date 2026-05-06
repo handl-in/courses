@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 13 — When Multi-Agent Earns Complexity</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 13 — When Multi-Agent Earns Complexity</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 13</div>
+<div class="module-title">When Multi-Agent Earns Complexity</div>
+<div class="subtitle">Most production failures attributed to "the agent" are actually failures of an over-architected multi-agent system that didn't need to be one.<br>The first multi-agent design decision is whether to be multi-agent at all.</div>
+<div class="pages">~38 pages · the architecture choice teams get wrong before they ever write code</div>
+</div>
+<div class="hook">
+<p>Monday morning. The platform team lead pinged Sam: <em>"I want you to design our next-gen customer support system. Take the rest of the quarter. Whatever architecture you think is right."</em></p>
+<p>Sam pulled up a blank doc and started sketching. The current customer-success bot was a single agent with twenty-something tools. Sam had spent the last several modules hardening it, and it was working well — but the architecture was starting to feel cluttered. The system prompt had grown to handle billing scenarios <em>and</em> technical support <em>and</em> account management <em>and</em> sales-handoff routing <em>and</em> compliance constraints. Each domain was its own ramp; the prompt had to teach the agent to navigate all of them.</p>
+<p>Sam's first sketch was the obvious one: split the responsibilities. A <em>billing specialist</em> agent for billing questions. A <em>technical support specialist</em> agent for troubleshooting. An <em>account specialist</em> agent for plan management. A <em>sales-handoff agent</em> for the cases that needed human escalation. A <em>router agent</em> that classified incoming questions and routed to the right specialist. A <em>coordinator agent</em> that managed cross-domain conversations.</p>
+<p>Six agents. Each focused. Each easier to maintain. Each easier to test. <em>That's</em> the future, Sam thought.</p>
+<p>Sam was about to start building when something nagged at them. They opened the Anthropic engineering blog — the post on the multi-agent research system — and re-read it. The numbers landed differently this time:</p>
+<ul>
+<li><em>15× more tokens than single-agent chat</em></li>
+<li><em>Best suited for tasks where the value of the outcome outweighs the expense</em></li>
+<li><em>Less effective for tightly interdependent tasks</em></li>
+<li><em>Coordination challenges and emergent behaviors</em></li>
+</ul>
+<p>Sam went back to the sketch and ran a thought experiment. A customer asks: <em>"My billing has a discrepancy that I think is related to the SSO integration we set up last month."</em></p>
+<p>The router classifies this as billing. Routes to billing specialist. Billing specialist sees "SSO integration" and realizes this is also a technical question. Hands off — or asks the technical specialist? Or does the coordinator agent re-route? Now there are two specialists looking at the same conversation, neither with full context. They both spawn tool calls. They both fetch the customer's account. The router is still in the loop. Six agents talking past each other for a question a single well-tooled agent answered in two turns yesterday.</p>
+<p>Sam crossed out the six-agent sketch. Wrote at the top of the doc: <em>"the question isn't 'how do I split this into agents?' The question is 'does this task even WANT to be split?'"</em></p>
+<p>Module 13 was about that question.</p>
+</div>
+<hr />
+<h2>What this module is</h2>
+<p>Modules 2 through 12 built one well-disciplined agent. Hardened loop, careful workflows, well-designed tools, secure protocols, right-sized models, engineered context, managed trajectories, persistent memory, grounded outputs, honest reflection, and boundary discipline. Sam's customer-success bot — singular — embodies all of it.</p>
+<p>This module is the structural transition point. The book's second half is about <em>systems</em> of agents. M14 covers the specific multi-agent architectures (orchestrator-worker, peer collaboration, swarm patterns). M15 covers inter-agent communication and consensus. But before any of that — before sketching architectures or naming agents — there's a more important question.</p>
+<p><strong>Should you be using multiple agents at all?</strong></p>
+<p>The honest answer, supported by both Anthropic's own production experience and the broader 2025-2026 literature: <em>most of the time, no.</em> Most multi-agent systems in production are over-architected single-agent problems that ended up with coordination overhead instead of cleaner separation. The failure mode shows up as latency, cost, brittleness, and a debugging nightmare nobody anticipated.</p>
+<p>This module covers:</p>
+<ul>
+<li><strong>Section 1</strong> — the architecture spectrum: workflows → single-agent-with-tools → multi-agent. Where each lives, where each fails</li>
+<li><strong>Section 2</strong> — the genuine reasons to go multi-agent (parallel exploration, capability heterogeneity, context isolation)</li>
+<li><strong>Section 3</strong> — the false reasons (specialization theater, prompt complexity disguised as architecture, "it sounds more sophisticated")</li>
+<li><strong>Section 4</strong> — Anthropic's research system as the canonical case study: when it earns its complexity, what it cost</li>
+<li><strong>Section 5</strong> — the decision framework: a structured checklist for "do I need multi-agent?"</li>
+<li><strong>Section 6</strong> — the cost reality: 15× tokens, coordination overhead, the emergent-behavior tax</li>
+<li><strong>Section 7</strong> — when single-agent-with-many-tools beats multi-agent (most of the time)</li>
+<li><strong>Section 8</strong> — Sam's customer support redesign, post-decision</li>
+</ul>
+<p>By the end of this module:</p>
+<ul>
+<li>You'll have a clear framework for deciding when multi-agent earns its complexity</li>
+<li>You'll recognize the failure patterns of over-architected multi-agent systems</li>
+<li>You'll understand why "single agent with ten tools" is not multi-agent — and why that distinction is load-bearing</li>
+<li>You'll know when to push back when someone proposes splitting a working single-agent into multiple specialists</li>
+</ul>
+<p>M14 will then cover <em>how</em> to build multi-agent systems for the cases where you've decided you need to. M15 will cover communication patterns. But M13's job is the harder one: convincing you that the fanciest architecture isn't usually the right one.</p>
+<div class="pullquote">
+<p>The first multi-agent design decision is whether to be multi-agent at all. Most teams skip this decision. They reach for multi-agent because it sounds sophisticated, then discover six months later that they've built an expensive way to run one model.</p>
+</div>
+<hr />
+<h2>Section 1 — The Architecture Spectrum</h2>
+<p>The Bouchard framing from January 2026 is the cleanest taxonomy I've seen. There's a spectrum of complexity, and your job is to <strong>stay as far left on the spectrum as possible while still solving your problem</strong>:</p>
+<pre><code>Workflow        Single agent     Multi-agent
+(M3)            with tools       system
+                (M2 + M4)        (M13+)
+←───────────────────────────────────────→
+Less complex                      More complex
+Lower cost                        Higher cost
+Easier to debug                  Harder to debug
+More predictable                  More emergent
+</code></pre>
+<p>Each tier earns its place when the previous one stops working — <em>not before</em>.</p>
+<p><strong>Level 1: Workflows.</strong> A workflow is a sequence of LLM calls connected by code (M3 covered this). The control flow is deterministic. The LLM is making content decisions, not control-flow decisions. A research-brief workflow that does <em>retrieve → summarize → format</em> in fixed order is a workflow.</p>
+<p>When workflows fail: when the right next step depends on what the model just discovered. A user asks "where is this function used?" — the answer requires running grep, then reading the matching files, then deciding which usages are relevant, then potentially running grep again. The control flow can't be predetermined.</p>
+<p><strong>Level 2: Single agent with tools.</strong> An agent loop with multiple tools. The model decides which tool to call, when, with what arguments. The control flow is decided at runtime by the model. M2's hardened loop is this. Sam's customer-success bot is this.</p>
+<p>When single-agent fails: when the task genuinely requires either parallel exploration of separable subspaces, or significantly different capabilities for different sub-problems, or context windows that don't fit even with M7-M8 discipline.</p>
+<p><strong>Level 3: Multi-agent.</strong> Multiple agents, each with their own context window, possibly their own tools, possibly their own model. Coordination happens through structured handoffs, shared memory, or message passing. Anthropic's research system is this.</p>
+<p>When multi-agent fails: when the task is tightly interdependent, when the cost can't justify 15× tokens, when latency budgets don't accommodate coordination overhead, when the team can't debug emergent behaviors.</p>
+<h3>What "multi-agent" actually means</h3>
+<p>A common confusion: <strong>a single agent with ten tools is not a multi-agent system.</strong> Multiple capabilities ≠ multiple agents.</p>
+<p>Bouchard's distinction is the right one:</p>
+<ul>
+<li><strong>A tool is a capability</strong> — a calculator, a database query, a web browser, a validator, an API call.</li>
+<li><strong>An agent is a decision maker</strong> — chooses which tools to use, when, with what context.</li>
+</ul>
+<p>If your "specialist agents" are actually one model calling ten different APIs, you have one agent with ten tools — which is M2 territory, not M13. The architecture has the same complexity profile as the single-agent system; calling it "multi-agent" is marketing, not engineering.</p>
+<p>What makes something <em>actually</em> multi-agent:</p>
+<ol>
+<li>
+<p><strong>Separate context windows.</strong> Each agent has its own context that the others don't see in full. The lead agent passes structured instructions; the subagent works in isolation; the subagent returns structured results.</p>
+</li>
+<li>
+<p><strong>Independent decision loops.</strong> Each agent runs its own loop — its own model calls, its own tool selections, its own termination decisions. They're not all part of one giant orchestrated trajectory.</p>
+</li>
+<li>
+<p><strong>Coordination cost.</strong> There's actual communication overhead between agents (handoffs, shared state, message passing) that wouldn't exist in a single-agent design.</p>
+</li>
+</ol>
+<p>When all three are true, you have multi-agent. Otherwise, you have a single agent with structured tool use, which is fine and cheaper and easier to debug.</p>
+<div class="nodumbq">
+<p><strong>Q: My system has a "router" that picks one of several "specialist" agents. Is that multi-agent?</strong></p>
+<p>It depends. If the router is a separate LLM call that classifies, hands off, and never sees the specialist's reasoning, and each specialist runs its own independent loop with its own context — yes, that's multi-agent (a hierarchical pattern). If the "router" is just a tool the agent calls to decide what to do next, with everything happening in one loop and one context — no, that's single-agent. The distinction is whether there are genuinely separate decision-making contexts, or just structured branching within one.</p>
+<p><strong>Q: How can I tell if my problem actually needs multi-agent, before I build it?</strong></p>
+<p>Section 5 covers the decision framework formally. The short version: if you can describe your task as "do A, then B, then C" where each step depends on the previous one's output, you want a workflow or single-agent. If you can describe it as "explore N independent dimensions in parallel and synthesize the results," you might want multi-agent. The middle cases — most production tasks — usually want single-agent with good tools.</p>
+</div>
+<hr />
+<h2>Section 2 — When Multi-Agent Genuinely Earns Its Place</h2>
+<p>Three reasons to go multi-agent. Anthropic's own engineering documentation and the broader 2025-2026 literature converge on these.</p>
+<h3>Reason 1: Parallel exploration of separable subspaces</h3>
+<p>The Anthropic multi-agent research system's canonical use case: <em>"identifying board members from S&amp;P 500 companies in the IT sector."</em> This task has structure that single-agent can't exploit:</p>
+<ul>
+<li>~75 companies in the IT sector</li>
+<li>Each company's board can be researched independently</li>
+<li>Researching all 75 sequentially is slow</li>
+<li>Results must be synthesized at the end</li>
+</ul>
+<p>A single-agent loop would process companies one at a time. A multi-agent system spawns 75 subagents — one per company — that run in parallel. Each has its own 200K context window for that company's research. The lead agent collects the results. Total wall-clock time: roughly the time of the slowest single subagent, not the sum of all of them.</p>
+<p>This is what Anthropic's own data showed: <strong>90.2% improvement on complex breadth-heavy research tasks</strong> when multi-agent vs single-agent. The improvement isn't from "smarter agents" — it's from "agents that can explore in parallel where single-agent has to be sequential."</p>
+<p>The key requirement: <strong>the subspaces are genuinely separable.</strong> Researching Company A's board doesn't require knowing what Company B's board looks like. There's no information that needs to flow between subagents during their execution. Each one can complete independently.</p>
+<p>When this pattern fits:</p>
+<ul>
+<li>Research tasks across many independent entities</li>
+<li>Comparison shopping across many products</li>
+<li>Code search across many independent files (sometimes — there's a caveat coming)</li>
+<li>Document analysis across many independent documents</li>
+<li>Fact-checking many separable claims</li>
+</ul>
+<p>When it doesn't fit:</p>
+<ul>
+<li>Tasks where subagent A needs subagent B's results to know what to look for</li>
+<li>Tasks where the right decomposition isn't known up front</li>
+<li>Tasks where the synthesis is the hard part (and the parallel work is trivial)</li>
+<li>Tasks where any subagent's failure invalidates all the others' work</li>
+</ul>
+<h3>Reason 2: Capability heterogeneity</h3>
+<p>The O'Reilly piece (Feb 2026) framed this well: <em>"Genuine multi-agent value comes from heterogeneity. Different models with different capabilities operating at different price points for different subtasks."</em></p>
+<p>If your system genuinely needs:</p>
+<ul>
+<li>Opus 4.7 for high-stakes reasoning <em>and</em></li>
+<li>Haiku 4.5 for high-volume cheap classification <em>and</em></li>
+<li>A specialized model for embeddings <em>and</em></li>
+<li>A code-specific model for code analysis</li>
+</ul>
+<p>...and these <em>can't be unified</em> (one model handling all of them is too expensive or too imprecise), then multi-agent earns its place. The architecture isn't "multiple agents because we want sophistication" — it's "multiple agents because no single model is the right fit for every step."</p>
+<p>Module 6 covered model selection. The advanced version: per-step model selection in a multi-agent system. The orchestrator runs on Opus 4.7 (high-stakes coordination). The fast classifier subagents run on Haiku 4.5 (cheap, parallel). The synthesis agent runs on Sonnet 4.6 (right balance). This is heterogeneous multi-agent, and it's a real design pattern.</p>
+<p>When this pattern fits:</p>
+<ul>
+<li>Workloads with genuine cost-quality variance across subtasks</li>
+<li>Cases where one model's strengths don't span the whole task</li>
+<li>Long-running systems where single-model cost would be prohibitive</li>
+</ul>
+<p>When it doesn't fit:</p>
+<ul>
+<li>Cases where a single Sonnet 4.6 agent handles all subtasks fine (most cases)</li>
+<li>Cases where the cost difference is rounding error</li>
+<li>Cases where the coordination overhead exceeds the model-selection savings</li>
+</ul>
+<h3>Reason 3: Context isolation</h3>
+<p>The third reason, and the subtlest. Some tasks have content that <em>can't share a context window</em>:</p>
+<ul>
+<li><strong>Adversarial content.</strong> A privileged agent shouldn't read untrusted email bodies (M12's dual-LLM pattern); a quarantined subagent processes them and returns structured summaries.</li>
+<li><strong>Compliance separation.</strong> PHI data shouldn't enter the same context as marketing analysis. Subagents handle each domain in isolation; only sanitized summaries cross boundaries.</li>
+<li><strong>Cognitive load.</strong> A subagent given only the relevant information for <em>its</em> subtask reasons better than one trying to maintain a giant context with everything every subagent might need.</li>
+</ul>
+<p>The third bullet is most underrated. From the Anthropic engineering blog: <em>"subagents enabling the kind of scaling that a single agent cannot achieve"</em> refers in part to context isolation — each subagent gets a focused 200K window for its subtask, vs trying to fit everything into one window.</p>
+<p>Sam's M7-M8 work was about managing context within a single agent. The multi-agent extension is: <em>don't manage one giant context; split into multiple focused contexts.</em> When the task naturally decomposes into subtasks with independent context needs, isolation wins.</p>
+<p>When this pattern fits:</p>
+<ul>
+<li>Security boundaries (M12's dual-LLM pattern is a special case)</li>
+<li>Compliance domains that can't co-mingle</li>
+<li>Tasks where each subtask has very different relevant context</li>
+</ul>
+<p>When it doesn't fit:</p>
+<ul>
+<li>Tasks where the relevant context overlaps heavily across subtasks</li>
+<li>Tasks where coordination requires lots of cross-context reference</li>
+<li>Cases where the M7-M8 disciplines would have handled the context size</li>
+</ul>
+<div class="brain">
+<p>A team is building a system that needs to: (a) read 500 customer support tickets per day, (b) categorize each, (c) draft a response, (d) check for policy violations, (e) send. Single agent with five tools, or multi-agent with five specialists?</p>
+<p>(Single agent. The flow is sequential — categorize then draft then check then send. There's no parallel exploration; each ticket goes through the steps in order. The "specialists" wouldn't have separate context needs; they'd all need the ticket content, the customer history, the policy. The "policy check" specialist might be a quick LLM-as-judge call, but that's a tool, not an agent. Going multi-agent here would add coordination overhead with no parallel-exploration benefit. M2 + M4 + M12 handles this. The temptation to "split into specialists" is exactly the trap M13 warns about.)</p>
+</div>
+<hr />
+<h2>Section 3 — The False Reasons</h2>
+<p>If those are the genuine reasons, what are the <em>false</em> reasons teams reach for multi-agent? Three patterns I see repeatedly.</p>
+<h3>False Reason 1: Specialization theater</h3>
+<p>The most common mistake. The reasoning sounds plausible: <em>"different concerns should be handled by different specialists."</em> The system gets sketched: a billing agent, a technical agent, an account agent, etc. Each "specialist" with its own focused prompt.</p>
+<p>The problem: if these specialists handle the same conversation about the same customer with the same tools, they're not specialists — they're the same agent with branched prompts. The "specialization" exists in the team's mental model, not in the system's actual behavior. When a conversation crosses domains (which happens constantly in customer support), the multi-agent design adds coordination cost without adding capability.</p>
+<p>The Bouchard piece called this out specifically:</p>
+<blockquote>
+<p><em>"Request analysis. Content generation. Structure generation. Syntactic validation. Semantic validation. Spam prevention. Optimization. Security. Scoring. HTML normalization. Migration agents. Even comparison and analysis agents. On paper, it looked clean, specialists doing specialist work. But here, a single agent will work much better because the tasks are tightly coupled and sequential."</em></p>
+</blockquote>
+<p>The diagnostic: are your "specialists" doing fundamentally different <em>kinds</em> of reasoning, or the same kind of reasoning on different topics? If the latter, they're not specialists. They're prompt branches that didn't need to be agents.</p>
+<h3>False Reason 2: Prompt complexity disguised as architecture</h3>
+<p>Sam's billing-vs-technical-vs-account temptation in the cold open was this. The system prompt had grown to handle multiple domains. The fix <em>seemed</em> to be splitting the prompt into multiple agents. But the underlying problem was prompt complexity, not architectural complexity.</p>
+<p>The cleaner solution to a long system prompt is usually:</p>
+<ul>
+<li><strong>Break the prompt into modules and load relevant sections per turn</strong> (M7's just-in-time pattern)</li>
+<li><strong>Use better tool descriptions</strong> so the agent navigates the domains correctly</li>
+<li><strong>Add memory of customer-specific preferences</strong> (M9) so the agent doesn't re-derive context</li>
+<li><strong>Prune the prompt</strong> of accreted edge cases that no longer earn their place</li>
+</ul>
+<p>A 4,000-token prompt that handles multiple domains well is <em>almost always</em> better than four 1,000-token prompts plus a router and coordinator. The single prompt has full context. The multi-agent version has handoff costs and information silos.</p>
+<p>The diagnostic: is your urge to go multi-agent driven by "this prompt is too long" or by "these subtasks genuinely need parallel exploration / different capabilities / context isolation"? If the former, fix the prompt.</p>
+<h3>False Reason 3: It sounds more sophisticated</h3>
+<p>Multi-agent is the current "exciting" architecture. Conference talks feature it. Vendors pitch it. Engineers want to build it. <em>"We're building a multi-agent system"</em> sounds more impressive than <em>"we're building a single agent with good tools."</em></p>
+<p>This is real and shouldn't be dismissed — engineers are humans, status incentives matter, careers are built. But the cost is real too. Production systems built for sophistication rather than fitness end up with coordination overhead, brittle handoffs, and debugging that nobody anticipated.</p>
+<p>The honest framing from the netguru team:</p>
+<blockquote>
+<p><em>"We learned to resist overengineering. Some tasks tempted us to split logic too early — adding agents where a smarter prompt or better tooling would've done the job. We now treat multi-agent setups as a response to complexity, not a default."</em></p>
+</blockquote>
+<p>The discipline: <strong>multi-agent earns its place when single-agent fails.</strong> Not before. The motivation should be specific failures of a single-agent design, not the abstract appeal of distributed architectures.</p>
+<div class="gotcha">
+<p>A pattern I've seen many times: a team builds a multi-agent system, ships it, then over six months gradually consolidates it back to a single agent with tools. The intermediate version usually works <em>worse</em> than either endpoint — multi-agent overhead without multi-agent benefit. The lesson: getting the architecture right at the start saves the consolidation cost. Sketch the single-agent version first. If it works, ship it. Only escalate to multi-agent when single-agent demonstrably fails.</p>
+</div>
+<hr />
+<h2>Section 4 — The Canonical Case: Anthropic's Research System</h2>
+<p>A worked example of multi-agent earning its complexity. From Anthropic's June 2025 engineering post and the follow-up production reports.</p>
+<h3>What it does</h3>
+<p>Claude's Research feature (in Claude.ai) handles open-ended research queries: <em>"What are the major regulatory changes affecting fintech in Q1 2026?"</em> or <em>"Compare the compensation packages of CTOs at the top 50 cybersecurity companies."</em></p>
+<p>These are tasks with three characteristics:</p>
+<ol>
+<li><strong>Breadth-heavy.</strong> Many sub-questions to investigate</li>
+<li><strong>Parallelizable.</strong> Each sub-investigation is largely independent</li>
+<li><strong>High-stakes outcomes.</strong> A research report shapes downstream decisions; quality matters more than cost</li>
+</ol>
+<p>This is the genuine fit for multi-agent. Section 2 Reason 1 (parallel exploration) applies cleanly.</p>
+<h3>The architecture</h3>
+<p>From Anthropic's post and subsequent reporting:</p>
+<ul>
+<li><strong>Lead Researcher agent.</strong> Receives the user's query, develops a research strategy, decides what subagents to spawn and what each should investigate. Saves its plan to memory (M9 cross-run memory) so it doesn't lose track when context fills.</li>
+<li><strong>Subagents.</strong> Each handles a specific subtopic — a particular company, a particular time period, a particular technical detail. Has its own context window, its own tool access (web search, citation engines), its own iterative loop.</li>
+<li><strong>Citation/Review agent.</strong> Verifies the synthesized output before final delivery. M11-style critic, lifted into a multi-agent role.</li>
+</ul>
+<p>Each subagent is given (per Anthropic's writeup): <em>clear objectives, output formats, tool usage guidance, and task boundaries.</em> Without this detail, agents spawn excessive subagents for simple queries, conduct redundant searches, and fail to coordinate effectively. M3 workflow patterns and M11 reflection both apply at the multi-agent level.</p>
+<h3>The numbers</h3>
+<p>Anthropic's published metrics:</p>
+<ul>
+<li><strong>90.2% improvement</strong> on complex breadth-heavy research tasks vs single-agent</li>
+<li><strong>15× more tokens</strong> than standard chat interactions</li>
+<li><strong>Improvement strongly linked to token usage and parallel context windows</strong> — not "smarter" agents, but <em>more parallel work in independent contexts</em></li>
+</ul>
+<p>Each number tells you something:</p>
+<p>The 90.2% improvement is <em>task-specific</em>. It's measured on tasks where multi-agent's strengths apply (breadth-heavy research). On other tasks, the improvement would be smaller or negative. Multi-agent isn't strictly better; it's better <em>for the right tasks</em>.</p>
+<p>The 15× token cost is <em>significant</em>. That's the lower bound on cost; for serious research with many subagents and citation verification, real cost can be 20-30× single-agent. The economic question becomes: is the outcome's value worth this cost? For "research a deal target before a customer call," the answer is sometimes yes. For "answer a routine support question," the answer is no.</p>
+<p>The "parallel context windows" framing is the deepest insight. Multi-agent's value isn't model capability; it's the architecture's ability to maintain <em>N independent 200K context windows in parallel</em>. A single-agent system has one 200K window. Multi-agent has 75 (or however many subagents). For breadth-heavy tasks, this multiplies the system's effective context by N — where any single-agent system, even with M7-M8 discipline, has just one window to spread across all topics.</p>
+<h3>What it cost to build</h3>
+<p>Anthropic's post is direct about the production challenges:</p>
+<blockquote>
+<p><em>"The transition from prototype to production revealed that prompt engineering becomes significantly more complex in multi-agent environments due to coordination challenges and emergent behaviors."</em></p>
+</blockquote>
+<p>Specific issues that took engineering effort to address:</p>
+<ul>
+<li><strong>Excessive subagent spawning.</strong> Early versions spawned subagents for trivial queries. Required orchestration prompts that taught the lead agent when not to delegate.</li>
+<li><strong>Redundant searches.</strong> Multiple subagents searching the same content. Required coordination via shared memory and explicit deduplication.</li>
+<li><strong>Coordination failures.</strong> Subagents producing inconsistent or contradictory results. Required strict output formats and structured handoffs.</li>
+<li><strong>Reliability for production.</strong> Checkpointing, retry logic, rainbow deployments. Module 16-17 territory; for multi-agent, all of it is harder.</li>
+</ul>
+<p>The engineering cost of multi-agent is <em>not</em> "spend a few extra weeks on coordination." It's "build a substantial new operational layer for the multi-agent system." Anthropic's team had the resources to do this; many teams don't.</p>
+<h3>Where it doesn't fit</h3>
+<p>Anthropic's own framing — <em>"less effective for tightly interdependent tasks such as coding"</em> — is the key constraint. Coding is the prototypical case where multi-agent struggles:</p>
+<ul>
+<li>A code change in one file often requires understanding many other files</li>
+<li>The right decomposition isn't known until you've explored</li>
+<li>Different parts of the codebase share variables, types, conventions that need to be coordinated</li>
+<li>A subagent's "fix" can break what another subagent is working on</li>
+</ul>
+<p>For coding, <em>single-agent with smart tools</em> (Claude Code's design) outperforms most multi-agent attempts. The exception, which is interesting: Claude Code itself uses sub-agents for <em>certain bounded tasks</em> — read-only exploration with the Explore agent (Haiku-based, fast file discovery), specialized roles for parallel-explorable subtasks. The orchestrator stays single-agent; the parallelizable subtasks delegate. This is the heterogeneous-with-context-isolation pattern from Section 2 Reason 2 + Reason 3.</p>
+<div class="pullquote">
+<p>Multi-agent is the right answer when the task has parallel exploration structure that single-agent can't exploit, capability heterogeneity that one model can't span, or context isolation requirements that coordination has to enforce. It's the wrong answer for everything else.</p>
+</div>
+<hr />
+<h2>Section 5 — The Decision Framework</h2>
+<p>A structured checklist. Run through this before writing any multi-agent code.</p>
+<h3>Question 1: Is the task parallelizable?</h3>
+<p><strong>Strong yes:</strong> The task has N independent sub-investigations, each requiring its own context. Synthesis happens at the end. Examples: "Research these 50 companies." "Analyze these 200 documents." "Verify these 100 claims."</p>
+<p><strong>Soft yes:</strong> The task has some parallelizable parts and some sequential parts. The parallel parts dominate the cost. Examples: "Research a customer's account history across 5 sources, then write a brief."</p>
+<p><strong>No:</strong> The task is tightly sequential. Each step depends on the previous. Examples: "Triage this support ticket and respond." "Debug this code by exploring the call graph from this entry point."</p>
+<p>If "no," stop. Multi-agent's primary advantage doesn't apply. Single-agent with workflow structure is better.</p>
+<h3>Question 2: Does the value of the outcome justify 15× token cost?</h3>
+<p><strong>Yes:</strong> The output drives a high-stakes decision. Examples: A research report informing an investment decision. A pre-call brief for an enterprise customer. An audit of regulatory exposure.</p>
+<p><strong>No:</strong> The output is routine, low-stakes, or high-volume. Examples: Customer support replies. Email categorization. Daily status summaries.</p>
+<p>If "no," stop. The multi-agent premium isn't justified. M2 + M4 + M11 produces high-quality single-agent output at a fraction of the cost.</p>
+<h3>Question 3: Can you specify clear subagent boundaries?</h3>
+<p><strong>Yes:</strong> Each subagent has a focused, well-defined task with clear inputs and outputs. The orchestrator can write a one-paragraph mandate for each subagent. Subagents don't need to coordinate with each other during execution.</p>
+<p><strong>Unclear:</strong> You can imagine the subtasks but they're hard to specify precisely. The orchestrator might need to reshape mandates as it learns. Subagents would need to interrupt each other.</p>
+<p>If "unclear," reconsider. Multi-agent systems where subagent boundaries are fuzzy produce coordination chaos. The cleaner version is usually a single agent that handles the exploration in a unified context.</p>
+<h3>Question 4: Can your team operate the resulting system?</h3>
+<p><strong>Yes:</strong> Your team has built and operated complex async systems before. You have observability for distributed traces. You have engineers who can debug multi-agent emergent behaviors.</p>
+<p><strong>No:</strong> Your team has shipped a few single-agent systems. Your observability is logs. Your debugging strategy is "read the trace."</p>
+<p>If "no," reconsider. Multi-agent in production is operationally hard. Anthropic's team has resources most teams don't. The right call is often "ship single-agent, add observability infrastructure, then revisit multi-agent in 6 months."</p>
+<h3>Question 5: Have you tried single-agent first?</h3>
+<p><strong>Yes, and it specifically failed because of [parallelism / capability / context isolation]:</strong> You have evidence. Multi-agent is justified.</p>
+<p><strong>No, but multi-agent seems right:</strong> Stop. Build single-agent first. Identify the specific failure modes. <em>Then</em> decide if multi-agent addresses them.</p>
+<p>If you skip this step, you'll over-architect. Almost guaranteed.</p>
+<h3>The decision</h3>
+<p>If you answered "yes" to questions 1-4 and "yes" to question 5 with specific evidence:</p>
+<p>→ <strong>Multi-agent earns its place.</strong> Proceed to M14 for the architectures.</p>
+<p>If you answered "no" or "unclear" to any:</p>
+<p>→ <strong>Build single-agent.</strong> Use M2's hardened loop, M3's workflow patterns where appropriate, M4-M12's discipline. Re-evaluate when you have specific evidence of single-agent failure.</p>
+<div class="brain">
+<p>Run the framework on the Anthropic Research system. Q1: parallelizable (yes — research many independent subtopics). Q2: high-value (yes — research informs important decisions). Q3: clear boundaries (yes — one company per subagent). Q4: team capability (yes — Anthropic has the resources). Q5: tried single-agent (yes — single-agent had explicit limitations on breadth-heavy tasks). Multi-agent earns its place.</p>
+<p>Now run it on Sam's customer support redesign. Q1: parallelizable (no — most support questions are sequential). Q2: high-value (no — most are routine). Q3: clear boundaries (unclear — domains overlap). Q4: team capability (yes — Sam can handle it). Q5: tried single-agent (yes, and it works). The framework says: don't go multi-agent. The single-agent design with good tools is the right architecture.</p>
+</div>
+<hr />
+<h2>Section 6 — The Cost Reality</h2>
+<p>Worth a dedicated section because the cost picture is what most teams miss when they decide to go multi-agent.</p>
+<h3>Direct costs</h3>
+<p>The 15× token multiplier is the headline. Where does it come from?</p>
+<pre><code>Single-agent task:
+  Input tokens (prompt + tool results): ~30K total
+  Output tokens (reasoning + response): ~5K
+  Total: ~35K tokens
+
+Multi-agent task (same outcome, different architecture):
+  Lead agent input/output: ~10K
+  6 subagents × ~30K input + ~10K output each: ~240K
+  Coordination handoffs (lead reading subagent results): ~50K
+  Final synthesis: ~10K
+  Critic/review: ~30K
+  Total: ~340K tokens
+</code></pre>
+<p>That's a 10× multiplier in this example. Anthropic's reported 15× is realistic for the research system specifically; some multi-agent designs hit 20-30×.</p>
+<p>The dollar implication varies by model. With Sonnet 4.6 ($3/M input, $15/M output), 35K-token single-agent task costs roughly $0.30. The 340K-token multi-agent equivalent costs roughly $3-5 depending on input/output split.</p>
+<p>For 1,000 daily executions: $300/day vs $4,500/day. Same outcome quality on the right tasks (90% improvement on Anthropic's benchmarks). But the cost difference is real.</p>
+<h3>Latency costs</h3>
+<p>Multi-agent has parallelism, so wall-clock time often <em>improves</em> despite token costs. But not always:</p>
+<ul>
+<li><strong>Coordination overhead.</strong> Lead agent waits for all subagents before synthesizing. Total time = max(subagent times) + coordination + synthesis. Often longer than single-agent's sequential time, despite parallelism.</li>
+<li><strong>Critical path dominance.</strong> One slow subagent stalls the whole system. Without bounded latency per subagent, p99 latency can be much worse than single-agent.</li>
+</ul>
+<p>The trade-off: multi-agent often has <em>better median latency</em> (parallelism wins) but <em>worse tail latency</em> (any subagent's slow path blocks everything).</p>
+<p>For interactive applications (chat, support), tail latency matters more than median. For batch applications (research reports, overnight analysis), median wins. Different fits.</p>
+<h3>Operational costs</h3>
+<p>Less visible but often dominant:</p>
+<ul>
+<li><strong>Observability.</strong> Tracing a multi-agent execution requires distributed tracing. The trace shows N parallel timelines, handoffs between them, and synthesis. Standard log-based observability falls short.</li>
+<li><strong>Debugging.</strong> When something goes wrong, "which agent failed" is the first question. Then "what did it see when it failed." Then "did the failure cascade through coordination." Multi-agent debugging is fundamentally harder.</li>
+<li><strong>Testing.</strong> Single-agent unit tests check the agent's behavior. Multi-agent tests check coordination patterns, handoff fidelity, emergent behaviors. The test surface is much larger.</li>
+<li><strong>On-call burden.</strong> When multi-agent fails in production, the recovery is more complex. Module 16-17 cover this; for now, the point is <em>multi-agent operations is more work than single-agent</em>.</li>
+</ul>
+<p>The Anthropic post itself is honest about this: <em>"checkpointing, retry logic, and rainbow deployments for safety"</em> — production multi-agent requires substantial operational engineering.</p>
+<h3>Emergent behavior costs</h3>
+<p>The hardest cost to anticipate. Multi-agent systems develop behaviors not present in any individual agent:</p>
+<ul>
+<li><strong>Cascading failures.</strong> Subagent A fails; lead agent retries; retry produces different results that confuse subagent B's reasoning; subagent B fails differently than it would have alone.</li>
+<li><strong>Coordination drift.</strong> Over many interactions, the agents develop a "style" of coordination that diverges from what the prompts specify. Hard to detect; harder to correct.</li>
+<li><strong>Echo chamber effects.</strong> Subagents that read each other's outputs reinforce each other's biases. The synthesis amplifies what they all agreed on, even when they were all wrong in the same way.</li>
+</ul>
+<p>The MAR paper from Module 11's research surfaced this: <em>"self reflections tend to repeat earlier misconceptions and do not introduce new reasoning paths on difficult examples."</em> Apply the same finding at the multi-agent level — agents in the same system have correlated blind spots.</p>
+<div class="postmortem">
+<p><strong>The Multi-Agent System That Got Slower Over Time</strong></p>
+<p>A team deployed a multi-agent customer-support system: a router agent, three specialist agents (billing, technical, account), and a coordinator that managed multi-domain conversations. It worked well at launch. Six months later, p50 latency had drifted from 4 seconds to 9 seconds. p99 from 12 to 30. Costs were 4× the original projection.</p>
+<p>The team pulled the traces. The pattern:</p>
+<ul>
+<li>The router was making slightly different categorization decisions over time as the prompt accreted edge-case handling</li>
+<li>Categorization mistakes meant requests bounced between specialists more often</li>
+<li>The coordinator was spending more time mediating between specialists</li>
+<li>Each specialist's prompt had grown to handle the bounce cases, getting longer</li>
+<li>The longer prompts produced slower decisions, more handoffs, longer trajectories</li>
+</ul>
+<p>The fix: consolidation. The team merged the three specialists into one agent with all the tools. Removed the router (the consolidated agent could classify itself). Removed the coordinator (no specialists to coordinate). The new single-agent system handled the same workload with median latency back to 3.2 seconds and costs at 30% of the multi-agent peak.</p>
+<p>The original multi-agent design wasn't wrong at launch. It was wrong <em>for what the system became</em>. The drift compounded. Without active simplification, the system grew more complex monotonically until consolidation became the only fix.</p>
+<p><strong>Lesson:</strong> multi-agent designs that don't actively earn their complexity become liabilities over time. Periodic architecture review — "do we still need this to be multi-agent?" — is the only defense.</p>
+</div>
+<hr />
+<h2>Section 7 — When Single-Agent-with-Many-Tools Wins</h2>
+<p>The pattern most teams should reach for first. A single agent with carefully designed tools, hardened loop, good context engineering, all the disciplines from M2-M12.</p>
+<p>This is <em>not</em> a limitation. It's the right architecture for most production workloads.</p>
+<h3>Why it usually wins</h3>
+<p><strong>Lower coordination overhead.</strong> No handoffs. No shared state to manage. No multi-agent emergent behaviors. The agent has full context for every decision.</p>
+<p><strong>Cheaper.</strong> No token-multiplier penalty. A 35K-token execution is a 35K-token execution.</p>
+<p><strong>Easier to debug.</strong> One trace. One prompt. One model's behavior to understand. When something fails, the failure is local.</p>
+<p><strong>Easier to evolve.</strong> Adding a new capability is "add a new tool and update the prompt." Adding a capability to multi-agent is "decide which agent owns it, update that agent's prompt, update the coordinator's routing logic, possibly add new handoff patterns."</p>
+<p><strong>More capable than people expect.</strong> A modern Claude agent (Sonnet 4.6 or Opus 4.7) with 15-20 well-designed tools handles enormous complexity. The "ceiling" of single-agent is much higher than teams assume.</p>
+<h3>Patterns that look multi-agent but are single-agent done well</h3>
+<p><strong>Pattern 1: Sub-tools that wrap LLM calls.</strong> A "summarize" tool that internally calls an LLM. A "classify" tool that calls a cheaper model. The agent calls these like any other tool. Multiple LLM calls happen, but there's one decision-making agent. Heterogeneous-but-not-multi-agent.</p>
+<pre><code class="language-python">@tool
+async def summarize_document(text: str) -&gt; dict:
+    &quot;&quot;&quot;Summarize a long document. Returns a structured summary.&quot;&quot;&quot;
+    # Internal LLM call to a cheaper model
+    response = await client.messages.create(
+        model=&quot;claude-haiku-4-5&quot;,
+        max_tokens=1024,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Summarize:\n{text}&quot;}],
+    )
+    return {&quot;summary&quot;: response.content[0].text}
+
+
+@tool
+async def classify_content(text: str, categories: list[str]) -&gt; dict:
+    &quot;&quot;&quot;Classify content into one of the provided categories.&quot;&quot;&quot;
+    response = await client.messages.create(
+        model=&quot;claude-haiku-4-5&quot;,
+        max_tokens=200,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Classify:\n{text}\n\nCategories: {categories}&quot;}],
+    )
+    return {&quot;category&quot;: response.content[0].text.strip()}
+</code></pre>
+<p>The orchestrating agent uses these tools alongside its other tools. From the agent's perspective, they're tools. Internally, they're LLM calls. Cost is heterogeneous (Haiku for cheap subtasks, Sonnet for the main agent). Architecture is single-agent.</p>
+<p><strong>Pattern 2: Workflow steps wrapped as tools.</strong> Pre-defined sequences of operations exposed as a single tool to the agent.</p>
+<pre><code class="language-python">@tool
+async def research_company(company_name: str) -&gt; dict:
+    &quot;&quot;&quot;Research a company. Internally orchestrates lookup, analysis, summary.&quot;&quot;&quot;
+    # This is M3's prompt-chaining workflow exposed as one tool
+    profile = await fetch_company_profile(company_name)
+    competitors = await analyze_competitors(profile)
+    summary = await synthesize_summary(profile, competitors)
+    return {&quot;profile&quot;: profile, &quot;competitors&quot;: competitors, &quot;summary&quot;: summary}
+</code></pre>
+<p>The workflow runs deterministic internally; the agent calls it as one tool. M3 + M4 patterns combined.</p>
+<p><strong>Pattern 3: M11's reflection within a single agent.</strong> Generate, critique, revise — all within one agent's reasoning. The "critic" isn't a separate agent; it's a tool the agent calls or a structured prompt section. M11 territory, single-agent architecture.</p>
+<h3>When this isn't enough</h3>
+<p>The cases (genuinely):</p>
+<ul>
+<li><strong>The exploration must be parallel</strong> — Section 2 Reason 1</li>
+<li><strong>Multiple genuinely different models are required</strong> — Section 2 Reason 2 (and where Pattern 1 above isn't enough)</li>
+<li><strong>Context boundaries must be enforced</strong> — Section 2 Reason 3 (especially the M12 dual-LLM pattern when stakes warrant)</li>
+</ul>
+<p>These are the cases where M14's multi-agent architectures earn their place. Everything else: single-agent.</p>
+<div class="nodumbq">
+<p><strong>Q: Don't multi-agent systems scale better than single-agent?</strong></p>
+<p>It depends on what you mean by "scale." Multi-agent scales better in <em>parallelism</em> — the ability to do N things simultaneously. Single-agent scales better in <em>throughput</em> — the cost-effective handling of many independent requests. Most production "scale" is throughput, not parallelism. A million customer support tickets per day is a throughput problem, and single-agent handles it cheaper. A research task that needs to investigate 100 things in parallel is a parallelism problem, and multi-agent handles it faster (at higher cost).</p>
+<p><strong>Q: What about all the multi-agent frameworks (AutoGen, CrewAI, LangGraph multi-agent)? Don't they make it easy?</strong></p>
+<p>Easier than implementing from scratch, yes. They handle some coordination boilerplate. But "easier to write the code" doesn't change the cost model, the latency profile, or the operational complexity. A LangGraph multi-agent system still costs 15× more tokens than a single-agent equivalent. The framework's value is reducing the cost of <em>building</em> the system; it doesn't reduce the cost of <em>running</em> the system. Tools matter, but the architectural decision matters more.</p>
+</div>
+<hr />
+<h2>Section 8 — Sam's Customer Support Redesign</h2>
+<p>Returning to the cold open. Sam ran the framework from Section 5:</p>
+<ul>
+<li><strong>Q1 Parallelizable?</strong> No. Most support tickets are sequential — read, classify, respond, possibly escalate.</li>
+<li><strong>Q2 High-value?</strong> No. Most tickets are routine. The rare high-stakes ones (compliance, legal) get escalated to humans regardless.</li>
+<li><strong>Q3 Clear subagent boundaries?</strong> Unclear. Domains overlap heavily; a billing question is often also a technical question.</li>
+<li><strong>Q4 Team can operate it?</strong> Yes, but unnecessary capability.</li>
+<li><strong>Q5 Tried single-agent?</strong> Yes — and it works (the M9-M12 hardened version).</li>
+</ul>
+<p>The framework verdict: <strong>don't go multi-agent.</strong> Sam's six-agent sketch from Monday morning was specialization theater.</p>
+<h3>What Sam built instead</h3>
+<p>A single-agent system with carefully designed tools and a structured prompt:</p>
+<pre><code class="language-python">SUPPORT_AGENT_TOOLS = [
+    # Customer context (loaded by harness, not a tool)
+    # ...
+
+    # Information gathering
+    fetch_account_state,
+    fetch_billing_history,
+    fetch_recent_tickets,
+    search_knowledge_base,
+
+    # Diagnostics (technical)
+    check_integration_status,
+    run_diagnostic_test,
+    fetch_error_logs,
+
+    # Account actions (with M12 confirmation gates)
+    update_billing_method,  # Confirmation required
+    apply_credit,            # Confirmation required + supervisor approval
+
+    # Escalation
+    create_handoff_to_human,
+    create_handoff_to_sales,
+
+    # Internal workflows (Pattern 2 from Section 7)
+    investigate_billing_discrepancy,  # Wraps a M3 prompt-chain
+    diagnose_integration_issue,       # Wraps a M3 routing workflow
+    summarize_ticket_history,         # Wraps an LLM summarization
+
+    # Reflection / verification
+    verify_response_against_policy,   # M12 output check
+]
+</code></pre>
+<p>The system prompt gives the agent its scope (customer success), its tone (helpful but bounded by policy), the structure of its tools, and explicit guidance on when to escalate.</p>
+<h3>What Sam's design preserved from the multi-agent sketch</h3>
+<p>The instinct to "specialize" wasn't entirely wrong. It was the wrong <em>implementation</em>. Sam preserved the underlying separation:</p>
+<ul>
+<li><strong>Specialization in tools, not agents.</strong> The diagnostic tools, the billing tools, the account tools — each is focused on its domain. The agent calls the right tool; no separate "agent" needed.</li>
+<li><strong>Specialization in prompts via structured guidance.</strong> The system prompt has sections for billing scenarios, technical scenarios, account scenarios — structured guidance the agent uses to decide its approach. One prompt; multiple "modes" of operation.</li>
+<li><strong>Specialization in handoffs.</strong> When the conversation needs a human, the agent picks the right handoff target (sales, technical lead, compliance) and creates a structured handoff. Single agent; multi-channel routing.</li>
+</ul>
+<h3>What Sam's design avoided</h3>
+<ul>
+<li>No router agent (the main agent handles classification implicitly)</li>
+<li>No coordinator agent (single context handles cross-domain conversations)</li>
+<li>No specialist agent silos (the agent has all tools and all guidance available)</li>
+<li>No coordination overhead between agents (because there are no other agents)</li>
+<li>No multi-agent emergent behaviors</li>
+</ul>
+<h3>The metrics</h3>
+<p>Three months after rollout:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Old single-agent</th>
+<th>Multi-agent (sketch)</th>
+<th>New single-agent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Median latency</td>
+<td>3.1s</td>
+<td>(estimated 6-8s)</td>
+<td>2.4s</td>
+</tr>
+<tr>
+<td>Cost per ticket</td>
+<td>$0.04</td>
+<td>(estimated $0.50-0.80)</td>
+<td>$0.04</td>
+</tr>
+<tr>
+<td>Resolution rate</td>
+<td>71%</td>
+<td>(unknown)</td>
+<td>78%</td>
+</tr>
+<tr>
+<td>Escalation accuracy</td>
+<td>89%</td>
+<td>(unknown)</td>
+<td>94%</td>
+</tr>
+</tbody>
+</table>
+<p>The new single-agent design was <em>better</em> than the old single-agent design (which had ratty prompt accretion from M9-M12 work). The multi-agent design Sam almost built would have been worse on every measure that mattered to customers.</p>
+<p>Sam wrote a one-line lesson: <em>"the best thing about the multi-agent system was the discipline I applied when deciding not to build it."</em></p>
+<div class="code-exercise">
+<p><strong>Exercise 13.1 — Multi-agent decision audit.</strong></p>
+<p>Pick a system you're working on or considering. Run the Section 5 framework explicitly:</p>
+<ol>
+<li>Write down the answers to Q1-Q5 with specific evidence.</li>
+<li>If your answers say "single-agent," and you were considering multi-agent, document why you were tempted. Was it specialization theater? Prompt complexity? Sophistication appeal?</li>
+<li>If your answers say "multi-agent," document the specific failure modes of single-agent that justify it. Which subtasks are parallelizable? Why isn't a single-agent's context window enough?</li>
+<li>If you've already built a multi-agent system: imagine consolidating to single-agent. What would break? Are those breaks fundamental, or could they be handled with M2-M12 disciplines?</li>
+</ol>
+<p>The honest answers to these questions matter more than any framework's verdict. The framework is a structured way to surface the honest answers.</p>
+</div>
+<hr />
+<h2>Section 9 — The Framework</h2>
+<p>Adding architectural discipline before reaching for multi-agent:</p>
+<p><strong>1. Default to single-agent.</strong> Start with M2's hardened loop, M3's workflow patterns where appropriate, M4-M12's discipline. The architecture spectrum runs left-to-right; stay left as long as possible.</p>
+<p><strong>2. Recognize the false reasons.</strong> Specialization theater (different topics aren't different specializations). Prompt complexity disguised as architecture (long prompt fixes, not multi-agent). Sophistication appeal (resume value isn't system value).</p>
+<p><strong>3. Recognize the genuine reasons.</strong> Parallel exploration of separable subspaces. Capability heterogeneity that one model can't span. Context isolation that coordination must enforce. These are the cases — and only these — where multi-agent earns its place.</p>
+<p><strong>4. Run the decision framework.</strong> Five questions: parallelizable, high-value, clear boundaries, operable team, single-agent tried. All five "yes" → multi-agent. Any "no" or "unclear" → single-agent.</p>
+<p><strong>5. Account for the full cost.</strong> 15× tokens (sometimes 20-30×). Coordination latency. Operational complexity. Emergent behavior tax. The "easy multi-agent framework" doesn't change any of these.</p>
+<p><strong>6. Use single-agent-with-many-tools patterns.</strong> Sub-tools that wrap LLM calls (heterogeneous capability without multi-agent overhead). Workflow steps wrapped as tools (M3 + M4 + M5 inside what looks like a single tool). Reflection within a single agent (M11 without multi-agent infrastructure).</p>
+<p><strong>7. Consolidate over time.</strong> Multi-agent designs accrete. Periodic architecture review — "do we still need this to be multi-agent?" — is the only defense against consolidation pressure compounding into operational liability.</p>
+<p><strong>8. When you do go multi-agent, do it deliberately.</strong> M14 covers the architectures. The discipline from M2-M12 applies to every individual agent in a multi-agent system. The complexity is additive, not substitutional.</p>
+<p>The discipline this enforces: <strong>multi-agent is a deliberate response to specific failures of simpler architectures.</strong> Not the default. Not the aspiration. The escalation when escalation is justified.</p>
+<hr />
+<h2>Recap: Module 13 in eight bullets</h2>
+<div class="bullet-points">
+<ul>
+<li>The architecture spectrum runs from workflows (M3) to single-agent-with-tools (M2 + M4) to multi-agent (M13+). Stay as far left as possible while still solving your problem. Each tier earns its place when the previous one demonstrably fails.</li>
+<li>Multi-agent is <em>not</em> "single agent with multiple capabilities." Multi-agent has separate context windows, independent decision loops, and explicit coordination overhead. A single agent with ten tools is M2 territory, not M13.</li>
+<li>Genuine reasons for multi-agent: parallel exploration of separable subspaces (Anthropic's 90.2% lift on breadth-heavy research), capability heterogeneity that one model can't span, context isolation that coordination must enforce.</li>
+<li>False reasons for multi-agent: specialization theater (different topics aren't different specializations), prompt complexity disguised as architecture (long prompts have prompt fixes, not architecture fixes), sophistication appeal (it sounds more impressive than it is).</li>
+<li>The Anthropic Research system is the canonical case where multi-agent earns its place: parallelizable (research many entities), high-value outcome, clear subagent boundaries, team capability for the operational complexity. Even Anthropic acknowledges multi-agent is "less effective for tightly interdependent tasks such as coding."</li>
+<li>The cost reality: 15× tokens minimum (sometimes 20-30×), coordination overhead, harder observability and debugging, operational complexity that scales with agent count, emergent behaviors that compound failures.</li>
+<li>Single-agent with carefully-designed tools handles most production workloads better than multi-agent. Sub-tools that wrap LLM calls, workflow steps wrapped as tools, M11 reflection within a single agent — these patterns capture multi-agent's apparent benefits without its actual costs.</li>
+<li>The decision framework: parallelizable + high-value + clear boundaries + operable team + single-agent tried-and-failed. All five "yes" → multi-agent. Any "no" → single-agent. Sam's customer support redesign hit "no" on three of five; the right answer was a better single-agent, not multi-agent.</li>
+</ul>
+</div>
+<hr />
+<div class="sam-arc">
+<p><strong>Sam, after the redesign decision.</strong></p>
+<p>Tuesday morning. Sam walked into the platform team standup with a one-page architecture doc instead of the multi-agent sketch they'd planned to build. The team lead read it.</p>
+<p>"You're saying we don't need multi-agent."</p>
+<p>"I'm saying multi-agent doesn't help us here. The Section 5 framework hits no on parallelism, no on cost-vs-stakes, and unclear on boundaries. The current single-agent works. The cleaner version of the current single-agent will work better."</p>
+<p>"What about the prompt complexity? You said the prompt was getting unwieldy."</p>
+<p>"It is. But that's a prompt problem with prompt fixes — modular sections loaded just-in-time, better tool descriptions, customer-specific memory loading. Not an architecture problem with architecture fixes."</p>
+<p>The team lead read the doc again. "OK. Build it. But document the decision. I want this written up so the next team member who pitches multi-agent has to argue against the framework you used."</p>
+<p>Sam wrote it up that afternoon. The decision doc became required reading for new platform team members. Sam noticed two things over the next quarter:</p>
+<p>First: every time someone proposed multi-agent for a new system, they had to walk through the framework first. Most proposals didn't survive Q1 (parallelizable). The team's overall architecture got simpler over time, not more complex.</p>
+<p>Second: the <em>one</em> multi-agent system the team did build during the quarter — a research-on-demand feature for the sales team — was deliberately multi-agent for the right reasons. Parallelizable across many target companies. High-value outcome. Clear subagent boundaries. Team capability for operations. It earned its complexity, and it shipped working.</p>
+<p>Sam's arc this module: <strong>the best architecture decision is often the one not to make.</strong> M2-M12 had been about layering disciplines onto a single agent. M13 was about resisting the urge to layer additional structural complexity on top of the disciplines that were already working. The customer support system Sam built was a <em>consolidation</em> — pulling specialization back into a single agent with better tools, better prompts, better memory — rather than an <em>expansion</em> into specialists.</p>
+<p>The book's first half ended with Sam shipping a single agent that worked. The book's second half started with Sam recognizing that "ship a system of agents" was usually the wrong follow-up question. The right question was: "what does this task actually need?"</p>
+<p>Friday afternoon. The customer support redesign was running. The team had pushed Sam's framework into the platform documentation. The decision document was getting cited in design reviews across the company. Sam closed the laptop. Three more modules in the multi-agent arc — but Sam now knew when those modules' patterns <em>applied</em> and when they <em>didn't</em>. That was the M13 deliverable.</p>
+</div>
+<hr />
+<h2>What's next</h2>
+<p>Module 14 covers the multi-agent architectures themselves: orchestrator-worker (the Anthropic research system pattern), peer collaboration (when multiple agents need to negotiate), hierarchical (lead → middle managers → workers), and swarm (many parallel agents with light coordination). Each architecture's strengths, costs, and the production patterns for making each work.</p>
+<p>Module 15 covers inter-agent communication: structured handoffs, shared memory patterns, voting and consensus mechanisms, and the emergent-behavior controls that distinguish working multi-agent systems from chaos.</p>
+<p>After M15, the architecture arc closes. M16-17 are operations (sagas for transactional safety, observability for production). M18 is the capstone.</p>
+<p>For now: take the framework from Section 5. Run it on a system you're building or considering. The honest answer to those five questions is the most important architectural decision you'll make. Most of the time the answer is single-agent. When it isn't, M14-M15 await — but only when the answer is genuinely "yes." Multi-agent earns its complexity; until then, M2-M12 is enough.</p>
+</body>
+</html>

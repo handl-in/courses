@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 17 Outline — Production: Evals, Observability, Cost, Failure</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 17 Outline — Production: Evals, Observability, Cost, Failure</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 17 — OUTLINE</div>
+<div class="module-title">Production: Evals, Observability, Cost, Failure</div>
+<div class="subtitle">Your agent is in production. Now what?<br>The honest answer: most of your work just started.</div>
+<div class="pages">Target length: ~38 pages</div>
+</div>
+<h2>What this module is</h2>
+<p>Production is where the abstractions from Modules 1-16 hit reality. This module covers the four operational concerns that turn a working prototype into a system you trust: evaluation (does it actually work? how do you know?), observability (what's happening right now? what happened in that failed trace?), cost management (the bill is sustainable?), and failure handling (what happens when things break in ways you didn't anticipate?).</p>
+<p>We cover: trajectory eval with LLM-as-judge, rubric-based eval, eval datasets mined from production traces, the OpenTelemetry GenAI semantic conventions that became the 2026 standard, the agent observability platforms and their honest trade-offs (LangSmith, Langfuse, Laminar, Arize Phoenix), distributed tracing across multi-agent systems, cost ceilings and runaway prevention, loop detection, drift monitoring, the Q1 2026 finding that <strong>40% of agentic AI projects will be canceled by end of 2027 due to reliability concerns</strong> (Gartner) — and what to do so yours isn't one of them. Plus a brief treatment of computer-use / GUI agents because the operational concerns there are uniquely brutal (OSWorld, AndroidWorld benchmarks).</p>
+<p>By the end the reader can: instrument an agent system to OpenTelemetry standards, build a useful eval harness from production traces, set cost ceilings that prevent runaway, and read a failed trace well enough to actually debug it.</p>
+<div class="hook">
+<p>"Your agent ships. The CEO loves the demo. Three weeks later, sales loops a customer ticket: 'agent gave me bad info on April 3rd around 2pm.' You go to find that conversation. Your logs are unstructured. Your trace IDs don't link to LLM calls. Cost is shown daily, not per-request. You spend two hours digging and find nothing. The customer leaves. The CEO asks why you can't reproduce it. This is the difference between a working agent and a production agent."</p>
+</div>
+<hr />
+<h2>Section 1 — The Production Reality Check (≈3 pages)</h2>
+<p>Gartner's 2025 finding: over 40% of agentic AI projects will be canceled by the end of 2027 due to reliability concerns and unclear objectives. Take that as a baseline expectation. Most production agent deployments are going to struggle. The question is which side of the line yours ends up on.</p>
+<p>Three operational properties separate the survivors from the cancellations:</p>
+<p><strong>1. Measurable.</strong> You can answer "is the agent working?" with numbers, not vibes. Specific quality metrics. Specific cost metrics. Specific latency metrics. Updated continuously, not after-the-fact.</p>
+<p><strong>2. Debuggable.</strong> When something breaks, you can find it. Trace IDs link agent decisions to LLM calls to tool invocations to outcomes. A failure surfaces with enough context to reproduce locally.</p>
+<p><strong>3. Bounded.</strong> Cost has ceilings. Loops have caps. Runaway scenarios have circuit breakers. The system fails safely, not catastrophically.</p>
+<p>This module is how you build all three. Some of it is platform selection. Most of it is architectural commitments you make in code.</p>
+<div class="pullquote">
+<p>Demos make agents look impressive. Production makes agents look fragile. The work between those two states isn't agent work — it's operations work that happens to apply to agents.</p>
+</div>
+<div class="nodumbq">
+<p><strong>Q: My agent works in testing. Why do I need all this?</strong></p>
+<p>Testing covers what you anticipated. Production reveals what you didn't. The gap between "works on test cases" and "works on the long tail of real user queries" is where most agent projects die. Observability and eval infrastructure exist to surface the gap quickly enough to close it.</p>
+<p><strong>Q: How much of this do I need on day one?</strong></p>
+<p>Trace IDs and cost tracking on day one. Eval harness and structured logging in week one. Drift monitoring and proper alerting by month one. The infrastructure compounds — early investment in tracing pays dividends every time you debug a production issue.</p>
+</div>
+<hr />
+<h2>Section 2 — Evaluation: How You Know It Works (≈6 pages)</h2>
+<p>Eval is the foundation. Without it, every other change is a guess.</p>
+<p><strong>Three layers of eval:</strong></p>
+<p><strong>Layer 1: Component evals.</strong> Individual prompts, individual tools, individual sub-agents. "Does the topic classifier correctly classify these 100 examples?" Easiest; least valuable for whole-system quality.</p>
+<p><strong>Layer 2: Trajectory evals.</strong> Whole agent runs on representative tasks. "Did the agent succeed at this multi-step booking flow?" Captures emergent issues component evals miss.</p>
+<p><strong>Layer 3: System-level evals.</strong> End-to-end on production-representative workloads. "Compared to last week, has overall quality changed?" The metric you actually optimize.</p>
+<p>Most teams overinvest in Layer 1 and underinvest in Layer 3. Layer 1 evals are easy to write and easy to run; they catch the bugs you'd catch in code review anyway. Layer 3 is the hard work — and it's where production reality lives.</p>
+<p><strong>LLM-as-judge for trajectory eval.</strong></p>
+<pre><code class="language-python">TRAJECTORY_JUDGE_PROMPT = &quot;&quot;&quot;You are evaluating an AI agent's trajectory on a task.
+
+TASK GIVEN TO AGENT:
+{task}
+
+AGENT'S TRAJECTORY (tools called, intermediate reasoning, final answer):
+{trajectory}
+
+EXPECTED OUTCOME (or rubric):
+{expected_or_rubric}
+
+Score the trajectory on these dimensions (1-5 each):
+- task_completion: did the agent achieve the goal?
+- efficiency: tools and steps were appropriate, not wasteful
+- correctness: factual claims were accurate, citations valid
+- safety: no policy violations, no harmful actions
+
+For each dimension below 5, explain why.
+
+Output JSON: {{&quot;task_completion&quot;: 1-5, &quot;efficiency&quot;: 1-5, &quot;correctness&quot;: 1-5, &quot;safety&quot;: 1-5,
+              &quot;explanations&quot;: {{&quot;&lt;dim&gt;&quot;: &quot;...&quot;}}, &quot;overall_pass&quot;: true/false}}&quot;&quot;&quot;
+</code></pre>
+<p>Caveats from the literature (IUI 2025 "No Free Labels: Limitations of LLM-as-a-Judge Without Human Grounding"):
+- Judge LLMs have biases — calibrate against human-labeled gold sets
+- Use a different model family from the agent under eval
+- For high-stakes domains (medical, legal, financial), LLM-as-judge has documented limitations — use human evaluators for the critical slice</p>
+<p><strong>Rubric-based eval.</strong> When the success criteria are well-defined, write the rubric explicitly. Score against the rubric, not against a vague "is this good?"</p>
+<pre><code class="language-python">SUPPORT_RUBRIC = &quot;&quot;&quot;A good support response has:
+1. Acknowledges the user's specific issue (not a generic &quot;sorry to hear that&quot;)
+2. Provides a concrete next action or answer
+3. Cites the relevant policy/doc when applicable
+4. Doesn't fabricate features or policies
+5. Doesn't promise things outside the agent's scope (refunds beyond limit, etc.)
+6. Length appropriate to question complexity
+
+Score each criterion 0/1 (binary). Total is sum / 6.&quot;&quot;&quot;
+</code></pre>
+<p>Binary rubric scores aggregate cleaner than 1-5 scales — you can talk about pass rates without arguing about what "3 vs 4" means.</p>
+<p><strong>Eval datasets from production traces.</strong> The single highest-leverage practice. Capture production traces, sample, label, accumulate into a growing eval set.</p>
+<pre><code class="language-python">async def sample_for_eval(trace: Trace, sample_rate: float = 0.01) -&gt; bool:
+    if random.random() &lt; sample_rate:
+        await eval_queue.add(trace)
+        return True
+    # Always sample failures and edge cases
+    if trace.had_error or trace.user_negative_feedback:
+        await eval_queue.add(trace)
+        return True
+    return False
+</code></pre>
+<p>Production traces beat synthetic eval cases for one reason: they reflect actual user distributions. Your eval improves as your traffic grows. Most production-monitoring platforms (LangSmith, Langfuse) have built-in workflows for promoting traces to eval datasets.</p>
+<div class="gotcha">
+<p>The single biggest eval anti-pattern: building an eval set early, then never updating it. Reality drifts; your eval doesn't. After 6 months, you're optimizing for problems users had in month 1 and missing the problems they have now. Treat eval datasets as living artifacts; rotate examples, add new ones from production, retire stale ones.</p>
+</div>
+<div class="brain">
+<p>You add a new feature to your agent. Your eval shows quality went up 3 points. Should you ship it?</p>
+<p>(Depends on what's in the eval set. If your eval is mostly the cases the new feature was designed for, the +3 is biased — you're optimizing the metric you measured, not quality. The right test is held-out evals (cases the feature designer didn't see) and A/B in production. +3 on the dev eval is a green light to A/B, not a green light to ship.)</p>
+</div>
+<hr />
+<h2>Section 3 — Observability: OpenTelemetry and the GenAI Conventions (≈5 pages)</h2>
+<p>The 2026 standard. As of 2026 the industry is converging on OpenTelemetry (OTEL) for AI agent telemetry — collect once, route to any backend, no vendor lock-in.</p>
+<p><strong>The OpenTelemetry GenAI semantic conventions.</strong> Standard attribute names for LLM application spans:</p>
+<pre><code class="language-python">from opentelemetry import trace
+from opentelemetry.semconv.ai import SpanAttributes  # GenAI semconv
+
+tracer = trace.get_tracer(__name__)
+
+with tracer.start_as_current_span(&quot;agent.llm_call&quot;) as span:
+    span.set_attribute(SpanAttributes.LLM_SYSTEM, &quot;anthropic&quot;)
+    span.set_attribute(SpanAttributes.LLM_REQUEST_MODEL, &quot;claude-sonnet-4-6&quot;)
+    span.set_attribute(SpanAttributes.LLM_REQUEST_MAX_TOKENS, 4096)
+    span.set_attribute(SpanAttributes.LLM_USAGE_PROMPT_TOKENS, prompt_tokens)
+    span.set_attribute(SpanAttributes.LLM_USAGE_COMPLETION_TOKENS, completion_tokens)
+    span.set_attribute(SpanAttributes.LLM_RESPONSE_FINISH_REASON, finish_reason)
+    # ... call API ...
+</code></pre>
+<p>These are <em>standard</em>. Switching backends (Langfuse → Arize, or Datadog → Langfuse) doesn't require changing your instrumentation.</p>
+<p><strong>What to instrument:</strong></p>
+<p>For each agent invocation:
+- A root span for the whole agent run, with attributes: agent name, query, user ID, session ID
+- A child span for each LLM call, with the GenAI attributes above
+- A child span for each tool call, with: tool name, input, output, duration, success/failure
+- A child span for each sub-agent invocation
+- A child span for each guardrail check
+- A child span for each saga step (if applicable, from Module 16)</p>
+<pre><code>agent.run (root)
+├── agent.plan (LLM call)
+├── agent.tool_call.web_search
+├── agent.tool_call.read_file
+├── agent.subagent.researcher_a (recursive)
+│   └── ... 
+├── agent.guardrail.input_check
+├── agent.synthesize (LLM call)
+└── agent.guardrail.output_check
+</code></pre>
+<p>The trace tree should mirror the agent's logical structure. Done well, you can look at a trace and immediately see where time and tokens went.</p>
+<p><strong>Trace context propagation across agent boundaries.</strong> A subtle but critical detail. When agent A spawns agent B (via tool call, sub-agent, or message), the trace context must propagate or B's spans become orphans.</p>
+<pre><code class="language-python">async def call_subagent(self, subagent: Agent, query: str):
+    # Capture current trace context
+    ctx = trace.get_current_span().get_span_context()
+    # Pass it explicitly or via baggage
+    return await subagent.run(query, parent_context=ctx)
+</code></pre>
+<p>For multi-agent systems with concurrent sub-agents, this is non-negotiable. Every observability platform requires it; the agent code has to do it.</p>
+<p><strong>Common GenAI semconv attributes</strong> (verify exact names from OpenTelemetry docs):
+- <code>gen_ai.system</code> — the model provider
+- <code>gen_ai.request.model</code> — model identifier
+- <code>gen_ai.usage.input_tokens</code>, <code>gen_ai.usage.output_tokens</code> — token counts
+- <code>gen_ai.response.finish_reason</code> — why generation stopped
+- <code>gen_ai.request.temperature</code>, <code>gen_ai.request.top_p</code> — sampling params</p>
+<div class="postmortem">
+<p><strong>The Trace That Didn't Connect</strong></p>
+<p>A team had OpenTelemetry instrumentation. Spans were being collected. The Langfuse dashboard showed traces. Things looked fine.</p>
+<p>Then a production incident: an agent was claiming to call a tool, but the tool call wasn't appearing in traces. Investigation: the tool call lived in a different async context, and trace context wasn't propagated. The tool call was happening — there was just no trace evidence. Two hours of debugging on a "missing tool call" that was actually a missing trace span.</p>
+<p>Fix: explicit context propagation in the agent's tool-call dispatcher. Every async tool call now wraps in a span tied to the parent agent span. Identical issue surfaces immediately in traces.</p>
+<p><strong>Lesson:</strong> missing trace context creates phantom problems. Test your tracing on async paths and sub-agent boundaries. The places where context is most likely to be lost are the places where bugs are hardest to debug without traces.</p>
+</div>
+<hr />
+<h2>Section 4 — Choosing an Observability Platform (≈5 pages)</h2>
+<p>The honest landscape. We covered hints in earlier modules; this is the consolidated treatment.</p>
+<p><strong>LangSmith (LangChain).</strong> Closed source. Tightest integration with LangChain/LangGraph. LangGraph Studio is genuinely the best agent IDE in the field — visualize the graph, set breakpoints, modify state mid-run, resume from a checkpoint. Near-zero overhead in benchmarks. OpenTelemetry support added in March 2026. Pricing: developer free with 5k base traces/month; Plus $39/seat/month plus $0.50 per 1k traces.</p>
+<p><strong>Langfuse.</strong> MIT-licensed open source. Self-hostable on Postgres + ClickHouse. Framework-agnostic via OpenTelemetry. Strongest open-source path. Cloud tier from $59+/seat. ~15% overhead in some benchmarks (decoupled integration). Used at scale (Canva is a public reference). Free tier: 50k observations/month.</p>
+<p><strong>Laminar.</strong> Apache 2.0 open source. OpenTelemetry-native. Built specifically for long-running agents — transcript view, agent rollout debugger, browser-agent session replay, SQL over traces. Helm chart for one-command self-host. The agent-debugging-focused alternative.</p>
+<p><strong>Arize Phoenix.</strong> Elastic 2.0 license. OpenTelemetry-native via OpenInference. Strong on eval rigor; fits notebook and eval-heavy workflows.</p>
+<p><strong>Helicone.</strong> Open-source proxy. Simplest install (one URL change). Trade-off: shallower depth — traces at the API call level, not the agent execution level. Right for "I just need cost tracking and basic request logging."</p>
+<p><strong>Braintrust.</strong> Closed source, eval-first. Strong regression harness. Tracing more bolted-on than primary.</p>
+<p><strong>OpenLLMetry / Traceloop.</strong> Vendor-neutral OpenTelemetry instrumentation SDK. Most other backends (Laminar, Langfuse, Phoenix, LangSmith) ingest its spans. The safest instrumentation choice for portability.</p>
+<p><strong>The pairing pattern:</strong>
+- LLM observability platform (one of the above) for agent traces, eval, LLM-specific metrics
+- Whole-stack APM (Datadog, Honeycomb, New Relic) for host metrics, app errors, deployment health</p>
+<p>These cover different layers; production deployments need both.</p>
+<p><strong>A decision matrix:</strong></p>
+<table>
+<thead>
+<tr>
+<th>If you need...</th>
+<th>Pick...</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Deep LangChain/LangGraph integration</td>
+<td>LangSmith</td>
+</tr>
+<tr>
+<td>Open-source self-host</td>
+<td>Langfuse (full-featured) or Laminar (agent-debug-focused)</td>
+</tr>
+<tr>
+<td>Eval rigor primary</td>
+<td>Arize Phoenix or Braintrust</td>
+</tr>
+<tr>
+<td>Just cost tracking on raw API calls</td>
+<td>Helicone</td>
+</tr>
+<tr>
+<td>Vendor-neutral instrumentation</td>
+<td>OpenLLMetry, point at any backend</td>
+</tr>
+<tr>
+<td>Compliance / data residency</td>
+<td>Self-hosted Langfuse or Laminar</td>
+</tr>
+<tr>
+<td>Already on Datadog / New Relic</td>
+<td>Their LLM observability modules + add agent tracing</td>
+</tr>
+</tbody>
+</table>
+<p>The honest March 2026 retro from a stack assessment: "If you're on LangGraph, LangSmith. If framework-agnostic, Langfuse. If eval rigor is the priority, Arize Phoenix. If you need agent-specific debugging in open source, Laminar."</p>
+<div class="brain">
+<p>You're greenfield. Pick LangSmith or Langfuse?</p>
+<p>(Both are reasonable. LangSmith if you're committing to LangChain/LangGraph and want the deepest framework integration. Langfuse if you want framework freedom or self-host. Laminar if your primary use case is debugging long-running agents specifically. The "right" choice is the one that matches your other architectural commitments — observability is a multi-year choice; pick on stack fit, not feature checklist.)</p>
+</div>
+<hr />
+<h2>Section 5 — Cost Management (≈4 pages)</h2>
+<p>Agents can run away with cost in ways that are hard to predict from prototype usage.</p>
+<p><strong>The four cost runaway patterns:</strong></p>
+<p><strong>1. Token escalation.</strong> Long-running agents accumulate context. By turn 30, each turn costs 10× turn 1. Module 8's compression and Module 7's context engineering address this — the operational concern is monitoring it.</p>
+<p><strong>2. Sub-agent cascades.</strong> Module 7's postmortem covered this. An agent spawns an agent that spawns an agent. Each layer adds cost. Without depth caps, runaway is plausible.</p>
+<p><strong>3. Retry loops.</strong> Agent retries a failing tool 50 times before giving up. Failed tools cost as much as successful ones (input tokens are charged regardless).</p>
+<p><strong>4. Multi-agent token multiplier.</strong> Module 13's 15× multiplier. Multi-agent systems are 15× more expensive per task than single-agent baseline. If a single-agent task was acceptably-priced, the multi-agent version may not be.</p>
+<p><strong>Operational defenses:</strong></p>
+<p><strong>Per-request cost ceiling.</strong></p>
+<pre><code class="language-python">class CostLimiter:
+    def __init__(self, max_cost_usd: float):
+        self.max_cost_usd = max_cost_usd
+        self.accumulated = 0.0
+
+    def add(self, prompt_tokens: int, completion_tokens: int, model: str):
+        cost = self._compute_cost(prompt_tokens, completion_tokens, model)
+        self.accumulated += cost
+        if self.accumulated &gt; self.max_cost_usd:
+            raise CostLimitExceeded(self.accumulated, self.max_cost_usd)
+
+    def _compute_cost(self, p, c, model):
+        rates = MODEL_RATES[model]  # current pricing per 1M tokens
+        return (p / 1_000_000) * rates.input + (c / 1_000_000) * rates.output
+</code></pre>
+<p>Wire this into every agent invocation. Surface excessive cost as a first-class error.</p>
+<p><strong>Per-user / per-tier daily budgets.</strong> Track cost by user, by feature, by tier. When a user crosses a threshold, throttle or escalate. Prevents one user's edge case from eating the budget.</p>
+<p><strong>Loop detection.</strong></p>
+<pre><code class="language-python">class LoopDetector:
+    def __init__(self, max_repeats: int = 3):
+        self.action_history: list[str] = []
+        self.max_repeats = max_repeats
+
+    def check(self, action: dict) -&gt; bool:
+        sig = self._signature(action)  # hash of (tool_name, args)
+        recent = self.action_history[-self.max_repeats * 2:]
+        if recent.count(sig) &gt;= self.max_repeats:
+            return True  # loop detected
+        self.action_history.append(sig)
+        return False
+</code></pre>
+<p>Same tool with same args 3+ times in recent history is almost always a bug (the tool is failing in a way the model can't recover from). Detect; halt; surface as an error.</p>
+<p><strong>Budget alerting.</strong> Daily/weekly cost reports. Alerts on &gt;X% deviation from baseline. Drift in cost is one of the earliest signals of agent regression.</p>
+<p><strong>The 80/20 of cost optimization</strong> (revisiting Module 6): caching matches, model routing, structured output to avoid retries, prompt caching for stable prefixes. These compound — each is 10-30%; together they're 50-70%.</p>
+<div class="postmortem">
+<p><strong>The Agent That Spent $4,200 in One Hour</strong></p>
+<p>A team deployed an agent with no per-request cost ceiling. A user query triggered a sub-agent cascade (Module 7 pattern). The cascade hit no caps. By the time anyone noticed (cost dashboard refreshed every 4 hours), the agent had spent $4,200 on a single query.</p>
+<p>Fix: per-request ceiling at $5. Per-user daily ceiling at $50. Pager threshold at 5× normal cost in any rolling hour. Total time to implement: half a day. Total time to wish they'd implemented sooner: 4 hours.</p>
+<p><strong>Lesson:</strong> cost ceilings cost nothing to implement and protect you from incidents that cost real money. Add them on day one.</p>
+</div>
+<hr />
+<h2>Section 6 — Failure Modes and Reading Failed Traces (≈5 pages)</h2>
+<p>What goes wrong in production. We catalog the common failure modes; we walk through reading a failed trace.</p>
+<p><strong>The agent failure taxonomy:</strong></p>
+<ol>
+<li><strong>Tool failures.</strong> External API down, rate-limited, returned unexpected schema, returned valid but wrong data.</li>
+<li><strong>Model failures.</strong> Refusals on unexpected inputs, schema violations on structured output, runaway lengths, drift in tone.</li>
+<li><strong>Loop failures.</strong> Same action repeated, deadlock between agents, no progress toward goal.</li>
+<li><strong>Coordination failures (multi-agent).</strong> Sub-agent failed silently; supervisor synthesized broken result; worker contradicted worker.</li>
+<li><strong>Context failures.</strong> Compression dropped a critical fact; relevant memory not retrieved; context window overflowed.</li>
+<li><strong>Guardrail failures.</strong> False positives blocking legitimate queries; false negatives letting through bad ones.</li>
+<li><strong>Cost failures.</strong> Runaway token use; sub-agent cascade; retry loop.</li>
+<li><strong>Validation failures (sagas).</strong> Step claimed success; world state disagrees; compensation triggers.</li>
+</ol>
+<p><strong>Reading a failed trace — a worked example.</strong> We provide a sample failed trace and walk through it.</p>
+<pre><code>agent.run [DURATION 45.3s, COST $2.34, STATUS error]
+├── agent.plan [DURATION 1.1s, COST $0.04]  ← OK
+├── agent.tool_call.search [DURATION 0.8s, STATUS ok]  ← OK
+├── agent.tool_call.read_doc [DURATION 30.1s, STATUS timeout]  ← problem here
+│   └── http.fetch [DURATION 30.0s, STATUS timeout, url=...]  ← root cause
+├── agent.tool_call.read_doc (retry 1) [DURATION 30.0s, STATUS timeout]
+├── agent.tool_call.read_doc (retry 2) [DURATION 30.0s, STATUS timeout]
+└── agent.synthesize [DURATION ?s, STATUS not_reached]
+</code></pre>
+<p>The trace immediately reveals: tool retries on a 30-second timeout, eating most of the wall-clock time. Three retries × 30s × cost-per-retry. Whether the retries help is a separate question, but the failure mode is now obvious.</p>
+<p><strong>Habits for reading traces:</strong></p>
+<ul>
+<li>Look at the full duration first. Where did time go?</li>
+<li>Look at the total cost. Where did tokens go?</li>
+<li>Find the first error. Errors propagate; the first one is usually the cause.</li>
+<li>Check for loops. Same action 3+ times = loop.</li>
+<li>Check trace context propagation. Missing spans look like the agent did less than it did.</li>
+</ul>
+<p><strong>Drift detection from traces.</strong> Sample production traces continuously. Compare distributions over time:
+- Average tokens per call (rising = context growing or context engineering broken)
+- Tool call rates per task (changing = agent behavior shifted)
+- Tool failure rates (rising = upstream service degrading)
+- Refusal rates (rising = safety classifier triggered more, or input distribution shifted)
+- Latency distributions (tail growing = something slow showing up more)</p>
+<p>When any of these drifts beyond threshold, alert. Most production agent regressions show up in trace stats before they show up in customer complaints.</p>
+<div class="code-exercise">
+<p><strong>Exercise 17.1 — Instrument the agent with full observability.</strong></p>
+<p>Take the agent you've built across Modules 2-16. Add OpenTelemetry instrumentation following GenAI semantic conventions. Wire a cost limiter. Wire a loop detector. Run a failing scenario (broken tool, runaway loop) and verify the failure surfaces in traces immediately. Then wire eval sampling — 1% of production traces flow into your eval queue.</p>
+<p>Bonus: deploy to one of the observability platforms (Langfuse if self-hosting; LangSmith if you're on LangGraph) and screenshot a real failed trace from your test runs.</p>
+</div>
+<hr />
+<h2>Section 7 — Computer-Use and GUI Agents: Brief Treatment (≈3 pages)</h2>
+<p>Computer-use agents (Anthropic Computer Use, OpenAI's computer-using agents, GUI agents) are operationally extreme. We give them a focused but brief treatment.</p>
+<p><strong>Why they're operationally hard:</strong>
+- Action surface is unbounded (anywhere on screen)
+- Failures are subtle (clicked wrong place; typed in wrong field; agent thinks it succeeded)
+- Latency is high (each screenshot + action is multi-second)
+- Costs are high (vision models for screenshot understanding)
+- Recovery is hard (agent navigated to wrong place — how does it get back?)</p>
+<p><strong>Benchmarks worth knowing:</strong>
+- <strong>OSWorld</strong> — 369 real-world computer tasks across OS, web, productivity. Long-horizon evaluation of computer-use agents in real environments.
+- <strong>AndroidWorld</strong> — Android-specific GUI agent benchmark.</p>
+<p>State-of-the-art on OSWorld remains well below human performance as of 2026 — these are hard tasks. Don't deploy computer-use agents on consequential workflows without strong human oversight.</p>
+<p><strong>Operational patterns specific to computer-use:</strong></p>
+<ul>
+<li><strong>Screenshot diffing for verification.</strong> After an action, screenshot. Diff against expected state. Halt on unexpected.</li>
+<li><strong>Stricter loop detection.</strong> Click loops are common; cap at 2-3 same-action repeats.</li>
+<li><strong>Human-in-the-loop for any irreversible action.</strong> Sending an email, making a purchase, deleting a file — all should require explicit human approval until you have very strong evidence the agent is reliable on the specific task.</li>
+<li><strong>Domain restriction.</strong> Agent can only operate on whitelisted apps/sites. Cross-domain navigation requires re-auth and human approval.</li>
+</ul>
+<p><strong>The honest framing:</strong> computer-use agents are still a research-to-pilot transition in 2026. They work well in narrow pre-validated workflows. They fail in unpredictable ways outside those. Treat operational deployment as experimental; instrument heavily; expect surprises.</p>
+<hr />
+<h2>Section 8 — What's Next (≈1 page)</h2>
+<p>Module 18 (capstone) builds a real multi-agent research system end to end, applying everything from Modules 1-17. The eval/observability/cost/failure infrastructure from this module shows up there as production-ready instrumentation, not as an afterthought.</p>
+<p>After the capstone, the reader has: the conceptual model (Modules 1-3), the building blocks (4-9), the reliability layer (10-12), the multi-agent layer (13-15), the transactional layer (16), the production layer (17), and a working artifact (18). That's the book.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>2 No Dumb Questions</li>
+<li>2 Brain Power prompts</li>
+<li>2 Production Postmortems (the disconnected trace, the $4,200 hour)</li>
+<li>1 Watch It! / Gotcha block</li>
+<li>1 Code Exercise (full observability instrumentation)</li>
+<li>2 Pullquotes</li>
+<li>1 trace tree diagram</li>
+<li>1 platform-decision table</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam, having shipped a working multi-agent system through Modules 13-16, gets the question from the head of engineering: "how do we know it's working?" Sam realizes the eval infrastructure is essentially missing. Spends two weeks adding OpenTelemetry instrumentation, an eval harness fed by production traces, cost ceilings, loop detection, drift monitoring. Catches three issues no one had noticed: a sub-agent that was failing silently 8% of the time, a cost outlier from a customer's adversarial query, a tool call rate drift on the recommendation feature. Each fix would have been impossible to find without the instrumentation. Sam's arc this module: <strong>observability is non-negotiable; the agent works as well as you can prove it works, no better.</strong></p>
+</div>
+<div class="page-budget">
+<p>S1 (Production reality check): 3p
+S2 (Evaluation): 6p
+S3 (OpenTelemetry/GenAI semconv): 5p
+S4 (Choosing a platform): 5p
+S5 (Cost management): 4p
+S6 (Failure modes / reading traces): 5p
+S7 (Computer-use brief treatment): 3p
+S8 (Next): 1p
+Recurring elements: 6p
+TOTAL: ~38 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting:</strong></p>
+<ul>
+<li>Gartner 2025 finding: 40% of agentic AI projects canceled by end of 2027 — verify exact figure and source</li>
+<li>IUI 2025 "No Free Labels: Limitations of LLM-as-a-Judge Without Human Grounding" — for the eval calibration section</li>
+<li>OpenTelemetry GenAI semantic conventions — current attribute names and stability status</li>
+<li>LangSmith pricing as of drafting (currently $39/seat/month Plus + $0.50/1k traces)</li>
+<li>Langfuse open-source license (MIT) and self-host requirements (Postgres + ClickHouse)</li>
+<li>Laminar license (Apache 2.0)</li>
+<li>Arize Phoenix license (Elastic 2.0)</li>
+<li>Observability platform overhead benchmarks (LangSmith near-zero, Langfuse ~15% per AImultiple Mar 2026 analysis) — verify</li>
+<li>OSWorld benchmark — current SOTA scores</li>
+<li>AndroidWorld benchmark — current SOTA scores</li>
+<li>Anthropic Computer Use latest documentation</li>
+<li>AutoGen maintenance status (per the 2026 articles, "effectively maintenance-mode" — verify language)</li>
+<li>Model pricing as of drafting (Anthropic Opus 4.7, Sonnet 4.6, Haiku 4.5 rates)</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- The three eval layers (component, trajectory, system)
+- LLM-as-judge methodology and its caveats
+- The four cost runaway patterns
+- The agent failure taxonomy
+- Trace reading habits</p>
+<p><strong>Cross-references:</strong>
+- Module 6 — model routing and caching for cost
+- Module 7 — context engineering for token economics
+- Module 8 — compression for long sessions
+- Module 11 — reflection patterns evaluable through trajectory eval
+- Module 12 — guardrails feed observability with decision logs
+- Module 13/14 — multi-agent observability needs are a superset of single-agent
+- Module 16 — saga state in traces</p>
+</div>
+<div class="bullet-points">
+<h3>Module 17 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>Production agents need three properties: measurable, debuggable, bounded</li>
+<li>Eval has three layers (component, trajectory, system); most teams underinvest in system-level</li>
+<li>Production traces beat synthetic eval cases — sample 1%, label, accumulate</li>
+<li>OpenTelemetry GenAI semantic conventions are the 2026 standard for telemetry</li>
+<li>Pick observability platforms by stack fit, not feature checklist; pair LLM observability with whole-stack APM</li>
+<li>Cost defenses are non-optional: per-request ceilings, per-user daily budgets, loop detection, alerting</li>
+<li>Read failed traces by total duration, total cost, first error, then check loops and trace context</li>
+<li>Computer-use agents are operationally extreme; treat as experimental; instrument heavily</li>
+</ul>
+</div>
+</body>
+</html>

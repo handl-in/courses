@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 10 — Hallucinations</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 10 — Hallucinations</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 10</div>
+<div class="module-title">Hallucinations</div>
+<div class="subtitle">The model is calibrated to be helpful. Helpfulness, in the absence of grounding, becomes confident invention.<br>Agents make this worse — and also offer the best tools for fixing it.</div>
+<div class="pages">~38 pages · why agents hallucinate, why agents catch it, what to do</div>
+</div>
+<div class="hook">
+<p>Sam was reviewing the customer-success bot's traces — the one that had just shipped with cross-session memory in Module 9. The metrics looked great. Repeat-customer NPS up 14 points. "As I have explained" messages way down. Memory operations clean.</p>
+<p>Then Sam saw it.</p>
+<p>Customer #1142, the original problem case. Ticket #4. The agent had read the customer's profile.md (correctly: <em>"plan: enterprise (effective ~2026-06-01, prior plan: pro)"</em>) and timeline.md (correctly: <em>"2026-05-15: customer announced upcoming upgrade to Enterprise plan"</em>). All the facts in memory were accurate.</p>
+<p>The agent's response opened with: <em>"I see you've been with us since your Series B funding round, when you upgraded to Enterprise to support your growth..."</em></p>
+<p>There was no Series B. The customer's funding history wasn't in memory. The customer hadn't mentioned it in any prior ticket. The agent had taken the upgrade timing — May 2026, with no other context — and <em>decorated</em> it with a plausible-sounding business event. Series B was statistically the kind of thing that happens to companies upgrading to Enterprise. The model had pattern-matched and produced a plausible sentence that happened to be wholly fabricated.</p>
+<p>The customer hadn't replied yet. Sam didn't know if they'd notice. Sam hoped they would notice — because the <em>next</em> time, the fabrication might be about something that mattered: a contract term, a regulatory requirement, a compliance constraint.</p>
+<p>Memory had grounded the basic fact (when they upgraded). The model had added decoration the user would experience as a confident assertion. The grounding had reduced <em>some</em> hallucinations. It had not eliminated them. What was needed wasn't more memory — it was a different discipline entirely.</p>
+<p>Sam wrote the line: <em>"the model is helpful. helpfulness without grounding becomes invention."</em></p>
+</div>
+<hr />
+<h2>What this module is</h2>
+<p>Modules 7–9 made Sam's agents context-disciplined. Tight system prompts. Clean tool results. Just-in-time retrieval. Within-trajectory compaction. Cross-session memory. By the end of M9, the customer-success bot had everything it needed — except the discipline of distinguishing what it <em>knew</em> from what it was <em>generating</em>.</p>
+<p>This module is about that distinction. Where hallucinations come from, why agent hallucinations are a different class than chat hallucinations, and what to do about them — at the prompt layer, the architecture layer, and the verification layer.</p>
+<p>The structure:</p>
+<ul>
+<li><strong>Section 1</strong> — what hallucination is and why models do it (the helpfulness bias)</li>
+<li><strong>Section 2</strong> — the categories of hallucination you'll see in production</li>
+<li><strong>Section 3</strong> — agent-specific failure modes (memory decoration, tool result confabulation, action hallucination, citation fabrication)</li>
+<li><strong>Section 4</strong> — Anthropic's canonical techniques: the "I don't know" out, direct quotes, citations, chain-of-thought</li>
+<li><strong>Section 5</strong> — structural patterns: grounding-first prompts, retrieval shape, output structure</li>
+<li><strong>Section 6</strong> — verification: post-generation checks, entity verification, self-RAG critics</li>
+<li><strong>Section 7</strong> — the calibration problem: refusal vs helpfulness, when "I don't know" is the wrong answer too</li>
+<li><strong>Section 8</strong> — putting it together: the customer-success bot, post-fix</li>
+<li><strong>Section 9</strong> — the framework</li>
+</ul>
+<p>By the end of this module:</p>
+<ul>
+<li>You'll recognize the hallucination categories that apply to your agent specifically (chat agents, tool-using agents, memory-enabled agents each have different patterns)</li>
+<li>You'll have implemented at least three of Anthropic's documented techniques in working code</li>
+<li>You'll know when grounding is enough and when verification is required</li>
+<li>You'll understand the trade-off between aggressive refusal and useful helpfulness — and how to land on the right side for your domain</li>
+</ul>
+<p>This is the start of the reliability arc. M11 covers reflection and self-correction. M12 covers guardrails (input filtering, output policies). Together, M10–M12 turn Sam's agents from "well-architected" into "well-architected and trustworthy under adversarial or edge-case conditions."</p>
+<div class="pullquote">
+<p>A 2025 Stanford analysis put hallucination rates between 22% and 94% depending on task and grounding. OpenAI's evals report rates dropping below 2% in retrieval-grounded tasks. The range is the story: hallucinations are not an inevitable model property — they're a function of how you ask, what you ground in, and what you verify.</p>
+</div>
+<hr />
+<h2>Section 1 — What Hallucination Is, and Why</h2>
+<p>The Lakera 2026 definition is clean: <em>an AI hallucination occurs when a large language model produces output that looks plausible but is factually wrong or unsupported by evidence.</em></p>
+<p>Two parts of that definition matter. <strong>Plausible</strong> — the output passes a fluency check; nothing about the language flags a problem. <strong>Unsupported by evidence</strong> — the claim isn't grounded in anything the model legitimately had access to.</p>
+<p>The mechanism is well understood at this point. Language models are trained to predict tokens that are <em>likely</em> given the preceding context. Likely is not the same as <em>true</em>. When the model has strong evidence (grounded retrieval, verbatim source, well-formed prior turn), likely tracks true closely. When the model lacks evidence, likely tracks <em>what would sound coherent</em> — which often means making something up.</p>
+<p>This isn't a bug in the architecture. It's a consequence of the training objective combined with deployment in a setting where the model is expected to produce an answer.</p>
+<p>Anthropic's framing in their official "Reduce hallucinations" doc is direct: <em>Claude tries to be helpful. It interprets every question as something it should answer, even when it genuinely lacks the information to do so. This helpfulness bias is the root cause of a huge percentage of hallucinations.</em></p>
+<p>The model could say "I don't know" but doesn't, because it was rewarded during training for producing useful-looking output. Producing "I don't know" feels like a failure to help; producing a confident-sounding answer feels like succeeding. The training pressure pushes toward confident output even when confidence isn't warranted.</p>
+<p>That's why the <em>single most effective</em> mitigation — the one Anthropic puts first in their docs — is giving the model an explicit out. We'll get to that in Section 4.</p>
+<h3>Three things hallucination is <em>not</em></h3>
+<p>Worth disentangling before we go further:</p>
+<p><strong>Hallucination is not lying.</strong> A model that hallucinates isn't trying to deceive — it doesn't have intent in that sense. The February 2026 Disentangling Deception and Hallucination paper specifically distinguishes the two: hallucination is "knowledge gap filled with fabrication"; deception is "knowledge present but expressed misleadingly." Different mechanisms, different fixes.</p>
+<p><strong>Hallucination is not a confidence problem.</strong> Models that produce hallucinated output often report high confidence on it. The internal probability distribution doesn't reflect the gap between what's grounded and what's invented. You can't ask the model "are you sure?" and expect a useful answer.</p>
+<p><strong>Hallucination is not solved by bigger models.</strong> Frontier models hallucinate less than smaller ones, but the gap narrows as benchmarks saturate. Stanford's 2026 AI Index reports the top 5 models clustering between 10–20% hallucination rates on open-ended benchmarks; the gap to a 100B-parameter open-source model is 5–10 points, not 50. Throwing more capability at the problem helps but doesn't fix it.</p>
+<p>The fix is at the <em>system</em> level: prompt structure, grounding sources, verification gates, refusal calibration. Section 4 onward.</p>
+<div class="nodumbq">
+<p><strong>Q: If frontier models hallucinate 10–20% of the time, how is anyone shipping anything?</strong></p>
+<p>The numbers cited are on <em>open-ended generation</em> benchmarks where the model has to produce content from training-data knowledge. With proper grounding (RAG over an authoritative corpus, structured tool results, well-curated context), production rates drop dramatically. OpenAI's own evals report sub-2% rates on retrieval-grounded tasks — a 5–10× improvement. The teams shipping reliably are the ones doing the grounding work. The teams shipping unreliably are the ones treating the model as a knowledge engine instead of a reasoning engine.</p>
+</div>
+<hr />
+<h2>Section 2 — Categories of Hallucination in Production</h2>
+<p>A taxonomy that maps to the fixes in later sections:</p>
+<p><strong>1. Factual fabrication.</strong> The model invents a fact: a date, a number, a name, an event. Sam's "Series B funding round" is this category. The model produced a sentence that sounded right; the specific entity in it didn't exist.</p>
+<p><strong>2. Citation fabrication.</strong> A subtype of factual fabrication, but specifically about <em>sources</em>. The model invents references — paper titles, URLs, court cases, expert quotes — that don't exist. The Mata v. Avianca case in 2023 is the canonical example: a lawyer submitted a brief with six fabricated legal citations generated by ChatGPT. Adversarial benchmarks show citation-fabrication rates as high as 94%; this is not a rare edge case.</p>
+<p><strong>3. Misattribution.</strong> The model attributes a real fact to the wrong source. The fact is true; the source it cites is real; but the source doesn't actually contain the fact. Worse than fabrication in some ways — it passes simple "does the cited source exist?" checks but fails substantive verification.</p>
+<p><strong>4. Inferential overreach.</strong> The model takes grounded facts and extrapolates to claims that don't follow. The customer's plan tier is grounded; the agent's claim that they upgraded "for compliance reasons" extends beyond what was given. This is where most production hallucinations actually live — it's not pure invention, it's invention <em>on top of</em> a small kernel of truth.</p>
+<p><strong>5. Memory decoration.</strong> A specific subtype of inferential overreach for agents with memory. The agent reads a true fact from memory and embellishes when surfacing it. Sam's bot did this: the upgrade fact was real, the Series B framing was decoration. This is sneaky because the agent is technically grounded — it's just decorating beyond the grounding.</p>
+<p><strong>6. Tool result confabulation.</strong> The agent receives a tool result and reports something <em>adjacent to</em> but not actually in the result. The tool returned "user is in Plan B"; the agent says "user is in Plan B Enterprise tier" — the "Enterprise tier" wasn't in the result. Common when tool results are noisy or partial.</p>
+<p><strong>7. Action hallucination.</strong> Agent-specific: the agent reports an action was taken that wasn't, or describes the result of an action that didn't happen. "I've sent the email to the customer" — when no email tool was called, no email exists. Often shows up when agents hit safety refusals or tool failures and recover with confabulation.</p>
+<p><strong>8. Schema confabulation.</strong> The agent invents structured fields that weren't in the source. Asked to extract a JSON record from a document, it adds plausible-looking values for fields the document didn't contain. Common in extraction pipelines where the schema is constraining but the source is sparse.</p>
+<p>For each of these, there's a different mitigation. The framework in Sections 4–7 will address all of them, but the priorities differ by which categories your specific agent encounters most.</p>
+<div class="brain">
+<p>Sam's customer-success bot in the cold open hallucinated. Which category was it? What about a coding agent that says "I've fixed the bug" when the test still fails? What about a research agent citing "Smith et al. 2023" for a real claim, but the actual paper that supports the claim is by Jones et al?</p>
+<p>(Sam's bot: memory decoration — true fact embellished. The coding agent: action hallucination — agent reports an outcome that didn't happen. The research agent: misattribution — fact correct, source wrong. Three different categories, three different fixes. Section 5 will cover the structural patterns; Section 6 the verification.)</p>
+</div>
+<hr />
+<h2>Section 3 — Why Agent Hallucinations Are Different</h2>
+<p>Chat models hallucinate. We've known this since GPT-3. What's changed in the agent era is that the failure surface has <em>expanded</em>: agents have tools, memory, and trajectories that each introduce new opportunities for invention.</p>
+<p>The HEAL paper (June 2025) makes the framing explicit for embodied agents: <em>"hallucinations in embodied agents stem from a failure to ground user-provided task instructions in the observed physical environment."</em> The example: a robot told to "put the knives in the dishwasher" when there is no dishwasher; the agent hallucinates a dishwasher into the plan and tries to "press buttons on a bare wall." The hallucination is no longer a textual error — it's an action with physical consequences.</p>
+<p>For non-embodied agents, the principle generalizes: agent hallucinations stem from a failure to ground reasoning in the <em>actual state</em> of the system. That state includes:</p>
+<p><strong>1. The state of memory.</strong> What the agent has stored, what's true vs decorated. (Sam's bot.)</p>
+<p><strong>2. The state of tool results.</strong> What was returned, what wasn't. (Tool result confabulation.)</p>
+<p><strong>3. The state of past actions.</strong> What's been done, what's been attempted, what failed. (Action hallucination.)</p>
+<p><strong>4. The state of the world the agent is acting on.</strong> The customer's account, the codebase, the database, whatever the agent is interacting with.</p>
+<p>Each of these is a layer where the agent can drift. And each compounds: an agent that confabulates a tool result on turn 3 and then reasons over that confabulation on turn 12 has built a tower of inference on a fabricated foundation. The downstream output looks coherent; the foundation is rotten.</p>
+<h3>The compounding problem</h3>
+<p>A specific way agent hallucinations escalate:</p>
+<pre><code>Turn 3: Tool returns {&quot;plan&quot;: &quot;pro&quot;}
+Turn 3 agent: &quot;User is on Pro plan. They might benefit from Enterprise features.&quot;
+[Agent's own statement enters the conversation history.]
+
+Turn 7: Agent reads earlier turns.
+Turn 7 agent: &quot;Since the user expressed interest in Enterprise features, let me 
+check pricing.&quot; [Confabulation: user expressed no such interest. The agent
+inferred it on turn 3 as a possibility, then read it back as a fact.]
+
+Turn 12: Agent's plan now treats Enterprise interest as established.
+Turn 12 agent: &quot;I'll prepare the Enterprise upgrade summary. The user is
+ready to convert.&quot;
+
+[Compounding hallucination. Each turn was locally plausible. The end state
+is wholly disconnected from the actual user state.]
+</code></pre>
+<p>This pattern — the agent's <em>own statements</em> re-entering its context as if they were facts — is one of the most insidious sources of agent hallucination. Module 8's compaction and Module 11's reflection both help; the structural fix in this module is to keep agent inferences clearly separated from grounded facts (Section 5).</p>
+<h3>Why agents also offer the best tools for catching hallucinations</h3>
+<p>The flip side: agents have something chat models don't — the ability to <em>check</em>. An agent can call a verification tool, look up a fact, query memory, run a test. The same architectural feature that creates new failure surfaces also creates new mitigation surfaces.</p>
+<p>Section 6's verification patterns lean on this. A chat model can be asked to self-critique its output (Anthropic's Best-of-N technique), but that's reasoning over the same context that produced the error. An agent can do something better: actually go check.</p>
+<p>That's the productive framing for the rest of the module. Agent hallucinations are <em>worse</em> in their consequences (they cause actions, not just text) but <em>more tractable</em> in their fixes (you can verify in ways chat can't).</p>
+<div class="pullquote">
+<p>The same architectural feature that creates new failure modes — agents have tools, memory, trajectories — also creates new mitigation surfaces. The agent that can hallucinate a fact can also call the tool that disproves it.</p>
+</div>
+<hr />
+<h2>Section 4 — Anthropic's Canonical Techniques</h2>
+<p>Six techniques from Anthropic's official "Reduce hallucinations" documentation. Each is straightforward to apply; the combination is what produces meaningful reduction.</p>
+<h3>Technique 1: Allow "I don't know"</h3>
+<p>The single most effective mitigation, and the one Anthropic puts first.</p>
+<p>The mechanism: by default, the model treats every prompt as a request for an answer. Saying "I don't know" feels like a failure. Explicitly authorizing it changes the calibration.</p>
+<pre><code class="language-python">SYSTEM_PROMPT = &quot;&quot;&quot;
+You are a customer-success agent. Answer customer questions accurately based
+on the customer context provided and the tools available.
+
+CRITICAL: If you don't know something, or if the available context doesn't
+support a claim you would otherwise make, say so explicitly. Examples of
+good responses:
+- &quot;I don't have that information in our records.&quot;
+- &quot;I'm not certain — let me check by calling the lookup tool.&quot;
+- &quot;The context doesn't show me what plan they were on before. Should I
+  pull their full history?&quot;
+
+NEVER fabricate facts to fill a gap. Saying &quot;I don't know&quot; or &quot;I need to
+check&quot; is always preferred over inventing a plausible-sounding answer.
+&quot;&quot;&quot;.strip()
+</code></pre>
+<p>The instruction is doing several things:</p>
+<ul>
+<li><strong>Explicit permission</strong> — the model knows uncertainty is acceptable</li>
+<li><strong>Concrete examples</strong> — the model has phrasings to use, not just an abstract principle</li>
+<li><strong>Active alternative</strong> — "let me check by calling the lookup tool" gives the agent a productive next step instead of just stalling</li>
+<li><strong>Negative example</strong> — "NEVER fabricate" makes the wrong behavior explicit</li>
+</ul>
+<p>Anthropic's interactive prompt engineering tutorial uses a clean example: ask Claude how many albums Beyoncé has released. If you ask without an "I don't know" option, the model often gives a confident but wrong number (the canonical wrong answer in the tutorial is "8" when the correct answer at that time was "7"). Add the explicit out, and the model either gives the right number or says it's not certain — but stops fabricating.</p>
+<p>This single change, in production, often cuts hallucination rates by 30–50%. It's the highest-ROI thing in this entire module.</p>
+<h3>Technique 2: Direct quotes for factual grounding</h3>
+<p>For tasks involving long documents (Anthropic specifically recommends &gt;20K tokens), instruct the model to extract verbatim quotes <em>before</em> reasoning over the content.</p>
+<p>The mechanism: when the model has to anchor its reasoning in actual text from the source, fabrication becomes harder — the fabricated content would have to exist verbatim in the source, which is a stronger constraint than "would sound plausible."</p>
+<pre><code class="language-python">PROMPT_WITH_QUOTE_GROUNDING = &quot;&quot;&quot;
+Below is a 30-page customer service transcript. The user wants a summary of
+the customer's stated concerns.
+
+Before writing the summary:
+1. Extract 3–5 verbatim quotes from the transcript that capture the customer's
+   primary concerns. Quote them exactly, in &lt;quotes&gt;...&lt;/quotes&gt; tags.
+2. Then, write the summary, referencing the quotes you extracted.
+
+If you cannot find verbatim quotes that support a concern you would otherwise
+include, do not include it. The summary must be grounded in the quoted text.
+
+Transcript:
+{long_transcript}
+
+User question: What are the customer's primary concerns?
+&quot;&quot;&quot;.strip()
+</code></pre>
+<p>The structural shift: the model has to commit to <em>what's in the source</em> before reasoning <em>about</em> the source. Pure fabrications don't survive the quote-extraction step — they'd have to invent quotes too, which doesn't pass casual review.</p>
+<h3>Technique 3: Verify with citations</h3>
+<p>Make the model's response auditable. Every claim cites the source for that claim. After generation, you (or a downstream verifier) can check whether the cited source actually supports the claim.</p>
+<pre><code class="language-python">PROMPT_WITH_CITATIONS = &quot;&quot;&quot;
+Answer the user's question based on the documents provided. For every claim
+in your answer, cite the source using &lt;cite&gt;doc_id:line_number&lt;/cite&gt; tags.
+
+If you cannot cite a source for a claim, do not include it in your answer.
+If the documents don't support an answer, say so.
+
+After your initial answer, review each claim. If you cannot find an exact
+supporting passage, REMOVE the claim or rephrase it as uncertain.
+&quot;&quot;&quot;.strip()
+</code></pre>
+<p>Two things to notice:</p>
+<ul>
+<li><strong>Citation as commitment.</strong> The model has to point to evidence; "no evidence" forces "no claim."</li>
+<li><strong>The retraction step.</strong> Asking the model to <em>review</em> its own answer and remove un-citable claims catches one round of fabrication that the citation requirement alone might miss.</li>
+</ul>
+<p>This technique pairs especially well with retrieval systems where document IDs are stable and the source text is available for downstream verification (Section 6).</p>
+<h3>Technique 4: Chain-of-thought verification</h3>
+<p>Ask the model to explain its reasoning step by step before the final answer. Faulty logic and ungrounded leaps tend to show up in the reasoning trace, where they can be detected.</p>
+<pre><code class="language-python">PROMPT_WITH_COT = &quot;&quot;&quot;
+Question: {user_question}
+
+Before answering:
+1. Identify what facts you need to answer this question.
+2. For each fact, note where you would find it (memory, tool, document, or
+   &quot;this is general knowledge&quot;).
+3. If any fact requires information you don't have access to, note that.
+4. Then answer based only on facts you can verify.
+
+Walk through your reasoning, then give the final answer.
+&quot;&quot;&quot;.strip()
+</code></pre>
+<p>CoT prompting was first popularized for reasoning tasks; its effect on hallucination is a useful side benefit. The model that has to <em>show</em> its work is more likely to notice when it doesn't have the information needed to do the work.</p>
+<p>The downside: longer outputs, more tokens, slower responses. CoT is a quality lever, not a default. Apply it where stakes warrant the cost.</p>
+<h3>Technique 5: Best-of-N verification</h3>
+<p>Run the model on the same prompt N times. Compare outputs. Inconsistencies signal hallucination.</p>
+<p>The mechanism: a hallucinated detail tends to be <em>unstable</em> across runs — the model invents different details each time. A grounded fact tends to be <em>stable</em> — the model produces the same answer.</p>
+<pre><code class="language-python">import asyncio
+
+
+async def best_of_n(prompt: str, *, model: str, n: int = 5) -&gt; dict:
+    &quot;&quot;&quot;
+    Run the prompt N times. Return the consistent components and flag
+    inconsistencies for human review.
+    &quot;&quot;&quot;
+    responses = await asyncio.gather(*[
+        client.messages.create(
+            model=model,
+            max_tokens=2048,
+            messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}],
+            # Non-zero temperature to surface inconsistencies
+            temperature=0.7,
+        )
+        for _ in range(n)
+    ])
+    texts = [r.content[0].text for r in responses]
+    return analyze_consistency(texts)
+
+
+def analyze_consistency(texts: list[str]) -&gt; dict:
+    &quot;&quot;&quot;
+    For each claim that appears in any response, count how many responses
+    contain it. High-agreement claims are likely grounded; low-agreement
+    claims are likely hallucinations.
+    &quot;&quot;&quot;
+    # Implementation: extract claims (entities, facts), cluster by similarity,
+    # report agreement rate. Frameworks like RAGAS, TruLens, DeepEval do this.
+    ...
+</code></pre>
+<p>Best-of-N is expensive (5× the inference cost). Reserve it for high-stakes outputs where the cost of an undetected hallucination outweighs the cost of N inferences.</p>
+<h3>Technique 6: Iterative refinement</h3>
+<p>Use the model's outputs as inputs to a follow-up prompt that explicitly checks the previous output.</p>
+<pre><code class="language-python">async def verify_response(question: str, initial_response: str) -&gt; str:
+    verification = await client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=2048,
+        messages=[{
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: (
+                f&quot;Original question: {question}\n\n&quot;
+                f&quot;Initial response: {initial_response}\n\n&quot;
+                &quot;Review the initial response. For each factual claim:\n&quot;
+                &quot;1. Is it explicitly supported by the available context?\n&quot;
+                &quot;2. If not, is it general knowledge that can be verified?\n&quot;
+                &quot;3. If neither, mark it as 'unsupported.'\n\n&quot;
+                &quot;Output a corrected response with unsupported claims removed &quot;
+                &quot;or marked as uncertain.&quot;
+            ),
+        }],
+    )
+    return verification.content[0].text
+</code></pre>
+<p>Iterative refinement is essentially a single-step version of M11's reflection pattern. M11 will deepen this; for hallucination specifically, even one verification pass catches a meaningful fraction of fabrications.</p>
+<div class="nodumbq">
+<p><strong>Q: Should I just always use all six techniques?</strong></p>
+<p>No. Each adds tokens, latency, and (for Best-of-N) significant cost. The right combination depends on your stakes and constraints:
+- <strong>Low stakes, latency-sensitive:</strong> Technique 1 (allow "I don't know") + careful prompt structure.
+- <strong>Medium stakes:</strong> Add Technique 2 or 3 (quotes or citations) where you have grounded sources.
+- <strong>High stakes:</strong> Add Technique 6 (iterative refinement) for post-generation verification.
+- <strong>Critical, expensive-to-be-wrong:</strong> Add Technique 5 (Best-of-N) and human review.
+Stack them deliberately, not by default.</p>
+</div>
+<hr />
+<h2>Section 5 — Structural Patterns</h2>
+<p>The six techniques in Section 4 are about prompts. The structural patterns in this section are about <em>how the agent is built</em>. Bigger leverage; bigger investment.</p>
+<h3>Pattern 1: Grounding-first prompts</h3>
+<p>Put the source material <em>before</em> the question, and explicitly mark its boundaries.</p>
+<p>The Anthropic-recommended structure:</p>
+<pre><code>&lt;context&gt;
+[Retrieved documents, memory contents, tool results — clearly marked]
+&lt;/context&gt;
+
+&lt;question&gt;
+[The actual user question]
+&lt;/question&gt;
+
+Answer the question using only the information in &lt;context&gt;. If the
+context does not contain the information needed, say so explicitly.
+</code></pre>
+<p>Why ordering matters: the model attends most carefully to what comes immediately before the response position. Putting the question last (closest to where the answer will be generated) and the source first creates the right attention pattern — the question is fresh; the source is in scope.</p>
+<p>Anthropic's recommendation in their long-document handling documentation: <em>"Put documents first, question last. This improves retrieval performance."</em> The same recommendation reduces hallucination because it's fundamentally a grounding pattern.</p>
+<h3>Pattern 2: Separate grounded facts from inference</h3>
+<p>The compounding hallucination problem from Section 3 (agent's own inferences re-entering context as facts) has a structural fix: tag what's grounded vs what's inferred.</p>
+<pre><code class="language-python">RESPONSE_TEMPLATE = &quot;&quot;&quot;
+Respond using this structure:
+
+&lt;grounded&gt;
+[Facts directly from the customer context, memory, or tool results.
+Cite the source for each.]
+&lt;/grounded&gt;
+
+&lt;inferred&gt;
+[Conclusions you're drawing from the grounded facts. Mark each as
+&quot;likely&quot; or &quot;possible&quot; rather than asserting it as fact.]
+&lt;/inferred&gt;
+
+&lt;answer&gt;
+[Your final response to the customer, using grounded facts confidently
+and inferred conclusions cautiously.]
+&lt;/answer&gt;
+&quot;&quot;&quot;
+</code></pre>
+<p>The structure forces the model to distinguish what it knows from what it's concluding. When that response gets compacted (M8) or re-read in a later turn, the structure persists — future-Claude can see that "Series B funding" was tagged as <code>&lt;inferred&gt;</code> rather than <code>&lt;grounded&gt;</code>, and know not to treat it as fact.</p>
+<p>This pattern is heavyweight; not every interaction warrants the structure. It earns its place when the agent's outputs feed back into its own context across turns.</p>
+<h3>Pattern 3: Strict output schemas</h3>
+<p>Schema confabulation (the "model invents JSON fields that weren't in the source" failure) is best fixed by making the schema strict and the source-not-found behavior explicit.</p>
+<pre><code class="language-python">EXTRACTION_PROMPT = &quot;&quot;&quot;
+Extract the following fields from the document. For each field:
+- If the document explicitly contains the value, return it.
+- If the document does not contain the value, return null.
+- DO NOT infer values from related information. DO NOT pattern-match
+  to plausible-looking values.
+
+Schema:
+{
+  &quot;company_name&quot;: string | null,
+  &quot;founding_year&quot;: integer | null,
+  &quot;headquarters_city&quot;: string | null,
+  &quot;ceo_name&quot;: string | null,
+  &quot;annual_revenue_usd&quot;: integer | null
+}
+
+Document:
+{document_text}
+
+Output the JSON object directly. No prose.
+&quot;&quot;&quot;.strip()
+</code></pre>
+<p>The discipline:
+- Each field has an explicit <code>null</code> option for "not present"
+- The instruction explicitly forbids inference
+- Pattern-matching to plausible values is named as a forbidden behavior</p>
+<p>For extraction tasks, this structure plus a downstream schema validator (Pydantic, JSON Schema) catches schema confabulation reliably. The model can still get individual values wrong, but it stops inventing fields wholesale.</p>
+<h3>Pattern 4: Tool result discipline</h3>
+<p>Tool result confabulation comes from the agent reasoning over partial or noisy tool results. The fix happens at the tool layer (Module 4) and at the reasoning layer:</p>
+<p><strong>At the tool layer:</strong> tools should return structured, complete results with explicit "not found" / "not applicable" values rather than empty strings or omitted fields.</p>
+<p><strong>At the reasoning layer:</strong> the agent's prompts should instruct it to surface tool results verbatim before drawing conclusions:</p>
+<pre><code class="language-python">SYSTEM_PROMPT_WITH_TOOL_DISCIPLINE = &quot;&quot;&quot;
+When you receive a tool result, before incorporating it into your response:
+1. State the result verbatim, in &lt;tool_result&gt;...&lt;/tool_result&gt; tags.
+2. Then state what you can conclude from the result.
+3. If a field in the result is null, missing, or empty, do not infer
+   what it would have been. State the gap explicitly.
+
+Example:
+&lt;tool_result&gt;
+{&quot;plan&quot;: &quot;pro&quot;, &quot;tier&quot;: null, &quot;billing_cycle&quot;: &quot;annual&quot;}
+&lt;/tool_result&gt;
+The customer is on the Pro plan with annual billing. The tier field is
+null in our records — I'd need to confirm with the customer or check
+another source if tier matters for the response.
+&quot;&quot;&quot;.strip()
+</code></pre>
+<p>The verbatim restatement is doing the work. The model that has to write down what the tool returned is more likely to notice when it later reasons about something that <em>wasn't</em> returned.</p>
+<h3>Pattern 5: Memory provenance and decoration prevention</h3>
+<p>The Sam-customer-#1142 case from the cold open: the model decorated a grounded fact with an ungrounded embellishment. The fix is at the memory layer (M9) plus the reasoning layer.</p>
+<p>Memory layer (review from M9): every entry has provenance — who stated it, when, from what source. Memory entries from "user-direct statement" weighted higher than from "inferred from tool result."</p>
+<p>Reasoning layer: explicit instruction not to embellish.</p>
+<pre><code class="language-python">MEMORY_USAGE_GUIDANCE = &quot;&quot;&quot;
+When using information from memory:
+- Surface the fact as it appears in memory. Do not embellish.
+- If memory says &quot;plan: enterprise (effective ~2026-06-01, prior plan: pro)&quot;,
+  do NOT say &quot;upgraded after their Series B&quot; or &quot;growth-driven upgrade&quot; or
+  any other framing not present in memory.
+- The customer's history is what's in memory. Anything beyond that is
+  fabrication, even if it sounds plausible.
+&quot;&quot;&quot;.strip()
+</code></pre>
+<p>The decoration prevention is fundamentally a refusal-to-helpfully-elaborate. The model that's trained to be helpful wants to provide context; this prompt explicitly trains it against that instinct for memory-derived facts.</p>
+<div class="gotcha">
+<p>A subtle failure mode: you put all five structural patterns in your system prompt, which is now 4,000 tokens of carefully-crafted hallucination prevention. The agent's actual task instructions are now competing for attention with all this scaffolding. The Module 7 "right altitude" lesson applies: distill the structural patterns into the <em>minimum</em> set that addresses <em>your specific</em> hallucination categories. Memory decoration is your problem? Use Pattern 5; skip the others. Schema confabulation is your problem? Use Pattern 3. Don't apply patterns prophylactically.</p>
+</div>
+<hr />
+<h2>Section 6 — Verification: Catching Hallucinations After the Fact</h2>
+<p>Prompt-level techniques (Section 4) and structural patterns (Section 5) reduce hallucination rates. They don't eliminate them. For high-stakes applications, post-generation verification catches the residual.</p>
+<p>Three verification patterns, increasing in cost and rigor.</p>
+<h3>Pattern A: Entity verification</h3>
+<p>For a generated response, extract the named entities (people, organizations, dates, financial figures, citations) and check them against the source material. Invented entities trigger a failure.</p>
+<pre><code class="language-python">async def verify_entities(
+    response: str,
+    source_context: str,
+) -&gt; dict:
+    &quot;&quot;&quot;
+    Extract entities from the response. For each, check whether it appears
+    in the source context. Return a structured report.
+    &quot;&quot;&quot;
+    entities = await extract_entities(response)
+    verified = []
+    unverified = []
+    for entity in entities:
+        if entity_appears_in(source_context, entity):
+            verified.append(entity)
+        else:
+            unverified.append(entity)
+    return {
+        &quot;verified&quot;: verified,
+        &quot;unverified&quot;: unverified,
+        &quot;verification_passed&quot;: len(unverified) == 0,
+    }
+
+
+async def extract_entities(text: str) -&gt; list[dict]:
+    &quot;&quot;&quot;
+    Use a smaller model (Haiku) to extract entities. Cheap; specialized.
+    &quot;&quot;&quot;
+    response = await client.messages.create(
+        model=&quot;claude-haiku-4-5&quot;,
+        max_tokens=1024,
+        messages=[{
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: (
+                &quot;Extract all named entities from the following text: people, &quot;
+                &quot;organizations, dates, dollar amounts, citations. Return as &quot;
+                &quot;JSON: [{type, value}, ...].\n\n&quot;
+                f&quot;Text:\n{text}&quot;
+            ),
+        }],
+    )
+    return json.loads(response.content[0].text)
+</code></pre>
+<p>The verifier is doing exactly one thing — checking entities against the source. It's not a general "is this response correct?" verifier. The narrow scope makes it reliable.</p>
+<p>For the Sam case, this would catch "Series B" (not in any source) but accept "Enterprise plan since June 2026" (in memory). The hallucination gets caught precisely because it's a fabricated entity, not an inference over real entities.</p>
+<h3>Pattern B: Self-RAG critic</h3>
+<p>Anthropic's iterative refinement (Technique 6) generalized: a separate model call dedicated to critiquing the first one.</p>
+<pre><code class="language-python">async def self_rag_critic(
+    user_question: str,
+    initial_response: str,
+    source_context: str,
+) -&gt; dict:
+    &quot;&quot;&quot;
+    Run a separate model call to critique the initial response.
+    The critic is given the source and asked to assess each claim.
+    &quot;&quot;&quot;
+    critique = await client.messages.create(
+        model=&quot;claude-opus-4-7&quot;,  # Stronger model as critic
+        max_tokens=2048,
+        messages=[{
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: (
+                &quot;You are a fact-checking critic. The user asked a question. &quot;
+                &quot;An assistant provided a response. The source material the &quot;
+                &quot;assistant should have used is provided.\n\n&quot;
+                f&quot;User question: {user_question}\n\n&quot;
+                f&quot;Source material:\n{source_context}\n\n&quot;
+                f&quot;Assistant response:\n{initial_response}\n\n&quot;
+                &quot;Identify each factual claim in the assistant's response. For &quot;
+                &quot;each claim, state whether it is:\n&quot;
+                &quot;- SUPPORTED: directly stated in source material\n&quot;
+                &quot;- INFERRED_REASONABLE: not stated but follows logically\n&quot;
+                &quot;- INFERRED_OVERREACHING: not stated and doesn't strictly follow\n&quot;
+                &quot;- UNSUPPORTED: not stated and contradicts or is unrelated\n\n&quot;
+                &quot;Return JSON: {claims: [{text, status, reasoning}]}&quot;
+            ),
+        }],
+    )
+    return json.loads(critique.content[0].text)
+</code></pre>
+<p>The critic uses a stronger model than the original generator. It's reading the response with a single focused task: identify unsupported claims. The cost: roughly equivalent to running the original prompt again, on a stronger tier — so 1.7× to 5× cost depending on which models.</p>
+<p>For high-stakes outputs (legal advice, medical guidance, financial recommendations), the critic is justified. For routine outputs, it's overkill.</p>
+<h3>Pattern C: Multi-agent verification</h3>
+<p>A specialized fact-checking agent runs alongside the primary agent. The fact-checker has access to authoritative sources (the company's database, primary documents, web search where applicable) and the primary agent's output. It signals when it can't verify.</p>
+<p>The pattern is similar to M3's evaluator-optimizer workflow, applied to factual verification specifically.</p>
+<pre><code class="language-python">async def multi_agent_verified_response(user_question: str):
+    # Primary agent generates a response
+    primary_response = await primary_agent(user_question)
+
+    # Fact-checking agent runs in parallel with access to sources
+    fact_check_result = await fact_checking_agent(
+        question=user_question,
+        proposed_response=primary_response,
+    )
+
+    if fact_check_result.confidence &lt; FACT_CHECK_THRESHOLD:
+        # Either retry with stricter constraints, or escalate
+        return retry_or_escalate(user_question, fact_check_result)
+
+    return primary_response
+</code></pre>
+<p>This is heavyweight — two agents per request. Reserved for the highest-stakes settings: legal, medical, regulatory compliance, financial advice. Overkill for customer success bots; appropriate for systems where a hallucination has six-figure consequences.</p>
+<div class="postmortem">
+<p><strong>The Brief That Cited a Paper That Didn't Exist</strong></p>
+<p>A research-summary agent was helping users prepare academic-style briefs. Its outputs included citations — paper titles, authors, journals, years. Most citations were real and accurate.</p>
+<p>A user submitted a brief generated by the agent to a peer who responded: <em>"I tried to find the Smith et al. 2024 paper you cited on neural-network interpretability. It doesn't exist. Smith publishes in this area but never wrote that paper."</em></p>
+<p>The team pulled the trace. The citation had been confidently inserted: real author, real area, real-looking journal, plausible year. The model had pattern-matched to "what a citation in this domain would look like" and produced a fabrication that passed a casual reader.</p>
+<p>Two fixes shipped:</p>
+<ol>
+<li>
+<p><strong>Citation extraction and verification.</strong> Every citation in agent output got extracted (Pattern A above). For each, the agent had to either point to the source document it came from in the retrieval results, or the citation got removed.</p>
+</li>
+<li>
+<p><strong>Explicit instruction in the system prompt:</strong> "Citations must be drawn from the documents provided in your retrieval context. Do not generate citations from training-data knowledge. If the user wants a citation that isn't in the retrieval context, say so."</p>
+</li>
+</ol>
+<p>The team also added a post-generation step: every citation in the output was checked against an academic-paper API. Citations that weren't findable triggered a re-run with the citation removed.</p>
+<p>Citation-fabrication rate dropped from ~12% to &lt;1% over two weeks. The pattern wasn't novel — Anthropic's docs had recommended citation-grounded generation since 2023 — but the team had been shipping with general-purpose prompts. The specific class of error required a specific class of mitigation.</p>
+<p><strong>Lesson:</strong> general hallucination mitigation isn't enough for citation-heavy outputs. Citations are a specific category that demands a specific verification pattern. Same for dates, financial figures, legal claims. Audit your output type for which categories matter; build the verification for those specifically.</p>
+</div>
+<hr />
+<h2>Section 7 — The Calibration Problem: Refusal vs Helpfulness</h2>
+<p>A failure mode the techniques in Sections 4–6 <em>create</em>: over-refusal. An agent that's been heavily prompted to say "I don't know" when uncertain, to retract un-citable claims, to refuse extraction when fields are missing, can become unusably cautious.</p>
+<p>The customer asks a perfectly reasonable question that the agent could answer with reasonable inference. The agent says "I don't have that information" and refuses to engage. The customer reasonably gets frustrated.</p>
+<p>The aimagicx 2026 guide flagged this directly: hallucination reduction correlates with increased refusal rates. You can drive hallucination to near-zero by refusing to answer almost anything. That's not the goal.</p>
+<p>The right calibration depends on stakes. Three regimes:</p>
+<p><strong>Low-stakes regime (customer support, content recommendations, exploratory chat).</strong> Default toward helpfulness. Use Technique 1 ("I don't know") for genuinely uncertain claims; otherwise let the agent answer with the natural variance models have. Hallucination here is annoying but recoverable. Rates of 5–10% on inferential claims are tolerable.</p>
+<p><strong>Medium-stakes regime (technical support, code generation, structured data extraction).</strong> Apply Patterns 1, 3, 4 from Section 5. Add Technique 6 (iterative refinement) for higher-stakes outputs. Target 1–3% hallucination on grounded claims; tolerate higher rates on inferential ones with appropriate caveats.</p>
+<p><strong>High-stakes regime (legal, medical, regulatory, financial).</strong> Full verification stack. Patterns 1–5 + entity verification + self-RAG critics + human-in-the-loop for the highest-impact outputs. Target near-zero on factual claims; tolerate "I cannot help with this without a human reviewing" on cases the system can't ground confidently.</p>
+<p>The calibration trap teams fall into: applying the high-stakes regime to low-stakes use cases. Now your customer support bot refuses to acknowledge anything not literally in the customer record. The customer asks "can I export my data?" — a clearly-yes question with a clearly-yes answer per public docs — and the bot says "I don't have specific information about export capabilities for your account; please contact support." The hallucination rate is zero. The bot is also useless.</p>
+<div class="brain">
+<p>A medical-information agent and a casual restaurant-recommendation agent both have hallucination problems. Should they get the same fix? Why or why not?</p>
+<p>(No. Different stakes, different fixes. The medical agent should be in the high-stakes regime: full verification, conservative refusal, human escalation. A hallucinated drug interaction warning has six-figure-or-worse consequences. The restaurant agent is low-stakes: a wrong recommendation about whether a place takes reservations is annoying but recoverable. Apply Technique 1 ("I don't know" if not sure) and reasonable structural patterns; don't bury the experience in verification overhead. The cost of an incorrect restaurant recommendation does not warrant a fact-checking agent.)</p>
+</div>
+<h3>The Goldilocks zone for refusal</h3>
+<p>A working principle: <strong>the agent should refuse confident-sounding claims it can't ground, but not refuse questions it can reasonably answer.</strong></p>
+<p>Practically, this looks like:</p>
+<ul>
+<li><strong>Strong refusal</strong> for factual claims (named entities, specific dates, citations, dollar amounts) that aren't in the agent's grounded sources.</li>
+<li><strong>Caveated answer</strong> for inferential claims that follow reasonably from grounded facts. ("Based on the upgrade pattern, the customer is likely growth-stage, though I don't have specifics on their funding history.")</li>
+<li><strong>Confident answer</strong> for genuine general knowledge that doesn't depend on customer-specific facts. ("Yes, our Enterprise plan includes SSO support.")</li>
+</ul>
+<p>The third category is where teams over-refuse. The agent should not say "I don't have information about whether the Enterprise plan includes SSO" if SSO is in fact a documented Enterprise feature in the agent's product knowledge base. That's not honesty; that's failure.</p>
+<p>Calibration is iterative. Ship with reasonable defaults. Watch user feedback for both directions: hallucinations on one side, frustrating refusals on the other. Adjust prompts and verification gates to land in the zone where the agent is honest <em>and</em> useful.</p>
+<hr />
+<h2>Section 8 — Putting It Together: Sam's Customer-Success Bot, Post-Fix</h2>
+<p>Returning to the cold open. Sam's bot had hallucinated "Series B funding round" — memory decoration on a grounded fact. What does the fix look like?</p>
+<p>Sam applied the M10 framework:</p>
+<p><strong>1. Identified the category.</strong> Memory decoration — embellishment on top of grounded facts.</p>
+<p><strong>2. Picked the right techniques.</strong> Anthropic Technique 1 (allow "I don't know" / "I don't have that info"). Pattern 5 (memory provenance and decoration prevention from Section 5). Pattern A entity verification (Section 6) for high-stakes responses.</p>
+<p><strong>3. Updated the system prompt:</strong></p>
+<pre><code>You are a customer-success agent. The customer may have history with us across
+multiple support tickets.
+
+When using information from memory or context:
+- Surface facts as they appear. Do not embellish or add framing not present.
+- For example, if memory says &quot;plan: enterprise (effective ~2026-06-01)&quot;, do
+  NOT add &quot;after their Series B&quot; or &quot;growth-driven upgrade&quot; or any framing
+  not in memory.
+- The customer's history is what's in memory. Anything beyond that is
+  fabrication, even if it sounds plausible.
+- If you don't have information about why something happened, why a customer
+  did something, or other context not in memory, say so or simply omit it.
+  &quot;Welcome back&quot; is better than &quot;Welcome back since your Series B.&quot;
+
+Acceptable: &quot;I see you upgraded to Enterprise in June. How can I help?&quot;
+Acceptable: &quot;I don't have details on what prompted the upgrade — let me know
+if context is helpful.&quot;
+Unacceptable: &quot;I see you upgraded to Enterprise after your funding round.&quot;
+(unless funding round is explicitly in memory)
+</code></pre>
+<p><strong>4. Added an entity-verification post-check</strong> for outputs containing dates, dollar amounts, named events, or citations:</p>
+<pre><code class="language-python">HIGH_STAKES_ENTITY_TYPES = {&quot;date&quot;, &quot;money&quot;, &quot;named_event&quot;, &quot;citation&quot;, &quot;person_name&quot;}
+
+
+async def respond_with_entity_check(
+    customer_id: str,
+    user_message: str,
+    memory_context: str,
+) -&gt; str:
+    response = await primary_response(customer_id, user_message, memory_context)
+    entities = await extract_entities(response)
+    risky = [e for e in entities if e[&quot;type&quot;] in HIGH_STAKES_ENTITY_TYPES]
+    if risky:
+        verification = await verify_entities_against_source(risky, memory_context)
+        if verification.unverified:
+            # Re-run with explicit instruction not to mention the unverified entities
+            response = await primary_response(
+                customer_id,
+                user_message,
+                memory_context,
+                exclusions=verification.unverified,
+            )
+    return response
+</code></pre>
+<p><strong>5. Tested on the original failure case.</strong> Re-ran the Customer #1142 ticket #4 scenario. New response: <em>"Welcome back. I see you've been on Enterprise since June. How can I help?"</em> Clean. No fabricated funding round. No decoration. The customer would not be left wondering if their conversation history had been mis-recorded.</p>
+<p><strong>6. Measured the impact.</strong> Two weeks after rollout: in a sample of 200 randomly-selected production responses, manually annotated by Sam for hallucinations:</p>
+<ul>
+<li>Pre-fix: 18 responses contained at least one ungrounded inference (9%)</li>
+<li>Post-fix: 4 responses contained at least one ungrounded inference (2%)</li>
+<li>Refusal/non-answer rate: increased from 1.5% to 2.3% — the trade-off</li>
+<li>Customer satisfaction on the same response set: unchanged (the refusals were on cases where the original agent had hallucinated; either way, the customer wasn't getting actionable info)</li>
+</ul>
+<p>The trade-off is real but worth it. The bot is now <em>honest</em> — it doesn't decorate. The slightly-higher refusal rate is on cases where the previous behavior was confidently wrong; saying "I don't have that info" is strictly better than fabricating.</p>
+<div class="code-exercise">
+<p><strong>Exercise 10.1 — Hallucination audit.</strong></p>
+<p>Pick an agent in your stack. Sample 30–50 production responses (or test responses, if you don't have production traffic yet). For each:</p>
+<ol>
+<li><strong>Identify hallucination categories.</strong> Which of the eight categories from Section 2 appear? For each occurrence, note which one.</li>
+<li><strong>Assess severity.</strong> How impactful is each hallucination? Annoying, problematic, or actively dangerous?</li>
+<li><strong>Map to fixes.</strong> For each frequent category in your sample, which techniques (Section 4) and structural patterns (Section 5) are best suited? Which require verification (Section 6)?</li>
+<li><strong>Pick the highest-leverage fix.</strong> What's the single change that addresses the largest fraction of your hallucinations? (Almost always Technique 1 — allow "I don't know" — if you haven't already done it.)</li>
+<li><strong>Ship the fix; re-sample.</strong> Did the rate drop? Did refusal/non-answer rate go up? Is the trade-off acceptable for your stakes?</li>
+</ol>
+<p>The goal is not zero hallucinations. The goal is hallucinations that are <em>appropriate to your stakes</em> and detected/handled when they matter most.</p>
+</div>
+<hr />
+<h2>Section 9 — The Framework</h2>
+<p>Adding hallucination discipline to a system you're building:</p>
+<p><strong>1. Diagnose by category.</strong> Audit a sample of outputs. Which of the eight categories show up? What's the severity? Don't apply general mitigations; apply category-specific ones.</p>
+<p><strong>2. Apply Technique 1 first.</strong> Allow "I don't know." Single highest-ROI change in this entire module. Most teams haven't done this explicitly; doing it cuts hallucinations 30–50% in many cases.</p>
+<p><strong>3. Match stakes to regime.</strong> Low-stakes → light prompt techniques. Medium-stakes → structural patterns plus iterative refinement. High-stakes → full verification stack including entity checks and critics.</p>
+<p><strong>4. Ground the prompts structurally.</strong> Documents-first, question-last. Verbatim quote extraction for long sources. Citation-required outputs where claims need to be auditable.</p>
+<p><strong>5. Separate grounded from inferred.</strong> Especially for agents whose outputs feed back into context. Tagged outputs prevent compounding hallucination.</p>
+<p><strong>6. Verify the categories that matter.</strong> Entity verification for fabrication-prone outputs (citations, dates, money). Self-RAG critics for high-stakes generation. Multi-agent verification for the small set of cases where it's justified.</p>
+<p><strong>7. Calibrate refusal vs helpfulness.</strong> Aggressive refusal is a failure mode too. Watch user-experience metrics, not just hallucination rates. Goldilocks zone: refuse the confident-sounding claims you can't ground; answer the questions you can reasonably answer.</p>
+<p><strong>8. Iterate.</strong> Hallucination patterns shift as your agent's surface area grows (new tools, new memory categories, new user behaviors). Quarterly audits keep the calibration current.</p>
+<p>The discipline this enforces: <strong>the model's helpfulness bias is treated as a known failure mode that requires structural mitigation, not a feature you trust by default.</strong> The agent is honest by design, not by hope.</p>
+<hr />
+<h2>Recap: Module 10 in eight bullets</h2>
+<div class="bullet-points">
+<ul>
+<li>Hallucination is the model producing plausible-sounding but ungrounded output. The mechanism is the helpfulness bias from training: producing an answer feels like succeeding, even when the answer isn't grounded.</li>
+<li>Eight production categories: factual fabrication, citation fabrication, misattribution, inferential overreach, memory decoration, tool result confabulation, action hallucination, schema confabulation. Different categories need different fixes.</li>
+<li>Agent hallucinations are a distinct class. Tools, memory, and trajectories introduce new failure surfaces (memory decoration, action hallucination, tool result confabulation) that chat models don't have. Compounding effects make agent hallucinations especially insidious.</li>
+<li>Anthropic's six canonical techniques: allow "I don't know," direct quotes for grounding, citations for auditability, chain-of-thought verification, Best-of-N consistency, iterative refinement. Stack deliberately based on stakes.</li>
+<li>Structural patterns: grounding-first prompts (documents first, question last), separate grounded from inferred output, strict output schemas with explicit nulls, tool result verbatim discipline, memory provenance and decoration prevention.</li>
+<li>Verification patterns increase in cost: entity verification (cheap, narrow), self-RAG critics (medium, broad), multi-agent verification (expensive, comprehensive). Match the verification cost to the stakes of being wrong.</li>
+<li>Refusal is a failure mode too. Over-applied verification produces uselessly cautious agents. Calibrate to the Goldilocks zone: refuse ungroundable factual claims; answer questions you can reasonably address.</li>
+<li>Allow "I don't know" is the single highest-leverage change. Most teams haven't done it explicitly. Doing it before the rest of the module's techniques typically cuts hallucination rates by a third or more.</li>
+</ul>
+</div>
+<hr />
+<div class="sam-arc">
+<p><strong>Sam, after the hallucination audit.</strong></p>
+<p>A month after the M9 rollout, Sam ran the M10 audit across the company's eight memory-enabled agents. The pattern was consistent: rich grounded memory produced agents that were <em>more confident</em> than before — more likely to elaborate, more likely to decorate, more likely to invent context to make their grounded responses feel natural.</p>
+<p>Six of the eight agents had measurable memory-decoration rates between 5% and 12% of responses. Two had citation fabrication rates above 8% (these were the two agents producing structured outputs like research summaries). One had action hallucination on 3% of responses where a tool failure had occurred and the agent had recovered with a confabulated success message.</p>
+<p>Sam wrote a one-page hallucination playbook for the platform team:</p>
+<ol>
+<li>Apply Anthropic Technique 1 (allow "I don't know") in every system prompt. Default.</li>
+<li>For agents using memory, add the decoration-prevention pattern explicitly.</li>
+<li>For agents producing structured outputs (extraction, JSON, citations), add schema strictness and entity verification.</li>
+<li>For high-stakes agents (legal, financial, medical, anything where wrong has six-figure consequences), full verification stack including a self-RAG critic.</li>
+<li>Audit quarterly. Watch both hallucination rates and refusal rates; calibrate.</li>
+</ol>
+<p>Two weeks of fixes across the fleet. The before-and-after: hallucination rates roughly halved across the board. Refusal rates up modestly (1–3 percentage points). Customer satisfaction up — turns out customers preferred "I don't have that info" to confidently-wrong answers.</p>
+<p>Sam noticed something deeper: the M10 work was the first reliability work where the <em>fix</em> was structural and the <em>measurement</em> was operational. M2's hardened loop you couldn't measure — it just worked or didn't. M9's memory had clear before/after metrics (NPS, "as I have explained" rate). M10 had even sharper metrics: hallucination rate, refusal rate, the trade-off curve. The reliability arc was going to live or die on this kind of measurement discipline.</p>
+<p>Sam's arc this module: <strong>the helpfulness bias is the enemy.</strong> The model is trying to be useful. Without grounding, useful becomes invented. Production-quality agents need explicit structural mitigation against their own helpfulness — and ongoing measurement to keep the calibration honest. The next two modules (M11 reflection, M12 guardrails) extend this discipline to two adjacent surfaces: catching mistakes mid-trajectory, and constraining behavior at the boundaries.</p>
+</div>
+<hr />
+<h2>What's next</h2>
+<p>Module 11 is reflection and self-correction. The pattern: agents that catch their own mistakes mid-trajectory. M3's evaluator-optimizer workflow lifted into the agent loop. When done well, dramatic quality improvements. When done poorly, just expensive.</p>
+<p>The connection to M10: hallucination prevention happens at generation time; reflection happens after. The agent that produced a hallucinated response in M10 could, with reflection, catch it before delivering it. The two are complementary, not redundant.</p>
+<p>Module 12 is guardrails — input filtering, output checks, topical and behavioral constraints. The cousin of Module 5's protocol-level security, applied at the per-call layer. The agent that's been told "don't fabricate citations" still needs an output-time check that verifies it didn't. M12 is where those checks live.</p>
+<p>After M12, the reliability arc is complete. M13–15 take the system multi-agent (when complexity is justified, the architectures, the patterns). M16–17 are operations (sagas, observability). M18 is the capstone.</p>
+<p>For now: take the audit exercise from Section 8. Sample 30 outputs from your agent. Categorize the hallucinations. Apply Technique 1 if you haven't. Watch the rate move. The first reliability instrument is honesty — about what your agent knows, and about what it's making up.</p>
+</body>
+</html>

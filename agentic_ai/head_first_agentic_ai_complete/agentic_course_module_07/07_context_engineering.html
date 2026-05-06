@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 7 — Context Engineering Principles</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 7 — Context Engineering Principles</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 7</div>
+<div class="module-title">Context Engineering Principles</div>
+<div class="subtitle">The model has an attention budget. Every token you stuff in spends some of it.<br>What goes in the context window is the next architectural lever.</div>
+<div class="pages">~38 pages · the natural progression of prompt engineering</div>
+</div>
+<div class="hook">
+<p>Wednesday, late afternoon. Sam was running the deal-research workflow on a particularly complex target — a holding company with twelve subsidiaries — when the brief came back oddly thin. The synthesizer had skipped the financial profile section. Just… omitted it. The brief was otherwise fine.</p>
+<p>Sam pulled the trace. The synthesizer had received a 180,000-token context. Three parallel research workers had each returned ~40K tokens of findings. The orchestrator had added its plan. The system prompt was 8K. Tool definitions another 5K. A few rounds of intermediate context had piled up.</p>
+<p>The synthesizer's prompt buried the financial-profile section requirement on line 412 of a 700-line user message. The model had attended to lines 1-200 carefully. By line 412, it was skimming. By line 600, it had latched onto whatever pattern looked most relevant and was producing the brief from there.</p>
+<p>The model wasn't broken. The context was. There were 180,000 tokens of mostly-relevant information pointing in subtly different directions, and the actual instruction — <em>write the brief covering these specific sections</em> — was structurally indistinguishable from the surrounding noise.</p>
+<p>Sam re-ran the synthesizer with a leaner context: the original instruction first, plus a curated 40K-token summary of the research instead of the full 120K. The brief came back complete. Better than complete — the synthesis was sharper because the model wasn't trying to hold 120K tokens of overlapping research in working memory.</p>
+<p>Sam wrote a one-liner in their notes: <em>"the context isn't a bag you fill. It's an attention budget you spend."</em></p>
+<p>That night they read the Anthropic essay on context engineering. Highlighted half of it. Showed up Thursday morning ready to refactor.</p>
+</div>
+<hr />
+<h2>What this module is</h2>
+<p>The first six modules treated the context window as a place where things go. The system prompt, the tool definitions, the conversation history, the tool results — all of it landed in the context window, and the model figured it out. That assumption worked for short trajectories with focused tasks. It stopped working as Sam's deal-research system handled longer trajectories with more parallel work.</p>
+<p>Anthropic's framing in their September 2025 engineering post — <em>"context engineering as the natural progression of prompt engineering"</em> — is the lens for the rest of the book. Prompt engineering is about writing the right words. Context engineering is about deciding which words, retrieved from where, organized how, with what <em>not</em> in there, are most likely to produce the behavior you want.</p>
+<p>This module covers the principles. Module 8 covers compaction and summarization (what to do when the budget overflows). Module 9 covers memory across runs (state that persists between trajectories). Together they form an arc: M7 is what to put in, M8 is what to take out, M9 is what to remember.</p>
+<p>By the end of this module:</p>
+<ul>
+<li>You'll think of the context window as a finite attention budget, not unlimited storage</li>
+<li>You'll know the four levers for spending that budget well: system prompt, tools, examples, retrieval</li>
+<li>You'll understand the just-in-time vs pre-loaded retrieval trade-off and when each is right</li>
+<li>You'll have written a system prompt at the "right altitude" — the Goldilocks zone between brittle scripts and vague handwaves</li>
+<li>You'll be able to diagnose context rot (the Sam case) and know what to fix when it shows up</li>
+</ul>
+<p>We're following Anthropic's own framing closely in this module because their post is the canonical reference and the field has converged on the vocabulary. Where the post leaves things at "principle," this module adds production code, specific patterns, and the failure modes that show up when you ship.</p>
+<hr />
+<h2>Section 1 — Context as an Attention Budget</h2>
+<p>The mental model from the cold open is the right one. Every token you put in the context window draws from a finite attention budget. It's not "free until you hit the limit" — it's diminishing returns from the first token onward, with the curve getting steeper as the context grows.</p>
+<p>Why? Two structural reasons.</p>
+<p><strong>Architecture.</strong> Transformers work on n² pairwise relationships across the context. Every token attends to every other token. As n grows, the model's ability to capture these relationships gets stretched thin. The math doesn't lie: a 100K-token context has 10 billion pairwise relationships; a 10K-token context has 100 million. The model's parameters don't scale with the context; the same fixed capacity is being asked to handle two orders of magnitude more relationships.</p>
+<p><strong>Training distribution.</strong> Models are trained on token sequences with a strong skew toward shorter contexts. Long contexts are <em>handled</em> by techniques like position encoding interpolation, but the model has fewer specialized parameters for context-wide dependencies than it has for local ones. Long-range reasoning is competent, but it's never as sharp as short-range reasoning — even on the same content.</p>
+<p>The empirical phenomenon is called <em>context rot</em> — researchers at Chroma have published needle-in-a-haystack-style benchmarks showing that recall accuracy decreases as token count grows, across every model tested. Some degrade gently; some degrade sharply; none escape it.</p>
+<p>The practical consequence: at any given moment, your model has an attention budget to spend on the current token's prediction. Every irrelevant token in the context is competing for that budget against the relevant ones. The bigger the haystack, the harder the needle.</p>
+<div class="pullquote">
+<p>Context is a finite resource with diminishing marginal returns. Every new token introduced depletes the attention budget by some amount. The optimization isn't "fit more in"; it's "find the smallest set of high-signal tokens that produces the desired behavior."<br>— paraphrased from Anthropic's "Effective Context Engineering for AI Agents"</p>
+</div>
+<h3>What this changes in practice</h3>
+<p>A few principles fall out of this framing immediately:</p>
+<p><strong>Long context isn't free.</strong> Sonnet 4.6 and Opus 4.7 both support 1M-token contexts. That doesn't mean using 1M tokens is the right call; it means the technical option exists. For most tasks, performance peaks well before the context limit and degrades from there.</p>
+<p><strong>Token efficiency is a quality metric, not just a cost metric.</strong> A 10K-token context that produces the right answer beats a 100K-token context that produces the same answer at the same cost — because the next conversation, on top of that, will be better with less stale baggage.</p>
+<p><strong>More retrieval ≠ more useful.</strong> Stuffing a RAG system to return 50 documents instead of 10 doesn't usually improve quality. It often degrades it because the model has more competing signals to attend to.</p>
+<p><strong>Tool result discipline is context discipline.</strong> Module 4's tool-result truncation patterns aren't just about bandwidth — they're about preserving the model's attention budget for the actual task. A tool that returns 80K tokens of customer record (from M4's postmortem) doesn't just cost money; it makes the next decision worse.</p>
+<div class="nodumbq">
+<p><strong>Q: Doesn't this contradict the "1M context" pitch? If long context is bad, why ship it?</strong></p>
+<p>It's not bad — it's <em>expensive in attention even when it's free in tokens</em>. The 1M context window is a useful capability for tasks that genuinely need it: full-codebase analysis, long-document review, complex multi-file refactoring. For those tasks, the alternative (chunking and re-retrieving) is worse. The capability earns its place when the task genuinely needs it. The mistake is using long context as a <em>default</em> — packing in everything you have because you can. Use long context when the task requires it; design for tighter context when it doesn't.</p>
+<p><strong>Q: How do I know when context rot is hitting my system?</strong></p>
+<p>The diagnostic is usually: the model produces output that's structurally fine but misses a specific instruction or fact that's clearly in the context. Like Sam's case — the synthesizer skipped the financials section despite being told to include it, because the instruction was buried at line 412. If you're seeing "the model didn't do X even though I told it to," and X was specified deep in a long context, you're looking at context rot, not model failure. The fix isn't a stronger model; it's a tighter context.</p>
+</div>
+<hr />
+<h2>Section 2 — The Four Components of Context</h2>
+<p>Anthropic's essay structures context into a few components that are useful to name explicitly. We'll work with five:</p>
+<p><strong>1. The system prompt.</strong> The framing the agent reads before any user input. Defines role, tone, available tools, output requirements.</p>
+<p><strong>2. Tool definitions.</strong> Schemas and descriptions for every tool the model can call. Loaded into context once per request.</p>
+<p><strong>3. Examples.</strong> Few-shot demonstrations of desired behavior. Not always present, but powerful when used well.</p>
+<p><strong>4. Message history.</strong> The accumulating conversation — user messages, assistant responses, tool calls, tool results.</p>
+<p><strong>5. Retrieved or attached content.</strong> Documents pulled from RAG, files attached by the user, MCP resources injected by the host.</p>
+<p>Each component has its own discipline. The system prompt has the "right altitude" problem. Tools have the bloat-and-overlap problem. Examples have the over-cherry-picking problem. Message history has the staleness problem. Retrieved content has the "too much vs not enough" problem.</p>
+<p>The next sections take each in turn. The unifying principle: for each component, the question isn't "what's the most I can fit in?" but "what's the smallest set of high-signal tokens that gets the job done?"</p>
+<hr />
+<h2>Section 3 — The System Prompt at the Right Altitude</h2>
+<p>The most consequential context-engineering decision in any agent system. The system prompt is the framing the agent re-reads on every turn (it's at the start of context every time the model is called). Get it wrong and every subsequent decision is shaped by the wrong frame.</p>
+<p>Anthropic's essay names the failure modes precisely:</p>
+<p><strong>One extreme: brittle hardcoded prompts.</strong> Engineers cram complex if-else logic into prompts to elicit exact behavior. <em>"If the user asks about pricing, respond with the pricing format. If they ask about a feature, check the feature list. If they ask about both, prioritize pricing unless the feature is in category X..."</em> These prompts work for the cases they were written for and break for everything adjacent. Maintenance is brutal; every new edge case adds a new conditional.</p>
+<p><strong>Other extreme: vague handwaves.</strong> <em>"You are a helpful customer support assistant. Answer questions accurately."</em> The model gets no signal about what "accurately" means in this context, what tone is appropriate, what's out of scope. It defaults to its training distribution, which often isn't what the team intended.</p>
+<p><strong>Right altitude: specific enough to guide, flexible enough to handle the cases not enumerated.</strong> The Goldilocks zone. Concrete signals about role, scope, output structure, and edge cases that are likely. Heuristics rather than scripts.</p>
+<p>A practical structure:</p>
+<pre><code class="language-python">SYSTEM_PROMPT = &quot;&quot;&quot;
+You are a deal-research synthesizer for an enterprise sales team. Your job is
+to turn structured research findings into a 1500-word brief that an account
+executive can read in five minutes before a customer call.
+
+&lt;output_structure&gt;
+The brief has these sections, in this order:
+1. Executive Summary (3-4 sentences)
+2. Financial Profile (revenue, growth, runway when known)
+3. Leadership (current CEO/CFO, recent changes)
+4. Market Position (positioning vs competitors)
+5. Recent Developments (last 90 days)
+6. Key Risks (3-5 items relevant to a deal)
+
+Each section is 150-300 words. Do not skip sections. If a section's findings
+are sparse, write what you have and note the gap explicitly.
+&lt;/output_structure&gt;
+
+&lt;voice_and_tone&gt;
+Confident, factual, no hedging or filler. Write for a busy reader who already
+knows the basics of B2B SaaS. Avoid superlatives (&quot;revolutionary&quot;, &quot;world-class&quot;)
+unless quoting source material directly.
+&lt;/voice_and_tone&gt;
+
+&lt;facts_and_evidence&gt;
+Use only the findings provided. Do not invent figures, names, or events. If
+findings are silent on a topic, say so rather than filling the gap.
+
+When findings disagree (e.g., two sources cite different revenue figures),
+report both and flag the disagreement; do not pick one silently.
+&lt;/facts_and_evidence&gt;
+
+&lt;edge_cases&gt;
+- If findings indicate match_quality is &quot;ambiguous&quot; or &quot;none&quot; for the target
+  company, return a brief stating this; do not produce a confident-sounding
+  brief based on uncertain matches.
+- If findings are present but very sparse (fewer than 5 facts total), return
+  a brief noting this and recommending escalation rather than producing low-
+  quality output.
+&lt;/edge_cases&gt;
+&quot;&quot;&quot;.strip()
+</code></pre>
+<p>The structure here:</p>
+<ul>
+<li>A one-paragraph framing that names the role, the consumer, and the success criterion (briefable in 5 minutes)</li>
+<li>Tagged sections for the things that need precision: structure, voice, fact discipline, edge cases</li>
+<li>No procedural conditionals; no "if the user asks X, do Y" scripts</li>
+<li>Edge cases listed as specific, named handlings rather than scattered through the body</li>
+</ul>
+<p>The XML-style tags (<code>&lt;output_structure&gt;</code>, <code>&lt;voice_and_tone&gt;</code>, etc.) help the model find the right section when it's reasoning about a particular concern. They aren't strictly required — modern Claude handles unstructured prompts well — but they remain useful for system prompts that span multiple concerns.</p>
+<div class="brain">
+<p>A team's system prompt is 4,000 tokens long with detailed conditional handling for every edge case they've encountered. They keep adding to it. Quality is fine; latency is creeping up. What's the diagnosis?</p>
+<p>(The prompt has crossed from "right altitude" into "brittle hardcoded." Every conditional addition makes the prompt more rigid and less generalizable. The cost: every new case requires a new conditional; the prompt grows monotonically; eventually, conditionals interact in ways that break old behavior. The fix: refactor to heuristics. Replace the "if X then Y" rules with a description of the principle that <em>generates</em> those rules, and trust the model to apply it to novel cases. Test on real traffic, including the edge cases that originally drove the conditionals. You'll typically lose 30-60% of the prompt size with no quality regression.)</p>
+</div>
+<h3>Iteration discipline</h3>
+<p>The right altitude isn't found in one draft. The discipline:</p>
+<ol>
+<li>Write the minimal prompt — role, scope, output structure. Test on real tasks.</li>
+<li>For each failure mode, ask: is this a prompt problem, or a model/data problem? Don't fix data problems with prompt patches.</li>
+<li>When it is a prompt problem, prefer adding heuristics to adding conditionals. "Be cautious about X" beats "if X then Y."</li>
+<li>Periodically prune. Delete every line that wasn't load-bearing on a recent failure mode. Re-test.</li>
+</ol>
+<p>Sam's deal-research synthesizer prompt started at 200 tokens, grew to 1,200 after early failures, then settled at 800 after pruning. Every line in the final 800 was earning its place. Every removed line had been added defensively for a case that had since been handled differently.</p>
+<div class="gotcha">
+<p>A common pattern: a team's system prompt grows by 50% every quarter as edge cases get patched in. Six months later, the prompt is 6,000 tokens of accreted history. The fix isn't a refactor session right before launch — it's a quarterly prompt audit. Reserve an hour per quarter to review the system prompt against current behavior. Delete anything that's no longer earning its place. The model will tell you what's still load-bearing if you re-test after pruning.</p>
+</div>
+<hr />
+<h2>Section 4 — Tools as Context</h2>
+<p>Module 4 covered tool design from the contract perspective. Every word in this module about tools applies in addition: <em>tools are part of context, and they spend attention budget like everything else.</em></p>
+<p>The attention costs of tools:</p>
+<p><strong>Tool descriptions are read every turn.</strong> Every API call to the model includes the full tool list with descriptions. A 5K-token tool definition × 30 turns = 150K tokens spent on tool definitions alone (before caching, anyway).</p>
+<p><strong>Tool overlap creates ambiguity.</strong> If two tools could plausibly handle the same request, the model spends attention on the disambiguation. Three search tools with subtly different scopes is worse than one search tool with clear scope.</p>
+<p><strong>Tool count strains decision-making.</strong> Anthropic's guidance, echoed across production systems: agents with more than ~10-15 tools start showing meaningful tool-selection regressions. The model's attention is distributed; deciding among 30 tools is harder than deciding among 7.</p>
+<p>The practical implications:</p>
+<p><strong>Curate the tool set per agent.</strong> Not every agent needs every tool. The deal-research workflow's synthesizer doesn't need a Slack-posting tool, even if Slack-posting is useful elsewhere in the company. Per-agent tool allow-lists keep context lean.</p>
+<p><strong>Use the tool search pattern for large catalogs.</strong> When an agent genuinely needs access to many tools (a Claude Code-style coding agent, for instance), don't load all of them. Load a "search-tools" tool that returns relevant tool descriptions on demand. The Anthropic tool search feature, available on the Claude Developer Platform, does exactly this.</p>
+<p><strong>Cache tool definitions.</strong> Prompt caching applies to the tool list. If your tools don't change between calls (the usual case), cache them — the cached read is roughly 10% the cost of the uncached read. Module 8 covers caching mechanics in depth; for now, know that it applies here.</p>
+<p><strong>Watch for tool-result bloat.</strong> From Module 4: tool results live in context for the rest of the trajectory. A tool that returns 20K tokens of result, called five times, is 100K tokens of context the model is dragging around forever. Truncate aggressively at the tool layer; the marker text Module 4 covered isn't just for honesty, it's for context efficiency.</p>
+<div class="nodumbq">
+<p><strong>Q: Should I worry about tool definitions if I'm using prompt caching?</strong></p>
+<p>Less, but not zero. Caching helps with cost (90% savings on cached input) but doesn't help with the <em>attention</em> budget — the model still attends to the cached tokens, even if you're paying less for them. So a 5K-token tool definition cached is still 5K tokens spent in the attention budget. Caching is a cost optimization, not a context optimization. Both matter; both have separate disciplines.</p>
+</div>
+<hr />
+<h2>Section 5 — Examples (Few-Shot) Done Well</h2>
+<p>Few-shot prompting is one of the most reliable ways to steer behavior, and one of the most commonly misused. The misuse pattern: a team writes a prompt, hits an edge case, adds an example showing the right behavior for that case, hits another edge case, adds another example, and so on. After a few months the prompt has 14 examples covering every edge case the team has hit, and the prompt is 8K tokens long.</p>
+<p>The result is <em>worse</em> than starting over. The 14 examples are usually narrow, idiosyncratic, and inconsistent in how they teach the underlying behavior. The model learns to pattern-match against the specific examples rather than the general principle they were supposed to demonstrate.</p>
+<p>Anthropic's framing: <em>"work to curate a set of diverse, canonical examples that effectively portray the expected behavior of the agent."</em></p>
+<p>The discipline:</p>
+<p><strong>Examples should teach the principle, not paper over edge cases.</strong> A good example shows how the agent should reason about a class of cases, not how to handle one specific case.</p>
+<p><strong>Few examples, well-chosen, beat many examples.</strong> 3-5 diverse examples that span the meaningful range of behavior usually beat 15 examples that all illustrate similar ground.</p>
+<p><strong>Edge cases that aren't generalizable belong in heuristics, not examples.</strong> "If the user mentions a specific competitor, mention market positioning" is a heuristic, not an example. State it explicitly in the prompt; don't try to teach it through demonstration.</p>
+<p><strong>Diversity matters more than density.</strong> Three examples covering three different shapes of input/output beat ten examples on similar-shaped inputs. The model generalizes from variation.</p>
+<p>A practical pattern for picking examples:</p>
+<pre><code class="language-python">EXAMPLES = [
+    # Example 1: Standard case, success
+    {
+        &quot;input&quot;: &quot;Write a brief on Acme Corp.&quot;,
+        &quot;findings&quot;: &quot;&lt;typical findings&gt;&quot;,
+        &quot;output&quot;: &quot;&lt;expected brief&gt;&quot;,
+    },
+    # Example 2: Sparse findings, partial output
+    {
+        &quot;input&quot;: &quot;Write a brief on Bravo Industries.&quot;,
+        &quot;findings&quot;: &quot;&lt;sparse findings, only 4 facts&gt;&quot;,
+        &quot;output&quot;: (
+            &quot;[Brief states the available facts, then explicitly notes:]\n&quot;
+            &quot;Note: research returned limited data on Bravo Industries. &quot;
+            &quot;Consider escalating before customer call.&quot;
+        ),
+    },
+    # Example 3: Conflicting findings
+    {
+        &quot;input&quot;: &quot;Write a brief on Charlie Inc.&quot;,
+        &quot;findings&quot;: &quot;&lt;two sources disagree on revenue&gt;&quot;,
+        &quot;output&quot;: (
+            &quot;[Brief reports both figures, e.g.:]\n&quot;
+            &quot;Charlie Inc. reported $12M ARR per their Series B announcement; &quot;
+            &quot;third-party data services estimate $18M. Sources disagree; &quot;
+            &quot;verify with primary source before pricing discussions.&quot;
+        ),
+    },
+]
+</code></pre>
+<p>Three examples spanning three meaningfully different cases: standard, sparse, conflicting. The model now has clear signals for each — without 15 examples and without the "every edge case has its own example" anti-pattern.</p>
+<div class="pullquote">
+<p>Examples are the "pictures" worth a thousand words for an LLM. Three diverse, canonical examples beat fifteen narrow ones — every time.</p>
+</div>
+<hr />
+<h2>Section 6 — Just-in-Time Retrieval</h2>
+<p>The biggest shift in context engineering between 2024 and 2026 has been the move from pre-loaded retrieval to just-in-time retrieval. The vocabulary is Anthropic's; the pattern is now mainstream.</p>
+<p><strong>Pre-loaded retrieval (the older pattern):</strong> Before the agent runs, embed-and-retrieve the most relevant documents. Stuff them into the system prompt or the first user message. The agent reasons over the retrieved set.</p>
+<p><strong>Just-in-time retrieval (the agentic pattern):</strong> The agent has tools that let it <em>fetch information on demand</em>. Instead of pre-loading 20 documents that <em>might</em> be relevant, the agent gets pointers (file paths, query helpers, list-and-search tools) and pulls the specific pieces it needs as it goes.</p>
+<p>Both still exist. The shift is <em>which is the default</em>.</p>
+<p>Anthropic's framing — and this is the part that lands hardest — is that just-in-time retrieval mirrors human cognition. <em>"We generally don't memorize entire corpuses of information, but rather introduce external organization and indexing systems like file systems, inboxes, and bookmarks to retrieve relevant information on demand."</em></p>
+<p>You don't keep your inbox in your head. You search it.</p>
+<h3>When pre-loaded retrieval is right</h3>
+<p>Some content genuinely belongs in context up front:</p>
+<ul>
+<li><strong>Stable, frequently-needed reference material.</strong> A coding agent's project conventions, an API agent's auth-token handling, a customer-support agent's escalation policy. Things every turn might need.</li>
+<li><strong>The user's immediate request and obvious context.</strong> The current customer record for a support session; the deal in progress for a deal-research call.</li>
+<li><strong>Small reference sets where exhaustive pre-loading is cheaper than search.</strong> If your knowledge base is 2000 tokens, loading it is fine; the cost of a search-and-retrieve dance is more than the cost of just having it.</li>
+</ul>
+<p>The pattern: <strong>pre-load the things every interaction will need. Retrieve everything else just-in-time.</strong></p>
+<h3>When just-in-time wins</h3>
+<p>Most cases. Specifically:</p>
+<ul>
+<li><strong>Large corpuses where most content isn't relevant to a given query.</strong> The codebase, the document library, the message archive. Pre-loading would dilute attention; the agent should search.</li>
+<li><strong>Dynamic content.</strong> A pre-load is a snapshot; the agent's search reflects current state. For anything that changes during the agent's run (or between runs), just-in-time wins.</li>
+<li><strong>Branching exploration.</strong> When the agent doesn't know what it needs until it sees what it found. The shape of the search depends on the input. You can't pre-compute.</li>
+</ul>
+<p>Sam's deal-research workflow is a hybrid:</p>
+<pre><code class="language-python"># Pre-loaded into the orchestrator's context:
+# - Deal info (target company name, deal stage, AE handling it)
+# - Brief structure template
+# - Recent customer notes (small, almost always relevant)
+
+# Just-in-time, retrieved during the workflow:
+# - Detailed company facts (via company_lookup tool)
+# - Competitor analyses (via competitor_research tool)
+# - Market context (via market_research tool)
+# - Existing briefs on similar companies (via brief_search tool)
+</code></pre>
+<p>The 5K of pre-loaded deal info gets attended to on every step. The 50K of potentially-relevant research only enters context when (and if) the orchestrator decides it needs it.</p>
+<h3>Implementing just-in-time well</h3>
+<p>The just-in-time pattern is only as good as the agent's ability to navigate the retrieval space. Three things have to be true:</p>
+<p><strong>1. The agent has good tools for navigation.</strong> A <code>list_files</code> + <code>read_file</code> pair beats a vector search for many code-search cases, because the model can see the structure (folder names, file names, sizes) and pick intelligently. For document-heavy cases, well-described search tools matter — Module 4's tool description discipline applies here in full.</p>
+<p><strong>2. The agent has heuristics about where to look.</strong> Folder structure, naming conventions, timestamps — Anthropic calls this "progressive disclosure." A file named <code>auth.py</code> in <code>src/middleware/</code> tells the agent something different than <code>auth.py</code> in <code>tests/</code>. The metadata is context the agent can use without loading the content.</p>
+<p><strong>3. The agent isn't expected to find a needle in a haystack blindly.</strong> If your retrieval space is genuinely unstructured and unsearchable, the agent will struggle. The fix is at the data layer (organize, index, name better), not the agent layer.</p>
+<pre><code class="language-python"># A just-in-time retrieval pattern: agent gets pointers, not content
+
+@tool
+async def list_briefs(
+    target_company: str | None = None,
+    industry: str | None = None,
+    since_date: str | None = None,
+    limit: int = 20,
+) -&gt; dict:
+    &quot;&quot;&quot;
+    List recent deal briefs matching the filters. Returns metadata (company name,
+    industry, date, deal stage), not full content. Use get_brief(brief_id) to
+    fetch a specific brief's content.
+
+    Use this WHEN: looking for relevant past briefs to inform the current research.
+    Filter narrowly; broad listings are slow and crowd context.
+    &quot;&quot;&quot;
+    briefs = _query_brief_metadata(target_company, industry, since_date, limit)
+    return {
+        &quot;briefs&quot;: [
+            {
+                &quot;brief_id&quot;: b.id,
+                &quot;company&quot;: b.company_name,
+                &quot;industry&quot;: b.industry,
+                &quot;date&quot;: b.date.isoformat(),
+                &quot;deal_stage_at_writing&quot;: b.deal_stage,
+            }
+            for b in briefs
+        ],
+        &quot;total&quot;: len(briefs),
+    }
+
+
+@tool
+async def get_brief(brief_id: str) -&gt; dict:
+    &quot;&quot;&quot;
+    Fetch the full content of a specific brief. Use sparingly — full briefs are
+    1500+ words. List first with list_briefs(), then fetch only the briefs you
+    actually need.
+    &quot;&quot;&quot;
+    brief = _load_brief_content(brief_id)
+    return {
+        &quot;brief_id&quot;: brief_id,
+        &quot;company&quot;: brief.company_name,
+        &quot;content&quot;: brief.full_text,
+    }
+</code></pre>
+<p>The pattern: cheap metadata listing, expensive full retrieval. The agent sees the listing (which is small), picks the briefs it actually needs (usually 1-3), fetches just those. A workflow that previously pre-loaded all 20 candidate briefs into context (~30K tokens) now uses ~2K tokens of metadata + 1-3K per fetched brief = ~5K total. The model's attention is on the few relevant items, not the 17 distractors.</p>
+<div class="brain">
+<p>You're building an agent that needs to answer questions about a 500-document legal corpus. Pre-load with embedding search? Just-in-time with a search tool? Hybrid?</p>
+<p>(Almost certainly hybrid, leaning just-in-time. Pre-load the small, always-relevant pieces — the case description, the relevant statutes if known, the user's specific question. Give the agent a search tool over the 500 documents, plus a fetch tool. The agent searches based on what it learns, fetches the specific paragraphs that matter, doesn't drown in 500 documents of pre-loaded context. The pure pre-load fails because most documents won't be relevant to most queries. The pure just-in-time can fail if the agent doesn't have enough framing to know what to search for; that's why the framing parts get pre-loaded.)</p>
+</div>
+<hr />
+<h2>Section 7 — Message History and the Trajectory Problem</h2>
+<p>The message history is the part of context that grows monotonically as the agent runs. Every turn adds the model's previous response and any tool results. By turn 30, the message history can dominate the context — 80%+ of tokens are messages, 20% are everything else.</p>
+<p>Three principles for managing message history:</p>
+<p><strong>1. Stale tool results are the biggest waste.</strong> A tool result from turn 3 that's already been processed is consuming attention budget on turn 30, doing no work. The Anthropic Developer Platform's recent tool-result-clearing feature (covered in Module 8) handles this systematically; even without it, the discipline is "tool results have a useful life."</p>
+<p><strong>2. The agent's own reasoning trace can dilute its current focus.</strong> When the model has produced 20 turns of reasoning, the most recent reasoning often contradicts or refines earlier reasoning. The earlier reasoning is now noise; it's pointing the model toward conclusions it has since revised.</p>
+<p><strong>3. Periodic compaction is the right default for long trajectories.</strong> When the trajectory exceeds some threshold (Module 8 will cover specifics), summarize the message history into a compact form and continue with the summary plus the most recent activity. We won't deep-dive here; M8 is the home for compaction.</p>
+<p>For Module 7, the principle is: <strong>message history grows. You will have to manage it. Plan for it.</strong></p>
+<p>The simplest pattern is a turn cap with graceful degradation. Module 2's hardened loop already had this — <code>max_turns</code>. The implication for context engineering: at the turn cap, the agent doesn't just stop; it hands off (to a summary, to a sub-agent, to the user) with what it has. Module 8 details the handoff mechanics.</p>
+<hr />
+<h2>Section 8 — Retrieved and Attached Content</h2>
+<p>The fifth component of context: documents the user attached, MCP resources the host injected, retrieved chunks from a RAG system. These are the things the agent didn't ask for — they're handed to it.</p>
+<p>The discipline here is mostly <em>yours, not the agent's</em>. The agent has to work with what it gets. You're deciding what it gets.</p>
+<p>A few patterns that show up repeatedly:</p>
+<p><strong>Attached documents: respect the structure.</strong> When the user attaches a 50-page PDF, don't dump the raw text into context. Section it. Add headers. Preserve table boundaries. Number paragraphs if the agent might need to cite them. The structure costs almost no extra tokens and makes the model's downstream reasoning much sharper.</p>
+<p><strong>RAG retrieval: filter, don't fan out.</strong> Most retrieval systems return the top-K chunks by relevance score. Resist the urge to set K=20 because "more context is better." K=5-10 with high relevance is almost always better than K=20 with marginal relevance. If your relevance scoring isn't strong enough to make K=5 work, fix the relevance scoring before increasing K.</p>
+<p><strong>MCP resources: attached only when the agent needs them.</strong> From Module 5: resources are host-decided context attachments. Don't auto-attach everything; attach what's relevant to the current query. A <code>current_pipeline</code> resource for a deal-research agent is fine when the conversation is about pipeline; pointless when the agent is researching a specific company.</p>
+<p><strong>Source citations preserve provenance.</strong> Tag retrieved content with where it came from. Module 11's hallucination disciplines depend on this; without source-tagging, the agent has nothing to cite when asked.</p>
+<pre><code class="language-python"># Example: structured retrieved content rather than concatenated text
+
+retrieved_context = &quot;&quot;&quot;
+&lt;sources&gt;
+&lt;source id=&quot;1&quot; title=&quot;Mercer Industries 10-K&quot; date=&quot;2025-12-31&quot; type=&quot;filing&quot;&gt;
+[Relevant excerpt from the 10-K, ~500 tokens]
+&lt;/source&gt;
+
+&lt;source id=&quot;2&quot; title=&quot;Mercer Industries press release&quot; date=&quot;2026-03-15&quot; type=&quot;news&quot;&gt;
+[Relevant excerpt, ~200 tokens]
+&lt;/source&gt;
+
+&lt;source id=&quot;3&quot; title=&quot;Internal CRM record&quot; date=&quot;2026-04-22&quot; type=&quot;internal&quot;&gt;
+[Relevant excerpt, ~150 tokens]
+&lt;/source&gt;
+&lt;/sources&gt;
+
+When citing these sources, reference them by id (e.g., &quot;per source 1&quot;). If
+sources disagree, surface the disagreement and cite both.
+&quot;&quot;&quot;.strip()
+</code></pre>
+<p>The structured form preserves provenance, signals to the agent that these are external sources to cite, and uses about 5% more tokens than the raw concatenated text. The downstream quality lift — the agent can now reason about source credibility, dates, and conflicts — is significant.</p>
+<div class="gotcha">
+<p>A common RAG bug: the retrieval system returns the top 10 chunks, but the chunks are formatted as one big concatenated blob. The agent has no idea which chunk supports which claim, can't tell when chunks disagree, and has no way to cite. The fix is structural: keep chunks separate, tag them, signal their boundaries. The cost is small; the quality gain is large.</p>
+</div>
+<hr />
+<h2>Section 9 — Diagnosing Context Problems</h2>
+<p>When something's wrong in production, how do you tell if it's a context problem vs a model/prompt/tool/data problem?</p>
+<p>Five diagnostic patterns:</p>
+<p><strong>Symptom 1: The model misses an instruction that's clearly in the prompt.</strong> Likely context rot. Check where in the context the missed instruction lives. If it's deep in a long context, move it earlier or make the context shorter.</p>
+<p><strong>Symptom 2: The model produces inconsistent behavior across runs that "should" produce the same result.</strong> Likely attention budget thrashing — the model's attention is being pulled by different parts of the noisy context on different runs. Tighten the context.</p>
+<p><strong>Symptom 3: The model invents content that contradicts retrieved sources.</strong> Could be context (the source got buried, the model didn't attend to it) or could be a hallucination problem (Module 11). Test by tightening the context — if the contradiction disappears, it was attention; if it persists, it's hallucination.</p>
+<p><strong>Symptom 4: The model handles short cases well but degrades on long ones.</strong> Almost always context rot. Apply just-in-time retrieval, summarize the history, scope the tool set per task.</p>
+<p><strong>Symptom 5: The model gets confused about which tool to use.</strong> Tool overlap or tool count problem. Audit the tool set; consolidate overlapping tools; remove rarely-used tools from the per-task allow-list.</p>
+<div class="code-exercise">
+<p><strong>Exercise 7.1 — Audit your context.</strong></p>
+<p>Pick an agent or workflow you've shipped. Pull a real production trace.</p>
+<ol>
+<li><strong>Count the tokens by component.</strong> System prompt, tools, examples, message history, retrieved/attached content. What proportion is each?</li>
+<li><strong>Identify the high-value sections.</strong> Which parts of the context are load-bearing for the model's output? Which are noise?</li>
+<li><strong>Find the longest single block.</strong> Tool result, retrieved document, message — whichever is biggest. Could you replace it with a smaller, more focused version (truncation, just-in-time alternative, structured filter)?</li>
+<li><strong>Find the staleest content.</strong> What's in context now that was relevant 10 turns ago and isn't relevant anymore? (Module 8 covers compaction; Section 7 here notes the principle.)</li>
+<li><strong>Pick one change.</strong> Implement it. Re-run on the same inputs. Compare quality and cost.</li>
+</ol>
+<p>The goal isn't to optimize one trace — it's to build the calibration. Most production agents have 30-50% of their context consuming attention budget on stale or low-value content. The audit shows you where.</p>
+</div>
+<hr />
+<h2>Section 10 — When to Use a Long Context Anyway</h2>
+<p>A short, honest section. Context engineering isn't always about minimizing — sometimes the right call is <em>use the long context</em>.</p>
+<p>The cases:</p>
+<p><strong>Single-pass document analysis.</strong> A 200-page legal contract being reviewed once. Loading the whole thing into a 200K-token Sonnet/Opus context, asking "what are the unusual clauses?", getting the answer. The model gets full attention to the document at the cost of one big call. Cheaper and faster than chunking and aggregating.</p>
+<p><strong>Whole-codebase reasoning.</strong> A coding agent answering "where is this function used?" needs the whole codebase visible. Just-in-time search-and-fetch can work, but for global queries, full visibility is sometimes simpler and produces sharper output.</p>
+<p><strong>One-shot heavy-context generation.</strong> "Write a 5,000-word literature review based on these 30 papers" benefits from the model seeing all 30 papers at once. Chunking would lose cross-paper synthesis.</p>
+<p>The rule: <strong>long context is appropriate when the task genuinely requires global reasoning over a coherent body of content, and a single high-quality output beats a multi-call workflow.</strong></p>
+<p>The disqualifiers: agentic loops with growing context (just-in-time wins), tasks where you only need a fraction of the content (retrieve the fraction), tasks that decompose cleanly (decompose).</p>
+<p>The pricing matters too. Sonnet 4.6 and Opus 4.7 support 1M-token context at standard rates — no surcharge. That's the technical option. Use it when the task earns it; don't default to it just because it's there.</p>
+<hr />
+<h2>Section 11 — Putting It Together</h2>
+<p>The context engineering discipline, applied to a system you're building:</p>
+<p><strong>1. Audit current context usage.</strong> Token-count by component for a representative trace. Identify the proportions and the largest blocks.</p>
+<p><strong>2. Tighten the system prompt to the right altitude.</strong> Prune brittle conditionals; replace with heuristics. Test on real failures; remove anything that wasn't load-bearing in recent issues.</p>
+<p><strong>3. Curate the tool set per agent.</strong> Per-agent allow-lists. Consolidate overlapping tools. Cap definitions in count (10-15 max for most agents) and length (use Module 4's discipline — clear, not bloated).</p>
+<p><strong>4. Examples: 3-5, diverse, canonical.</strong> Drop anything that just papers over an edge case. Move edge cases into prompt heuristics.</p>
+<p><strong>5. Default to just-in-time retrieval.</strong> Pre-load only what's universally relevant. Give the agent good navigation tools. Use lightweight identifiers (paths, IDs, summaries) over inline content.</p>
+<p><strong>6. Structure retrieved content.</strong> Source-tag everything. Preserve boundaries between chunks. Tag dates and provenance.</p>
+<p><strong>7. Plan for trajectory length.</strong> For agents that run more than 10-20 turns, design the compaction strategy now (Module 8). Don't wait for the context window to break.</p>
+<p><strong>8. Diagnose context problems explicitly.</strong> When the model behaves badly, check whether it's a context issue (stale tool results, rotted attention, buried instruction) before assuming it's a model or prompt issue.</p>
+<p>The principle that runs through all of this: <strong>the context is a designed artifact, not a bag</strong>. You decide what's in it. The model's quality is a function of that decision as much as it is of the model itself.</p>
+<hr />
+<h2>Recap: Module 7 in eight bullets</h2>
+<div class="bullet-points">
+<ul>
+<li>Context is a finite resource with diminishing marginal returns. Every token spent depletes the model's attention budget, n² pairwise relationships in the transformer notwithstanding.</li>
+<li>Context rot — degraded recall as token count grows — emerges across every model. Long context isn't free; it's expensive in attention even when free in tokens.</li>
+<li>The system prompt should live at the "right altitude" — specific enough to guide, flexible enough to handle cases not enumerated. Brittle conditional scripts and vague handwaves are both failure modes.</li>
+<li>Tools are part of context. Per-agent allow-lists, ~10-15 tools max, consolidate overlap, watch for tool-result bloat. Module 4's tool design discipline is also context discipline.</li>
+<li>Few-shot examples: 3-5 diverse, canonical examples beat 15 narrow ones. Examples teach principles; edge cases that don't generalize belong in heuristics.</li>
+<li>Just-in-time retrieval is the default in 2026. Pre-load only what's universally relevant; give the agent navigation tools and lightweight identifiers; let it pull what it needs as it works.</li>
+<li>Message history grows monotonically. Stale tool results are the biggest waste; periodic compaction (Module 8) is the right default for long trajectories.</li>
+<li>Diagnose context problems explicitly. Buried instructions, attention thrashing, source-citation gaps, tool-overlap confusion — each has a different fix. Don't apply a model-level patch to a context-level problem.</li>
+</ul>
+</div>
+<hr />
+<div class="sam-arc">
+<p><strong>Sam, after the late-Wednesday context audit.</strong></p>
+<p>Sam spent Thursday morning in the synthesizer prompt. Pruned 1,800 tokens of accreted edge-case handling that was now in heuristic form. Restructured the user-message construction to put the <em>instruction</em> first and the <em>findings</em> second, with explicit source tagging. Cut the orchestrator's pre-loaded research from "everything" to "the things every brief actually uses, plus pointers to fetch the rest."</p>
+<p>Thursday afternoon: re-ran the holding-company case from Wednesday's failure. Synthesizer received a 60K-token context instead of 180K. Brief came back complete — six sections, including the financials section that had been silently dropped before. Latency improved 40%. Quality, by the team's own evaluator rubric, improved measurably.</p>
+<p>Friday morning: Sam ran the same audit across the rest of the deal-research workflow's prompts. Found the orchestrator was pre-loading every past brief on similar companies into context (~80K tokens). Replaced with a <code>list_briefs</code> tool. Found the brief evaluator's prompt had 11 examples that had been added one-at-a-time over six weeks. Pruned to 4 canonical ones. Found a tool that was being given every consumer's preference profile (~5K tokens) when only the active consumer's preference was relevant (~200 tokens).</p>
+<p>Each individual fix was small. The cumulative effect across the system was a 60% reduction in average context size, a 25% latency improvement, and a measurable quality lift on long deals (the cases that had been suffering from context rot most).</p>
+<p>Sam's arc this module: <strong>the bottleneck moved.</strong> The agent loop, the tools, the protocols, the model selection — all of those needed work, and got work, in earlier modules. The current bottleneck for Sam's system is what's <em>in</em> the context window. The next bottleneck (Module 8) will be what to <em>do</em> when the trajectory gets long enough that even careful upstream context engineering isn't enough.</p>
+<p>Each module's discipline doesn't <em>replace</em> the previous ones; it adds another layer of attention. By Module 9, Sam's system will be well-shaped (M3), well-tooled (M4), well-protocoled (M5), well-priced (M6), well-fed (M7), well-pruned (M8), and well-remembered (M9). The book builds — and so does Sam.</p>
+</div>
+<hr />
+<h2>What's next</h2>
+<p>Module 8 covers what to do when the context engineering principles from this module aren't enough — when trajectories get long, when tool results pile up, when the agent needs to think across a horizon longer than its context can hold.</p>
+<p>Three techniques: compaction (summarize and reinitialize), structured note-taking (write to memory outside the context window), and a brief preview of multi-agent architectures (which we'll deep-dive in Module 13). Plus the recent tool-result-clearing feature on the Claude Developer Platform that automates the most common cleanup pattern.</p>
+<p>After Module 8, Module 9 covers memory across runs — state that persists between separate trajectories, so a customer-success agent remembers what it learned about a customer last week. By the end of the M7-M9 arc, you'll have the complete picture: what to put in, what to take out, what to remember.</p>
+<p>Sam's deal-research system, post-Module 7, has tight, well-curated context per call. By Module 9 it'll also be smart about what it carries between calls. Then Module 10 starts the reliability arc — hallucinations, reflection, guardrails — which is the layer above context.</p>
+<p>For now: take the audit exercise from Section 9. Open one production trace. Count the tokens. Find the bloat. Ship the trim. Watch the quality move.</p>
+</body>
+</html>

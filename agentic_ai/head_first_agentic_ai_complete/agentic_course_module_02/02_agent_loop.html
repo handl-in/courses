@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 2 — The Agent Loop, Hardened</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 2 — The Agent Loop, Hardened</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 2</div>
+<div class="module-title">The Agent Loop, Hardened</div>
+<div class="subtitle">The six-line version is easy. Production is where it gets interesting.<br>This is the loop you'd actually ship.</div>
+<div class="pages">~38 pages · the loop, with operational discipline</div>
+</div>
+<div class="hook">
+<p>Sam pushed the agent to staging on Tuesday. By Thursday morning, three things had happened:</p>
+<p>One, an agent run had spent forty-three dollars trying to read a single PDF that 404'd on every fetch. The model never got bored. It just kept calling <code>read_url</code> against the same dead URL — fifty-seven times — varying the parameters slightly each pass, hoping a different incantation would make the document materialize.</p>
+<p>Two, a different run had silently completed in eleven seconds with no output. No error in the logs. The model had returned <code>stop_reason: "max_tokens"</code> mid-thought, the loop had treated it as completion, and the response was an empty string. The user got <code>null</code>. Customer support filed a ticket.</p>
+<p>Three, a run had succeeded — but had taken eight minutes instead of the expected forty seconds. Sam looked at the trace and found a tool that returned 80,000 tokens of XML when asked for a customer record. The model had dutifully read the whole thing, three times, before answering.</p>
+<p>The loop in Module 1 was correct. It was also not what you'd ship.</p>
+</div>
+<hr />
+<h2>What this module is</h2>
+<p>The minimal agent loop from Module 1 was about ten lines of code. It demonstrated the <em>shape</em>: call the model, check the stop reason, execute tool calls, feed results back, repeat. That shape is durable. Steve Kinney looked at six different agent frameworks in early 2026 — Claude Agent SDK, OpenAI Agents SDK, Cursor, the Vercel AI SDK, LangGraph, smolagents — and concluded "not similar. The same. A while loop that calls an LLM, checks if the response contains tool calls, executes them if it does, and stops if it doesn't. That's the whole thing."</p>
+<p>He's right. And he's also right about what comes next: <em>"The 6-line version is easy. The production-hardened version — with context compaction, loop detection, cost budgets, and graceful termination — is where things get interesting."</em></p>
+<p>This module is the production-hardened version.</p>
+<p>By the end you'll be able to:</p>
+<ul>
+<li>Implement an agent loop that handles every stop reason correctly (not just <code>tool_use</code> and <code>end_turn</code>)</li>
+<li>Add the four operational defenses that prevent runaway behavior: turn caps, token budgets, cost ceilings, loop detection</li>
+<li>Handle tool failures without poisoning context, and recover from API errors without losing state</li>
+<li>Distinguish the Anthropic Client SDK (where you implement the loop) from the Agent SDK (where Claude handles the loop), and know when each makes sense</li>
+<li>Read your own agent's traces well enough to debug them at 2am</li>
+</ul>
+<p>We'll write the loop in stages — first the minimal version, then we'll add each defense one at a time, explaining what each one prevents. By the end of the module the agent is something you'd actually deploy.</p>
+<div class="pullquote">
+<p>The loop is the easy part. Making it reliable is the whole job.<br>— Steve Kinney, "The Anatomy of an Agent Loop"</p>
+</div>
+<hr />
+<h2>Section 1 — The Two SDKs (Brief)</h2>
+<p>Before we write any code, a quick orientation that affects the whole module.</p>
+<p>Anthropic ships two Python SDKs that both call themselves "the SDK," and the distinction matters.</p>
+<p><strong>The Anthropic Client SDK</strong> (<code>anthropic</code> on PyPI). The basic one. You make API calls. When the model wants to use a tool, you receive a <code>tool_use</code> block, execute the tool yourself, and send the result back as a <code>tool_result</code>. <em>You implement the loop.</em> This is what we'll teach in this module.</p>
+<p><strong>The Claude Agent SDK</strong> (<code>claude-agent-sdk</code> on PyPI, formerly Claude Code SDK). The higher-level one. It runs on top of the Claude Code CLI binary. You hand it a prompt; it runs the agent loop for you, including built-in tools (filesystem, bash, web), MCP integration, hooks, and permission management. <em>Claude handles the loop.</em></p>
+<p>The Agent SDK is genuinely production-grade — it's the engine inside Claude Code. For many tasks, you should just use it and stop reading this module.</p>
+<p>We're teaching the Client SDK path anyway, and not because it's better. We're teaching it because:</p>
+<ol>
+<li><strong>You need to understand what's inside the loop to debug what's outside it.</strong> Every framework — including the Agent SDK — runs roughly the loop we're about to write. When something goes wrong in production, the trace is going to show tool calls and stop reasons, and you need to recognize what each one means.</li>
+<li><strong>Custom agents have custom loops.</strong> The Agent SDK is opinionated about tools (filesystem, bash, web) and execution model (CLI subprocess). If you're building, say, a customer-support agent that should <em>only</em> call your API and <em>never</em> touch the filesystem, the Client SDK gives you exact control. The Agent SDK gives you most of what you want plus a bunch you don't.</li>
+<li><strong>Multi-agent systems often roll their own loops.</strong> Module 14 builds supervisor-worker patterns where each level has its own loop with its own constraints. You can do that with the Agent SDK, but you understand it better if you've built the loop from scratch first.</li>
+</ol>
+<p>When the module ends, you'll be able to make an informed choice between the two for your next project. For now: Client SDK. Loop in your hands.</p>
+<div class="nodumbq">
+<p><strong>Q: Wait, the field has a "Managed Agents" thing now too?</strong></p>
+<p>Yes, as of April 2026 — Managed Agents is Anthropic's hosted agent runtime. They run the loop <em>and</em> the sandbox on their infrastructure; you make REST API calls to a session. Different again from both SDKs. We don't cover it in depth in this book because it's still in beta and the patterns shift quickly. Once you understand the Client SDK loop, the others are straightforward.</p>
+<p><strong>Q: Is one of these going to win?</strong></p>
+<p>The Client SDK and Agent SDK serve different needs and will likely coexist. The Agent SDK is the right default for most teams, especially for coding-adjacent agents. The Client SDK is the right choice when you need precise control or are building something the Agent SDK isn't shaped for. Treat them as complementary, not competing.</p>
+</div>
+<hr />
+<h2>Section 2 — The Minimal Loop, Properly</h2>
+<p>Let's start with a slightly less minimal loop than Module 1 had — still small, but with names and types that we'll keep building on.</p>
+<pre><code class="language-python">from anthropic import Anthropic
+from anthropic.types import Message, MessageParam
+
+client = Anthropic()
+
+
+def run_agent_minimal(
+    user_query: str,
+    tools: list[dict],
+    tool_handlers: dict[str, callable],
+    model: str = &quot;claude-sonnet-4-6&quot;,
+    max_turns: int = 20,
+) -&gt; str:
+    messages: list[MessageParam] = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_query}]
+
+    for turn in range(max_turns):
+        response: Message = client.messages.create(
+            model=model,
+            max_tokens=4096,
+            tools=tools,
+            messages=messages,
+        )
+
+        # Append the assistant's response (including any tool_use blocks) to messages
+        messages.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: response.content})
+
+        if response.stop_reason == &quot;end_turn&quot;:
+            return _extract_text(response)
+
+        if response.stop_reason == &quot;tool_use&quot;:
+            tool_results = _execute_tools(response, tool_handlers)
+            messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: tool_results})
+            continue
+
+        # Other stop_reason values handled in Section 3
+        raise RuntimeError(f&quot;Unexpected stop_reason: {response.stop_reason}&quot;)
+
+    raise RuntimeError(f&quot;Agent exhausted {max_turns} turns&quot;)
+
+
+def _extract_text(response: Message) -&gt; str:
+    return &quot;&quot;.join(
+        block.text for block in response.content if block.type == &quot;text&quot;
+    )
+
+
+def _execute_tools(response: Message, handlers: dict[str, callable]) -&gt; list[dict]:
+    results = []
+    for block in response.content:
+        if block.type == &quot;tool_use&quot;:
+            handler = handlers[block.name]
+            result = handler(**block.input)
+            results.append({
+                &quot;type&quot;: &quot;tool_result&quot;,
+                &quot;tool_use_id&quot;: block.id,
+                &quot;content&quot;: str(result),
+            })
+    return results
+</code></pre>
+<p>A few things to note about this version that the Module 1 sketch glossed:</p>
+<p><strong>The whole assistant response gets appended to messages, not just text.</strong> When the model emits a <code>tool_use</code> block, that block is part of its response. The next turn needs to see "I called this tool" to make sense of "here's the result." If you only append text and drop tool_use blocks, the conversation no longer parses and the next call will fail.</p>
+<p><strong>Tool results are wrapped in a user message.</strong> This is the API's protocol: the assistant emits tool_use blocks, the user (your code, on behalf of the user) emits matching tool_result blocks. Same role channel, alternating.</p>
+<p><strong>Every tool_use block needs a matching tool_result.</strong> If the model called three tools in one turn, you owe three tool_result blocks before the next call. Forget one and you'll get a 400.</p>
+<p><strong>Parallel tool calls happen in one turn.</strong> When the model emits multiple <code>tool_use</code> blocks in a single response, you can — and should — execute them concurrently. The function above does them in order; we'll fix this in Section 6 with <code>asyncio.gather</code>.</p>
+<p>This is still a fragile loop. It explodes on any stop reason that isn't <code>end_turn</code> or <code>tool_use</code>. It has no budget. It can't recover from a tool that throws. We're going to fix all of that. But this is the skeleton; everything from here is layering on top.</p>
+<div class="gotcha">
+<p>The single most common mistake in hand-rolled agent loops is not appending the assistant's full response (including tool_use blocks) to messages before the next turn. The symptom is a <code>400</code> from the API a few turns in, complaining about unexpected message structure. The cause is almost always that the dev appended only the text content. The full <code>response.content</code> list — including tool_use blocks — is what goes back into messages.</p>
+</div>
+<hr />
+<h2>Section 3 — Stop Reasons: All of Them</h2>
+<p><code>stop_reason</code> tells you why the model finished its turn. The minimal loop handled two values: <code>end_turn</code> (model is done) and <code>tool_use</code> (model wants to call tools). There are more, and you have to handle them or your agent will misbehave in subtle ways.</p>
+<p>Here are all the values you'll see in production:</p>
+<p><strong><code>"end_turn"</code></strong> — the model finished naturally. It said its piece and stopped. This is the success case. Extract the text and return.</p>
+<p><strong><code>"tool_use"</code></strong> — the model called one or more tools and is waiting for results. Execute the tools, append <code>tool_result</code> blocks, continue the loop.</p>
+<p><strong><code>"max_tokens"</code></strong> — the model hit the <code>max_tokens</code> limit you set on the request and was cut off mid-generation. <strong>This is not done.</strong> The text it produced is incomplete. The remembered failure from the cold open — the agent that returned eleven seconds of nothing — was this case, mishandled. Treat as either an error or a "continue" depending on your design. Often the fix is to raise <code>max_tokens</code> and retry; sometimes it's to break the task into smaller chunks.</p>
+<p><strong><code>"stop_sequence"</code></strong> — the model hit a <code>stop_sequences</code> value you provided. Treat similarly to <code>end_turn</code> for most uses; the specific stop sequence tells you why it stopped if you care.</p>
+<p><strong><code>"refusal"</code></strong> — the model refused to respond, often for safety reasons. The output text will explain. Don't retry the same prompt; surface the refusal to the user or upstream caller.</p>
+<p><strong><code>"pause_turn"</code></strong> — the model is pausing within an extended thinking session, typically to let you handle something asynchronously and resume. Most agents won't see this; if you're using extended thinking with interleaved tool calls and async patterns, handle it like <code>tool_use</code> (process and continue).</p>
+<p><strong><code>null</code> (or anything else)</strong> — protocol violation or new value Anthropic added. Don't pretend you handled it; raise loudly so it shows up in your traces.</p>
+<p>Here's the loop with all stop reasons handled:</p>
+<pre><code class="language-python">def run_agent_with_stop_reasons(
+    user_query: str,
+    tools: list[dict],
+    tool_handlers: dict[str, callable],
+    model: str = &quot;claude-sonnet-4-6&quot;,
+    max_turns: int = 20,
+    max_tokens_per_turn: int = 4096,
+) -&gt; str:
+    messages: list[MessageParam] = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_query}]
+
+    for turn in range(max_turns):
+        response = client.messages.create(
+            model=model,
+            max_tokens=max_tokens_per_turn,
+            tools=tools,
+            messages=messages,
+        )
+        messages.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: response.content})
+
+        match response.stop_reason:
+            case &quot;end_turn&quot; | &quot;stop_sequence&quot;:
+                return _extract_text(response)
+
+            case &quot;tool_use&quot;:
+                tool_results = _execute_tools(response, tool_handlers)
+                messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: tool_results})
+                continue
+
+            case &quot;max_tokens&quot;:
+                # Output truncated. Could:
+                # (a) Return what we have with a flag (often wrong — output is incomplete)
+                # (b) Increase max_tokens and retry the turn
+                # (c) Raise an error and let the caller decide
+                # We pick (c) for clarity; you choose for your application.
+                partial = _extract_text(response)
+                raise OutputTruncated(
+                    f&quot;Model output truncated at {max_tokens_per_turn} tokens&quot;,
+                    partial_output=partial,
+                    turn=turn,
+                )
+
+            case &quot;refusal&quot;:
+                refusal_text = _extract_text(response)
+                raise ModelRefusal(refusal_text, turn=turn)
+
+            case &quot;pause_turn&quot;:
+                # Extended-thinking pause; treat like tool_use continuation
+                continue
+
+            case _:
+                raise UnexpectedStopReason(
+                    f&quot;Unhandled stop_reason: {response.stop_reason!r}&quot;,
+                    response=response,
+                    turn=turn,
+                )
+
+    raise TurnLimitExceeded(f&quot;Agent exhausted {max_turns} turns&quot;)
+
+
+class OutputTruncated(Exception):
+    def __init__(self, message, partial_output, turn):
+        super().__init__(message)
+        self.partial_output = partial_output
+        self.turn = turn
+
+
+class ModelRefusal(Exception):
+    def __init__(self, message, turn):
+        super().__init__(message)
+        self.turn = turn
+
+
+class UnexpectedStopReason(Exception):
+    def __init__(self, message, response, turn):
+        super().__init__(message)
+        self.response = response
+        self.turn = turn
+
+
+class TurnLimitExceeded(Exception):
+    pass
+</code></pre>
+<p>Three things this version gets right that the minimal version didn't:</p>
+<ol>
+<li><strong><code>max_tokens</code> is no longer a silent success.</strong> You get a typed exception with the partial output, so the caller can decide whether to retry with a larger budget or fail loudly.</li>
+<li><strong><code>refusal</code> is named and visible.</strong> A refusal usually means your prompt is asking for something the model won't do; the right response is human review, not a retry loop.</li>
+<li><strong>Unhandled stop reasons explode rather than hide.</strong> When Anthropic adds a new stop reason — and they will — your agent fails fast with a clear error, not silently or weirdly.</li>
+</ol>
+<div class="brain">
+<p>The cold open's "eleven seconds of nothing" agent failed because <code>max_tokens</code> was treated like <code>end_turn</code>. Trace through it: the model started generating, hit the budget, returned partial text with <code>stop_reason: "max_tokens"</code>, the loop's <code>if stop_reason == "end_turn": return text</code> happened to match because the dev had used <code>else: return text</code> as a default. What's the cheapest defense? (Answer: explicit handling of every known stop reason, and a default that raises. The cost is one <code>match</code> statement; the savings is every silent-truncation bug for the lifetime of the agent.)</p>
+</div>
+<hr />
+<h2>Section 4 — Tool Failures and Context Hygiene</h2>
+<p>Tools fail. The API a tool wraps is down, returns an unexpected schema, returns way too much data, raises a Python exception. Your loop has to keep going — but it also has to be honest about what happened.</p>
+<p>There are four ways a tool can fail, and they want different handling:</p>
+<p><strong>Type 1: The tool raised a Python exception.</strong> Network error, parse error, KeyError. The model never sees a result; instead, you decide what to send.</p>
+<p><strong>Type 2: The tool returned an error object.</strong> The API said <code>{"error": "user_not_found"}</code>. The tool didn't crash; the operation just didn't succeed.</p>
+<p><strong>Type 3: The tool returned valid but enormous output.</strong> The 80,000-token customer record from the cold open. Tool succeeded; result will eat the context.</p>
+<p><strong>Type 4: The tool succeeded with usable but stale or wrong data.</strong> Cache returned yesterday's price. Tool can't know it's wrong; you can't catch this here.</p>
+<p>For Types 1 and 2, the right answer is roughly the same: surface the failure to the model in the tool_result, with <code>is_error: true</code>. The model can see the failure, reason about it, and try something else (or give up gracefully).</p>
+<pre><code class="language-python">def _execute_tools_safely(
+    response: Message,
+    handlers: dict[str, callable],
+    max_result_chars: int = 20_000,
+) -&gt; list[dict]:
+    results = []
+    for block in response.content:
+        if block.type != &quot;tool_use&quot;:
+            continue
+
+        handler = handlers.get(block.name)
+        if handler is None:
+            results.append({
+                &quot;type&quot;: &quot;tool_result&quot;,
+                &quot;tool_use_id&quot;: block.id,
+                &quot;is_error&quot;: True,
+                &quot;content&quot;: f&quot;Unknown tool: {block.name}&quot;,
+            })
+            continue
+
+        try:
+            raw_result = handler(**block.input)
+            content = _serialize_result(raw_result)
+        except Exception as exc:
+            # Type 1: tool raised. Tell the model.
+            content = f&quot;Tool {block.name} raised {type(exc).__name__}: {exc}&quot;
+            results.append({
+                &quot;type&quot;: &quot;tool_result&quot;,
+                &quot;tool_use_id&quot;: block.id,
+                &quot;is_error&quot;: True,
+                &quot;content&quot;: content,
+            })
+            continue
+
+        # Type 3: result too big. Truncate and warn.
+        if len(content) &gt; max_result_chars:
+            truncated = content[: max_result_chars]
+            content = (
+                f&quot;{truncated}\n\n&quot;
+                f&quot;[result truncated: {len(content)} chars total, &quot;
+                f&quot;showing first {max_result_chars}]&quot;
+            )
+
+        results.append({
+            &quot;type&quot;: &quot;tool_result&quot;,
+            &quot;tool_use_id&quot;: block.id,
+            &quot;content&quot;: content,
+        })
+    return results
+
+
+def _serialize_result(result) -&gt; str:
+    if isinstance(result, str):
+        return result
+    if isinstance(result, dict):
+        import json
+        return json.dumps(result, indent=2, default=str)
+    return str(result)
+</code></pre>
+<p>The choices in this version, made deliberately:</p>
+<p><strong>Tool exceptions become tool_result with <code>is_error: true</code>, not Python exceptions.</strong> The model can see "the tool failed because X" and decide what to do. If you let the exception propagate, you've thrown away the agent's ability to recover. The model often <em>can</em> recover — it tries a different argument, or admits the failure and asks the user, or moves on to a different tool.</p>
+<p><strong>Truncation is explicit, not silent.</strong> If the result is too big, we show the model a prefix and tell it the rest was cut. Without the marker, the model might assume it has the complete data and synthesize confidently from a partial picture.</p>
+<p><strong>Unknown tool names produce a tool_result, not an exception.</strong> If your tool registry doesn't have the tool the model called for, that's still recoverable — the model can pick a different tool next turn. But if it raises, you've crashed the loop.</p>
+<div class="postmortem">
+<p><strong>The Tool Result That Broke the Compactor</strong></p>
+<p>A team's agent was working great for a week. Then on Friday afternoon it started timing out. Long traces. Tool calls returning, but the agent never finishing.</p>
+<p>Investigation: a customer record tool was returning ~5KB normally. For one specific customer (with 200 line items in their order history) it returned 320KB of JSON. The agent dutifully read all of it. The next turn's input was now huge. The model's response was slow. The model called more tools. The next turn was huger. By the fifth turn, the agent's context had grown past 100K tokens and inference was crawling.</p>
+<p>The fix was the truncation block above: cap tool results at 20K characters, with an explicit marker that the result was truncated. The model, seeing the marker, learned to make narrower queries (filter by date, paginate) instead of swallowing the whole record.</p>
+<p>The lesson: <strong>tool result size is part of your tool's contract</strong>. A tool that can return arbitrary amounts of data is a tool that can lock up your agent. Cap aggressively at the loop level even when you're confident the tool is well-behaved — you'll eventually hit the case you weren't confident about.</p>
+</div>
+<div class="gotcha">
+<p>A tempting design is to filter tool results based on what looks "relevant." Don't. The truncation marker is honest; selective filtering is silent context corruption. If the tool is returning too much, fix the tool's interface (add filters, paginate, summarize at the tool layer) — don't let the loop secretly hide data from the model.</p>
+</div>
+<hr />
+<h2>Section 5 — Budgets: Turns, Tokens, and Dollars</h2>
+<p>Three budgets, layered. Each catches a different runaway pattern.</p>
+<p><strong>Turn budget.</strong> The simplest. A counter. Caps the number of times the loop runs. Catches infinite-loop bugs but doesn't catch a single very expensive turn.</p>
+<p><strong>Token budget.</strong> Tracks cumulative input and output tokens across the whole session. Catches the case where individual turns are reasonable but their sum isn't.</p>
+<p><strong>Dollar budget.</strong> Tracks cumulative cost in USD, computed from the session's token totals against current model pricing. Catches the case where token totals look fine but the model upgrades you ran on were expensive (Opus instead of Sonnet, etc.).</p>
+<p>In practice you want all three. They're cheap to track. Each prevents a different incident.</p>
+<pre><code class="language-python">from dataclasses import dataclass, field
+
+
+# Pricing as of May 2026; verify against Anthropic's current pricing page.
+# Numbers are USD per million tokens, (input, output).
+MODEL_PRICING = {
+    &quot;claude-opus-4-7&quot;:   (5.00, 25.00),
+    &quot;claude-opus-4-6&quot;:   (5.00, 25.00),
+    &quot;claude-sonnet-4-6&quot;: (3.00, 15.00),
+    &quot;claude-haiku-4-5&quot;:  (1.00,  5.00),
+}
+
+
+@dataclass
+class Budget:
+    max_turns: int = 30
+    max_input_tokens: int = 500_000
+    max_output_tokens: int = 100_000
+    max_cost_usd: float = 5.00
+
+    turns_used: int = 0
+    input_tokens_used: int = 0
+    output_tokens_used: int = 0
+    cost_used_usd: float = 0.0
+
+    def record_turn(self, response: Message) -&gt; None:
+        self.turns_used += 1
+        usage = response.usage
+        self.input_tokens_used += usage.input_tokens
+        self.output_tokens_used += usage.output_tokens
+        rates = MODEL_PRICING.get(response.model)
+        if rates is None:
+            # Unknown model: don't crash, but flag it.
+            return
+        in_rate, out_rate = rates
+        self.cost_used_usd += (
+            usage.input_tokens / 1_000_000 * in_rate
+            + usage.output_tokens / 1_000_000 * out_rate
+        )
+
+    def check(self) -&gt; None:
+        if self.turns_used &gt;= self.max_turns:
+            raise BudgetExceeded(&quot;turns&quot;, self.turns_used, self.max_turns)
+        if self.input_tokens_used &gt;= self.max_input_tokens:
+            raise BudgetExceeded(&quot;input_tokens&quot;, self.input_tokens_used, self.max_input_tokens)
+        if self.output_tokens_used &gt;= self.max_output_tokens:
+            raise BudgetExceeded(&quot;output_tokens&quot;, self.output_tokens_used, self.max_output_tokens)
+        if self.cost_used_usd &gt;= self.max_cost_usd:
+            raise BudgetExceeded(&quot;cost_usd&quot;, self.cost_used_usd, self.max_cost_usd)
+
+
+class BudgetExceeded(Exception):
+    def __init__(self, dimension: str, used, limit):
+        super().__init__(f&quot;Budget exceeded on {dimension}: {used} &gt;= {limit}&quot;)
+        self.dimension = dimension
+        self.used = used
+        self.limit = limit
+</code></pre>
+<p>The budget object is updated after every API response and checked before every API call. Three dimensions plus turns means four ways the agent can stop early — each with a clear name in your traces, so when you debug "why did the agent stop?" you can answer specifically: it ran out of turns, or burned through the cost ceiling, or generated too much output.</p>
+<p>The choice of caps matters more than people realize. Your budget should reflect what <em>you</em>, the operator, are willing to pay for <em>one</em> user request. For a customer-support agent that's expected to resolve a ticket, $0.50 might be the right ceiling — past that, you're spending more on the LLM than the customer's question is worth. For a deep research agent that's expected to take five minutes and produce a 2000-word report, $5 is reasonable.</p>
+<p>If you can't articulate the dollar value of one successful run, you can't size the budget. And if you can't size the budget, you don't know what "too expensive" means until you're paying it.</p>
+<div class="nodumbq">
+<p><strong>Q: What if my budget is too tight and the agent stops mid-task?</strong></p>
+<p>That's the right outcome — better than infinite cost. The agent should return <em>what it has so far</em> (partial results, or a clear "I couldn't complete this within the budget"), and your application should decide whether to escalate to a human, retry with a bigger budget, or surface the partial result to the user. We cover graceful degradation in Section 9.</p>
+<p><strong>Q: How do I figure out a reasonable cost cap if I haven't shipped yet?</strong></p>
+<p>Run your agent on 50-100 representative tasks with a generous cap (say, $10) and look at the cost distribution. Pick a cap at the 95th or 99th percentile; that's the cap that catches outliers but lets normal traffic through. Then watch production for a week — if you're hitting the cap on legitimate tasks, raise it; if you're never hitting it, lower it. Caps are tuneable; don't agonize over the first number.</p>
+</div>
+<hr />
+<h2>Section 6 — Loop Detection</h2>
+<p>A budget catches <em>eventual</em> runaway. Loop detection catches <em>immediate</em> runaway — the agent calling the same tool with the same arguments over and over because it's stuck.</p>
+<p>The cold open's $43 PDF read was this. Same URL, fifty-seven times. Each call cost a fraction of a cent in tokens, but they added up. A turn budget of 100 wouldn't have caught it in time. A cost cap of $5 would've, but only after burning $5.</p>
+<p>A simple loop detector that runs on every tool call:</p>
+<pre><code class="language-python">import hashlib
+from collections import Counter
+
+
+@dataclass
+class LoopDetector:
+    # If the same (tool_name, args_hash) shows up this many times
+    # in the recent history window, we declare a loop.
+    repeat_threshold: int = 3
+    history_window: int = 8
+    history: list[tuple[str, str]] = field(default_factory=list)
+
+    def record(self, tool_name: str, tool_input: dict) -&gt; None:
+        sig = (tool_name, _stable_hash(tool_input))
+        self.history.append(sig)
+        if len(self.history) &gt; self.history_window:
+            self.history = self.history[-self.history_window:]
+
+    def in_loop(self) -&gt; tuple[bool, tuple[str, str] | None]:
+        if not self.history:
+            return False, None
+        counts = Counter(self.history)
+        most_common, count = counts.most_common(1)[0]
+        if count &gt;= self.repeat_threshold:
+            return True, most_common
+        return False, None
+
+
+def _stable_hash(data: dict) -&gt; str:
+    import json
+    canonical = json.dumps(data, sort_keys=True, default=str)
+    return hashlib.sha256(canonical.encode()).hexdigest()[:16]
+</code></pre>
+<p>Wired into the loop:</p>
+<pre><code class="language-python">def _execute_tools_with_loop_detection(
+    response, handlers, detector: LoopDetector, max_result_chars=20_000,
+):
+    results = []
+    for block in response.content:
+        if block.type != &quot;tool_use&quot;:
+            continue
+        detector.record(block.name, block.input)
+        in_loop, signature = detector.in_loop()
+        if in_loop:
+            tool_name, _ = signature
+            results.append({
+                &quot;type&quot;: &quot;tool_result&quot;,
+                &quot;tool_use_id&quot;: block.id,
+                &quot;is_error&quot;: True,
+                &quot;content&quot;: (
+                    f&quot;Loop detected: tool {tool_name} called with the same arguments &quot;
+                    f&quot;{detector.repeat_threshold}+ times in {detector.history_window} turns. &quot;
+                    f&quot;Try a different approach, or report inability to proceed.&quot;
+                ),
+            })
+            continue
+        # ... normal execution path ...
+    return results
+</code></pre>
+<p>Notice what we do when a loop is detected: we don't crash the agent. We feed the loop-detection message back to the model as a tool_result with <code>is_error: true</code>. The model sees its own loop, named explicitly, and gets a chance to try something else.</p>
+<p>This is more useful than crashing. Most loops happen because the model is fixated on a path that isn't working — wrong URL, wrong query, wrong argument. With explicit feedback, it usually changes course. The 4% of cases where it doesn't are caught by the budget instead.</p>
+<p>What counts as "the same call" matters. Two calls with <code>{"url": "x"}</code> and <code>{"url": "x", "timeout": 30}</code> are not exact matches but probably count as the same loop. We hash the canonical-JSON representation, which catches dict-key-order differences but does treat extra fields as different. For most agents this is fine; for picky cases, you can canonicalize more aggressively (drop optional fields, normalize whitespace, etc.).</p>
+<div class="brain">
+<p>A loop detector with <code>repeat_threshold=3</code> catches three identical calls in eight turns. What if your agent legitimately needs to call the same tool four times — say, polling an async job? (Answer: either tighten the loop detector's idea of "same call" so polling doesn't count as a loop — different call IDs, slightly different timestamps — or design the tool itself to handle polling internally so the agent doesn't see four calls. The second option is almost always better. Polling is a tool concern, not an agent concern.)</p>
+</div>
+<hr />
+<h2>Section 7 — Concurrent Tool Calls and Async</h2>
+<p>The model can emit multiple tool_use blocks in a single turn. The minimal loop executes them in order. This wastes wall-clock time when the tools are independent — and most are, since the model wouldn't have called them in parallel if it thought they depended on each other.</p>
+<p>The async version:</p>
+<pre><code class="language-python">import asyncio
+from anthropic import AsyncAnthropic
+
+async_client = AsyncAnthropic()
+
+
+async def _execute_tools_concurrent(
+    response: Message,
+    handlers: dict[str, callable],
+    max_result_chars: int = 20_000,
+) -&gt; list[dict]:
+    tool_use_blocks = [b for b in response.content if b.type == &quot;tool_use&quot;]
+
+    async def run_one(block):
+        try:
+            handler = handlers[block.name]
+            if asyncio.iscoroutinefunction(handler):
+                raw = await handler(**block.input)
+            else:
+                # Run sync handlers in a thread to avoid blocking the loop
+                raw = await asyncio.to_thread(handler, **block.input)
+            content = _serialize_result(raw)
+            if len(content) &gt; max_result_chars:
+                content = content[:max_result_chars] + f&quot;\n\n[truncated: {len(content)} total]&quot;
+            return {
+                &quot;type&quot;: &quot;tool_result&quot;,
+                &quot;tool_use_id&quot;: block.id,
+                &quot;content&quot;: content,
+            }
+        except KeyError:
+            return {
+                &quot;type&quot;: &quot;tool_result&quot;,
+                &quot;tool_use_id&quot;: block.id,
+                &quot;is_error&quot;: True,
+                &quot;content&quot;: f&quot;Unknown tool: {block.name}&quot;,
+            }
+        except Exception as exc:
+            return {
+                &quot;type&quot;: &quot;tool_result&quot;,
+                &quot;tool_use_id&quot;: block.id,
+                &quot;is_error&quot;: True,
+                &quot;content&quot;: f&quot;Tool {block.name} raised {type(exc).__name__}: {exc}&quot;,
+            }
+
+    return await asyncio.gather(*[run_one(b) for b in tool_use_blocks])
+</code></pre>
+<p>Two things worth being explicit about:</p>
+<p><strong><code>asyncio.to_thread</code> for sync handlers.</strong> A lot of real tools are sync — they wrap a sync HTTP client, a sync database driver, a CPU-bound transformation. If you <code>await</code> them naively in an async loop, you block the event loop. <code>to_thread</code> lets you run sync tools concurrently without rewriting them.</p>
+<p><strong>Per-tool exception handling, not per-batch.</strong> If three tools run in parallel and one crashes, the other two should still return results. Wrapping each in its own try/except (and letting <code>asyncio.gather</code> collect them all) is the right pattern. The default <code>gather</code> behavior — where one exception aborts the whole gather — is what we <em>don't</em> want here.</p>
+<p>The full async loop looks essentially the same as the sync one, with <code>await</code> sprinkled where you'd expect:</p>
+<pre><code class="language-python">async def run_agent_async(
+    user_query: str,
+    tools: list[dict],
+    tool_handlers: dict[str, callable],
+    *,
+    model: str = &quot;claude-sonnet-4-6&quot;,
+    budget: Budget | None = None,
+    detector: LoopDetector | None = None,
+    max_tokens_per_turn: int = 4096,
+) -&gt; AgentResult:
+    budget = budget or Budget()
+    detector = detector or LoopDetector()
+    messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_query}]
+
+    while True:
+        budget.check()
+        response = await async_client.messages.create(
+            model=model,
+            max_tokens=max_tokens_per_turn,
+            tools=tools,
+            messages=messages,
+        )
+        budget.record_turn(response)
+        messages.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: response.content})
+
+        if response.stop_reason in (&quot;end_turn&quot;, &quot;stop_sequence&quot;):
+            return AgentResult(
+                output=_extract_text(response),
+                budget=budget,
+                trace_messages=messages,
+                terminated_by=&quot;end_turn&quot;,
+            )
+
+        if response.stop_reason == &quot;tool_use&quot;:
+            for block in response.content:
+                if block.type == &quot;tool_use&quot;:
+                    detector.record(block.name, block.input)
+            in_loop, sig = detector.in_loop()
+            if in_loop:
+                # Inject loop notice into next user turn instead of executing
+                messages.append({
+                    &quot;role&quot;: &quot;user&quot;,
+                    &quot;content&quot;: _loop_notice(response, sig),
+                })
+                continue
+            tool_results = await _execute_tools_concurrent(response, tool_handlers)
+            messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: tool_results})
+            continue
+
+        if response.stop_reason == &quot;max_tokens&quot;:
+            return AgentResult(
+                output=_extract_text(response),
+                budget=budget,
+                trace_messages=messages,
+                terminated_by=&quot;max_tokens&quot;,
+                partial=True,
+            )
+
+        if response.stop_reason == &quot;refusal&quot;:
+            return AgentResult(
+                output=_extract_text(response),
+                budget=budget,
+                trace_messages=messages,
+                terminated_by=&quot;refusal&quot;,
+                partial=True,
+            )
+
+        raise UnexpectedStopReason(response.stop_reason, response=response)
+
+
+@dataclass
+class AgentResult:
+    output: str
+    budget: Budget
+    trace_messages: list
+    terminated_by: str  # &quot;end_turn&quot; | &quot;max_tokens&quot; | &quot;refusal&quot; | &quot;budget&quot; | &quot;turns&quot;
+    partial: bool = False
+</code></pre>
+<p>Now we have a loop that:</p>
+<ul>
+<li>handles every stop reason</li>
+<li>caps turns, tokens, and cost</li>
+<li>detects loops and gives the model a chance to recover</li>
+<li>runs parallel tool calls concurrently</li>
+<li>returns a structured result with enough metadata to debug</li>
+</ul>
+<p>That's most of what production needs. Three things left: API errors, observability, and graceful termination. Sections 8 through 10.</p>
+<hr />
+<h2>Section 8 — API Errors and Retries</h2>
+<p>The Anthropic API can return errors. Some are retryable, some aren't. The Python SDK handles a lot of this for you (it retries 5xx and rate-limit responses with backoff), but you should know what's happening and override defaults when needed.</p>
+<p>The errors you'll see in production:</p>
+<p><strong><code>anthropic.RateLimitError</code> (HTTP 429).</strong> You're sending requests too fast. The SDK retries with exponential backoff by default. If your traffic is bursty, the default behavior is usually fine; if you're consistently hitting limits, you need higher tier limits or to throttle upstream.</p>
+<p><strong><code>anthropic.APIStatusError</code> with 5xx codes.</strong> Server-side issue. Retry with backoff. The SDK does this by default (default retries: 2, configurable).</p>
+<p><strong><code>anthropic.APIStatusError</code> with 4xx codes (other than 429).</strong> Your request is wrong. Don't retry — fix the request. Common causes: invalid tool schema, message structure broken (forgot a tool_result), context window exceeded.</p>
+<p><strong><code>anthropic.APIConnectionError</code>.</strong> Network problem reaching the API. Retry with backoff.</p>
+<p><strong><code>anthropic.APITimeoutError</code>.</strong> The request took too long and the SDK gave up. Default timeout is 10 minutes per request, which is generous; you can lower it.</p>
+<p>The pragma: configure retries at SDK construction, then handle terminal errors at your loop level.</p>
+<pre><code class="language-python">import anthropic
+
+# Two retries on retryable errors, ten-minute timeout per call.
+async_client = AsyncAnthropic(
+    max_retries=2,
+    timeout=600.0,
+)
+
+
+async def call_with_diagnosis(client, **kwargs):
+    &quot;&quot;&quot;Wrap messages.create so terminal errors carry useful context.&quot;&quot;&quot;
+    try:
+        return await client.messages.create(**kwargs)
+    except anthropic.APIStatusError as e:
+        # 4xx (non-429) reach here after the SDK gave up.
+        # 5xx and 429 reach here only if retries exhausted.
+        raise AgentAPIError(
+            f&quot;API error {e.status_code}: {e.message}&quot;,
+            status_code=e.status_code,
+            request_id=getattr(e, &quot;request_id&quot;, None),
+        ) from e
+    except anthropic.APIConnectionError as e:
+        raise AgentAPIError(
+            f&quot;Connection error after retries: {e}&quot;,
+            status_code=None,
+            request_id=None,
+        ) from e
+
+
+class AgentAPIError(Exception):
+    def __init__(self, message, status_code, request_id):
+        super().__init__(message)
+        self.status_code = status_code
+        self.request_id = request_id
+</code></pre>
+<p>A subtle thing about retries inside an agent loop: if the SDK retries a request that already succeeded once on a tool that has side effects, you can get double execution. This is rare with <code>messages.create</code> (the API is idempotent on the model's side; you sent inputs and you get outputs), but the <em>tools</em> you call from within the loop can be non-idempotent. If your retry strategy upstream re-runs an entire agent call, you can re-send emails, re-charge cards, re-create resources.</p>
+<p>The defense for this lives in tool design, not loop design — Module 4 covers idempotency keys and dry-run patterns. For now: be aware that retrying a whole agent run is <em>not safe by default</em>, and design your tools (or your retry policy) accordingly.</p>
+<div class="gotcha">
+<p>The Anthropic SDK's default <code>max_retries=2</code> is good for most cases. Setting it higher (<code>max_retries=10</code>) sounds defensive but is dangerous — if the API is genuinely down and you're in an agent loop, you'll burn turns and budget on retries that won't succeed. Trust the SDK's default; if retries fail, fail upward fast.</p>
+</div>
+<hr />
+<h2>Section 9 — Graceful Termination and Partial Results</h2>
+<p>When the loop terminates for <em>any</em> reason that isn't <code>end_turn</code> — budget exhausted, refusal, max-tokens, turn cap, API error — you have a partial result. The right behavior is to surface what you have, not throw it away.</p>
+<p>The <code>AgentResult</code> dataclass we built handles this — every termination path produces an <code>AgentResult</code> with <code>terminated_by</code> set and <code>partial=True</code> when applicable. Three call sites that benefit:</p>
+<p><strong>The user-facing UI.</strong> Show the partial result with a label: "I couldn't finish this in the time/budget I had. Here's what I gathered so far:" The user can read it, judge usefulness, and ask a more focused follow-up.</p>
+<p><strong>Upstream retry logic.</strong> If the agent terminated by budget, retry with a higher budget <em>only if the partial result is empty or unhelpful</em>. If it produced something useful, ship it.</p>
+<p><strong>Eval and observability.</strong> Partial-result rate is a metric you'll want. If 10% of runs hit <code>terminated_by="budget"</code>, you have a sizing problem; if 10% hit <code>terminated_by="refusal"</code>, you have a prompt problem. Lumping all failures into "didn't complete" hides the diagnosis.</p>
+<p>Here's the full loop, returning <code>AgentResult</code> from every exit path, including the budget-exhausted case:</p>
+<pre><code class="language-python">async def run_agent_complete(
+    user_query: str,
+    tools: list[dict],
+    tool_handlers: dict[str, callable],
+    *,
+    model: str = &quot;claude-sonnet-4-6&quot;,
+    budget: Budget | None = None,
+    detector: LoopDetector | None = None,
+    max_tokens_per_turn: int = 4096,
+) -&gt; AgentResult:
+    budget = budget or Budget()
+    detector = detector or LoopDetector()
+    messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_query}]
+
+    while True:
+        try:
+            budget.check()
+        except BudgetExceeded as e:
+            return AgentResult(
+                output=_partial_output_so_far(messages),
+                budget=budget,
+                trace_messages=messages,
+                terminated_by=f&quot;budget:{e.dimension}&quot;,
+                partial=True,
+            )
+
+        try:
+            response = await call_with_diagnosis(
+                async_client,
+                model=model,
+                max_tokens=max_tokens_per_turn,
+                tools=tools,
+                messages=messages,
+            )
+        except AgentAPIError as e:
+            return AgentResult(
+                output=_partial_output_so_far(messages),
+                budget=budget,
+                trace_messages=messages,
+                terminated_by=f&quot;api_error:{e.status_code}&quot;,
+                partial=True,
+            )
+
+        budget.record_turn(response)
+        messages.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: response.content})
+
+        if response.stop_reason in (&quot;end_turn&quot;, &quot;stop_sequence&quot;):
+            return AgentResult(
+                output=_extract_text(response),
+                budget=budget,
+                trace_messages=messages,
+                terminated_by=&quot;end_turn&quot;,
+            )
+
+        if response.stop_reason == &quot;tool_use&quot;:
+            for block in response.content:
+                if block.type == &quot;tool_use&quot;:
+                    detector.record(block.name, block.input)
+            in_loop, sig = detector.in_loop()
+            if in_loop:
+                messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: _loop_notice(response, sig)})
+                continue
+            tool_results = await _execute_tools_concurrent(response, tool_handlers)
+            messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: tool_results})
+            continue
+
+        # max_tokens, refusal, anything else: terminal.
+        return AgentResult(
+            output=_extract_text(response),
+            budget=budget,
+            trace_messages=messages,
+            terminated_by=f&quot;stop_reason:{response.stop_reason}&quot;,
+            partial=True,
+        )
+
+
+def _partial_output_so_far(messages: list) -&gt; str:
+    &quot;&quot;&quot;Best-effort recovery of the agent's last text output.&quot;&quot;&quot;
+    for msg in reversed(messages):
+        if msg.get(&quot;role&quot;) != &quot;assistant&quot;:
+            continue
+        content = msg[&quot;content&quot;]
+        if isinstance(content, list):
+            text_parts = [b.text for b in content if hasattr(b, &quot;type&quot;) and b.type == &quot;text&quot;]
+            if text_parts:
+                return &quot;\n&quot;.join(text_parts)
+    return &quot;&quot;
+</code></pre>
+<p>This loop is almost done. One more layer: knowing what it actually did.</p>
+<div class="pullquote">
+<p>A budget that crashes the agent silently is not a defense — it's a different kind of failure. Surface the partial result; let the caller decide whether it's worth shipping.</p>
+</div>
+<hr />
+<h2>Section 10 — Observability: Just Enough for Now</h2>
+<p>We'll do production observability properly in Module 17 — OpenTelemetry semantic conventions, distributed tracing, the platform comparisons. Here, in Module 2, we install just enough that the agent isn't a black box from day one.</p>
+<p>Two things matter at this stage:</p>
+<ol>
+<li>
+<p><strong>Structured logging of every turn.</strong> Each turn produces one log line with: turn number, model, input/output tokens, cumulative cost, stop reason, tool calls (names only — not arguments — to avoid logging PII).</p>
+</li>
+<li>
+<p><strong>A trace object</strong> that holds the full message history and per-turn metadata, returnable from the loop for inspection in tests and replayable in dev.</p>
+</li>
+</ol>
+<pre><code class="language-python">import logging
+import time
+
+logger = logging.getLogger(&quot;agent&quot;)
+
+
+@dataclass
+class TurnRecord:
+    turn: int
+    started_at: float
+    duration_s: float
+    model: str
+    input_tokens: int
+    output_tokens: int
+    cost_usd: float
+    stop_reason: str
+    tool_calls: list[str]  # names only, no args
+
+
+@dataclass
+class AgentTrace:
+    turns: list[TurnRecord] = field(default_factory=list)
+    started_at: float = field(default_factory=time.time)
+
+    def add(self, record: TurnRecord) -&gt; None:
+        self.turns.append(record)
+        logger.info(
+            &quot;agent.turn&quot;,
+            extra={
+                &quot;turn&quot;: record.turn,
+                &quot;model&quot;: record.model,
+                &quot;input_tokens&quot;: record.input_tokens,
+                &quot;output_tokens&quot;: record.output_tokens,
+                &quot;cost_usd&quot;: round(record.cost_usd, 4),
+                &quot;stop_reason&quot;: record.stop_reason,
+                &quot;tool_calls&quot;: record.tool_calls,
+                &quot;duration_s&quot;: round(record.duration_s, 2),
+            },
+        )
+
+    def summary(self) -&gt; dict:
+        total_in = sum(t.input_tokens for t in self.turns)
+        total_out = sum(t.output_tokens for t in self.turns)
+        total_cost = sum(t.cost_usd for t in self.turns)
+        return {
+            &quot;total_turns&quot;: len(self.turns),
+            &quot;total_input_tokens&quot;: total_in,
+            &quot;total_output_tokens&quot;: total_out,
+            &quot;total_cost_usd&quot;: round(total_cost, 4),
+            &quot;wall_clock_s&quot;: round(time.time() - self.started_at, 2),
+        }
+</code></pre>
+<p>Hooked into the loop, the <code>AgentResult</code> returns the trace along with the output. Now in tests, dev, and incident response, you can see exactly what the agent did:</p>
+<pre><code class="language-python">result = await run_agent_complete(...)
+print(result.trace.summary())
+# {'total_turns': 7, 'total_input_tokens': 18420, 'total_output_tokens': 1840,
+#  'total_cost_usd': 0.0829, 'wall_clock_s': 12.4}
+
+for turn in result.trace.turns:
+    print(f&quot;Turn {turn.turn}: {turn.stop_reason} ({turn.duration_s:.1f}s, &quot;
+          f&quot;${turn.cost_usd:.4f}, tools={turn.tool_calls})&quot;)
+</code></pre>
+<p>This is enough observability to debug on day one. By Module 17 we'll add OpenTelemetry spans, distributed trace context propagation, and platform integrations (Langfuse, LangSmith). For now, structured logs plus a trace object you can introspect in tests is the right scope.</p>
+<div class="nodumbq">
+<p><strong>Q: Should I log the full message bodies?</strong></p>
+<p>In dev: yes, it's invaluable for debugging. In production: usually no, especially for user-facing agents. Message bodies often contain PII, customer data, or secrets that ended up in tool inputs. Log metadata (turn number, tool names, token counts, durations); persist full message bodies to a separate observability store with appropriate access controls (Module 17 covers this). The default for Module 2's loop is metadata-only.</p>
+<p><strong>Q: Why not just use <code>print</code> while developing?</strong></p>
+<p>Because by week three you'll be running the agent against ten different test cases and want to compare costs across them, and you'll wish you had structured records. Start with structured logging on day one; it's not more work than print statements once you've written it once.</p>
+</div>
+<hr />
+<h2>Section 11 — Putting It Together: The Hardened Loop</h2>
+<p>Here's the full hardened loop, condensed. The pieces from Sections 2-10 assembled into one runnable artifact. In the book this is presented as a downloadable file; in the outline form, it's the consolidated version of everything above.</p>
+<pre><code class="language-python">async def run_hardened_agent(
+    user_query: str,
+    tools: list[dict],
+    tool_handlers: dict[str, callable],
+    *,
+    model: str = &quot;claude-sonnet-4-6&quot;,
+    budget: Budget | None = None,
+    detector: LoopDetector | None = None,
+    trace: AgentTrace | None = None,
+    max_tokens_per_turn: int = 4096,
+    system_prompt: str | None = None,
+) -&gt; AgentResult:
+    budget = budget or Budget()
+    detector = detector or LoopDetector()
+    trace = trace or AgentTrace()
+    messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_query}]
+
+    while True:
+        try:
+            budget.check()
+        except BudgetExceeded as e:
+            return AgentResult(
+                output=_partial_output_so_far(messages),
+                budget=budget, trace=trace, trace_messages=messages,
+                terminated_by=f&quot;budget:{e.dimension}&quot;, partial=True,
+            )
+
+        turn_idx = len(trace.turns) + 1
+        started = time.time()
+        try:
+            kwargs = dict(
+                model=model, max_tokens=max_tokens_per_turn,
+                tools=tools, messages=messages,
+            )
+            if system_prompt:
+                kwargs[&quot;system&quot;] = system_prompt
+            response = await call_with_diagnosis(async_client, **kwargs)
+        except AgentAPIError as e:
+            return AgentResult(
+                output=_partial_output_so_far(messages),
+                budget=budget, trace=trace, trace_messages=messages,
+                terminated_by=f&quot;api_error:{e.status_code}&quot;, partial=True,
+            )
+
+        budget.record_turn(response)
+        tool_call_names = [b.name for b in response.content if b.type == &quot;tool_use&quot;]
+        trace.add(TurnRecord(
+            turn=turn_idx,
+            started_at=started,
+            duration_s=time.time() - started,
+            model=response.model,
+            input_tokens=response.usage.input_tokens,
+            output_tokens=response.usage.output_tokens,
+            cost_usd=_cost_for(response),
+            stop_reason=response.stop_reason or &quot;unknown&quot;,
+            tool_calls=tool_call_names,
+        ))
+        messages.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: response.content})
+
+        if response.stop_reason in (&quot;end_turn&quot;, &quot;stop_sequence&quot;):
+            return AgentResult(
+                output=_extract_text(response),
+                budget=budget, trace=trace, trace_messages=messages,
+                terminated_by=&quot;end_turn&quot;,
+            )
+
+        if response.stop_reason == &quot;tool_use&quot;:
+            for block in response.content:
+                if block.type == &quot;tool_use&quot;:
+                    detector.record(block.name, block.input)
+            in_loop, sig = detector.in_loop()
+            if in_loop:
+                messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: _loop_notice(response, sig)})
+                continue
+            tool_results = await _execute_tools_concurrent(response, tool_handlers)
+            messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: tool_results})
+            continue
+
+        return AgentResult(
+            output=_extract_text(response),
+            budget=budget, trace=trace, trace_messages=messages,
+            terminated_by=f&quot;stop_reason:{response.stop_reason}&quot;, partial=True,
+        )
+</code></pre>
+<p>It's about 80 lines including helpers. Steve Kinney's observation that a 100-line agent on this pattern can hit ~77% on SWE-bench Verified isn't an exaggeration — <em>this loop is the loop.</em> Everything past Module 2 is improvements to the things the loop <em>uses</em> (better tools, smarter context, more capable models, multi-agent coordination), not to the loop itself. The loop is fine.</p>
+<p>The improvements are real, of course, and the next 16 modules will build them. But it's worth pausing on what we've shipped here:</p>
+<ul>
+<li>Correct handling of every stop reason</li>
+<li>Tool failures recoverable by the model</li>
+<li>Tool result truncation that doesn't lie about what was cut</li>
+<li>Three-dimensional budget (turns / tokens / dollars)</li>
+<li>Loop detection with model-visible feedback</li>
+<li>Concurrent tool execution</li>
+<li>API error handling with terminal-error distinction</li>
+<li>Structured trace and per-turn logging</li>
+<li>Graceful termination with partial results from every exit path</li>
+</ul>
+<p>That's the production-hardened agent loop. The next modules layer onto it; they don't replace it.</p>
+<div class="code-exercise">
+<p><strong>Exercise 2.1 — Stress-test your loop.</strong></p>
+<p>Take the hardened loop above. Build it in a sandbox. Then deliberately break things:</p>
+<ol>
+<li>
+<p><strong>The repeating-fail tool.</strong> Implement a tool that always raises a <code>ConnectionError</code>. Hand it to your agent with a prompt that requires using it. Confirm: the loop detector trips after 3 calls; budget never reaches its cap; agent returns partial result with <code>terminated_by="end_turn"</code> (because the model gave up gracefully on its own) or with the loop notice.</p>
+</li>
+<li>
+<p><strong>The runaway tool.</strong> Implement a tool that returns 200,000 tokens of fake JSON. Confirm: the truncation activates; the agent's context doesn't blow up; the cost ceiling holds.</p>
+</li>
+<li>
+<p><strong>The tight budget.</strong> Set <code>max_cost_usd=$0.01</code> and run a non-trivial query. Confirm: the agent terminates with <code>terminated_by="budget:cost_usd"</code> and returns a partial result; subsequent inspection of the trace shows where it stopped.</p>
+</li>
+<li>
+<p><strong>The flaky API.</strong> Mock <code>messages.create</code> to fail with <code>APIStatusError(503)</code> on the second call. Confirm: SDK retries; if retries succeed, loop continues; if retries fail, loop terminates with <code>terminated_by="api_error:503"</code> and a partial result.</p>
+</li>
+</ol>
+<p>By the end of this exercise, you've watched your loop survive every failure mode you'll see in production. That's the calibration you wanted.</p>
+</div>
+<hr />
+<h2>Section 12 — When to Reach for the Agent SDK Instead</h2>
+<p>A short coda. The hardened loop above is great when you need control. The Claude Agent SDK is great when you don't.</p>
+<p>Reach for the Agent SDK when:</p>
+<ul>
+<li>You're building a coding-adjacent agent (it has built-in <code>Read</code>, <code>Write</code>, <code>Edit</code>, <code>Bash</code>, <code>Grep</code>, <code>Glob</code> tools, and these are well-tuned)</li>
+<li>You want MCP servers wired up with minimal code</li>
+<li>You want hooks (PreToolUse, PostToolUse) for permission checks and telemetry</li>
+<li>The deployment shape "Python program shells out to a CLI subprocess" is acceptable for your stack</li>
+</ul>
+<p>Reach for the Client SDK (the loop in this module) when:</p>
+<ul>
+<li>Your tools are entirely your own — internal APIs, custom databases, things the Agent SDK doesn't know about — and the built-in tools would be a distraction or a security risk</li>
+<li>You want exact control over the loop's behavior (custom termination logic, custom budget rules, embedded in a larger orchestrator)</li>
+<li>You're building multi-agent systems with bespoke coordination between agent loops (Module 14)</li>
+<li>You're targeting a deployment where adding a Node-based CLI subprocess to the runtime is a non-starter</li>
+</ul>
+<p>For most readers of this book, the answer will land somewhere in the middle: use the Client SDK while you're learning, use the Agent SDK once you understand what it's hiding. Both are correct in different contexts. Knowing the loop is what lets you choose well.</p>
+<div class="pullquote">
+<p>The framework you understand best is the one whose internals you've built once. Build the loop, then decide whether to keep using yours or switch.</p>
+</div>
+<hr />
+<h2>Recap: Module 2 in eight bullets</h2>
+<div class="bullet-points">
+<ul>
+<li>Every major agent framework runs the same core loop: call the model, execute tool calls if any, repeat until done. The loop isn't where the complexity lives.</li>
+<li>Handle every stop reason explicitly. <code>end_turn</code> and <code>tool_use</code> are the obvious ones; <code>max_tokens</code>, <code>refusal</code>, <code>stop_sequence</code>, and <code>pause_turn</code> need named handling too. The default branch should raise, not silently succeed.</li>
+<li>Tool failures should reach the model as <code>tool_result</code> with <code>is_error: true</code>, not as Python exceptions. The model can usually recover; crashing the loop throws away that recovery.</li>
+<li>Three budgets, layered: turns (catches infinite loops), tokens (catches large turns), dollars (catches expensive model selection). All three are cheap to track and each catches a different incident.</li>
+<li>Loop detection — same tool with same args N times in a recent window — catches immediate runaway that budgets only catch eventually. Inject the loop notice as a tool_result so the model can recover.</li>
+<li>Run parallel tool calls concurrently with <code>asyncio.gather</code>, and per-tool exception handling so one crash doesn't abort the batch.</li>
+<li>Graceful termination from every exit path. Return an <code>AgentResult</code> with <code>terminated_by</code> and <code>partial=True</code> instead of throwing — the caller decides whether the partial result is useful.</li>
+<li>Structured per-turn logging plus a trace object the loop returns. Enough observability to debug on day one; Module 17 adds the rest.</li>
+</ul>
+</div>
+<hr />
+<div class="sam-arc">
+<p><strong>Sam, after the cold open.</strong></p>
+<p>Sam spent Tuesday afternoon staring at the $43 PDF trace. Spent Wednesday adding loop detection. Spent Thursday morning fixing the <code>max_tokens</code>-treated-as-success bug after the support ticket landed. Spent Thursday afternoon adding tool result truncation. By Friday at noon the loop matched the one in Section 11 — three days of work, mostly subtraction (removing the silent failure modes), not addition.</p>
+<p>Sam ran the loop against the same staging traffic that had broken it. The $43 PDF read terminated at $0.04 with the loop notice, the model giving up after the third repeat: "I'm unable to retrieve this PDF — the URL appears to be returning errors." The eleven-second null returns turned into ~30-second runs that surfaced "I produced more than expected; the response may be incomplete" warnings to the user. The 80,000-token customer record turned into a 20K truncated record with a marker — the model adapted, narrowed its query, finished in three turns instead of seven.</p>
+<p>Friday evening, Sam wrote in their personal log: <em>"The loop in Module 1 was correct. The loop in Module 2 is honest."</em></p>
+<p>Sam's arc this module: <strong>competence with the loop. Not the loop's six lines — the loop's failure modes. Knowing what can go wrong is the first half of knowing what to ship.</strong></p>
+</div>
+<hr />
+<h2>What's next</h2>
+<p>Module 3 backs out one level and treats the five workflow patterns properly — prompt chaining, routing, parallelization, orchestrator-workers, evaluator-optimizer. Most of what you build is going to be one of these patterns, even after this module. The loop is the right tool when you need it; the workflow patterns are the right tools when you don't.</p>
+<p>We'll come back to the loop in Module 4 when we add tool design discipline (so the model has tools worth calling), and again in Module 7 when we add context engineering (so the loop's growing context doesn't strangle it). For now: take the hardened loop. Run it. Stress-test it. Build calibration with it.</p>
+<p>The next chapters assume you've done that. Sam did. So can you.</p>
+</body>
+</html>

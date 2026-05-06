@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 15 Outline — Swarms and Emergent Behavior</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 15 Outline — Swarms and Emergent Behavior</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 15 — OUTLINE</div>
+<div class="module-title">Swarms and Emergent Behavior</div>
+<div class="subtitle">Most "swarms" are sequential pipelines with marketing.<br>Real swarm patterns exist — and have a tiny set of legitimate uses.</div>
+<div class="pages">Target length: ~36 pages</div>
+</div>
+<h2>What this module is</h2>
+<p>Swarms are the most overhyped corner of multi-agent. The term evokes biological elegance — emergent intelligence from simple agents — but most production "swarm" systems are just the sequential pipelines from Module 14 with extra branding. This module separates the real patterns from the theater.</p>
+<p>We cover OpenAI Swarm's actual mechanics (handoffs as control transfer, routines as structured prompts) and explain why it was explicitly released as a "reference implementation" not a production library. We code stigmergy patterns (agents leaving traces in shared environment) and explain when they're useful. We're honest about emergence: in agent systems, "emergent" is almost always the orchestrator doing visible work that observers project as emergent.</p>
+<p>By the end the reader can: recognize when a system being marketed as "swarm" is actually one of Module 14's patterns, decide if their use case is one of the small set where genuine swarm coordination earns its cost, and implement the legitimate patterns (stigmergy through shared scratchpads, market/auction patterns for self-organizing) without the cargo-cult.</p>
+<div class="hook">
+<p>"You'll see 'agent swarms' in conference talks. The architecture diagram has dozens of agents, arrows pointing everywhere, the word 'emergent' in italics. Then you read the code and it's a <code>for</code> loop calling agents in sequence. The 'swarm' is six prompts and a manager. Knowing what swarms actually are makes you immune to a category of pitch."</p>
+</div>
+<hr />
+<h2>Section 1 — What "Swarm" Actually Means (≈4 pages)</h2>
+<p>The biological metaphor. A single ant follows pheromone trails and basic rules. A colony builds nests, farms fungus, wages war, adapts to disasters. The colony exhibits intelligence the individual ants don't. This is <strong>stigmergy</strong> — coordination via traces left in the environment.</p>
+<p>The promise of agent swarms: many simple agents, no central coordinator, coordination emerges from environment-mediated interaction. Anyone selling this is selling a vision that's mostly aspirational.</p>
+<p><strong>What gets called "swarm" in the agent world:</strong></p>
+<ol>
+<li>
+<p><strong>OpenAI Swarm framework</strong> (Oct 2024). Lightweight handoff system. Despite the name, it's a <em>handoff pattern</em> — Module 14 Section 4. OpenAI explicitly released it as "less of a production library and more of a reference implementation."</p>
+</li>
+<li>
+<p><strong>AutoGen Group Chat patterns.</strong> Multiple agents in shared conversation. Already covered in Module 14 Section 5 as network/group chat.</p>
+</li>
+<li>
+<p><strong>Stigmergy patterns</strong> — agents writing to a shared scratchpad/blackboard, others reading and acting. This is the closest to the biological analogy and the one we'll deep-dive in this module.</p>
+</li>
+<li>
+<p><strong>Market / auction patterns</strong> — agents bid for tasks; tasks go to the highest bidder (or best-fit). Used in some research; rare in production.</p>
+</li>
+<li>
+<p><strong>Decentralized peer networks</strong> — agents communicate directly without orchestrator. Mostly research; production systems revert to having an orchestrator within months.</p>
+</li>
+</ol>
+<p>The 2026 production-survival analysis (Lanham, April 2026) was direct: "Swarm only for exploratory or research-mode systems where flow can't be pre-specified. Default to graph or hierarchy in production."</p>
+<div class="pullquote">
+<p>The metaphor is biological; the implementations are usually not. When someone says "swarm," ask "where's the stigmergy?" If they can't show you a shared environment that mediates coordination, they mean "many agents," not "swarm."</p>
+</div>
+<div class="nodumbq">
+<p><strong>Q: Is multi-agent the same as swarm?</strong></p>
+<p>No. Multi-agent (Module 14) is about multiple coordinating agents — usually with a coordinator. Swarm specifically refers to systems where coordination is decentralized and often emergent. All swarms are multi-agent; not all multi-agent systems are swarms. Most production multi-agent systems are explicitly <em>not</em> swarms — they have a clear orchestrator.</p>
+<p><strong>Q: If swarms are mostly hype, why have a whole module on them?</strong></p>
+<p>Three reasons. (1) The hype is loud enough that you'll be asked about it — you should be able to talk about it accurately. (2) Some patterns within the swarm umbrella (stigmergy, market patterns) have legitimate uses you should know how to implement. (3) Recognizing what's not actually a swarm is the cheapest way to avoid building one accidentally.</p>
+</div>
+<hr />
+<h2>Section 2 — OpenAI Swarm: Mechanics, Honestly (≈5 pages)</h2>
+<p>The framework named "Swarm" by OpenAI, deserves its own treatment — partly because of the name confusion, partly because the design choices are instructive.</p>
+<p>OpenAI Swarm is built on two primitives:</p>
+<p><strong>Routines.</strong> Natural-language instructions paired with a list of tools. Maps to: a system prompt + functions. The model reads the routine, decides which functions to call, follows the steps.</p>
+<p><strong>Handoffs.</strong> A function that returns an <code>Agent</code> object instead of a string. Calling it transfers control to the returned agent.</p>
+<pre><code class="language-python"># Conceptual example — Swarm-style implementation in Anthropic SDK
+@dataclass
+class Agent:
+    name: str
+    instructions: str
+    tools: list[Callable]
+
+triage_agent = Agent(
+    name=&quot;triage&quot;,
+    instructions=&quot;Determine which specialist should handle this request.&quot;,
+    tools=[transfer_to_billing, transfer_to_technical, transfer_to_refund],
+)
+
+billing_agent = Agent(
+    name=&quot;billing&quot;,
+    instructions=&quot;Handle billing questions. Escalate if you can't.&quot;,
+    tools=[lookup_invoice, transfer_to_escalation],
+)
+
+def transfer_to_billing() -&gt; Agent:
+    return billing_agent
+
+def transfer_to_technical() -&gt; Agent:
+    return technical_agent
+</code></pre>
+<p>Notice: this isn't a swarm in the biological sense. It's a state machine where each agent picks the next state. It's a sequential pipeline with branching. Module 14 Section 4 covered this.</p>
+<p><strong>Why OpenAI named it "Swarm":</strong> marketing aside, the framework supports lightweight, stateless multi-agent coordination without explicit graph definitions. The "swarm" framing emphasizes that the structure emerges from agents' handoff decisions rather than being pre-declared. This is a real design choice — but it's not stigmergy and it's not emergent intelligence.</p>
+<p><strong>Why it's "experimental and not for production":</strong> OpenAI's own framing. The framework lacks production essentials: durable state, observability, retry semantics, error handling primitives. It's a clean reference for the handoff pattern; it's not what you ship.</p>
+<p><strong>What replaced it for production:</strong> the OpenAI Agents SDK (released later) is the production-grade version, with clearer separation between agents-as-tools (composable) and handoffs (sequential).</p>
+<div class="gotcha">
+<p>The Swarm framework's main repo is now in maintenance mode. Production deployments built on Swarm have largely migrated to Agents SDK or rebuilt the handoff pattern in their own code. If you're starting today, don't start with Swarm — implement the handoff pattern yourself or use a maintained framework.</p>
+</div>
+<hr />
+<h2>Section 3 — Stigmergy: The Real Swarm Pattern (≈5 pages)</h2>
+<p>If OpenAI Swarm isn't really a swarm, what is?</p>
+<p><strong>Stigmergy</strong> is the biological pattern: agents leave traces in the environment; other agents read those traces and act. Termites build mounds without a blueprint or a leader. Ants build paths to food without communication beyond pheromone deposits. The coordination is <em>indirect</em>, mediated by environmental state.</p>
+<p>In agent systems, stigmergy looks like:</p>
+<pre><code>[Agent A] writes to → [Shared Scratchpad / Blackboard / Vector Memory]
+[Agent B] reads from / acts on traces / writes its own
+[Agent C] reads from / acts on combined traces
+... no agent talks to another agent directly ...
+</code></pre>
+<pre><code class="language-python">class StigmergicScratchpad:
+    &quot;&quot;&quot;Shared environment that mediates agent coordination.&quot;&quot;&quot;
+
+    def __init__(self):
+        self._lock = asyncio.Lock()
+        self._traces: list[Trace] = []
+
+    async def deposit(self, agent_name: str, trace_type: str, content: dict):
+        &quot;&quot;&quot;Agent leaves a trace — task started, finding made, claim flagged, etc.&quot;&quot;&quot;
+        async with self._lock:
+            self._traces.append(Trace(
+                agent=agent_name,
+                type=trace_type,
+                content=content,
+                timestamp=now(),
+            ))
+
+    async def read(self, filter_fn=None) -&gt; list[Trace]:
+        &quot;&quot;&quot;Other agents read traces relevant to their work.&quot;&quot;&quot;
+        async with self._lock:
+            return [t for t in self._traces if filter_fn is None or filter_fn(t)]
+
+
+class StigmergicAgent:
+    def __init__(self, name: str, scratchpad: StigmergicScratchpad, capabilities: list[str]):
+        self.name = name
+        self.scratchpad = scratchpad
+        self.capabilities = capabilities
+
+    async def act(self):
+        # Read environment
+        traces = await self.scratchpad.read()
+
+        # Decide if there's work this agent can do
+        unhandled = [t for t in traces if self._can_handle(t) and not self._already_handled(t)]
+        if not unhandled:
+            return
+
+        # Take a task; mark it claimed
+        task = unhandled[0]
+        await self.scratchpad.deposit(self.name, &quot;claimed&quot;, {&quot;task_id&quot;: task.id})
+
+        # Do work; deposit result
+        result = await self._do(task)
+        await self.scratchpad.deposit(self.name, &quot;result&quot;, {&quot;task_id&quot;: task.id, &quot;result&quot;: result})
+</code></pre>
+<p><strong>When stigmergy is the right pattern:</strong></p>
+<ul>
+<li>Tasks decompose into independent units that can be picked up by any capable agent</li>
+<li>Agents have overlapping but not identical capabilities — flexibility about who does what</li>
+<li>The full set of subtasks isn't known upfront (agents can deposit new subtasks as they work)</li>
+<li>Coordination overhead of explicit messaging is high enough to justify environmental mediation</li>
+</ul>
+<p><strong>Real production examples:</strong>
+- Distributed scraping/research systems where any agent can pick up any URL to fetch
+- Issue triage systems where any agent can claim and resolve any issue
+- Iterative document editing where multiple agents improve different sections without colliding</p>
+<p><strong>When stigmergy is NOT the right pattern (most cases):</strong>
+- Task decomposition is known and stable (use supervisor)
+- Agents have specialized roles that map cleanly to subtasks (use sequential pipeline)
+- Scale is small enough that explicit coordination is cheap (use anything else)</p>
+<div class="brain">
+<p>You're building a system where 10 agents need to collectively edit a long document. Each agent specializes in a different aspect (clarity, concision, factual accuracy, citations, formatting). Stigmergy or supervisor?</p>
+<p>(Almost certainly supervisor. The agents have <em>specialized</em> roles that map cleanly to subtasks. Stigmergy would mean each agent reads the document and decides if there's work it can do — fine, but a supervisor that says "Clarity agent, your turn now" is simpler and gets the same result faster. Stigmergy is for when the <em>who-does-what</em> itself is the hard problem; with specialized roles, who-does-what is trivial.)</p>
+</div>
+<div class="code-exercise">
+<p><strong>Exercise 15.1 — Build a stigmergic research system.</strong></p>
+<p>5 research agents, all with web_search and read_url tools. A shared scratchpad. Initial seed: a research question and a list of starting URLs. Each agent's loop:
+1. Read the scratchpad — what URLs have been fetched, what findings exist, what unresolved questions
+2. Pick an action: fetch a new URL, follow up on a finding, ask a sub-question
+3. Deposit results</p>
+<p>Run for 5 minutes, observe coordination. Compare quality and cost vs the supervisor pattern from Module 14 on the same task.</p>
+<p>(Expected outcome: stigmergy is more flexible but harder to control; supervisor is more predictable. The "right" choice depends on the task — and most teams should default to supervisor.)</p>
+</div>
+<hr />
+<h2>Section 4 — Market and Auction Patterns (≈3 pages)</h2>
+<p>Another genuine swarm pattern: agents bid for tasks; tasks go to whoever bids best. Used in:
+- Compute resource allocation in distributed systems
+- Some research multi-agent setups for self-organizing capability matching
+- Rare in production agent systems (most teams find supervisor is simpler)</p>
+<p>The basic shape:</p>
+<pre><code class="language-python">class TaskMarket:
+    async def post_task(self, task: Task) -&gt; Bid:
+        bids = await asyncio.gather(*[
+            agent.bid(task) for agent in self.agents
+        ])
+        winning = max(bids, key=lambda b: b.score)
+        return winning
+
+class BiddingAgent:
+    async def bid(self, task: Task) -&gt; Bid:
+        # Each agent self-assesses its fit for the task
+        score = await self._estimate_fit(task)
+        cost = await self._estimate_cost(task)
+        return Bid(agent=self, score=score, cost=cost)
+</code></pre>
+<p>When this works:
+- Heterogeneous agent pool with genuinely different capabilities
+- Tasks come in with attributes that map to capabilities in non-obvious ways
+- Self-assessment is roughly accurate</p>
+<p>When it doesn't:
+- Agents can't accurately self-assess (most LLM-based agents are bad at calibrated self-assessment)
+- A supervisor with explicit routing rules is simpler
+- The bidding overhead exceeds the value of better task placement</p>
+<p>We don't expect most readers to build this. We cover it for completeness — and to demonstrate that "swarm" includes patterns beyond OpenAI Swarm's handoffs.</p>
+<hr />
+<h2>Section 5 — When Emergence Is Real vs Theater (≈4 pages)</h2>
+<p>The "emergent intelligence" claim. Three categories:</p>
+<p><strong>1. Genuine emergence: properties of the system not in any individual component.</strong></p>
+<p>Examples in nature: an ant colony's optimal foraging path emerges from individual ants following pheromone gradients — no ant computes the path; the colony does, in aggregate.</p>
+<p>In agent systems: extremely rare. The supervisor's plan is in the supervisor. The synthesis is in the synthesizer. The "emergent" output is usually traceable to a specific component.</p>
+<p><strong>2. Apparent emergence: complex behavior from simple rules — but the complexity is in the rules, not their interaction.</strong></p>
+<p>Example: a stigmergic system where agents follow simple "claim a trace if I can handle it; deposit result; move on" rules. Coordination looks emergent. Actually it's a queue with workers — emergence is doing little work in the explanation.</p>
+<p><strong>3. Theater: the supervisor or aggregator is doing visible work, but it's framed as "emergent."</strong></p>
+<p>Example: 10 agents in a group chat, manager picks who speaks, manager synthesizes. Output is described as "emergent from agent interaction." It's actually emerged from the manager's prompt.</p>
+<p>The honest test: if you removed the orchestrator/supervisor/manager, does the system still produce coherent output? If no, the orchestrator was doing the work — it's not emergent.</p>
+<div class="pullquote">
+<p>"Emergent" in agent systems is usually a marketing word for "I don't want to explain how the supervisor works."</p>
+</div>
+<div class="postmortem">
+<p><strong>The "Emergent" System That Was a 50-Line Prompt</strong></p>
+<p>A team gave a conference talk about their "emergent multi-agent research swarm." Diagram showed 7 agents with arrows in all directions. Phrase "emergent intelligence" appeared 5 times.</p>
+<p>After the talk, an audience member asked to see the orchestration code. The "swarm" was: 7 prompts in a list, a manager that picked one to invoke each turn based on a 50-line prompt that read the conversation and decided. The 50-line prompt was where 95% of the system's behavior lived. The seven "specialist" agents were prompt templates with shared tools.</p>
+<p>The audience member, a working ML engineer, said: "So it's a router with 7 destinations and the router does most of the work?" The presenter agreed.</p>
+<p><strong>Lesson:</strong> when you hear "emergent," look for the orchestrator. If there's an orchestrator, the orchestrator is the system — the agents are its tools. That's fine; it's just not emergence. Marketing it as emergence sets users up for disappointment.</p>
+</div>
+<hr />
+<h2>Section 6 — Where Swarm Patterns Genuinely Win (≈3 pages)</h2>
+<p>The contrarian-to-the-contrarian section. Some workloads are legitimately swarm-shaped.</p>
+<p><strong>1. Massively parallel exploration with deduplication.</strong></p>
+<p>When you have a search space too large for centralized planning and where multiple agents finding the same thing is wasteful. Distributed crawlers, parallel hypothesis testing in research, computational drug discovery. Stigmergy through a shared "what's been explored" memory prevents redundant work.</p>
+<p><strong>2. Long-lived agent populations with task discovery.</strong></p>
+<p>When agents are persistent (not spawned per task) and tasks arrive continuously. Swarm-style "any agent can pick up any task it's qualified for" scales better than a supervisor that has to know about every task.</p>
+<p><strong>3. Resilience to component failure.</strong></p>
+<p>In a supervisor pattern, the supervisor is a single point of failure. In a swarm, individual agent failures don't bring down coordination — surviving agents see the same scratchpad and continue. For high-availability systems where downtime is expensive, this resilience matters.</p>
+<p><strong>4. Heterogeneous, evolving capability sets.</strong></p>
+<p>When you can't fully enumerate which agents exist or what they can do, market/auction patterns let agents self-select. Most production systems don't have this property; it's more common in research and in long-running internal tooling where capability evolves.</p>
+<p>In practice: probably &lt;5% of production agent systems are genuinely better as swarms. The other 95% should be supervisor or sequential pipeline. But that 5% exists, and the patterns matter when they do.</p>
+<div class="brain">
+<p>Consider three systems: (a) a customer support routing system, (b) a distributed web crawler that builds a knowledge graph, (c) a code review system. Which is most swarm-shaped? Why?</p>
+<p>(b is the strongest swarm fit — agents need to coordinate on what's been crawled, dedupe work via shared state, scale by adding more agents. a is sequential pipeline. c is supervisor or debate. The crawler benefits from genuine stigmergy — it's hard to centralize the planning of "what URL next" across millions of URLs.)</p>
+</div>
+<hr />
+<h2>Section 7 — Building a Real Swarm (≈4 pages)</h2>
+<p>We code a stigmergic distributed-research system end-to-end. This is the swarm pattern that actually has production legs.</p>
+<p>The task: given a research question, multiple agents collaborate to gather evidence by crawling links. Each agent works independently. Coordination is via a shared workspace.</p>
+<pre><code class="language-python">class ResearchWorkspace:
+    &quot;&quot;&quot;Shared environment for stigmergic coordination.&quot;&quot;&quot;
+
+    def __init__(self):
+        self._lock = asyncio.Lock()
+        self._urls_to_visit: set[str] = set()
+        self._urls_visited: set[str] = set()
+        self._findings: list[Finding] = []
+        self._questions: list[str] = []  # sub-questions agents have raised
+
+    async def claim_url(self) -&gt; str | None:
+        async with self._lock:
+            for url in list(self._urls_to_visit):
+                if url not in self._urls_visited:
+                    self._urls_visited.add(url)
+                    self._urls_to_visit.discard(url)
+                    return url
+            return None
+
+    async def add_finding(self, finding: Finding):
+        async with self._lock:
+            self._findings.append(finding)
+
+    async def add_links(self, links: list[str]):
+        async with self._lock:
+            self._urls_to_visit.update(links - self._urls_visited)
+
+    async def add_question(self, question: str):
+        async with self._lock:
+            self._questions.append(question)
+
+    async def snapshot(self) -&gt; dict:
+        async with self._lock:
+            return {
+                &quot;urls_pending&quot;: len(self._urls_to_visit),
+                &quot;urls_visited&quot;: len(self._urls_visited),
+                &quot;findings_count&quot;: len(self._findings),
+                &quot;open_questions&quot;: list(self._questions),
+            }
+
+
+class ResearcherAgent:
+    def __init__(self, name: str, workspace: ResearchWorkspace, client: AsyncAnthropic):
+        self.name = name
+        self.workspace = workspace
+        self.client = client
+
+    async def run(self, original_question: str, max_iterations: int = 20):
+        for _ in range(max_iterations):
+            url = await self.workspace.claim_url()
+            if url is None:
+                # No work available — finish or yield to other agents
+                snapshot = await self.workspace.snapshot()
+                if snapshot[&quot;urls_pending&quot;] == 0:
+                    return  # done
+                await asyncio.sleep(0.5)
+                continue
+
+            # Fetch and process
+            content = await fetch_url(url)
+
+            # Use LLM to extract findings + new links + new questions
+            extracted = await self._extract(original_question, url, content)
+
+            await self.workspace.add_finding(Finding(url=url, summary=extracted.summary))
+            await self.workspace.add_links(extracted.relevant_links)
+            for q in extracted.sub_questions:
+                await self.workspace.add_question(q)
+</code></pre>
+<p>The full system: spawn 5-10 of these agents, all sharing one workspace, give them a starting URL, let them coordinate via the workspace.</p>
+<p>We discuss the design choices:
+- Lock granularity (per-collection vs whole-workspace)
+- When agents should yield vs hammer the workspace
+- How to detect "done" (no pending URLs for N seconds)
+- How to bound the work (max URLs total, max time)</p>
+<div class="code-exercise">
+<p><strong>Exercise 15.2 — Compare swarm vs supervisor on a research task.</strong></p>
+<p>Take the research workspace + agents from Section 7. Run the same research task through:
+1. Stigmergic swarm (5 agents, shared workspace)
+2. Supervisor pattern (Module 14)</p>
+<p>Measure: total tokens, total time, quality of final synthesis.</p>
+<p>For most research tasks: supervisor wins on quality and tokens. Swarm wins on adaptability and parallelism scaling. Which one is "right" depends on the task properties.</p>
+</div>
+<hr />
+<h2>Section 8 — Hype Glossary and What to Ask (≈3 pages)</h2>
+<p>A defensive glossary for vocabulary you'll encounter:</p>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Often Means</th>
+<th>Sometimes Means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Swarm</td>
+<td>Multiple agents</td>
+<td>Stigmergic coordination</td>
+</tr>
+<tr>
+<td>Emergent</td>
+<td>Output is unpredictable</td>
+<td>Properties not present in components</td>
+</tr>
+<tr>
+<td>Self-organizing</td>
+<td>Has a manager that organizes them</td>
+<td>Genuinely decentralized</td>
+</tr>
+<tr>
+<td>Autonomous</td>
+<td>Has tools and a loop</td>
+<td>Unsupervised long-horizon operation</td>
+</tr>
+<tr>
+<td>Multi-agent collective intelligence</td>
+<td>A supervisor synthesizes outputs</td>
+<td>Genuine collective reasoning</td>
+</tr>
+<tr>
+<td>Distributed reasoning</td>
+<td>Agents are in different processes</td>
+<td>Reasoning that's actually distributed across components</td>
+</tr>
+<tr>
+<td>Agent society</td>
+<td>A few agents with personas</td>
+<td>Persistent agents with evolving roles</td>
+</tr>
+</tbody>
+</table>
+<p>When someone pitches you a swarm, three questions to ask:</p>
+<ol>
+<li><strong>Where's the orchestrator?</strong> If there's one, the system is supervisor pattern in disguise. That's fine — but call it that.</li>
+<li><strong>What's the shared environment that mediates coordination?</strong> If there isn't one, you don't have stigmergy.</li>
+<li><strong>What happens when one agent is removed?</strong> If the system breaks, it's not a swarm — it's a coupled system.</li>
+</ol>
+<p>Reasonable answers exist. Many "swarm" pitches don't survive these questions, and that's useful information.</p>
+<div class="pullquote">
+<p>The vocabulary inflation in agent systems makes shopping hard. Anything-multi-agent gets called a swarm. Anything-multi-step gets called emergent. Anything-with-tools gets called autonomous. Translate every claim into the patterns you know — supervisor, pipeline, debate, stigmergy — and you'll see what's actually being offered.</p>
+</div>
+<hr />
+<h2>Section 9 — What's Next (≈1 page)</h2>
+<p>Module 16 covers transactional / saga patterns for multi-agent — borrowing distributed-systems concepts (validation, rollback, compensating actions) for agent coordination. SagaLLM (PVLDB 2025) is the canonical reference; this addresses the "what if a sub-agent succeeds but a later one fails — how do you undo?" problem.</p>
+<p>Module 17 covers production observability, eval, cost management — heavily relevant to multi-agent and swarm systems.</p>
+<p>Module 18 (capstone) builds the multi-agent system. The swarm patterns from this module are unlikely to make the capstone (most production systems don't need them) but stigmergy as a sub-component is a strong candidate.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>2 No Dumb Questions</li>
+<li>2 Brain Power prompts</li>
+<li>1 Production Postmortem (the "emergent" 50-line prompt)</li>
+<li>1 Watch It! / Gotcha block</li>
+<li>2 Code Exercises (stigmergic research, swarm vs supervisor benchmark)</li>
+<li>2 Pullquotes</li>
+<li>1 hype-translation table</li>
+<li>1 stigmergic system architecture diagram</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam, having shipped supervisor pattern (Module 14) for the premium tier, gets pitched at a conference: "your system would be even more powerful as a swarm." Sam asks the three questions from Section 8 ("where's the orchestrator? where's the shared environment? what if one agent dies?"). The pitcher answers two of three — there's no shared environment; coordination is via the manager. Sam concludes the pitch is for a renamed supervisor pattern, not a swarm. Doesn't switch architectures. Sam's arc this module: <strong>vocabulary discipline beats vocabulary fashion. The right architecture for the task is whatever's the right architecture for the task — labels don't help.</strong></p>
+</div>
+<div class="page-budget">
+<p>S1 (What swarm means): 4p
+S2 (OpenAI Swarm honestly): 5p
+S3 (Stigmergy): 5p
+S4 (Market/auction): 3p
+S5 (Emergence: real vs theater): 4p
+S6 (Where swarms genuinely win): 3p
+S7 (Building a real swarm): 4p
+S8 (Hype glossary): 3p
+S9 (Next): 1p
+Recurring elements: 4p
+TOTAL: ~36 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting:</strong></p>
+<ul>
+<li>OpenAI Swarm framework documentation and current status (Oct 2024 release; main repo status as of drafting)</li>
+<li>OpenAI Agents SDK (the production successor) — current API</li>
+<li>"Multi-Agent in Production in 2026: What Actually Survived" (Lanham, Apr 2026) — for the swarm-only-as-subroutine framing</li>
+<li>Digital Applied 2026 patterns taxonomy — "swarm and blackboard patterns are theoretical" claim</li>
+<li>Stigmergy in computer science — academic background (Beni, Wang 1989; ant colony optimization literature)</li>
+<li>Real production stigmergic systems — find concrete examples (distributed crawling, etc.)</li>
+<li>AutoGen GroupChat current status (article said maintenance-only as of 2026 — verify)</li>
+<li>Claim that &lt;5% of production agent systems benefit from swarm — moderate this; it's an educated estimate</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- The biological metaphor and what stigmergy actually means
+- The handoff mechanic (already established in Module 14)
+- Three categories of "emergence" (genuine, apparent, theater)
+- The hype glossary patterns
+- Decision criteria for when swarm patterns earn their cost</p>
+<p><strong>Cross-references:</strong>
+- Module 13 — multi-agent honest trade-offs
+- Module 14 — the architectures swarms get conflated with
+- Module 16 — transactional patterns for multi-agent
+- Module 17 — observability for distributed agent systems
+- Module 18 — capstone (swarm unlikely to make it; stigmergy possibly)</p>
+</div>
+<div class="bullet-points">
+<h3>Module 15 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>"Swarm" is an overused term; most "swarm" systems are supervisor pattern with marketing</li>
+<li>OpenAI Swarm is a handoff framework (Module 14 pattern) — explicitly a reference implementation, not production</li>
+<li>Stigmergy is the genuine swarm pattern: coordination via traces in shared environment</li>
+<li>Market / auction patterns let agents self-select for tasks; rare in production</li>
+<li>"Emergent" usually describes the orchestrator doing visible work; genuine emergence is rare</li>
+<li>Real swarm wins: massively parallel exploration, persistent agents with task discovery, resilience, evolving capabilities</li>
+<li>Build stigmergy with shared workspace + claim/deposit primitives; cap iterations and bound work</li>
+<li>Three questions to ask any swarm pitch: where's the orchestrator? where's the shared environment? what if one agent dies?</li>
+</ul>
+</div>
+</body>
+</html>

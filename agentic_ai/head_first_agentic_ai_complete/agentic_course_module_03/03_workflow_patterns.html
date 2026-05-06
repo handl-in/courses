@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 3 — Workflow Patterns You Should Reach for First</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 3 — Workflow Patterns You Should Reach for First</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 3</div>
+<div class="module-title">Workflow Patterns You Should Reach for First</div>
+<div class="subtitle">Five patterns. Code for each. The same task three ways, with the bills attached.<br>This is what you'll build most weeks, even when you're "building agents."</div>
+<div class="pages">~42 pages · the patterns that earn their keep</div>
+</div>
+<div class="hook">
+<p>Sam's deal-research project — the one their CEO finally green-lit at the end of Module 1 — kicked off on Monday with a planning meeting. Two engineers, one product manager, a designer, and Sam in a conference room with a whiteboard.</p>
+<p>The PM had questions. <em>"How many agents are we building? Three? Five? The Slack thread mentioned seven."</em></p>
+<p>Sam drew a single box on the whiteboard and labeled it <code>agent</code>. Then a different box labeled <code>workflow</code>. Then drew a line between them.</p>
+<p><em>"Most of this is the workflow side. The actual agent — autonomous loop, model decides what to do — is one piece. The pieces around it are workflows. Sequence the data gathering. Route by deal type. Run the company-research, market-research, and competitor-research in parallel. Evaluate the draft brief and revise. The agent loop is in the middle of all that, doing the open-ended work. Everything else is structured."</em></p>
+<p>The PM stared at the diagram for a moment. <em>"So we're building... mostly not an agent."</em></p>
+<p><em>"We're building one agent surrounded by workflows. That's what most production agent systems are. The vocabulary makes it confusing."</em></p>
+<p>Sam circled the workflow box. <em>"Module 3 of the book I'm reading — these patterns. Five of them. Most of what we're going to build is one of those five. We'll come back to the agent box on Wednesday."</em></p>
+</div>
+<hr />
+<h2>What this module is</h2>
+<p>Module 1 reframed the field — most "agents" are workflows in trench coats, and that's fine. Module 2 hardened the agent loop for the cases where you really do need an agent. This module is about the patterns you'll actually compose for everything else, and the cases inside agent systems where workflow shapes show up as components.</p>
+<p>The five canonical patterns from Anthropic's December 2024 "Building Effective Agents" essay — prompt chaining, routing, parallelization, orchestrator-workers, evaluator-optimizer — have held up for eighteen months of production use. The field has converged on them as the vocabulary. Every major framework (LangGraph, CrewAI, OpenAI Agents SDK, the Vercel AI SDK, even Azure Logic Apps) uses these same five names with minor renaming.</p>
+<p>This module:</p>
+<ul>
+<li>Builds each pattern in code, with full implementations against the Anthropic SDK</li>
+<li>Shows the same realistic task implemented in three different patterns to make the trade-offs concrete (cost, latency, quality)</li>
+<li>Calls out the pitfalls that show up in production for each pattern</li>
+<li>Ends with composition: how the patterns combine, and what Sam's deal-research system looks like in workflow vocabulary</li>
+</ul>
+<p>By the end you'll be able to reach for the right pattern for a problem the way you'd reach for the right collection type — instinctively, with the trade-offs internalized.</p>
+<hr />
+<h2>Section 1 — Why Workflows First</h2>
+<p>A short justification before the patterns.</p>
+<p>The hardened agent loop from Module 2 is the right tool when you don't know what the agent will do next. That's a real and important class of problems. It's also a <em>minority</em> of the problems you'll be asked to solve.</p>
+<p>Most "AI features" decompose into known steps. Generate this, then summarize that. Classify the input, then route to the right handler. Process these ten documents, then aggregate the findings. Draft a response, then check it for compliance. None of these need an autonomous loop. All of them benefit enormously from the predictability, debuggability, and cost-determinism of a workflow.</p>
+<p>A workflow is, in one sentence: <strong>structured orchestration of LLM calls along a code path you wrote.</strong> You decide what runs, when, in what order. The model produces text or structured output at each step; your code routes it to the next step. There's no <code>while</code> loop where the model decides to keep going.</p>
+<p>This sounds restrictive. In practice it's liberating. A workflow:</p>
+<ul>
+<li>Has a fixed maximum cost per invocation (sum the per-step max_tokens times the rates)</li>
+<li>Has a fixed structure that traces cleanly (each step is one span)</li>
+<li>Has clear failure points (this prompt failed, this gate failed, this aggregator failed)</li>
+<li>Can be tested step-by-step without orchestrating the whole thing</li>
+<li>Scales horizontally without coordination overhead</li>
+</ul>
+<p>Compare to an agent loop's cost surface (variable, hard to bound below the budget cap), trace surface (variable depth, branching), failure surface (any step can loop, any tool can hang), and test surface (you have to mock the model's autonomous decisions). The agent loop wins on flexibility and loses on operability.</p>
+<p>Reach for the workflow first.</p>
+<div class="pullquote">
+<p>A workflow is structured orchestration of LLM calls along a code path you wrote. The model produces; you route. That's the whole pattern, and it's most of what production needs.</p>
+</div>
+<div class="nodumbq">
+<p><strong>Q: Are workflows just hand-rolled chains of API calls? Why is this even a "pattern"?</strong></p>
+<p>The patterns matter because they each have known properties — when they work, when they fail, what they cost. When you say "this is a routing workflow," the listener immediately knows: there's a classifier upfront, downstream specialists, classifier accuracy is the key risk, fallback behavior matters. The vocabulary compresses a lot of design context. Without it, every system is bespoke; with it, you can have productive design conversations in minutes instead of hours.</p>
+<p><strong>Q: Are these patterns just for cases where I'm not using an agent at all?</strong></p>
+<p>No — and this is important. The patterns show up <em>inside</em> agent systems all the time. Multi-agent supervisors are an orchestrator-workers workflow with agent-shaped workers (Module 14). Reflection inside an agent is an evaluator-optimizer workflow inside the loop (Module 11). Topic guardrails on an agent's input are a routing workflow that decides whether to invoke the agent at all (Module 12). Knowing the patterns is foundational even when the final system is an agent.</p>
+</div>
+<hr />
+<h2>Section 2 — Pattern 1: Prompt Chaining</h2>
+<p>The simplest and most common pattern. The output of one LLM call is the input to the next. Optional gates between steps verify intermediate state.</p>
+<pre><code>[Input] → [LLM Call 1] → [Gate?] → [LLM Call 2] → [Gate?] → [LLM Call 3] → [Output]
+</code></pre>
+<p><strong>When to use:</strong> the task decomposes cleanly into ordered steps. Each step is easier in isolation than the whole task is in one prompt. Trading some latency for better accuracy is acceptable.</p>
+<p><strong>When NOT to use:</strong> the steps don't actually depend on each other (use parallelization), the output of step 1 doesn't really shape step 2 (you might just need a single better prompt), or the chain is a workaround for an under-specified prompt (fix the prompt instead).</p>
+<h3>A worked example: research brief generation</h3>
+<p>Sam's deal-research project will eventually produce a brief on a target company. Even with rich context, asking a single model call to "write a 2000-word brief covering financials, leadership, market position, recent news, and risks" produces uneven output. Some sections are thorough; others are sparse. The model rushes to fit it all in one response.</p>
+<p>Decomposed into a chain:</p>
+<pre><code>[Company name] →
+  [Step 1: Research and structure findings as bullet points] →
+  [Gate: Are all required sections populated?] →
+  [Step 2: Write the brief from the structured findings] →
+  [Step 3: Polish prose and fix transitions] →
+  [Final brief]
+</code></pre>
+<p>Each step does one thing and does it well. The gate after step 1 catches the case where the research came back sparse — easier to retry the cheap research step than to discover the gap in the polished output.</p>
+<h3>Implementation</h3>
+<pre><code class="language-python">from anthropic import AsyncAnthropic
+from pydantic import BaseModel, Field
+
+client = AsyncAnthropic()
+
+
+class CompanyFindings(BaseModel):
+    &quot;&quot;&quot;Structured output of step 1; consumed by step 2.&quot;&quot;&quot;
+    financials: list[str] = Field(description=&quot;Revenue, growth, margins, runway&quot;)
+    leadership: list[str] = Field(description=&quot;Key people and recent changes&quot;)
+    market_position: list[str] = Field(description=&quot;Where they sit in the market&quot;)
+    recent_news: list[str] = Field(description=&quot;Material events in last 90 days&quot;)
+    risks: list[str] = Field(description=&quot;Concerns a buyer should know&quot;)
+
+
+async def chain_step_1_research(company: str) -&gt; CompanyFindings:
+    response = await client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=2000,
+        system=(
+            &quot;You research companies for a deal team. Produce structured findings, &quot;
+            &quot;not prose. Each list item should be a single fact with a source if available.&quot;
+        ),
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: (
+            f&quot;Research {company}. Populate every category. If you don't have &quot;
+            f&quot;information for a category, return an empty list — do not invent items.&quot;
+        )}],
+        # Use the SDK's tool-call mechanism to get structured output
+        tools=[{
+            &quot;name&quot;: &quot;submit_findings&quot;,
+            &quot;description&quot;: &quot;Submit structured findings about the company.&quot;,
+            &quot;input_schema&quot;: CompanyFindings.model_json_schema(),
+        }],
+        tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;submit_findings&quot;},
+    )
+    findings_block = next(b for b in response.content if b.type == &quot;tool_use&quot;)
+    return CompanyFindings(**findings_block.input)
+
+
+def gate_findings_complete(f: CompanyFindings) -&gt; tuple[bool, str]:
+    &quot;&quot;&quot;Programmatic check: did step 1 produce something usable?&quot;&quot;&quot;
+    required = [f.financials, f.leadership, f.market_position]
+    if not all(len(section) &gt;= 2 for section in required):
+        return False, (
+            f&quot;Sparse findings: financials={len(f.financials)}, &quot;
+            f&quot;leadership={len(f.leadership)}, market_position={len(f.market_position)}&quot;
+        )
+    return True, &quot;&quot;
+
+
+async def chain_step_2_draft(company: str, findings: CompanyFindings) -&gt; str:
+    response = await client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=3000,
+        system=&quot;You write deal-team briefs. Be concise. Use the findings provided; do not invent.&quot;,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: (
+            f&quot;Write a 1500-word brief on {company} using these findings:\n\n&quot;
+            f&quot;{findings.model_dump_json(indent=2)}\n\n&quot;
+            &quot;Structure: Executive Summary, Financial Profile, Leadership, &quot;
+            &quot;Market Position, Recent Developments, Key Risks.&quot;
+        )}],
+    )
+    return response.content[0].text
+
+
+async def chain_step_3_polish(draft: str) -&gt; str:
+    response = await client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=3500,
+        system=&quot;You are an editor. Polish prose, fix transitions, tighten language.&quot;,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: (
+            f&quot;Polish this brief. Keep all facts; improve flow and clarity.\n\n{draft}&quot;
+        )}],
+    )
+    return response.content[0].text
+
+
+async def research_brief_chain(company: str) -&gt; str:
+    # Step 1: Research
+    findings = await chain_step_1_research(company)
+
+    # Gate
+    ok, reason = gate_findings_complete(findings)
+    if not ok:
+        # Decision: retry research, or fail with diagnostic. Here, retry once.
+        findings = await chain_step_1_research(company)
+        ok, reason = gate_findings_complete(findings)
+        if not ok:
+            raise ChainGateFailure(f&quot;Research insufficient after retry: {reason}&quot;)
+
+    # Step 2: Draft
+    draft = await chain_step_2_draft(company, findings)
+
+    # Step 3: Polish
+    polished = await chain_step_3_polish(draft)
+    return polished
+
+
+class ChainGateFailure(Exception):
+    pass
+</code></pre>
+<h3>What this pattern buys you</h3>
+<p><strong>Clearer prompts, each one focused.</strong> The research prompt has nothing to say about prose style. The polishing prompt has nothing to say about facts. Each is shorter, less ambiguous, and easier to debug than a single prompt would be.</p>
+<p><strong>Validatable intermediate state.</strong> The gate after step 1 is a programmatic check — Python code, not another LLM call. Cheap, deterministic, catches "the research came back sparse" before you spend tokens drafting on top of nothing.</p>
+<p><strong>Cheaper retries on failure.</strong> If polishing produces something awkward, you can re-run polish without redoing research. If research is sparse, you can re-run research without throwing away a draft.</p>
+<p><strong>Predictable cost.</strong> Three calls at known max_tokens. The chain's worst-case cost is the sum of the three. Compare to an agent loop where the worst case is the budget cap.</p>
+<h3>Pitfalls</h3>
+<p><strong>Failure cascading without gates.</strong> A chain without programmatic checks between steps will happily polish nonsense into nice-sounding nonsense. The gate is what makes chaining safer than a single big prompt — without it, errors compound through the chain. Always have at least one structural gate.</p>
+<p><strong>Over-decomposition.</strong> Some teams chain everything into 8-step pipelines because three steps "felt like too few." Each step adds latency, cost, and a potential failure point. Decompose to the smallest number of steps that each do one job well, then stop.</p>
+<p><strong>Implicit context loss between steps.</strong> The polish step doesn't see the original findings; only the draft. If the draft loses a fact, polish can't recover it. For chains where steps need different views of the same source data, pass the source explicitly to every step that needs it.</p>
+<div class="gotcha">
+<p>The most common chain bug: step 2's prompt assumes information that step 1 sometimes doesn't produce. Step 2 then hallucinates. The gate after step 1 must check for the presence of the information step 2 will assume — not just "did step 1 produce something." Be specific in your gates.</p>
+</div>
+<hr />
+<h2>Section 3 — Pattern 2: Routing</h2>
+<p>A classifier (or LLM, or both) examines the input and dispatches it to a specialized handler. Used for separation of concerns and for cost optimization.</p>
+<pre><code>[Input] → [Router] → ┬─→ [Specialist A]
+                    ├─→ [Specialist B]
+                    └─→ [Specialist C]
+</code></pre>
+<p><strong>When to use:</strong> distinct categories of input genuinely benefit from different handling. Different prompts, different models, different toolsets, different downstream pipelines. The categories are stable enough that classification can be reliable.</p>
+<p><strong>When NOT to use:</strong> the categories blend (most inputs touch multiple categories), the specialist prompts would be 90% identical (just write one good prompt), or the router itself is the hard problem (you're solving the wrong layer).</p>
+<h3>A worked example: support ticket router</h3>
+<p>A SaaS company gets thousands of support tickets a day. The right model and prompt for "my password reset email isn't arriving" is very different from "your API is returning 503s on the /v2/orders endpoint." The first wants Haiku 4.5 with a friendly customer-success prompt; the second wants Sonnet 4.6 with API documentation in context.</p>
+<p>A routing workflow decides which specialist runs. Cost optimization is real: 70% of tickets can be handled by Haiku at $1/$5 per million tokens; 25% need Sonnet at $3/$15; the remaining 5% need Opus 4.7 with extended thinking.</p>
+<h3>Implementation</h3>
+<pre><code class="language-python">from enum import Enum
+
+
+class TicketCategory(str, Enum):
+    ACCOUNT = &quot;account&quot;  # password resets, login, profile
+    BILLING = &quot;billing&quot;  # subscription, invoices, payments
+    TECHNICAL = &quot;technical&quot;  # API, integrations, errors
+    GENERAL = &quot;general&quot;  # everything else
+
+
+class RouteDecision(BaseModel):
+    category: TicketCategory
+    confidence: float = Field(ge=0.0, le=1.0)
+    reasoning: str
+
+
+async def route_ticket(ticket: str) -&gt; RouteDecision:
+    &quot;&quot;&quot;Use Haiku as the router. It's fast, cheap, and accurate enough for classification.&quot;&quot;&quot;
+    response = await client.messages.create(
+        model=&quot;claude-haiku-4-5&quot;,
+        max_tokens=400,
+        system=(
+            &quot;You categorize support tickets. Pick the most specific category. &quot;
+            &quot;Return your confidence (0.0-1.0) and a one-sentence reason.&quot;
+        ),
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: ticket}],
+        tools=[{
+            &quot;name&quot;: &quot;submit_routing&quot;,
+            &quot;description&quot;: &quot;Submit the routing decision.&quot;,
+            &quot;input_schema&quot;: RouteDecision.model_json_schema(),
+        }],
+        tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;submit_routing&quot;},
+    )
+    decision_block = next(b for b in response.content if b.type == &quot;tool_use&quot;)
+    return RouteDecision(**decision_block.input)
+
+
+# Specialist handlers — different prompts, different models per the routing target.
+SPECIALIST_CONFIG = {
+    TicketCategory.ACCOUNT: {
+        &quot;model&quot;: &quot;claude-haiku-4-5&quot;,
+        &quot;system&quot;: (
+            &quot;You handle account questions: password reset, login, profile updates, &quot;
+            &quot;email changes. Be concise and friendly. If you can't fully answer, &quot;
+            &quot;tell the user what info you'd need to escalate.&quot;
+        ),
+    },
+    TicketCategory.BILLING: {
+        &quot;model&quot;: &quot;claude-sonnet-4-6&quot;,
+        &quot;system&quot;: (
+            &quot;You handle billing questions: subscription tiers, invoices, payment &quot;
+            &quot;issues, refunds. Reference the user's plan when known. Never promise &quot;
+            &quot;refunds outside policy: pro-rated for cancellation, none for downgrades.&quot;
+        ),
+    },
+    TicketCategory.TECHNICAL: {
+        &quot;model&quot;: &quot;claude-sonnet-4-6&quot;,
+        &quot;system&quot;: (
+            &quot;You handle technical questions: API errors, integrations, SDK issues. &quot;
+            &quot;Always ask for: error code, request payload (redacted), timestamp. &quot;
+            &quot;Reference our docs at docs.example.com for non-trivial issues.&quot;
+        ),
+    },
+    TicketCategory.GENERAL: {
+        &quot;model&quot;: &quot;claude-sonnet-4-6&quot;,
+        &quot;system&quot;: (
+            &quot;You handle general inquiries that don't fit other categories. &quot;
+            &quot;Be helpful; if the question is out of scope, redirect politely.&quot;
+        ),
+    },
+}
+
+
+async def handle_specialist(category: TicketCategory, ticket: str) -&gt; str:
+    config = SPECIALIST_CONFIG[category]
+    response = await client.messages.create(
+        model=config[&quot;model&quot;],
+        max_tokens=1000,
+        system=config[&quot;system&quot;],
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: ticket}],
+    )
+    return response.content[0].text
+
+
+CONFIDENCE_FALLBACK_THRESHOLD = 0.6
+
+
+async def route_and_handle(ticket: str) -&gt; tuple[str, RouteDecision]:
+    decision = await route_ticket(ticket)
+
+    # Low confidence? Fall back to GENERAL specialist (which is broader).
+    # Or escalate to human; depends on your business.
+    if decision.confidence &lt; CONFIDENCE_FALLBACK_THRESHOLD:
+        decision = RouteDecision(
+            category=TicketCategory.GENERAL,
+            confidence=decision.confidence,
+            reasoning=f&quot;Low confidence on initial routing ({decision.reasoning}); using general handler.&quot;,
+        )
+
+    response = await handle_specialist(decision.category, ticket)
+    return response, decision
+</code></pre>
+<h3>What this pattern buys you</h3>
+<p><strong>Cost optimization with quality preservation.</strong> You're not running every ticket through Sonnet just because <em>some</em> tickets need it. The router (Haiku, fast and cheap) decides which specialist runs. The aggregate cost on a realistic mix of tickets drops substantially without sacrificing quality on the ones that need a stronger model.</p>
+<p><strong>Specialist prompts can be focused.</strong> The billing specialist has detailed billing context loaded; the account specialist has account context. Each is shorter and more reliable than a god-prompt that knows everything.</p>
+<p><strong>Per-category tooling.</strong> Different specialists can have different tool access. The technical specialist might have access to a docs-search tool; the billing specialist might have access to a subscription-lookup tool; the account specialist might have neither.</p>
+<p><strong>Failure isolation.</strong> If the billing specialist's prompt is broken, only billing tickets misbehave. Account and technical tickets are unaffected.</p>
+<h3>Pitfalls</h3>
+<p><strong>Router becomes the bottleneck.</strong> If the router is wrong 10% of the time, your specialists handle 10% of tickets they're not optimized for. Routing accuracy is the most important metric to track. Use a confidence threshold and route low-confidence to a generalist or to a human queue.</p>
+<p><strong>Categories drift.</strong> New ticket types appear that don't fit existing categories. The router stuffs them into the closest fit, badly. Periodically sample low-confidence routings (say, weekly) and see if a new category is needed.</p>
+<p><strong>Two-class classifiers in disguise.</strong> Sometimes "we have four categories" really means "we have one important category and three rare ones." If 95% of traffic is one category, you might just want a single specialist plus an escalation path; the routing infrastructure is overkill.</p>
+<p><strong>Confidence inflation.</strong> LLM-based routers report confidence based on what looks-like-confidence in their training data, not calibrated probability. Don't trust the absolute number; calibrate against your own labeled data.</p>
+<div class="brain">
+<p>Your router classifies billing tickets correctly 96% of the time. The 4% that misroute go to the technical specialist, which gives wrong answers about payment plans. Where do you fix this?</p>
+<p>(Three options. (1) Improve the router — better prompt, more examples, fine-tune a small classifier. (2) Add a confidence floor that routes uncertain billing-or-technical tickets to a human queue. (3) Make the technical specialist's prompt include "if this is actually a billing question, redirect to billing rather than answering." Option 3 is often the cheapest fix and most robust — it makes specialists self-aware of mis-routing. Real production systems usually combine all three.)</p>
+</div>
+<div class="nodumbq">
+<p><strong>Q: Should the router be an LLM or a small classifier (BERT-class)?</strong></p>
+<p>For most production systems with reasonable volume, an LLM router (Haiku-tier) is the right call. The marginal cost is small, the accuracy is usually high enough out of the box, and you don't have to maintain a training pipeline. A small dedicated classifier wins on extreme-volume cases where Haiku-level cost-per-call adds up, or where the categories are very stable and you have lots of labeled data. Most teams over-engineer this; start with the LLM router and migrate only if you outgrow it.</p>
+</div>
+<hr />
+<h2>Section 4 — Pattern 3: Parallelization</h2>
+<p>A task is run by multiple LLM calls simultaneously, with their outputs aggregated. Two flavors that share the structure but differ in intent:</p>
+<ul>
+<li><strong>Sectioning:</strong> the task is split into independent subtasks that run in parallel and combine into a whole.</li>
+<li><strong>Voting:</strong> the same task runs multiple times with different prompts or configurations, and the outputs are aggregated for confidence.</li>
+</ul>
+<pre><code>                  ┌─→ [LLM Call A] ─┐
+[Input] ──────────┼─→ [LLM Call B] ─┼─→ [Aggregator] → [Output]
+                  └─→ [LLM Call C] ─┘
+</code></pre>
+<p><strong>When to use sectioning:</strong> subtasks are genuinely independent. Reviewing code with separate prompts for security, performance, and style. Translating a long document chapter-by-chapter. Running content moderation in parallel with response generation so safety doesn't block latency.</p>
+<p><strong>When to use voting:</strong> confidence matters more than speed. The task is borderline or ambiguous. You want to catch outlier outputs. Multiple votes from a single model, with different temperatures or prompts, can detect the cases where the model is uncertain.</p>
+<p><strong>When NOT to use:</strong> the subtasks aren't actually independent (chaining is right). The task isn't borderline (one good prompt is right). You're using parallelization for "more is better" without an aggregation strategy that benefits from parallelism.</p>
+<h3>A worked example (sectioning): document review</h3>
+<p>A legal team reviews contracts. Each contract gets reviewed by:</p>
+<ul>
+<li>A clauses-specialist (looks for unusual terms)</li>
+<li>A jurisdiction-specialist (checks governing law and venue)</li>
+<li>A risk-specialist (flags liabilities and indemnification issues)</li>
+</ul>
+<p>Sequential review of a long contract is slow. Parallel review with three specialists, each focused, finishes in roughly the time of the slowest review. The aggregator combines findings into a single report.</p>
+<pre><code class="language-python">import asyncio
+
+
+class ReviewFinding(BaseModel):
+    severity: str = Field(description=&quot;info | warn | error&quot;)
+    location: str = Field(description=&quot;section/clause reference&quot;)
+    issue: str
+    suggestion: str | None = None
+
+
+class SpecialistReport(BaseModel):
+    specialist: str
+    findings: list[ReviewFinding]
+
+
+SPECIALIST_PROMPTS = {
+    &quot;clauses&quot;: (
+        &quot;You are a contract clauses specialist. Identify unusual terms, &quot;
+        &quot;non-standard language, and clauses that deviate from market norms. &quot;
+        &quot;Cite the specific section. Severity: info (notable), warn (worth discussion), &quot;
+        &quot;error (deal-breaker without redline).&quot;
+    ),
+    &quot;jurisdiction&quot;: (
+        &quot;You are a jurisdiction specialist. Check governing law, venue, &quot;
+        &quot;dispute resolution mechanism, and any cross-border issues. &quot;
+        &quot;Cite the specific section. Severity: info | warn | error.&quot;
+    ),
+    &quot;risk&quot;: (
+        &quot;You are a risk specialist. Identify liability caps, indemnification scope, &quot;
+        &quot;warranties, and termination triggers. Flag asymmetric risk allocation. &quot;
+        &quot;Cite the specific section. Severity: info | warn | error.&quot;
+    ),
+}
+
+
+async def specialist_review(specialist: str, contract: str) -&gt; SpecialistReport:
+    response = await client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=2000,
+        system=SPECIALIST_PROMPTS[specialist],
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: (
+            f&quot;Review this contract and report findings.\n\n{contract}&quot;
+        )}],
+        tools=[{
+            &quot;name&quot;: &quot;submit_findings&quot;,
+            &quot;description&quot;: &quot;Submit your specialist findings.&quot;,
+            &quot;input_schema&quot;: {
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {
+                    &quot;findings&quot;: {
+                        &quot;type&quot;: &quot;array&quot;,
+                        &quot;items&quot;: ReviewFinding.model_json_schema(),
+                    },
+                },
+                &quot;required&quot;: [&quot;findings&quot;],
+            },
+        }],
+        tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;submit_findings&quot;},
+    )
+    block = next(b for b in response.content if b.type == &quot;tool_use&quot;)
+    return SpecialistReport(
+        specialist=specialist,
+        findings=[ReviewFinding(**f) for f in block.input[&quot;findings&quot;]],
+    )
+
+
+async def parallel_contract_review(contract: str) -&gt; dict:
+    # Fan out: all three specialists run concurrently.
+    reports = await asyncio.gather(*[
+        specialist_review(s, contract) for s in SPECIALIST_PROMPTS
+    ], return_exceptions=True)
+
+    # Handle individual failures without losing the others.
+    successes: list[SpecialistReport] = []
+    failures = []
+    for s, r in zip(SPECIALIST_PROMPTS, reports):
+        if isinstance(r, Exception):
+            failures.append((s, str(r)))
+        else:
+            successes.append(r)
+
+    # Aggregate
+    all_findings = [
+        {**f.model_dump(), &quot;specialist&quot;: rep.specialist}
+        for rep in successes
+        for f in rep.findings
+    ]
+    by_severity = {
+        &quot;error&quot;: [f for f in all_findings if f[&quot;severity&quot;] == &quot;error&quot;],
+        &quot;warn&quot;:  [f for f in all_findings if f[&quot;severity&quot;] == &quot;warn&quot;],
+        &quot;info&quot;:  [f for f in all_findings if f[&quot;severity&quot;] == &quot;info&quot;],
+    }
+    return {
+        &quot;by_severity&quot;: by_severity,
+        &quot;specialists_succeeded&quot;: [r.specialist for r in successes],
+        &quot;specialists_failed&quot;: failures,
+        &quot;total_findings&quot;: len(all_findings),
+    }
+</code></pre>
+<p>Three things worth noticing:</p>
+<p><strong><code>return_exceptions=True</code> on <code>asyncio.gather</code>.</strong> If the jurisdiction specialist times out, you still get the clauses and risk reports. The aggregate output flags which specialists succeeded, so the user (or the next step) knows the review is partial.</p>
+<p><strong>Aggregation by severity.</strong> Cross-specialist organization helps the reader. A single contract might get 3 errors, 7 warnings, 12 info — grouped by severity is more useful than three separate reports stacked vertically.</p>
+<p><strong>No retry of failed specialists in this version.</strong> If the jurisdiction specialist fails, this code reports the partial result and moves on. Whether to retry is a business call; don't bake retry into the pattern, expose the failure and let the caller decide.</p>
+<h3>A worked example (voting): high-stakes classification</h3>
+<p>A safety classifier needs to flag potentially harmful content. False negatives are bad (harmful content reaches users); false positives are bad (legitimate content gets blocked). Single-shot classification is too brittle.</p>
+<p>The voting variant: run the classification five times with slightly different prompts, take majority vote, surface disagreements for human review.</p>
+<pre><code class="language-python">async def vote_classify(content: str, n: int = 5) -&gt; dict:
+    &quot;&quot;&quot;
+    Run the same classification N times. Aggregate by majority.
+    If votes split, escalate to human review.
+    &quot;&quot;&quot;
+    base_prompts = [
+        &quot;Classify whether this content violates community guidelines.&quot;,
+        &quot;Does this content contain prohibited material? Be strict.&quot;,
+        &quot;Is this safe content for general audiences? Be lenient on edge cases.&quot;,
+        &quot;Flag this content if you'd be uncomfortable with it on a public platform.&quot;,
+        &quot;Classify as safe or unsafe based on a reasonable-person standard.&quot;,
+    ][:n]
+
+    async def one_vote(prompt: str) -&gt; bool:
+        response = await client.messages.create(
+            model=&quot;claude-haiku-4-5&quot;,
+            max_tokens=200,
+            system=prompt + &quot; Respond with just 'safe' or 'unsafe'.&quot;,
+            messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: content}],
+        )
+        text = response.content[0].text.lower().strip()
+        return &quot;unsafe&quot; in text  # True = unsafe
+
+    votes = await asyncio.gather(*[one_vote(p) for p in base_prompts])
+    unsafe_count = sum(votes)
+    safe_count = n - unsafe_count
+
+    if unsafe_count &gt;= n - 1:
+        return {&quot;verdict&quot;: &quot;unsafe&quot;, &quot;confidence&quot;: &quot;high&quot;,
+                &quot;votes&quot;: (unsafe_count, safe_count)}
+    if safe_count &gt;= n - 1:
+        return {&quot;verdict&quot;: &quot;safe&quot;, &quot;confidence&quot;: &quot;high&quot;,
+                &quot;votes&quot;: (unsafe_count, safe_count)}
+    return {&quot;verdict&quot;: &quot;uncertain&quot;, &quot;confidence&quot;: &quot;low&quot;, &quot;votes&quot;: (unsafe_count, safe_count),
+            &quot;action&quot;: &quot;human_review&quot;}
+</code></pre>
+<p>The voting pattern's value isn't catching every bad case — it's catching <em>uncertainty</em>. When five voters disagree, that's a signal. The system surfaces it for human review rather than picking one verdict and shipping. For high-stakes classification, escalating uncertainty is the whole game.</p>
+<h3>What this pattern buys you</h3>
+<p><strong>Wall-clock speedup.</strong> Three sequential calls of 8 seconds each is 24 seconds. Three parallel calls is ~8 seconds (the slowest). For latency-sensitive flows, parallelization is the cheapest improvement.</p>
+<p><strong>Specialist focus.</strong> Each parallel call has a tight prompt. No multi-aspect god-prompt that tries to do everything.</p>
+<p><strong>Confidence signal (voting).</strong> When votes agree, you have higher confidence. When they disagree, you have a signal to escalate.</p>
+<p><strong>Resilience to single failures.</strong> With <code>return_exceptions=True</code>, one failed branch doesn't kill the whole task.</p>
+<h3>Pitfalls</h3>
+<p><strong>Cost multiplies linearly.</strong> Three parallel specialists is three times the cost of one. The latency win is real; the cost is too. Make sure the work justifies the multiplier.</p>
+<p><strong>Aggregator complexity.</strong> Combining outputs from independent specialists isn't always trivial. If the specialists produce overlapping findings, you need de-duplication. If they produce conflicting findings, you need a resolution strategy. Sometimes the aggregator becomes the hardest part of the system.</p>
+<p><strong>Voting with no diversity.</strong> If you run the same prompt five times with the same model and same temperature, you get five very similar answers. The "voting" gives false confidence. Diversity comes from prompt variation, model variation, or temperature. Without it, voting is theater.</p>
+<p><strong>Premature parallelization.</strong> Some teams parallelize tasks that aren't independent ("draft" running in parallel with "summarize the draft"). The "summary" gets garbage. Confirm independence before fanning out.</p>
+<div class="gotcha">
+<p>The most common parallelization bug: running asyncio.gather without <code>return_exceptions=True</code>. One specialist throws; gather raises; everyone else's results are lost in the propagated exception. The default is "all-or-nothing." For fan-out workflows where partial results are still valuable, you almost always want <code>return_exceptions=True</code> and explicit handling of the per-branch failures.</p>
+</div>
+<hr />
+<h2>Section 5 — Pattern 4: Orchestrator-Workers</h2>
+<p>A central LLM dynamically decomposes the task and delegates to worker LLMs, then synthesizes their results. Looks similar to parallelization, with one critical difference: the <em>structure of the work isn't known in advance.</em> The orchestrator looks at the input and decides how to split it.</p>
+<pre><code>[Input] → [Orchestrator: decompose into subtasks] →
+          ┌─→ [Worker 1] ─┐
+          ├─→ [Worker 2] ─┼─→ [Synthesizer] → [Output]
+          └─→ [Worker N] ─┘
+</code></pre>
+<p><strong>When to use:</strong> the decomposition depends on the input. A code change might affect 3 files or 30; you can't pre-define the worker fan-out. A research question might decompose into 4 sub-questions or 12; the orchestrator decides.</p>
+<p><strong>When NOT to use:</strong> the decomposition is static (parallelization is right). The decomposition needs to be revised mid-flight based on intermediate findings (you're approaching agent territory; consider the agent loop).</p>
+<p>This pattern is the closest workflow pattern to "agentic." Module 13 will reveal that Anthropic's multi-agent research system is essentially a scaled-up orchestrator-workers shape with agent-shaped workers — but in workflow form, the orchestrator and workers each make a single LLM call and the structure is deterministic from the orchestrator's plan.</p>
+<h3>A worked example: codebase change planner</h3>
+<p>A coding agent gets a feature request: "add OAuth login with Google and GitHub." The work decomposes into "edit auth module," "edit user model," "add OAuth callback routes," "update frontend login UI," "add tests." The number and identity of these subtasks depends on the codebase and the request — you can't pre-compute the fan-out.</p>
+<p>The orchestrator looks at the request and the codebase summary, plans the subtasks, dispatches to workers (each focused on one file or area), and the synthesizer assembles the changes into a coherent diff.</p>
+<pre><code class="language-python">class SubTask(BaseModel):
+    description: str
+    files: list[str]
+    estimated_complexity: str = Field(description=&quot;low | medium | high&quot;)
+
+
+class TaskPlan(BaseModel):
+    subtasks: list[SubTask]
+    overall_approach: str
+
+
+class WorkerOutput(BaseModel):
+    subtask_index: int
+    summary: str
+    proposed_changes: list[dict]  # {file, before_excerpt, after_excerpt, rationale}
+
+
+async def orchestrator_plan(feature_request: str, codebase_summary: str) -&gt; TaskPlan:
+    response = await client.messages.create(
+        model=&quot;claude-opus-4-7&quot;,  # Orchestrator uses the strongest model
+        max_tokens=3000,
+        system=(
+            &quot;You are a senior engineer planning a feature change. Decompose the &quot;
+            &quot;request into focused subtasks, each touching a coherent set of files. &quot;
+            &quot;Aim for 3-7 subtasks; each should be independently implementable.&quot;
+        ),
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: (
+            f&quot;FEATURE REQUEST:\n{feature_request}\n\n&quot;
+            f&quot;CODEBASE SUMMARY:\n{codebase_summary}\n\n&quot;
+            &quot;Produce a task plan.&quot;
+        )}],
+        tools=[{
+            &quot;name&quot;: &quot;submit_plan&quot;,
+            &quot;description&quot;: &quot;Submit the decomposed task plan.&quot;,
+            &quot;input_schema&quot;: TaskPlan.model_json_schema(),
+        }],
+        tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;submit_plan&quot;},
+    )
+    block = next(b for b in response.content if b.type == &quot;tool_use&quot;)
+    return TaskPlan(**block.input)
+
+
+async def worker_implement(subtask: SubTask, idx: int, file_contents: dict) -&gt; WorkerOutput:
+    relevant = {f: file_contents.get(f, &quot;&lt;file not found&gt;&quot;) for f in subtask.files}
+    response = await client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,  # Workers use a cheaper model; orchestrator gates quality
+        max_tokens=4000,
+        system=(
+            &quot;You implement a focused subtask within a larger feature. &quot;
+            &quot;Produce minimal, correct changes. Cite the lines you would change.&quot;
+        ),
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: (
+            f&quot;SUBTASK: {subtask.description}\n&quot;
+            f&quot;FILES TO MODIFY: {subtask.files}\n\n&quot;
+            f&quot;CURRENT CONTENTS:\n&quot;
+            + &quot;\n\n&quot;.join(f&quot;--- {f} ---\n{c}&quot; for f, c in relevant.items())
+        )}],
+        tools=[{
+            &quot;name&quot;: &quot;submit_changes&quot;,
+            &quot;description&quot;: &quot;Submit the proposed changes for this subtask.&quot;,
+            &quot;input_schema&quot;: {
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {
+                    &quot;summary&quot;: {&quot;type&quot;: &quot;string&quot;},
+                    &quot;proposed_changes&quot;: {
+                        &quot;type&quot;: &quot;array&quot;,
+                        &quot;items&quot;: {
+                            &quot;type&quot;: &quot;object&quot;,
+                            &quot;properties&quot;: {
+                                &quot;file&quot;: {&quot;type&quot;: &quot;string&quot;},
+                                &quot;before_excerpt&quot;: {&quot;type&quot;: &quot;string&quot;},
+                                &quot;after_excerpt&quot;: {&quot;type&quot;: &quot;string&quot;},
+                                &quot;rationale&quot;: {&quot;type&quot;: &quot;string&quot;},
+                            },
+                            &quot;required&quot;: [&quot;file&quot;, &quot;rationale&quot;],
+                        },
+                    },
+                },
+                &quot;required&quot;: [&quot;summary&quot;, &quot;proposed_changes&quot;],
+            },
+        }],
+        tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;submit_changes&quot;},
+    )
+    block = next(b for b in response.content if b.type == &quot;tool_use&quot;)
+    return WorkerOutput(subtask_index=idx, **block.input)
+
+
+async def synthesizer_combine(
+    feature_request: str, plan: TaskPlan, outputs: list[WorkerOutput]
+) -&gt; str:
+    response = await client.messages.create(
+        model=&quot;claude-opus-4-7&quot;,
+        max_tokens=4000,
+        system=(
+            &quot;You synthesize a coherent change plan from worker outputs. &quot;
+            &quot;Identify any conflicts between subtasks, surface them, and produce &quot;
+            &quot;a unified summary suitable for code review.&quot;
+        ),
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: (
+            f&quot;ORIGINAL REQUEST: {feature_request}\n\n&quot;
+            f&quot;PLAN: {plan.model_dump_json(indent=2)}\n\n&quot;
+            f&quot;WORKER OUTPUTS:\n{[o.model_dump() for o in outputs]}&quot;
+        )}],
+    )
+    return response.content[0].text
+
+
+async def orchestrator_workers_workflow(
+    feature_request: str, codebase_summary: str, file_contents: dict
+) -&gt; str:
+    # 1. Plan
+    plan = await orchestrator_plan(feature_request, codebase_summary)
+
+    # 2. Dispatch workers in parallel
+    outputs = await asyncio.gather(*[
+        worker_implement(st, i, file_contents) for i, st in enumerate(plan.subtasks)
+    ], return_exceptions=True)
+
+    # 3. Filter failures (we cover deeper failure handling in M14)
+    successes = [o for o in outputs if isinstance(o, WorkerOutput)]
+    if len(successes) &lt; len(plan.subtasks) * 0.5:
+        raise OrchestrationFailed(
+            f&quot;Too many worker failures: {len(successes)}/{len(plan.subtasks)} succeeded&quot;
+        )
+
+    # 4. Synthesize
+    return await synthesizer_combine(feature_request, plan, successes)
+
+
+class OrchestrationFailed(Exception):
+    pass
+</code></pre>
+<h3>What this pattern buys you</h3>
+<p><strong>Dynamic decomposition.</strong> The pattern handles inputs of varying shape. A 1-line typo fix becomes a single-worker plan; a feature touching ten files becomes a ten-worker plan. The same workflow code handles both.</p>
+<p><strong>Different models for different roles.</strong> The orchestrator uses Opus 4.7 because plan errors propagate. Workers use Sonnet 4.6 because they're focused and there are many of them. The synthesizer uses Opus again because it's reading all the worker outputs and producing a coherent summary. Cost is concentrated where quality matters most.</p>
+<p><strong>Parallel execution after planning.</strong> Once the orchestrator decides on N subtasks, they fan out and run concurrently. Wall-clock time is dominated by the orchestrator + the slowest worker + the synthesizer.</p>
+<h3>Pitfalls</h3>
+<p><strong>Plan errors propagate.</strong> If the orchestrator decomposes badly — misses a subtask, conflates two — the workers can't fix it. Investing in the orchestrator's prompt and giving it a strong model is non-optional.</p>
+<p><strong>Synthesis loses detail.</strong> When the synthesizer compresses N worker outputs into a summary, important details get dropped. For tasks where the worker outputs are themselves the deliverable (here, code changes), the synthesizer should preserve them, not summarize them. Synthesize the <em>narrative</em>; pass the <em>artifacts</em> through.</p>
+<p><strong>Worker outputs conflict.</strong> Two workers modify the same file with conflicting changes. The synthesizer should detect and surface this; the workflow shouldn't blindly merge. We deepen this in Module 14 when we cover multi-agent failure handling.</p>
+<p><strong>Looks-like-an-agent confusion.</strong> Teams sometimes implement orchestrator-workers and call it "multi-agent." It's not. The orchestrator and workers each make a single LLM call; there's no autonomous loop. This is a workflow with structured fan-out. Calling it multi-agent inflates the perceived complexity and obscures what's actually deterministic.</p>
+<div class="brain">
+<p>Look at the orchestrator_plan function. The orchestrator's prompt says "aim for 3-7 subtasks." What if the right answer is 12? What if it's 1?</p>
+<p>(The fixed range is a heuristic that biases the orchestrator toward "reasonable" plans. The cost: you'll occasionally get suboptimal decompositions. The benefit: you'll never get a runaway 200-subtask plan or a degenerate 1-subtask plan that doesn't decompose at all. For most production systems, a soft constraint in the prompt is the right call. For systems where the right number genuinely varies wildly, drop the constraint and add a downstream check on plan reasonableness.)</p>
+</div>
+<hr />
+<h2>Section 6 — Pattern 5: Evaluator-Optimizer</h2>
+<p>One LLM produces an output; another LLM evaluates it and provides feedback; the producer revises. Loop until the evaluator approves or a cap is hit.</p>
+<pre><code>[Input] → [Producer] → [Output]
+              ↑           ↓
+              └─[Revise]─[Evaluator]─[approves? → done]
+</code></pre>
+<p><strong>When to use:</strong> quality criteria are clear, iterative refinement provides measurable value, and the producer's first attempt is variable enough that evaluation catches real issues. Translation with a separate evaluator for nuance. Code generation with a separate critic for correctness. Long-form writing with a separate editor.</p>
+<p><strong>When NOT to use:</strong> the criteria are vague (the evaluator's feedback will be vague). The producer has hit its quality ceiling (more iterations don't help). The producer and evaluator are the same model with the same prompt (it's confirmation bias dressed as evaluation).</p>
+<h3>A worked example: marketing-copy refinement</h3>
+<p>A marketing team needs product descriptions for an e-commerce catalog. The descriptions need to:</p>
+<ul>
+<li>Hit a target tone (warm, confident, not breathless)</li>
+<li>Be 80-120 words</li>
+<li>Mention three specific product attributes (each product has different attributes)</li>
+<li>Pass brand-voice guidelines (no jargon, no superlatives like "revolutionary")</li>
+</ul>
+<p>A single prompt that tries to do all this often misses one criterion. The evaluator-optimizer pattern is exactly right: producer drafts, evaluator scores against the explicit criteria, producer revises with specific feedback.</p>
+<pre><code class="language-python">class CopyEvaluation(BaseModel):
+    tone_score: int = Field(ge=0, le=10, description=&quot;Warmth and confidence, 0-10&quot;)
+    word_count: int
+    word_count_in_range: bool
+    attributes_mentioned: list[str]
+    all_attributes_mentioned: bool
+    brand_voice_violations: list[str]
+    overall_pass: bool
+    feedback: str = Field(description=&quot;Specific suggestions if not passing&quot;)
+
+
+async def producer_draft(
+    product: dict, attributes: list[str], previous_attempt: str | None = None,
+    feedback: str | None = None,
+) -&gt; str:
+    system = (
+        &quot;You write product descriptions for an e-commerce catalog. &quot;
+        &quot;Tone: warm, confident, not breathless. &quot;
+        &quot;Length: 80-120 words. &quot;
+        &quot;Brand voice: no jargon, no superlatives like 'revolutionary' or 'best-in-class'.&quot;
+    )
+    user_content = f&quot;PRODUCT: {product['name']}\nATTRIBUTES TO MENTION: {attributes}&quot;
+    if previous_attempt and feedback:
+        user_content += (
+            f&quot;\n\nPREVIOUS ATTEMPT:\n{previous_attempt}\n\n&quot;
+            f&quot;REVISE based on this feedback:\n{feedback}&quot;
+        )
+
+    response = await client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=600,
+        system=system,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_content}],
+    )
+    return response.content[0].text
+
+
+async def evaluator_score(copy: str, attributes: list[str]) -&gt; CopyEvaluation:
+    response = await client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,  # Different prompt makes it functionally distinct
+        max_tokens=1000,
+        system=(
+            &quot;You evaluate product copy against strict criteria. Be honest; do not pass &quot;
+            &quot;copy that fails any required check. Return specific, actionable feedback.&quot;
+        ),
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: (
+            f&quot;COPY TO EVALUATE:\n{copy}\n\n&quot;
+            f&quot;REQUIRED ATTRIBUTES: {attributes}\n\n&quot;
+            &quot;Score: tone (0-10), word count, attributes mentioned, brand voice violations. &quot;
+            &quot;Mark overall_pass true only if: tone &gt;= 7 AND word_count_in_range AND &quot;
+            &quot;all_attributes_mentioned AND no brand_voice_violations.&quot;
+        )}],
+        tools=[{
+            &quot;name&quot;: &quot;submit_evaluation&quot;,
+            &quot;description&quot;: &quot;Submit the evaluation.&quot;,
+            &quot;input_schema&quot;: CopyEvaluation.model_json_schema(),
+        }],
+        tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;submit_evaluation&quot;},
+    )
+    block = next(b for b in response.content if b.type == &quot;tool_use&quot;)
+    return CopyEvaluation(**block.input)
+
+
+async def evaluator_optimizer_workflow(
+    product: dict, attributes: list[str],
+    max_iterations: int = 3,
+) -&gt; tuple[str, CopyEvaluation]:
+    copy = await producer_draft(product, attributes)
+    evaluation = await evaluator_score(copy, attributes)
+
+    iteration = 1
+    while not evaluation.overall_pass and iteration &lt; max_iterations:
+        copy = await producer_draft(
+            product, attributes,
+            previous_attempt=copy, feedback=evaluation.feedback,
+        )
+        evaluation = await evaluator_score(copy, attributes)
+        iteration += 1
+
+    # Return last attempt regardless; caller can check evaluation.overall_pass
+    return copy, evaluation
+</code></pre>
+<h3>What this pattern buys you</h3>
+<p><strong>Higher final quality on tasks with clear criteria.</strong> When the criteria are well-defined and the producer is variable, the iterative refinement actually moves quality. The evaluator catches missed attributes; the producer fixes them. After 2-3 rounds, output quality is meaningfully better than first-shot.</p>
+<p><strong>Visible quality criteria.</strong> The evaluator's structured output (<code>CopyEvaluation</code>) is auditable. You can review which criteria pass and fail in production traces. When something ships that shouldn't have, you can see the criterion that should have caught it.</p>
+<p><strong>Calibrated iteration count.</strong> Most tasks converge in 1-2 iterations. The cap (3 here) catches the rare task that's iterating without progress.</p>
+<h3>Pitfalls</h3>
+<p><strong>Vague criteria → vague feedback → vague revision.</strong> This is the dominant failure mode. "Make it better" produces "different but not better." The evaluator's prompt must encode specific, checkable criteria. If you can't write them down, you can't iterate on them.</p>
+<p><strong>Confirmation bias when producer == evaluator.</strong> Same model, same prompt = self-evaluation = passes everything. Use different prompts at minimum; use different model families when you can. Module 11 covers this in depth for reflection.</p>
+<p><strong>Quality plateau.</strong> The producer's ceiling is a real thing. After 2-3 iterations, additional rounds usually move quality 0%. Capping iterations at 2-3 is the right default; longer caps just waste tokens.</p>
+<p><strong>Infinite loop on contradictory feedback.</strong> Evaluator says "shorter"; producer shortens; evaluator now says "missing detail." Bound iteration count <em>unconditionally</em>. The cap is your defense.</p>
+<div class="gotcha">
+<p>The single most expensive mistake in evaluator-optimizer workflows: not capping iterations. The model reaches a quality plateau but the evaluator still finds nits; the producer revises pointlessly; the loop continues until your budget burns out. Always cap at 2-3 unless you have specific reason to go higher. The marginal quality past iteration 3 rarely justifies the marginal cost.</p>
+</div>
+<hr />
+<h2>Section 7 — The Same Task, Three Patterns</h2>
+<p>The patterns aren't always exclusive — many tasks could be approached multiple ways. Here we take one realistic task and implement it three ways to make the trade-offs concrete.</p>
+<p><strong>The task:</strong> generate a 1500-word competitive analysis of a target company against three competitors. Output should cover: market positioning, pricing, feature differentiation, customer reviews, and strategic vulnerabilities.</p>
+<h3>Approach A: Prompt chain (sequential)</h3>
+<pre><code>[Inputs] → [Step 1: research target] → [Step 2: research competitor 1] →
+[Step 3: research competitor 2] → [Step 4: research competitor 3] →
+[Step 5: synthesize comparative analysis] → [Output]
+</code></pre>
+<p><strong>Predicted profile.</strong> Cost: 5 calls × ~3000 tokens average = ~15K input + ~8K output. ~$0.10 on Sonnet 4.6. Latency: ~5 × 6 sec = ~30 sec wall-clock. Quality: dependent on chain coherence; if step 1 finds a key fact, steps 2-4 might miss it because they don't see step 1's output.</p>
+<h3>Approach B: Parallelization (sectioning)</h3>
+<pre><code>[Inputs] → ┌─→ [Worker: target research] ─┐
+           ├─→ [Worker: competitor 1] ────┼─→ [Synthesizer] → [Output]
+           ├─→ [Worker: competitor 2] ────┤
+           └─→ [Worker: competitor 3] ────┘
+</code></pre>
+<p><strong>Predicted profile.</strong> Cost: 4 parallel calls + 1 synthesizer = 5 calls. Same total tokens as Approach A. Latency: ~max(parallel) + synthesizer = ~8 + 6 = ~14 sec. Quality: research is independent (good), but the synthesizer has to combine four reports without seeing them in flight.</p>
+<h3>Approach C: Orchestrator-workers (dynamic)</h3>
+<pre><code>[Inputs] → [Orchestrator: plan analysis sections] →
+           ┌─→ [Worker: section 1] ─┐
+           ├─→ [Worker: section 2] ─┼─→ [Synthesizer] → [Output]
+           └─→ [Worker: section N] ─┘
+</code></pre>
+<p><strong>Predicted profile.</strong> Cost: 1 orchestrator call (Opus) + N worker calls (Sonnet) + 1 synthesizer (Opus). For 5 sections: ~7 calls, biased toward more expensive model on the orchestrator and synthesizer. ~$0.30. Latency: orchestrator + max(workers) + synthesizer ~= 4 + 8 + 6 = ~18 sec. Quality: orchestrator can plan around the specific input — adapt section structure based on whether competitors are hardware vs SaaS, etc.</p>
+<h3>Comparison</h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>A: Chain</th>
+<th>B: Parallel</th>
+<th>C: Orchestrator-Workers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cost</td>
+<td>~$0.10</td>
+<td>~$0.10</td>
+<td>~$0.30</td>
+</tr>
+<tr>
+<td>Latency</td>
+<td>~30s</td>
+<td>~14s</td>
+<td>~18s</td>
+</tr>
+<tr>
+<td>Steps known upfront</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No (orchestrator decides)</td>
+</tr>
+<tr>
+<td>Adapts to input shape</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Parallelism</td>
+<td>None</td>
+<td>High</td>
+<td>Medium (after planning)</td>
+</tr>
+<tr>
+<td>Synthesis complexity</td>
+<td>Low</td>
+<td>High</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Failure isolation</td>
+<td>Step-by-step</td>
+<td>Per-branch</td>
+<td>Per-branch + synthesis</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Which to pick?</strong></p>
+<p>Approach A (chain) wins when the structure is genuinely sequential — step N depends on N-1's output. For competitive analysis, the steps are largely independent, so chain is the wrong shape; you're paying latency for sequencing you don't need.</p>
+<p>Approach B (parallel) wins when the structure is fixed and known. For "target + 3 competitors" — exactly four research arms — parallelization is the right shape. You get the wall-clock speedup, you keep cost low (no orchestrator/synthesizer using the strongest model), and the synthesizer's job is straightforward (compile four parallel reports).</p>
+<p>Approach C (orchestrator-workers) wins when the structure varies. If "competitive analysis" sometimes means three competitors and sometimes nine, sometimes hardware-focused and sometimes SaaS-focused, the orchestrator earns its cost. For a fixed-shape task, it's overkill.</p>
+<p>For Sam's specific deal-research feature, Approach B is the right choice: deals always include the target plus a known list of comparison companies. The wall-clock matters (AEs are watching the spinner). The cost matters (this runs on every deal). Orchestrator-workers becomes interesting later, when the team adds variable analysis types — for the v1, parallelization wins.</p>
+<div class="pullquote">
+<p>The right pattern is the one that matches the <em>shape of your task</em>, not the one that sounds most sophisticated. Parallel beats chain when steps are independent. Orchestrator-workers beats parallel when the decomposition varies. Each pattern has the workload it earns.</p>
+</div>
+<div class="code-exercise">
+<p><strong>Exercise 3.1 — Three patterns, one task.</strong></p>
+<p>Pick a task you actually need to build (or one you've seen). Sketch it three ways: prompt chain, parallelization, orchestrator-workers. For each, estimate:</p>
+<ol>
+<li>Number of LLM calls</li>
+<li>Token usage (rough; multiply max_tokens by call count)</li>
+<li>Wall-clock latency (sum of sequential steps; max of parallel)</li>
+<li>Cost in USD using current model pricing</li>
+<li>Failure isolation (what happens if one step fails?)</li>
+</ol>
+<p>Pick the winner. Then implement it. Compare your prediction to the actual numbers when you run.</p>
+<p>This is the calibration that turns "I know the patterns" into "I can pick the right pattern." Most engineers have to do this exercise three or four times before the choice becomes instinctive.</p>
+</div>
+<hr />
+<h2>Section 8 — Composing Patterns</h2>
+<p>Real production workflows rarely live in one pattern. They compose. Sam's deal-research workflow, sketched on the conference room whiteboard, ends up looking like this:</p>
+<pre><code>[Deal info] →
+  [Routing: deal type → standard or M&amp;A research path] →
+    [Standard path:]
+      [Parallelization: target / competitors / market research run concurrently] →
+      [Orchestrator-workers: synthesizer plans the brief sections, workers write each] →
+      [Evaluator-optimizer: critic reviews brief, writer revises]
+    [M&amp;A path:]
+      [Prompt chain: due-diligence checklist → red flag scan → exec summary]
+  →
+  [Final brief, possibly with agent layer for follow-up Q&amp;A — see Module 14]
+</code></pre>
+<p>Five patterns, layered. The routing decision picks the path. The path itself is a chain of patterns. The output of one pattern is the input to the next.</p>
+<p>This is what production looks like. Not "we picked the orchestrator-workers pattern and used it" — but "we picked routing for the entry point, parallelization for the bulk research, orchestrator-workers for the synthesis, and evaluator-optimizer for the polish."</p>
+<p>Three principles for composing patterns well:</p>
+<p><strong>1. Each pattern handles a distinct concern.</strong> The router decides type. The parallelization gathers facts. The orchestrator structures output. The evaluator polishes. None of them try to do another's job. When you find a pattern doing two jobs, split it into two patterns.</p>
+<p><strong>2. The interfaces between patterns are structured.</strong> Pattern outputs are typed (Pydantic models), not free-form text. The router emits a <code>RouteDecision</code>. The parallel workers emit <code>SpecialistReport</code>s. The orchestrator emits a <code>TaskPlan</code>. The composition is reliable because each pattern's output has a known shape that the next pattern's input expects.</p>
+<p><strong>3. Failures at one layer are visible to the next.</strong> If parallelization had partial failures, the orchestrator sees the partial set and decides whether to proceed or escalate. Failures don't get hidden by the abstraction; they propagate as data.</p>
+<p>The hardened agent loop from Module 2 fits into this composition where it earns its place — typically at the end of the pipeline, doing the open-ended Q&amp;A or follow-up that the workflow couldn't anticipate. The agent isn't replacing the workflow; it's slotted into the workflow at the point where the workflow's predictability ends.</p>
+<div class="brain">
+<p>Sam's deal-research system has five patterns. If a system has thirteen patterns, what's probably going on?</p>
+<p>(Either: (a) the system is genuinely complex and the team has rigorously decomposed it — possible but rare; or (b) the team has over-decomposed and many of those patterns are doing the same job under different names. The smell test: can each pattern's purpose be stated in a sentence without overlapping any other pattern's sentence? If two patterns' descriptions overlap, you have one pattern with two implementations. Merge them.)</p>
+</div>
+<hr />
+<h2>Section 9 — When NOT to Use a Workflow at All</h2>
+<p>The contrarian flip side. Workflows are great. They're not always right.</p>
+<p><strong>Use a single augmented LLM call instead of a workflow when:</strong></p>
+<ul>
+<li>The task fits in a single well-crafted prompt</li>
+<li>The latency budget can't accommodate sequential steps</li>
+<li>The cost budget is so tight that even one extra LLM call breaks economics</li>
+<li>You're prototyping and the workflow structure isn't yet justified</li>
+</ul>
+<p><strong>Use an agent loop instead of a workflow when:</strong></p>
+<ul>
+<li>The number of steps depends on what's discovered along the way (Module 2)</li>
+<li>The model needs to react to tool results in unpredictable ways</li>
+<li>The task is genuinely open-ended Q&amp;A or research</li>
+</ul>
+<p><strong>Use a multi-agent system instead of a workflow when:</strong></p>
+<ul>
+<li>Module 13's threshold test is satisfied (and not before)</li>
+</ul>
+<p><strong>Use code (no LLM) instead of a workflow when:</strong></p>
+<ul>
+<li>The decisions are deterministic</li>
+<li>The transformations are well-specified</li>
+<li>The cost of an LLM is wasted on a problem that's not LLM-shaped</li>
+</ul>
+<p>The last one is the most underrated. Plenty of "AI workflows" have steps that are just data transformation — parse JSON, lookup in a table, format output. Those steps don't need an LLM. The model is being used as a fancy expression evaluator, at LLM cost. Use code; save the LLM calls for the parts that genuinely need language understanding.</p>
+<div class="nodumbq">
+<p><strong>Q: How do I know if a step "needs language understanding"?</strong></p>
+<p>A useful test: could a Python function with deterministic logic do this step if I had clear inputs? If yes, that's a function, not an LLM call. Examples that <em>don't</em> need an LLM: parsing structured input, looking up values in a known table, validating a schema, formatting output to a template, summing numbers, picking a max. Examples that <em>do</em>: classifying free-text intent, generating natural prose, judging fuzzy criteria, synthesizing across heterogeneous sources. Most workflows have both kinds of steps; identify and code the deterministic ones, save LLM calls for the language ones.</p>
+</div>
+<hr />
+<h2>Section 10 — Putting It Together</h2>
+<p>A short framework for picking and composing patterns, based on the questions you should ask yourself for each step of any system you're designing.</p>
+<p><strong>Question 1: Does this step need an LLM at all?</strong></p>
+<p>If no: write a function. Don't add an LLM where deterministic code suffices.</p>
+<p>If yes: continue.</p>
+<p><strong>Question 2: Is this step's structure known in advance?</strong></p>
+<p>If yes: pick from chain, parallelization, evaluator-optimizer based on whether steps are sequential, independent, or iterative.</p>
+<p>If no: orchestrator-workers (workflow) or agent loop (Module 2).</p>
+<p><strong>Question 3: Does this step take inputs of varying type/shape?</strong></p>
+<p>If yes: routing pattern picks the right downstream handler.</p>
+<p><strong>Question 4: Does this step have clear quality criteria worth iterating on?</strong></p>
+<p>If yes: evaluator-optimizer adds value.</p>
+<p>If no: don't iterate. One pass.</p>
+<p><strong>Question 5: Are the sub-results combinable into a clean output?</strong></p>
+<p>If yes: parallelization or orchestrator-workers, depending on whether structure is fixed.</p>
+<p>If no: chain, where each step's output is an intermediate the next step transforms.</p>
+<p>These questions cascade. Most production workflows answer them differently at different levels (composition). Once you've answered them for each step, you have your composed workflow.</p>
+<p>The patterns aren't a checklist to climb. They're a vocabulary for naming the shapes you'll need. Most weeks, you'll find yourself reaching for them not because you set out to "use workflow patterns" but because you have a problem and the patterns name what you'd build anyway. That's the right way to use them.</p>
+<hr />
+<h2>Recap: Module 3 in eight bullets</h2>
+<div class="bullet-points">
+<ul>
+<li>Five canonical workflow patterns: prompt chaining, routing, parallelization, orchestrator-workers, evaluator-optimizer. They cover the majority of production AI features.</li>
+<li>Workflows are predictable, debuggable, and cost-bounded in ways agent loops aren't. Reach for workflows first; reach for the agent loop only when the workflow shape genuinely doesn't fit.</li>
+<li>Prompt chaining: sequential steps with optional gates. Each step does one job well. Always have at least one structural gate to prevent error compounding.</li>
+<li>Routing: classifier dispatches to specialists. Optimize for cost (cheap router, specialized specialists) and quality (focused prompts, model variation per category). Confidence threshold + fallback for low-confidence cases.</li>
+<li>Parallelization: fan out independent subtasks (sectioning) or repeat for confidence (voting). Always use <code>return_exceptions=True</code> so partial failures don't kill the whole task.</li>
+<li>Orchestrator-workers: dynamic decomposition. The orchestrator picks the structure based on the input. Use Opus-class for orchestrator and synthesizer, Sonnet-class for workers. Plan errors propagate, so don't economize on the orchestrator.</li>
+<li>Evaluator-optimizer: producer drafts, evaluator scores, producer revises. Specific criteria, not vibes. Cap iterations at 2-3; gains plateau fast.</li>
+<li>Real systems compose patterns. Routing into parallelization into orchestrator-workers into evaluator-optimizer is a normal shape. The agent loop slots in where the workflow's predictability ends.</li>
+</ul>
+</div>
+<hr />
+<div class="sam-arc">
+<p><strong>Sam, after Wednesday's planning meeting.</strong></p>
+<p>Sam left the conference room with a whiteboard photo on their phone and a clear architecture in their head. The deal-research system, in workflow vocabulary:</p>
+<ul>
+<li><strong>Routing layer:</strong> deal type (standard / M&amp;A) determines path</li>
+<li><strong>Parallel research:</strong> target, competitors, market — three concurrent worker calls</li>
+<li><strong>Orchestrator-synthesizer:</strong> plans the brief structure based on what the research returned, then drafts each section</li>
+<li><strong>Evaluator-optimizer:</strong> brief critic reviews and revises (2 rounds max)</li>
+<li><strong>Agent loop (Module 14 territory):</strong> for the AE's follow-up questions on a specific brief — open-ended, tool-using, genuinely agent-shaped</li>
+</ul>
+<p>When the PM asked again, Friday, "so... how many agents are we building?" Sam said one. One agent, surrounded by four workflow layers, each doing what it does well.</p>
+<p>The PM liked the answer better when it was specific. The cost estimate was specific. The latency estimate was specific. The failure modes were specific. None of those specifics had been reachable when the language was "we're building an agent system."</p>
+<p>Sam's arc this module: <strong>restraint. The competence from Module 2 says you can build the agent. The restraint from Module 3 says you should put it where it belongs — surrounded by workflows that do the structured work.</strong></p>
+</div>
+<hr />
+<h2>What's next</h2>
+<p>Module 4 is the first of the building-blocks chapters: tools. The agent loop and the workflows we've built so far have leaned heavily on tools (web search, structured output, custom handlers) — but we haven't designed them carefully. Tool design is where most agent failures actually originate. We'll cover what makes a good tool description, how to structure schemas the model can use, the confused-deputy problem, idempotency, dry-run patterns, and the "tool result poisoning" failure mode that crashes more agents than any other single cause.</p>
+<p>After Module 4, you'll know what to put inside your hardened loop and your workflow steps. The patterns are how you compose; the tools are what the model actually calls.</p>
+<p>Sam wrote the v1 of the deal-research workflow on Thursday. It worked. They'll be back in Module 4 to figure out why one of the tools — a "company search" wrapper they slapped together — keeps producing results that the synthesizer treats with too much confidence. Tools are next.</p>
+</body>
+</html>

@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 3 Outline — Workflow Patterns You Should Reach for First</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 3 Outline — Workflow Patterns You Should Reach for First</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 03 — OUTLINE</div>
+<div class="module-title">Workflow Patterns You Should Reach for First</div>
+<div class="subtitle">Most "agent" problems are workflow problems.<br>Here are the five patterns that solve 80% of them.</div>
+<div class="pages">Target length: ~36 pages (heavy code)</div>
+</div>
+<h2>What this module is</h2>
+<p>The most actionable module in the book. We code all five workflow patterns from Anthropic's "Building effective agents" reference (still the cleanest taxonomy in the field). Each pattern: real use case, full implementation, cost/latency benchmark, when to upgrade to an agent.</p>
+<p>By the end, the reader has a five-pattern toolbox they can deploy directly. More importantly, they have a default question: <em>"Can this be a workflow?"</em> The answer is usually yes.</p>
+<div class="hook">
+<p>"You don't reach for an agent because the task is hard. You reach for an agent because the task's <em>shape</em> is unknown until you start. Most tasks aren't like that — engineers just haven't looked carefully."</p>
+</div>
+<hr />
+<h2>Section 1 — The Five Patterns at a Glance (≈3 pages)</h2>
+<p>A table-and-diagram tour before the code. The five patterns:</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>What it does</th>
+<th>When to use</th>
+<th>Module 3 use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Prompt Chaining</strong></td>
+<td>Sequential LLM calls, each output feeds the next</td>
+<td>Task decomposes into ordered subtasks, each verifiable</td>
+<td>Translate → critique → polish</td>
+</tr>
+<tr>
+<td><strong>Routing</strong></td>
+<td>One LLM picks which downstream prompt/tool/model handles the input</td>
+<td>Inputs cluster into known categories</td>
+<td>Customer support classifier</td>
+</tr>
+<tr>
+<td><strong>Parallelization</strong></td>
+<td>Run multiple LLM calls in parallel; aggregate</td>
+<td>Subtasks independent, OR you want voting/sectioning</td>
+<td>Code review (security, perf, style)</td>
+</tr>
+<tr>
+<td><strong>Orchestrator-Workers</strong></td>
+<td>Lead LLM dynamically delegates to worker LLMs</td>
+<td>Subtasks aren't predetermined but composable from a known pool</td>
+<td>Research with sub-questions</td>
+</tr>
+<tr>
+<td><strong>Evaluator-Optimizer</strong></td>
+<td>One LLM produces, another critiques, loop until pass</td>
+<td>Quality bar matters more than latency</td>
+<td>Iterative refinement</td>
+</tr>
+</tbody>
+</table>
+<p>We show a small visual diagram for each (we'll redraw these as hand-drawn-style SVGs at draft time).</p>
+<div class="brain">
+<p>Look at the table. Three of the five patterns can <em>contain</em> an agent (a worker that's an agent, or an evaluator that's an agent). Two cannot. Which two? Why?</p>
+<p>(Hint: one of these patterns is itself just an agent in disguise.)</p>
+</div>
+<div class="nodumbq">
+<p><strong>Q: Why is "orchestrator-workers" a workflow if the orchestrator is dynamically choosing?</strong></p>
+<p>Because the workers are predefined. The orchestrator chooses <em>which</em> worker, but the worker pool is a fixed set of capabilities. Compare to a true multi-agent system where workers can spawn workers, request new tools, or hand off to peers — that's Module 14 territory.</p>
+<p><strong>Q: Isn't evaluator-optimizer just an agent loop with two roles?</strong></p>
+<p>It's close, but the structure is fixed: produce → critique → revise → produce → critique. The agent loop has the model choosing what to do at each turn. Evaluator-optimizer is rigid; you know it's going to alternate.</p>
+</div>
+<hr />
+<h2>Section 2 — Prompt Chaining (≈4 pages)</h2>
+<p>The simplest pattern. One LLM's output feeds the next.</p>
+<p><strong>Use case:</strong> Translate a marketing email from English to Japanese, with cultural adaptation.</p>
+<pre><code class="language-python">def translate_with_polish(email_en: str) -&gt; str:
+    # Step 1: literal translation
+    literal = client.messages.create(
+        model=&quot;claude-haiku-4-5-20251001&quot;,
+        max_tokens=2000,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Translate to Japanese, literal:\n{email_en}&quot;}],
+    ).content[0].text
+
+    # Step 2: cultural critique
+    critique = client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=1500,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;:
+            f&quot;Original:\n{email_en}\n\nLiteral translation:\n{literal}\n\n&quot;
+            &quot;Identify any phrasings that are culturally awkward in Japanese business context. &quot;
+            &quot;Suggest specific replacements. Be concrete.&quot;
+        }],
+    ).content[0].text
+
+    # Step 3: polish
+    polished = client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=2000,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;:
+            f&quot;Original:\n{email_en}\n\nLiteral:\n{literal}\n\nCritique:\n{critique}\n\n&quot;
+            &quot;Produce the final, culturally-adapted translation. Output only the translation.&quot;
+        }],
+    ).content[0].text
+
+    return polished
+</code></pre>
+<p><strong>Why three steps and not one?</strong> The model is better at evaluation than self-evaluation in one pass. Splitting the literal translation from the cultural critique forces explicit reasoning about cultural fit. Empirically, ~20% better on human evaluation in Japanese marketing contexts (we'll re-verify when drafting).</p>
+<p><strong>Adding a gate:</strong> sometimes step 2 should produce a "skip step 3" signal if the literal translation is already fine. We show that variant.</p>
+<p><strong>Latency:</strong> ~3x a single call (sequential). <strong>Cost:</strong> ~3x. <strong>Quality on this task:</strong> measurably higher.</p>
+<div class="gotcha">
+<p>Prompt chaining is tempting to over-decompose. If you have eight steps, ask: which can collapse? Which are model-quality limited (need their own call) vs. just-want-cleaner-prompts (collapse them)?</p>
+</div>
+<hr />
+<h2>Section 3 — Routing (≈4 pages)</h2>
+<p>One LLM classifies the input; downstream handlers are specialized.</p>
+<p><strong>Use case:</strong> Customer support triage. Inputs are emails. Outputs are routed to: billing-handler, technical-handler, refund-handler, escalate-to-human.</p>
+<pre><code class="language-python">ROUTER_PROMPT = &quot;&quot;&quot;Classify this support email into exactly one category:
+- billing: invoices, charges, subscriptions
+- technical: bugs, errors, integration help
+- refund: explicit refund requests
+- escalate: complex, sensitive, or unclear cases
+
+Email:
+{email}
+
+Respond with only the category name.&quot;&quot;&quot;
+
+def route_and_handle(email: str) -&gt; Response:
+    category = client.messages.create(
+        model=&quot;claude-haiku-4-5-20251001&quot;,  # cheap classifier
+        max_tokens=20,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: ROUTER_PROMPT.format(email=email)}],
+    ).content[0].text.strip().lower()
+
+    handlers = {
+        &quot;billing&quot;: handle_billing,
+        &quot;technical&quot;: handle_technical,
+        &quot;refund&quot;: handle_refund,
+        &quot;escalate&quot;: handle_escalate,
+    }
+    return handlers.get(category, handle_escalate)(email)
+</code></pre>
+<p><strong>Why route?</strong> Each downstream prompt is shorter and more specific than a unified prompt. A monolithic "support assistant" prompt is 800 tokens; the routed billing handler is 250. Quality is higher because the prompt isn't trying to do five jobs.</p>
+<p><strong>Variants:</strong></p>
+<ol>
+<li><strong>Model routing:</strong> route to a stronger model when the classifier flags difficulty. (Prelude to Module 6, where routing is the primary topic.)</li>
+<li><strong>Confidence routing:</strong> classifier returns a probability; below threshold goes to "escalate."</li>
+<li><strong>Multi-label routing:</strong> input can match multiple categories (rare; usually an indication you need a different pattern).</li>
+</ol>
+<div class="postmortem">
+<p><strong>The Router That Sent Refunds to Dev</strong></p>
+<p>A SaaS team built a routing workflow for support. Categories: billing, technical, refund, escalate. The classifier prompt didn't enumerate categories, it just said "categorize this." The model returned "feature_request," "complaint," "thanks," "refund" — categories that didn't exist in the dispatch table. The dispatch dict's <code>.get()</code> defaulted to "technical." Dev got 2,000 refund requests in their queue over a week.</p>
+<p><strong>Lesson:</strong> the classifier's output space must be explicit AND the dispatch must enforce it. Use enums. Use Pydantic. Use the API's structured output. Anything except <code>dict.get()</code>.</p>
+</div>
+<div class="code-exercise">
+<p><strong>Exercise 3.1 — Routing with structured output.</strong></p>
+<p>Refactor the router above to use Anthropic's tool-use mechanism for structured output (force the model to call a <code>classify</code> tool with a schema-validated category enum). Compare reliability before/after on a deliberately ambiguous test set we provide.</p>
+</div>
+<hr />
+<h2>Section 4 — Parallelization (≈5 pages)</h2>
+<p>Run multiple LLM calls in parallel. Two flavors:</p>
+<p><strong>Sectioning:</strong> independent subtasks aggregate into a final answer.
+- Code review: one call for security, one for performance, one for style. Combine.
+- Document Q&amp;A: split a 200-page doc into chunks, parallelize "find relevant info" across chunks, aggregate.</p>
+<p><strong>Voting:</strong> same task, multiple times, take majority/best.
+- Hard math problems: 5 reasoning attempts, vote on answer.
+- Faithfulness checks: run the same eval prompt 3x with different temperatures, take majority.</p>
+<pre><code class="language-python">import asyncio
+from anthropic import AsyncAnthropic
+
+async def parallel_code_review(diff: str) -&gt; CombinedReview:
+    client = AsyncAnthropic()
+    perspectives = [
+        (&quot;security&quot;, &quot;Review this diff for security vulnerabilities...&quot;),
+        (&quot;performance&quot;, &quot;Review this diff for performance issues...&quot;),
+        (&quot;style&quot;, &quot;Review this diff for style and maintainability...&quot;),
+    ]
+    tasks = [
+        client.messages.create(
+            model=&quot;claude-sonnet-4-6&quot;,
+            max_tokens=2000,
+            messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;{prompt}\n\nDiff:\n{diff}&quot;}],
+        )
+        for _, prompt in perspectives
+    ]
+    results = await asyncio.gather(*tasks)
+    return combine_reviews([(p[0], r.content[0].text) for p, r in zip(perspectives, results)])
+</code></pre>
+<p><strong>Latency:</strong> wall-clock = max of parallel calls (close to 1 call's latency). <strong>Cost:</strong> ~N× a single call.</p>
+<p><strong>Aggregation patterns:</strong>
+- <em>Concatenate</em> (when subtasks cover different ground): just stitch.
+- <em>Reduce</em> (when results need synthesis): one final LLM call to merge.
+- <em>Vote</em> (when calls did the same thing): take majority/highest-confidence.</p>
+<div class="brain">
+<p>You're parallelizing 50 chunks of a long document for a Q&amp;A task. Aggregation is "reduce" — one final synthesis call. The reduce call's input is now 50 summaries. Will it fit in context?</p>
+<p>(Hint: this is when parallelization meets compression. We come back to this in Module 8.)</p>
+</div>
+<p><strong>Voting variant for hallucination reduction (preview of Module 10):</strong></p>
+<pre><code class="language-python">async def vote_for_consistency(question: str, n_votes: int = 5) -&gt; Answer:
+    client = AsyncAnthropic()
+    tasks = [
+        client.messages.create(
+            model=&quot;claude-sonnet-4-6&quot;,
+            max_tokens=1000,
+            temperature=0.7,
+            messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: question}],
+        )
+        for _ in range(n_votes)
+    ]
+    answers = await asyncio.gather(*tasks)
+    extracted = [extract_answer(a.content[0].text) for a in answers]
+    return most_common(extracted)
+</code></pre>
+<p>This is Best-of-N reranking, an ACL Findings 2025 result that meaningfully reduces hallucination on factual tasks. We cite and verify when drafting.</p>
+<div class="gotcha">
+<p>Parallel calls don't share state. If you parallelize tool-using LLMs, each gets its own conversation. Shared tool-result memory across parallel branches is a thing you build (Module 9), not a thing you get for free.</p>
+</div>
+<hr />
+<h2>Section 5 — Orchestrator-Workers (≈5 pages)</h2>
+<p>A lead LLM decomposes a task and dispatches to worker LLMs. Workers are scoped, prompt-specialized, and return structured results.</p>
+<p><strong>Use case:</strong> Research synthesis. User asks: "Compare the carbon footprints of three given products and recommend the lowest." Orchestrator decides to spawn three "research one product" workers, then a "compare and recommend" worker.</p>
+<p>The shape:</p>
+<pre><code>                    [Orchestrator]
+                          |
+          decides: 3 product workers + 1 compare worker
+                          |
+        ┌─────────────┬───┴────┬─────────────┐
+        v             v        v             v
+  [Worker A]    [Worker B] [Worker C]   (after A,B,C return)
+                                         [Compare Worker]
+</code></pre>
+<pre><code class="language-python">@dataclass
+class Subtask:
+    role: str
+    prompt: str
+    tools: list[str] = field(default_factory=list)
+
+def orchestrator_workers(query: str) -&gt; str:
+    # Orchestrator decides
+    plan_resp = client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=2000,
+        tools=[PLAN_TOOL_SCHEMA],
+        tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;create_plan&quot;},
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;:
+            f&quot;Decompose this task into subtasks. Each subtask is independent and &quot;
+            f&quot;can be handled by a worker LLM with the available tools.\n\nTask: {query}&quot;
+        }],
+    )
+    plan: list[Subtask] = parse_plan(plan_resp)
+
+    # Workers execute
+    results = run_workers_parallel(plan)
+
+    # Synthesize
+    synthesis = client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=4000,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;:
+            f&quot;Original task: {query}\n\n&quot;
+            f&quot;Worker results:\n{format_results(results)}\n\n&quot;
+            f&quot;Produce the final answer.&quot;
+        }],
+    )
+    return synthesis.content[0].text
+</code></pre>
+<p><strong>Where this becomes an agent:</strong> if the orchestrator can decide to spawn <em>new</em> worker types not in its plan, or workers can request additional tools/workers, you've crossed into multi-agent (Module 14). This pattern keeps a fixed worker pool and a one-shot plan.</p>
+<div class="fireside">
+<p><strong>FIRESIDE CHAT: "Orchestrator-Workers" vs "Single Agent with Tools"</strong></p>
+<div class="cast">
+<div class="character architect"><span class="name">Architect:</span> Why are we doing orchestrator-workers? An agent could just call the same tools.</div>
+<div class="character agent"><span class="name">Orchestrator-Workers:</span> Three reasons. One: the orchestrator's plan is explicit and inspectable. You can log it, eval it, hand it to humans for approval. Two: workers run in parallel. Three: workers have isolated context — they don't see each other's noise.</div>
+<div class="character architect"><span class="name">Architect:</span> What about the cases where the agent's flexibility wins?</div>
+<div class="character agent"><span class="name">Orchestrator-Workers:</span> When the plan needs to revise mid-flight based on what workers find. I can't do that. The orchestrator commits, workers execute. If a worker finds something that should change the plan, it just returns it and the synthesis call has to handle it.</div>
+<div class="character architect"><span class="name">Architect:</span> So the rule is: known decomposition → me. Discovered decomposition → agent.</div>
+<div class="character agent"><span class="name">Orchestrator-Workers:</span> And known decomposition is more common than people think.</div>
+</div>
+</div>
+<hr />
+<h2>Section 6 — Evaluator-Optimizer (≈5 pages)</h2>
+<p>One LLM produces output. Another critiques. The producer revises. Loop until the critic passes.</p>
+<p><strong>Use case:</strong> producing legal contract clauses that pass a compliance check. Producer drafts. Evaluator checks against a checklist (cites missing clauses, ambiguous language, jurisdiction issues). Producer revises. Iterate up to N times or until evaluator returns "pass."</p>
+<pre><code class="language-python">def evaluator_optimizer(task: str, max_rounds: int = 3) -&gt; str:
+    draft = produce(task)
+    for round_i in range(max_rounds):
+        critique = evaluate(task, draft)
+        if critique.passed:
+            return draft
+        draft = revise(task, draft, critique.feedback)
+    return draft  # accept best-effort
+
+def produce(task: str) -&gt; str:
+    return client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=4000,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Draft for: {task}&quot;}],
+    ).content[0].text
+
+def evaluate(task: str, draft: str) -&gt; Critique:
+    resp = client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=2000,
+        tools=[CRITIQUE_TOOL_SCHEMA],
+        tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;submit_critique&quot;},
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;:
+            f&quot;Task: {task}\nDraft:\n{draft}\n\n&quot;
+            &quot;Evaluate against compliance checklist. Submit critique.&quot;
+        }],
+    )
+    return parse_critique(resp)
+
+def revise(task: str, draft: str, feedback: str) -&gt; str:
+    return client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=4000,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;:
+            f&quot;Task: {task}\n\nPrevious draft:\n{draft}\n\nFeedback:\n{feedback}\n\nRevise.&quot;
+        }],
+    ).content[0].text
+</code></pre>
+<p><strong>Critical design choice:</strong> different models for producer and evaluator. The classic mistake is using the same model for both — it tends to validate its own work. Use Opus to evaluate Sonnet's output, or use a fine-tuned classifier as the evaluator.</p>
+<p><strong>Termination:</strong> must have a <code>max_rounds</code> cap. Otherwise: infinite loops where the evaluator keeps finding new issues.</p>
+<div class="gotcha">
+<p>Evaluator-optimizer cost compounds fast. 3 rounds × (produce + evaluate + revise) = 7 LLM calls minimum. Use cheaper models when possible. Use the cheapest evaluator that still catches the relevant issues.</p>
+</div>
+<div class="brain">
+<p>The "evaluator validates its own work" problem isn't fully solved by using a different model. Why? What's a better fix?</p>
+<p>Hint: think about how the evaluator's prompt was generated.</p>
+</div>
+<hr />
+<h2>Section 7 — Cost &amp; Latency Comparison (≈3 pages)</h2>
+<p>A real benchmark. Same task ("summarize this 10-page report into 3 bullet key insights") implemented seven ways:</p>
+<table>
+<thead>
+<tr>
+<th>Approach</th>
+<th>Avg Latency</th>
+<th>Avg Cost</th>
+<th>Subjective Quality (1-5)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single LLM call (Sonnet)</td>
+<td>4.2s</td>
+<td>$0.018</td>
+<td>3.6</td>
+</tr>
+<tr>
+<td>Single LLM call (Opus)</td>
+<td>9.7s</td>
+<td>$0.071</td>
+<td>4.4</td>
+</tr>
+<tr>
+<td>Prompt chain (extract → distill → polish)</td>
+<td>11.3s</td>
+<td>$0.039</td>
+<td>4.5</td>
+</tr>
+<tr>
+<td>Routing (classify → specialized prompt)</td>
+<td>6.1s</td>
+<td>$0.022</td>
+<td>4.2</td>
+</tr>
+<tr>
+<td>Parallel sectioning (3 perspectives → reduce)</td>
+<td>5.8s</td>
+<td>$0.048</td>
+<td>4.3</td>
+</tr>
+<tr>
+<td>Orchestrator-workers</td>
+<td>14.2s</td>
+<td>$0.094</td>
+<td>4.4</td>
+</tr>
+<tr>
+<td>Agent loop (Module 2 hardened)</td>
+<td>31.7s</td>
+<td>$0.41</td>
+<td>4.4</td>
+</tr>
+</tbody>
+</table>
+<p>(Numbers are illustrative — we'll run real benchmarks with current models when drafting.)</p>
+<p><strong>The headline:</strong> for this task, prompt chain matches Opus single-call quality at half the cost. The agent loop is 22× more expensive than prompt chain for indistinguishable quality.</p>
+<div class="pullquote">
+<p>"Better quality" and "agent" aren't synonyms. They aren't even correlated.</p>
+</div>
+<hr />
+<h2>Section 8 — When to Upgrade to an Agent (≈3 pages)</h2>
+<p>Ironically, the workflow patterns module ends with "and here's when you should not use them."</p>
+<p>You're past workflow territory when:
+- The set of subtasks isn't enumerable in advance
+- Subtasks themselves spawn subtasks
+- The natural decomposition depends on intermediate results in ways you can't predict
+- Tool selection itself is the hard part of the task
+- You need true exploration</p>
+<p>You're still in workflow territory when (despite gut feeling):
+- The task is "complex" but decomposable
+- You want flexibility but the flexibility is enumerable
+- You think you need an agent because the prompt would be long (compose workflows; don't reach for agents)</p>
+<div class="exercise">
+<p>Classify each as workflow (which pattern?) or agent.</p>
+<ol>
+<li>Generate alt-text for 10K product images.</li>
+<li>Help a developer debug an issue by exploring their codebase, running commands.</li>
+<li>Extract structured data from invoices in 12 known formats.</li>
+<li>Plan a 5-day itinerary for a trip given preferences.</li>
+<li>Investigate why a specific ML training run produced anomalous loss curves.</li>
+<li>Translate documentation from English to French while preserving formatting.</li>
+</ol>
+<details class="answer">
+<summary>show answers</summary>
+
+1. **Workflow — single LLM call** per image, parallelized.
+2. **Agent.** Tool selection and exploration are the task.
+3. **Workflow — routing.** Twelve formats means twelve specialized handlers.
+4. **Workflow — prompt chaining or orchestrator-workers.** Plan is decomposable: research destinations, build day-by-day, optimize logistics.
+5. **Agent.** "Investigate" plus "anomalous" — you don't know what you'll find.
+6. **Workflow — prompt chaining or single call** with structured output.
+
+Most "agent" candidates collapse to workflows under inspection. The exceptions (2 and 5) are genuine agent territory: tool-driven exploration of unknown shape.
+</details>
+</div>
+<hr />
+<h2>Section 9 — What's Next (≈1 page)</h2>
+<p>Module 4 covers tools — the surface where agents live or die.</p>
+<p>Module 5 introduces MCP, which makes tool sets dynamic.</p>
+<p>Module 6 brings model routing, which extends the routing pattern from this module to a first-class architectural concern.</p>
+<p>By Module 13 we'll revisit these workflow patterns and ask: when does going multi-agent actually beat the orchestrator-workers pattern? Spoiler: less often than you'd think.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>2 No Dumb Questions</li>
+<li>2 Brain Power</li>
+<li>1 Fireside Chat (Orchestrator-Workers vs Single Agent)</li>
+<li>1 Production Postmortem (router default-route disaster)</li>
+<li>2 Watch It! blocks</li>
+<li>2 Sharpen Your Pencil exercises</li>
+<li>1 Code Exercise (structured output routing)</li>
+<li>1 Pullquote</li>
+<li>~6 substantial code blocks (one per pattern + benchmarks)</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam, fresh from hardening their agent loop in Module 2, encounters their PM in Section 1 with a "we need an agent for this" request. Sam audits the actual task, realizes it's a routing workflow, ships in 2 days instead of 2 weeks, saves the company $40K/month. Sam's arc this module: <strong>restraint</strong>. Knowing when not to reach for the shiny tool.</p>
+</div>
+<div class="page-budget">
+<p>S1 (Patterns at a glance): 3p
+S2 (Prompt chaining): 4p
+S3 (Routing): 4p
+S4 (Parallelization): 5p
+S5 (Orchestrator-Workers): 5p
+S6 (Evaluator-Optimizer): 5p
+S7 (Cost/latency): 3p
+S8 (When to upgrade): 3p
+S9 (Next): 1p
+Recurring elements (woven in): 3p
+TOTAL: ~36 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting:</strong></p>
+<ul>
+<li>Anthropic, "Building effective agents" (Dec 2024) — the canonical source for these five patterns</li>
+<li>Best-of-N hallucination reduction — ACL Findings 2025 paper, verify exact result claims</li>
+<li>Real benchmark numbers (cost/latency table in S7) — re-run with current pricing and current Sonnet/Opus/Haiku versions before drafting</li>
+<li>Anthropic API tool-use schema for structured output (S3 exercise) — verify current syntax</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- The five patterns themselves
+- Sectioning vs. voting variants of parallelization
+- Termination requirements for evaluator-optimizer
+- Decomposition vs. exploration distinction</p>
+<p><strong>Cross-references to lock down:</strong>
+- Module 6 will deepen "model routing" — make sure framing here doesn't preempt it
+- Module 8 (compression) will revisit the parallelization aggregation problem
+- Module 14 (multi-agent architectures) will compare orchestrator-workers vs. true multi-agent</p>
+</div>
+<div class="bullet-points">
+<h3>Module 3 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>Five workflow patterns cover ~80% of "agent" use cases</li>
+<li>Prompt chaining: ordered decomposition, +quality at +cost</li>
+<li>Routing: cheap classifier → specialized handlers; structured output prevents disasters</li>
+<li>Parallelization: sectioning (different jobs) and voting (same job, multiple times)</li>
+<li>Orchestrator-workers: lead LLM plans, workers execute in parallel, synthesizer reduces</li>
+<li>Evaluator-optimizer: produce-critique-revise; different models for producer and evaluator</li>
+<li>Cost &amp; quality benchmarks show workflows often match agent quality at fraction of cost</li>
+<li>Reach for an agent only when subtasks aren't enumerable or tool selection IS the task</li>
+</ul>
+</div>
+</body>
+</html>

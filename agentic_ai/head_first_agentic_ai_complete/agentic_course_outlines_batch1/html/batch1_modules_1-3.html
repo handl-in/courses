@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic AI Course — Modules 1-3 Outlines</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 1 Outline — Reframing: Workflows in a Trench Coat</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 01 — OUTLINE</div>
+<div class="module-title">Reframing: Workflows in a Trench Coat</div>
+<div class="subtitle">Most "agents" in production aren't agents.<br>Let's audit yours.</div>
+<div class="pages">Target length: ~32 pages</div>
+</div>
+<h2>What this module is</h2>
+<p>The opener. Not a "what is an agent" tutorial — your readers already shipped one. This module is the <strong>reframing</strong>: a sharp definitional cut between agents and workflows, an audit of real codebases, and the contrarian voice that runs through the rest of the book.</p>
+<p>By the end, the reader can look at any system and confidently say "that's a workflow," "that's an agent," or "that's an agent that should have been a workflow."</p>
+<div class="hook">
+<p>"Sam shipped what the team called an 'AI research agent.' It's been running in prod for six weeks. This morning, finance flagged the OpenRouter bill. Sam pulls up the code. It's a <code>for</code> loop with three <code>client.messages.create</code> calls. There is no agent. There never was."</p>
+</div>
+<hr />
+<h2>Section 1 — The Trench Coat (≈4 pages)</h2>
+<div class="hook">
+<p>Open with Sam at their laptop. The "agent" is a function. The function has a comment that says <code># Agent loop</code>. Inside is a router, then a summarizer, then a writer. Each step has a fixed prompt. There is no LLM-directed control flow anywhere.</p>
+</div>
+<p>The provocative claim: <strong>most "agents" in production are workflows.</strong> A workflow has predetermined steps; an agent has LLM-directed steps. The marketing budget for "agentic AI" is enormous, so the word has lost meaning. We're going to take it back.</p>
+<p>Cite Anthropic's "Building effective agents" definition (Dec 2024, still the cleanest): <em>agents dynamically direct their own processes and tool usage, maintaining control over how they accomplish tasks</em>. Workflows are systems where LLMs and tools are orchestrated through predefined code paths.</p>
+<div class="pullquote">
+<p>A workflow is a flowchart with LLMs in some boxes. An agent is an LLM that decides what the next box is.</p>
+</div>
+<p><strong>Why this distinction matters in practice (not in theory):</strong></p>
+<p>Cost behavior is different. Workflows have predictable token spend; agents have unbounded spend until you bound them. Latency is different. Workflows have a known critical path; agents have a tail that depends on what the model decides to do. Failure modes are different. Workflows fail at known boundaries; agents fail novel ways. Eval is different. Workflows can be unit-tested; agents need trajectory eval.</p>
+<p><strong>What's not a useful distinction:</strong> "uses tools" (workflows can too), "calls an LLM in a loop" (a <code>while</code> loop with a fixed prompt is still a workflow), "feels autonomous" (vibes are not architecture).</p>
+<div class="nodumbq">
+<p><strong>Q: So if I have a router that picks one of three prompts, that's a workflow?</strong></p>
+<p>Yes. Routing is a workflow pattern (we'll cover all five in Module 3). The LLM picks a path, but the paths are fixed.</p>
+<p><strong>Q: What if the LLM decides to call a tool, and based on the result calls another tool?</strong></p>
+<p>If the <em>set</em> of tools and <em>when to stop</em> are decided by the LLM at runtime, that's an agent. If your code has <code>if step == 1: do X; if step == 2: do Y</code>, that's a workflow even when each step has tools.</p>
+<p><strong>Q: My system uses LangGraph. Does that make it agentic?</strong></p>
+<p>LangGraph is a state-machine library. State machines are workflows by default. You can build agents in LangGraph by giving a node the freedom to choose the next node — but most LangGraph code in the wild is workflow code with extra nouns.</p>
+</div>
+<hr />
+<h2>Section 2 — Audit Your Codebase (≈5 pages)</h2>
+<p>The first hands-on section is an <strong>audit exercise</strong>, not a build. The reader takes their existing "agent" code and reclassifies it.</p>
+<div class="code-exercise">
+<p><strong>Exercise 1.1 — Audit a real agent.</strong></p>
+<p>Reader is given (or pulls in) one of their own "agent" implementations. We provide a checklist:</p>
+<ol>
+<li>Find the main loop. Is there one?</li>
+<li>Inside the loop, who decides the next action — code or model?</li>
+<li>List every tool call site. For each: is the tool selected by the model or hard-coded?</li>
+<li>Where does the loop terminate? Fixed iterations, or model-decided?</li>
+<li>Count branch points where code (not model) chooses a path.</li>
+</ol>
+<p>Score: 0-2 model-driven decisions = workflow. 3-5 = hybrid. 6+ = genuine agent.</p>
+</div>
+<p>We provide a sample codebase to audit (so readers without their own can still do the exercise). The sample is an "AI research agent" that's actually a 4-step pipeline. We walk through the audit live.</p>
+<div class="brain">
+<p>Pick your most "agentic" production system. Without looking at code, predict its score on the audit. Now look at the code. Were you right?</p>
+<p>Most engineers overestimate by 2-3 points.</p>
+</div>
+<div class="postmortem">
+<p><strong>The "Multi-Agent Research System" That Was a For Loop</strong></p>
+<p>Real production case from a Y Combinator company (anonymized). They marketed an "autonomous research agent" to enterprise. Internal name: "Kestrel." External demos showed it researching topics, citing sources, writing reports.</p>
+<p>The code: 1 router prompt → 1 fan-out to N parallel summarizers (N hardcoded to 5) → 1 reducer prompt → 1 writer prompt. Total LLM-driven decisions: zero. The router didn't even pick a path; it normalized the query so the next step's prompt would be cleaner.</p>
+<p>When complex queries broke it, they added a 6th prompt to "validate." Then a 7th to "retry." Then a 1000-line YAML config of branches. By the time the engineering team realized the agent was a workflow, they had reinvented Apache Airflow with 100x the latency and 1000x the cost.</p>
+<p><strong>Lesson:</strong> The marketing called it agentic. The code called it <code>pipeline.py</code>. Trust the code.</p>
+</div>
+<hr />
+<h2>Section 3 — The Definitional Lattice (≈4 pages)</h2>
+<p>A more rigorous taxonomy. Three axes:</p>
+<p><strong>Axis 1: Who controls the next step?</strong> Code (workflow) or model (agent).</p>
+<p><strong>Axis 2: What's the action space?</strong> Fixed (tool list known at design time) or dynamic (tools discovered at runtime, e.g., MCP).</p>
+<p><strong>Axis 3: Termination?</strong> Fixed iterations / fixed conditions (workflow) or model-decided stop (agent).</p>
+<p>Plot real systems on these axes. Examples to place:
+- ChatGPT with tools enabled: agent on all three.
+- A LangChain RAG pipeline: workflow on all three.
+- Cursor / Claude Code: agent on axes 1 and 3, mostly fixed on 2.
+- A "supervisor" pattern with hardcoded worker pool: workflow on 2, hybrid on 1, varies on 3.</p>
+<div class="fireside">
+<p><strong>FIRESIDE CHAT: "Workflow" vs "Agent" argue their merits</strong></p>
+<div class="cast">
+<div class="character workflow"><span class="name">Workflow:</span> I'm predictable. You can test me. You can budget me. You can debug me. The user always knows what's going to happen.</div>
+<div class="character agent"><span class="name">Agent:</span> You're rigid. You can't handle a query you weren't designed for. The user has to know your edges to use you.</div>
+<div class="character workflow"><span class="name">Workflow:</span> Most production systems handle queries that *were* designed for. That's why they're production systems.</div>
+<div class="character agent"><span class="name">Agent:</span> And that's why they get replaced when the product evolves. I can handle the new query without a code change.</div>
+<div class="character workflow"><span class="name">Workflow:</span> You also handle it for 15x the cost and you might decide to do something nobody asked for.</div>
+<div class="character agent"><span class="name">Agent:</span> Fair. So when do you win and when do I?</div>
+<div class="character workflow"><span class="name">Workflow:</span> I win when the task shape is known. You win when it isn't.</div>
+</div>
+</div>
+<hr />
+<h2>Section 4 — When to Reach for Each (≈4 pages)</h2>
+<p>The decision framework. We'll teach it once here, refer back to it for the rest of the book.</p>
+<p><strong>Use a workflow when:</strong> the task decomposes cleanly into known steps, latency budget is tight, cost predictability matters more than handling novelty, the action space is small, you have good test coverage requirements.</p>
+<p><strong>Use an agent when:</strong> the task shape varies query-to-query, the tool set is large or dynamic, you genuinely need exploration, partial failures should adapt rather than abort.</p>
+<p><strong>Use neither (just call the LLM once) when:</strong> the answer fits in one prompt with one response. Most "AI features" should be this and aren't.</p>
+<div class="gotcha">
+<p>The "agent first, simplify later" anti-pattern: teams reach for agents because it's exciting, then spend months adding constraints to make them behave. By the time the agent works, it's a workflow. They could have started there.</p>
+</div>
+<div class="exercise">
+<p>For each scenario, pick: single LLM call, workflow, or agent. Justify in one sentence.</p>
+<ol>
+<li>Translating user reviews from Japanese to English at scale.</li>
+<li>A code review bot that comments on PRs.</li>
+<li>A research assistant that answers ambiguous questions by searching, reading, synthesizing.</li>
+<li>Categorizing customer support tickets into 12 known categories.</li>
+<li>A debugging assistant that runs commands, reads output, decides next steps.</li>
+<li>Summarizing earnings calls into a 3-bullet brief.</li>
+</ol>
+<details class="answer">
+<summary>show answers</summary>
+
+1. **Single LLM call.** Translation is a single transform. No agent. No workflow.
+2. **Workflow.** Steps are knowable: fetch diff, route by file type, generate comments, post. Some steps use LLMs. Routing happens once.
+3. **Agent.** "Ambiguous questions" is the giveaway — you don't know the path until the model explores.
+4. **Single LLM call** with structured output. Twelve categories, one prompt.
+5. **Agent.** The model decides what to run next based on output it hasn't seen yet.
+6. **Workflow.** Fetch transcript → chunk → summarize → reduce. All steps known.
+
+</details>
+</div>
+<p>:::</p>
+<hr />
+<h2>Section 5 — The Cost of Being Wrong (≈3 pages)</h2>
+<p>Quantify the failure modes:</p>
+<p><strong>Workflow forced into agent territory:</strong> brittle to query variation, requires constant new branches, eventually rewritten anyway.</p>
+<p><strong>Agent forced into workflow territory:</strong> ~15x the token cost (we'll cite Anthropic's research in Module 13), unpredictable latency, eval becomes a research project, support tickets up.</p>
+<p>Real numbers from public post-mortems and our own measurements (which we'll re-verify when drafting). A simple categorization workflow costs ~$0.0003/query; the same task built as an agent costs ~$0.05/query — 150x — because the agent decides to "verify its answer" by re-reading the input twice.</p>
+<div class="key">
+<p>The most expensive bug in agent engineering is using an agent for a workflow's job. The second most expensive is using a workflow for an agent's job. The first is more common.</p>
+</div>
+<hr />
+<h2>Section 6 — A Working Vocabulary for the Rest of the Book (≈3 pages)</h2>
+<p>Lock terms we'll use consistently across all 18 modules:</p>
+<ul>
+<li><strong>LLM call</strong> — one <code>messages.create</code>. The atom.</li>
+<li><strong>Workflow</strong> — predetermined orchestration of LLM calls and tools.</li>
+<li><strong>Agent</strong> — an LLM that directs its own control flow over multiple turns with tools.</li>
+<li><strong>Agent loop</strong> — the iterative call-tool-observe cycle.</li>
+<li><strong>Tool</strong> — a function the model can choose to invoke, exposed via the API's tool-use mechanism.</li>
+<li><strong>Trajectory</strong> — the full sequence of (input, model output, tool calls, results) for a task.</li>
+<li><strong>Step / turn</strong> — one iteration of the agent loop.</li>
+<li><strong>Multi-agent system</strong> — multiple agents (or workflows wrapping agents) communicating.</li>
+<li><strong>Orchestrator</strong> — an agent or workflow that coordinates other agents.</li>
+<li><strong>Sub-agent</strong> — an agent invoked by another agent, typically with isolated context.</li>
+</ul>
+<p>We'll resist marketing terms ("agentic," "autonomous," "AGI-like") in our own writing. Readers are free to use them; we won't.</p>
+<hr />
+<h2>Section 7 — What's Next (≈1 page)</h2>
+<p>Module 2 builds a real agent loop in raw Python with the Anthropic SDK. Naive 20-line version vs. hardened 200-line version, side by side. The hardened version is the one your production agents should look like.</p>
+<p>Module 3 covers the five workflow patterns that should be your first reach.</p>
+<p>Modules 4–9 build the components: tools, MCP, model routing, context engineering, compression, memory, hallucination, reflection, guardrails.</p>
+<p>Modules 10–18 cover multi-agent, swarms, transactional patterns, production, and the capstone build.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>3 No Dumb Questions blocks (~8 questions total)</li>
+<li>2 Brain Power prompts</li>
+<li>1 Fireside Chat (Workflow vs Agent)</li>
+<li>1 Production Postmortem (Kestrel)</li>
+<li>1 Watch It! (agent-first anti-pattern)</li>
+<li>2 Sharpen Your Pencil exercises (audit + categorization)</li>
+<li>1 Code Exercise (audit your codebase)</li>
+<li>1 Pullquote</li>
+<li>1 Key Takeaway</li>
+<li>1 Bullet Points recap (placeholder, fills at draft time)</li>
+</ul>
+<div class="sam-arc">
+<p>Sam appears in Section 1 staring at the OpenRouter bill. By Section 4 they've audited their "agent" and discovered it's a workflow. The arc this module: <strong>realization</strong>. Sam doesn't fix anything yet. They just see what they actually built.</p>
+</div>
+<div class="page-budget">
+<p>Section 1 (Trench Coat): 4p
+Section 2 (Audit): 5p
+Section 3 (Definitional Lattice): 4p
+Section 4 (When to Reach): 4p
+Section 5 (Cost of Being Wrong): 3p
+Section 6 (Vocabulary): 3p
+Section 7 (What's Next): 1p
+Recurring elements (woven in): 8p
+TOTAL: ~32 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting (search before writing):</strong></p>
+<ul>
+<li>Anthropic, "Building effective agents" (Dec 2024) — primary source for definitions</li>
+<li>Anthropic's research on multi-agent token multiplier (15x figure) — Module 13 main source, cited briefly here</li>
+<li>Latest Anthropic SDK version + model strings (claude-opus-4-7, claude-sonnet-4-6, claude-haiku-4-5)</li>
+<li>LangGraph current API (for the "LangGraph is workflow by default" claim)</li>
+<li>Public post-mortems for the Kestrel-style story (anonymize but base on real)</li>
+<li>OWASP LLM Top 10 (2025) — for cost/security framing in Section 5</li>
+</ul>
+<p><strong>Stable knowledge (low search risk):</strong>
+- The workflow/agent definitional distinction
+- The five workflow patterns (named here, taught Module 3)
+- General taxonomy axes</p>
+</div>
+<div class="bullet-points">
+<h3>Module 1 in eight bullets</h3>
+<p>(filled at draft time — placeholder for outline review)</p>
+<ul>
+<li>Most production "agents" are workflows in marketing wrappers</li>
+<li>The cut: who decides the next step — code (workflow) or model (agent)</li>
+<li>Audit your own code with the 5-question checklist</li>
+<li>Three taxonomy axes: control, action space, termination</li>
+<li>Workflows are predictable, agents are flexible — pick by task shape</li>
+<li>The "agent first, simplify later" anti-pattern is the most expensive mistake</li>
+<li>Vocabulary lock: workflow, agent, loop, tool, trajectory, step, sub-agent</li>
+<li>Next: build a hardened agent loop in raw SDK</li>
+</ul>
+</div>
+<hr style="border-top: 4px solid #c0392b; margin: 3em 0;">
+<h1>Module 2 Outline — The Agent Loop, Hardened</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 02 — OUTLINE</div>
+<div class="module-title">The Agent Loop, Hardened</div>
+<div class="subtitle">Everyone reimplements this badly.<br>Yours is going to be the one that doesn't.</div>
+<div class="pages">Target length: ~38 pages (longer; heavy code)</div>
+</div>
+<h2>What this module is</h2>
+<p>The first heavy-code module. We build a production-grade agent loop in raw Python with the Anthropic SDK — no LangGraph, no CrewAI, no AutoGen. By the end the reader has a ~250-line <code>Agent</code> class they understand line-by-line, complete with token accounting, retry logic, max-iteration safety, structured tool dispatch, error recovery, and observability hooks.</p>
+<p>The key pedagogical move: we build it <strong>twice</strong>. First the naive 20-line version (the one in every blog post). Then we break it on purpose with five different failure modes, and harden it.</p>
+<div class="hook">
+<p>"The naive agent loop is 20 lines. The production agent loop is 250. The other 230 lines are the difference between 'works in a demo' and 'doesn't bankrupt your startup.'"</p>
+</div>
+<hr />
+<h2>Section 1 — The 20-Line Agent (≈4 pages)</h2>
+<p>We start with the textbook ReAct loop. Everyone has seen this. We reproduce it with no apologies.</p>
+<pre><code class="language-python">from anthropic import Anthropic
+
+client = Anthropic()
+tools = [...]  # defined elsewhere
+
+def agent(query: str) -&gt; str:
+    messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: query}]
+    while True:
+        resp = client.messages.create(
+            model=&quot;claude-sonnet-4-6&quot;,
+            max_tokens=4096,
+            tools=tools,
+            messages=messages,
+        )
+        if resp.stop_reason == &quot;end_turn&quot;:
+            return resp.content[0].text
+        messages.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: resp.content})
+        tool_results = []
+        for block in resp.content:
+            if block.type == &quot;tool_use&quot;:
+                result = dispatch_tool(block.name, block.input)
+                tool_results.append({
+                    &quot;type&quot;: &quot;tool_result&quot;,
+                    &quot;tool_use_id&quot;: block.id,
+                    &quot;content&quot;: str(result),
+                })
+        messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: tool_results})
+</code></pre>
+<p>Walk through it line-by-line. <code>stop_reason == "end_turn"</code> is the agent's way of saying "I'm done." Tool results come back as a <code>user</code> message. The model sees them on the next turn.</p>
+<div class="nodumbq">
+<p><strong>Q: Why does the tool result get a <code>user</code> role?</strong></p>
+<p>That's the API's convention. Tool results are content that wasn't generated by the model, so it's wrapped in a <code>user</code> turn. Mentally, model the conversation as: user asks → assistant decides + maybe asks tools → "user" returns tool results → assistant continues.</p>
+<p><strong>Q: What if the model returns text AND a tool_use in the same response?</strong></p>
+<p>It can. <code>resp.content</code> is a list of blocks. Iterate through. Show the text to the user (or log it as the model's "thinking"), execute the tools, return results. The next response will continue the chain.</p>
+</div>
+<hr />
+<h2>Section 2 — Five Ways It Breaks (≈6 pages)</h2>
+<p>We deploy the naive loop and watch it explode. Each failure mode gets a <code>Watch It!</code> block, a reproduction case, and the fix-preview (full fixes come in Section 3).</p>
+<p><strong>Failure 1: Infinite loop.</strong> Model keeps calling tools without ever ending. The 20-line version has no max-iteration guard. Real example: agent tasked with "find a recent article on X" keeps calling search with slight query variations because the first results don't match its preconception. 47 search calls, $4.20, no answer.</p>
+<p><strong>Failure 2: Token exhaustion.</strong> Conversation grows unbounded. Around turn 30, the message history is 80K tokens. Around turn 50, you hit context window. The 20-line version has no compression. We don't fix this here (that's Module 8) but we add the <em>detection</em>.</p>
+<p><strong>Failure 3: Tool hallucination.</strong> Model calls a tool that doesn't exist (<code>get_user_email_v2</code> instead of <code>get_user_email</code>). Naive code crashes. Production code returns the error to the model so it can retry.</p>
+<p><strong>Failure 4: Malformed tool input.</strong> Model calls the right tool with wrong-shaped JSON. Same fix family: catch, return error to model.</p>
+<p><strong>Failure 5: Transient API errors.</strong> 529 overloaded, 500 internal, network blip. Naive code crashes the whole task. Production code retries with backoff.</p>
+<div class="postmortem">
+<p><strong>The Loop That Cost $1,400 in 90 Minutes</strong></p>
+<p>A team's "research agent" was deployed Friday afternoon. By Monday, finance had flagged unusual spend on the Anthropic account. The agent had been called once Friday at 4:50pm — the user asked about a topic the model didn't know well. The model called <code>web_search</code>. Results were partial. Model called <code>web_search</code> again. Same results. Again. Again. 1,847 search calls before the customer's session timeout (60 minutes wall-clock) finally killed it.</p>
+<p>The fix took five minutes: <code>if turn &gt; 25: break</code>. The lesson took longer.</p>
+</div>
+<hr />
+<h2>Section 3 — Hardening Pass 1: Safety Rails (≈5 pages)</h2>
+<p>We add the cheap, must-have guards.</p>
+<p><strong>Max iterations.</strong> A hard cap on turns. We default to 25; configurable per task.</p>
+<p><strong>Token accounting.</strong> Track input + output tokens per turn, cumulative for the whole loop. Print a running tally. (Foreshadows Module 17 observability.)</p>
+<p><strong>Cost ceiling.</strong> Convert tokens to dollars per turn. Abort if cumulative cost crosses a per-task budget.</p>
+<p><strong>Wall-clock timeout.</strong> <code>start_time</code> plus a max duration (default 5 minutes for a single agent task).</p>
+<pre><code class="language-python">class AgentBudget:
+    def __init__(self, max_turns=25, max_cost_usd=1.0, max_seconds=300):
+        self.max_turns = max_turns
+        self.max_cost = max_cost_usd
+        self.max_seconds = max_seconds
+        self.turns = 0
+        self.cost = 0.0
+        self.start = time.time()
+
+    def check(self):
+        if self.turns &gt;= self.max_turns:
+            raise BudgetExceeded(&quot;turn cap&quot;)
+        if self.cost &gt;= self.max_cost:
+            raise BudgetExceeded(f&quot;cost cap (${self.cost:.4f})&quot;)
+        if time.time() - self.start &gt;= self.max_seconds:
+            raise BudgetExceeded(&quot;wall-clock cap&quot;)
+
+    def record(self, usage, model_pricing):
+        self.turns += 1
+        self.cost += (
+            usage.input_tokens * model_pricing.input_per_token
+            + usage.output_tokens * model_pricing.output_per_token
+        )
+</code></pre>
+<div class="brain">
+<p>What's the right default for <code>max_turns</code>? Why is the answer "it depends" insufficient?</p>
+<p>Hint: think about what the <em>budget</em> is for vs. what the <em>expected length</em> is.</p>
+</div>
+<hr />
+<h2>Section 4 — Hardening Pass 2: Tool Dispatch (≈6 pages)</h2>
+<p>The tool dispatcher is the most accident-prone surface. We build it properly.</p>
+<p><strong>Registration:</strong> tools register their schema and handler in one place. No drift between "what we told the model" and "what we actually run."</p>
+<pre><code class="language-python">@dataclass
+class Tool:
+    name: str
+    description: str
+    input_schema: dict
+    handler: Callable[[dict], str]
+
+class ToolRegistry:
+    def __init__(self):
+        self._tools: dict[str, Tool] = {}
+
+    def register(self, tool: Tool):
+        self._tools[tool.name] = tool
+
+    def schemas(self) -&gt; list[dict]:
+        return [
+            {&quot;name&quot;: t.name, &quot;description&quot;: t.description, &quot;input_schema&quot;: t.input_schema}
+            for t in self._tools.values()
+        ]
+
+    def dispatch(self, name: str, input: dict) -&gt; str:
+        tool = self._tools.get(name)
+        if tool is None:
+            return f&quot;ERROR: unknown tool '{name}'. Available: {list(self._tools.keys())}&quot;
+        try:
+            return tool.handler(input)
+        except Exception as e:
+            return f&quot;ERROR executing {name}: {type(e).__name__}: {e}&quot;
+</code></pre>
+<p><strong>Error returns vs. exceptions.</strong> Errors come back to the model as tool_result content. Exceptions abort the loop. Get this wrong and you'll either crash on every typo or hide real bugs. Rule: anything the model could fix by calling differently is an error-result. Anything indicating system failure (DB down, OOM) is an exception.</p>
+<p><strong>Schema validation.</strong> Use <code>jsonschema</code> to validate the model's input against the declared schema <em>before</em> dispatch. Saves you from "the model hallucinated a field and your handler exploded."</p>
+<div class="gotcha">
+<p>Don't return <code>str(exception)</code> blindly. Stack traces leak internals. PII in error messages becomes part of the conversation history. Sanitize before returning to the model.</p>
+</div>
+<div class="code-exercise">
+<p><strong>Exercise 2.1 — Build the registry.</strong></p>
+<p>Implement <code>ToolRegistry</code> with: registration, schema export, dispatch with schema validation, error wrapping. Then register three tools (calculator, web_fetch, get_current_time) and test that an unknown-tool call returns a clean error to the model rather than crashing.</p>
+<p>Provide stub tests; reader implements until tests pass.</p>
+</div>
+<hr />
+<h2>Section 5 — Hardening Pass 3: Retries and Resilience (≈4 pages)</h2>
+<p>API errors happen. We classify and handle.</p>
+<p><strong>Retryable:</strong> 429 (rate limit), 500 (server), 502/503/504 (gateway), 529 (Anthropic-specific overloaded), connection errors.</p>
+<p><strong>Non-retryable:</strong> 400 (bad request), 401 (auth), 403 (forbidden), 404 (model not found).</p>
+<p>Exponential backoff with jitter. Cap retries (default 3). Different backoff for rate limits (longer) vs. transient (shorter).</p>
+<pre><code class="language-python">@retry(
+    retry=retry_if_exception_type((
+        anthropic.RateLimitError,
+        anthropic.APITimeoutError,
+        anthropic.InternalServerError,
+        anthropic.APIConnectionError,
+    )),
+    wait=wait_exponential_jitter(initial=1, max=60),
+    stop=stop_after_attempt(3),
+    reraise=True,
+)
+def call_model(self, **kwargs):
+    return self.client.messages.create(**kwargs)
+</code></pre>
+<p>We use <code>tenacity</code> here; reader can adapt.</p>
+<div class="nodumbq">
+<p><strong>Q: Why retry inside the loop instead of letting the whole task fail and retry from outside?</strong></p>
+<p>Both have a place. Retry-inside is for transient blips during a task — the user shouldn't see the agent restart from scratch. Retry-outside is for persistent failures (downstream services down for hours). Different triggers, different timeframes.</p>
+</div>
+<hr />
+<h2>Section 6 — Hardening Pass 4: Streaming and Backpressure (≈4 pages)</h2>
+<p>For interactive agents, streaming changes UX. The Anthropic SDK supports <code>client.messages.stream(...)</code>. We adapt the loop:</p>
+<ul>
+<li>Stream text deltas to the user as they arrive.</li>
+<li>Hold tool_use blocks until they're complete (you can't dispatch a half-formed tool call).</li>
+<li>Yield events to a callback so the UI can show "thinking..." vs "calling tool X..." vs "got result."</li>
+</ul>
+<pre><code class="language-python">with client.messages.stream(...) as stream:
+    for event in stream:
+        if event.type == &quot;content_block_delta&quot; and event.delta.type == &quot;text_delta&quot;:
+            yield TextChunk(event.delta.text)
+        elif event.type == &quot;content_block_stop&quot;:
+            block = stream.current_message_snapshot.content[event.index]
+            if block.type == &quot;tool_use&quot;:
+                yield ToolStart(block.name, block.input)
+</code></pre>
+<p>The hardened version exposes events: <code>TextChunk</code>, <code>ToolStart</code>, <code>ToolResult</code>, <code>TurnComplete</code>, <code>LoopComplete</code>, <code>BudgetExceeded</code>. Downstream code can do anything with them — print to terminal, push to WebSocket, log to traces.</p>
+<div class="brain">
+<p>Why can't you start dispatching a tool the moment you see <code>tool_use</code> start in the stream, even though you have its name?</p>
+<p>Because the input is built incrementally. You'd dispatch with empty arguments. Wait for <code>content_block_stop</code> for that block.</p>
+</div>
+<hr />
+<h2>Section 7 — Hardening Pass 5: Observability Hooks (≈4 pages)</h2>
+<p>Tracing for free if you build it right. We hook every interesting event:</p>
+<ul>
+<li><code>on_turn_start(turn_num, message_count)</code></li>
+<li><code>on_model_request(model, message_count, tool_count)</code></li>
+<li><code>on_model_response(usage, stop_reason)</code></li>
+<li><code>on_tool_call(name, input)</code></li>
+<li><code>on_tool_result(name, result_or_error)</code></li>
+<li><code>on_turn_end(turn_num, cost)</code></li>
+<li><code>on_loop_end(reason, total_cost, total_turns)</code></li>
+</ul>
+<p>Default implementation logs to stdout. Easy to swap with OpenTelemetry, Langfuse, or your own collector. We don't go deep here — Module 17 is the full observability module — but the hooks need to exist now so we can use them later.</p>
+<div class="postmortem">
+<p><strong>The Agent That Worked In Dev</strong></p>
+<p>Sam shipped the hardened loop. Worked fine in dev. In prod, occasionally an agent would just... stop responding. No error. No exception. The loop variable just stopped advancing.</p>
+<p>Cause: the <code>on_tool_call</code> hook was synchronously logging to a metrics service. The metrics service occasionally took 30 seconds to ack. The async Python framework had a 10-second timeout on the surrounding request. The framework gave up before the hook returned. The agent loop never received the response. No error fired because nothing actually crashed — the request just got dropped.</p>
+<p>Fix: hooks are async, fire-and-forget, never block the loop.</p>
+</div>
+<hr />
+<h2>Section 8 — The Full Hardened Agent (≈3 pages)</h2>
+<p>We assemble everything into one <code>Agent</code> class. ~250 lines, fully annotated. This is the reference implementation we'll extend in every subsequent module:</p>
+<ul>
+<li>Module 4 adds richer tool definitions</li>
+<li>Module 6 adds model routing</li>
+<li>Module 8 adds context compression</li>
+<li>Module 9 adds memory</li>
+<li>Module 10 adds hallucination detection</li>
+<li>Module 11 adds reflection</li>
+<li>Module 12 adds guardrails</li>
+<li>Module 17 swaps the basic hooks for full tracing</li>
+</ul>
+<pre><code class="language-python">class Agent:
+    def __init__(
+        self,
+        client: Anthropic,
+        tools: ToolRegistry,
+        system: str,
+        model: str = &quot;claude-sonnet-4-6&quot;,
+        budget: AgentBudget | None = None,
+        hooks: AgentHooks | None = None,
+    ):
+        ...
+
+    def run(self, query: str) -&gt; AgentResult:
+        ...
+</code></pre>
+<p>We show one full run end-to-end against a non-trivial task ("find the most-cited paper on long-context compression from 2025 and summarize the method").</p>
+<hr />
+<h2>Section 9 — Sync vs. Async (≈2 pages)</h2>
+<p>The hardened loop above is synchronous. For real workloads, you want async. We show the diff:</p>
+<ul>
+<li><code>Anthropic</code> → <code>AsyncAnthropic</code></li>
+<li><code>client.messages.create</code> → <code>await client.messages.create</code></li>
+<li>Tool dispatch can be <code>async def</code> (and probably should be, for I/O tools)</li>
+<li>Hook callbacks become <code>async</code></li>
+</ul>
+<p>We don't rewrite the whole thing — just the pieces that change. Reader has both versions in the repo.</p>
+<div class="gotcha">
+<p>If your tools mix sync and async, the dispatcher has to handle both. Use <code>inspect.iscoroutinefunction(handler)</code> to decide whether to <code>await</code>. Or just declare a convention: all tools are async, sync handlers wrap with <code>asyncio.to_thread</code>.</p>
+</div>
+<hr />
+<h2>Section 10 — What's Next (≈1 page)</h2>
+<p>Module 3 builds the five workflow patterns using this same SDK foundation. You'll see workflows are often what you should have used.</p>
+<p>Module 4 makes tools first-class. The tool registry from this module gets richer descriptions, schema validation, and security hardening.</p>
+<p>By Module 10 (hallucination), our hardened agent is doing real work. By Module 18 (capstone), it's running multi-agent.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>3 No Dumb Questions</li>
+<li>2 Brain Power</li>
+<li>2 Production Postmortems (Friday meltdown, dev-vs-prod hooks)</li>
+<li>2 Watch It! blocks</li>
+<li>1 Code Exercise (build the registry)</li>
+<li>~12 code blocks</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam ships the naive 20-line version in Section 1, watches it burn $1,400 in Section 2, hardens it across Sections 3-7, and by Section 8 has something they trust enough to deploy. Sam's arc this module: <strong>competence</strong>. Still going to fail later — but for new reasons, not these reasons.</p>
+</div>
+<div class="page-budget">
+<p>S1 (20-line): 4p
+S2 (Five failures): 6p
+S3 (Safety rails): 5p
+S4 (Tool dispatch): 6p
+S5 (Retries): 4p
+S6 (Streaming): 4p
+S7 (Observability hooks): 4p
+S8 (Full agent): 3p
+S9 (Async): 2p
+S10 (Next): 1p
+TOTAL: ~39 pages (slight over; we'll trim S6 streaming to 3p if needed)</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting:</strong></p>
+<ul>
+<li>Anthropic SDK current API — <code>messages.create</code>, <code>messages.stream</code>, error class names, model strings</li>
+<li>Current pricing for token/cost calculations (input/output per-token rates for Sonnet, Haiku, Opus)</li>
+<li><code>tenacity</code> library current API for the retry decorator</li>
+<li>Anthropic's documented retry guidance (529 overloaded, etc.)</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- ReAct loop pattern
+- Tool result conventions in Anthropic API (user role wrapping)
+- General resilience patterns (exponential backoff, circuit breakers)
+- The five failure modes (these are universal)</p>
+<p><strong>Open question to resolve at drafting:</strong>
+- Should we introduce LangGraph here as a "if you don't want to build this yourself" sidebar? Or save entirely for Module 14? Lean toward saving — this module's whole point is understanding what's under the hood.</p>
+</div>
+<div class="bullet-points">
+<h3>Module 2 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>The 20-line naive loop is everywhere; it breaks five ways</li>
+<li>Budget guards: max turns, max cost, max wall-clock</li>
+<li>Tool dispatch: registry, schema validation, error-vs-exception split</li>
+<li>Retry: classify errors, exponential backoff with jitter</li>
+<li>Streaming changes UX, not loop structure (mostly)</li>
+<li>Observability hooks: cheap to add now, expensive to retrofit</li>
+<li>The 250-line hardened Agent class is our running reference</li>
+<li>Sync vs async: mostly a dispatch pattern, not a redesign</li>
+</ul>
+</div>
+<hr style="border-top: 4px solid #c0392b; margin: 3em 0;">
+<h1>Module 3 Outline — Workflow Patterns You Should Reach for First</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 03 — OUTLINE</div>
+<div class="module-title">Workflow Patterns You Should Reach for First</div>
+<div class="subtitle">Most "agent" problems are workflow problems.<br>Here are the five patterns that solve 80% of them.</div>
+<div class="pages">Target length: ~36 pages (heavy code)</div>
+</div>
+<h2>What this module is</h2>
+<p>The most actionable module in the book. We code all five workflow patterns from Anthropic's "Building effective agents" reference (still the cleanest taxonomy in the field). Each pattern: real use case, full implementation, cost/latency benchmark, when to upgrade to an agent.</p>
+<p>By the end, the reader has a five-pattern toolbox they can deploy directly. More importantly, they have a default question: <em>"Can this be a workflow?"</em> The answer is usually yes.</p>
+<div class="hook">
+<p>"You don't reach for an agent because the task is hard. You reach for an agent because the task's <em>shape</em> is unknown until you start. Most tasks aren't like that — engineers just haven't looked carefully."</p>
+</div>
+<hr />
+<h2>Section 1 — The Five Patterns at a Glance (≈3 pages)</h2>
+<p>A table-and-diagram tour before the code. The five patterns:</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>What it does</th>
+<th>When to use</th>
+<th>Module 3 use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Prompt Chaining</strong></td>
+<td>Sequential LLM calls, each output feeds the next</td>
+<td>Task decomposes into ordered subtasks, each verifiable</td>
+<td>Translate → critique → polish</td>
+</tr>
+<tr>
+<td><strong>Routing</strong></td>
+<td>One LLM picks which downstream prompt/tool/model handles the input</td>
+<td>Inputs cluster into known categories</td>
+<td>Customer support classifier</td>
+</tr>
+<tr>
+<td><strong>Parallelization</strong></td>
+<td>Run multiple LLM calls in parallel; aggregate</td>
+<td>Subtasks independent, OR you want voting/sectioning</td>
+<td>Code review (security, perf, style)</td>
+</tr>
+<tr>
+<td><strong>Orchestrator-Workers</strong></td>
+<td>Lead LLM dynamically delegates to worker LLMs</td>
+<td>Subtasks aren't predetermined but composable from a known pool</td>
+<td>Research with sub-questions</td>
+</tr>
+<tr>
+<td><strong>Evaluator-Optimizer</strong></td>
+<td>One LLM produces, another critiques, loop until pass</td>
+<td>Quality bar matters more than latency</td>
+<td>Iterative refinement</td>
+</tr>
+</tbody>
+</table>
+<p>We show a small visual diagram for each (we'll redraw these as hand-drawn-style SVGs at draft time).</p>
+<div class="brain">
+<p>Look at the table. Three of the five patterns can <em>contain</em> an agent (a worker that's an agent, or an evaluator that's an agent). Two cannot. Which two? Why?</p>
+<p>(Hint: one of these patterns is itself just an agent in disguise.)</p>
+</div>
+<div class="nodumbq">
+<p><strong>Q: Why is "orchestrator-workers" a workflow if the orchestrator is dynamically choosing?</strong></p>
+<p>Because the workers are predefined. The orchestrator chooses <em>which</em> worker, but the worker pool is a fixed set of capabilities. Compare to a true multi-agent system where workers can spawn workers, request new tools, or hand off to peers — that's Module 14 territory.</p>
+<p><strong>Q: Isn't evaluator-optimizer just an agent loop with two roles?</strong></p>
+<p>It's close, but the structure is fixed: produce → critique → revise → produce → critique. The agent loop has the model choosing what to do at each turn. Evaluator-optimizer is rigid; you know it's going to alternate.</p>
+</div>
+<hr />
+<h2>Section 2 — Prompt Chaining (≈4 pages)</h2>
+<p>The simplest pattern. One LLM's output feeds the next.</p>
+<p><strong>Use case:</strong> Translate a marketing email from English to Japanese, with cultural adaptation.</p>
+<pre><code class="language-python">def translate_with_polish(email_en: str) -&gt; str:
+    # Step 1: literal translation
+    literal = client.messages.create(
+        model=&quot;claude-haiku-4-5-20251001&quot;,
+        max_tokens=2000,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Translate to Japanese, literal:\n{email_en}&quot;}],
+    ).content[0].text
+
+    # Step 2: cultural critique
+    critique = client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=1500,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;:
+            f&quot;Original:\n{email_en}\n\nLiteral translation:\n{literal}\n\n&quot;
+            &quot;Identify any phrasings that are culturally awkward in Japanese business context. &quot;
+            &quot;Suggest specific replacements. Be concrete.&quot;
+        }],
+    ).content[0].text
+
+    # Step 3: polish
+    polished = client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=2000,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;:
+            f&quot;Original:\n{email_en}\n\nLiteral:\n{literal}\n\nCritique:\n{critique}\n\n&quot;
+            &quot;Produce the final, culturally-adapted translation. Output only the translation.&quot;
+        }],
+    ).content[0].text
+
+    return polished
+</code></pre>
+<p><strong>Why three steps and not one?</strong> The model is better at evaluation than self-evaluation in one pass. Splitting the literal translation from the cultural critique forces explicit reasoning about cultural fit. Empirically, ~20% better on human evaluation in Japanese marketing contexts (we'll re-verify when drafting).</p>
+<p><strong>Adding a gate:</strong> sometimes step 2 should produce a "skip step 3" signal if the literal translation is already fine. We show that variant.</p>
+<p><strong>Latency:</strong> ~3x a single call (sequential). <strong>Cost:</strong> ~3x. <strong>Quality on this task:</strong> measurably higher.</p>
+<div class="gotcha">
+<p>Prompt chaining is tempting to over-decompose. If you have eight steps, ask: which can collapse? Which are model-quality limited (need their own call) vs. just-want-cleaner-prompts (collapse them)?</p>
+</div>
+<hr />
+<h2>Section 3 — Routing (≈4 pages)</h2>
+<p>One LLM classifies the input; downstream handlers are specialized.</p>
+<p><strong>Use case:</strong> Customer support triage. Inputs are emails. Outputs are routed to: billing-handler, technical-handler, refund-handler, escalate-to-human.</p>
+<pre><code class="language-python">ROUTER_PROMPT = &quot;&quot;&quot;Classify this support email into exactly one category:
+- billing: invoices, charges, subscriptions
+- technical: bugs, errors, integration help
+- refund: explicit refund requests
+- escalate: complex, sensitive, or unclear cases
+
+Email:
+{email}
+
+Respond with only the category name.&quot;&quot;&quot;
+
+def route_and_handle(email: str) -&gt; Response:
+    category = client.messages.create(
+        model=&quot;claude-haiku-4-5-20251001&quot;,  # cheap classifier
+        max_tokens=20,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: ROUTER_PROMPT.format(email=email)}],
+    ).content[0].text.strip().lower()
+
+    handlers = {
+        &quot;billing&quot;: handle_billing,
+        &quot;technical&quot;: handle_technical,
+        &quot;refund&quot;: handle_refund,
+        &quot;escalate&quot;: handle_escalate,
+    }
+    return handlers.get(category, handle_escalate)(email)
+</code></pre>
+<p><strong>Why route?</strong> Each downstream prompt is shorter and more specific than a unified prompt. A monolithic "support assistant" prompt is 800 tokens; the routed billing handler is 250. Quality is higher because the prompt isn't trying to do five jobs.</p>
+<p><strong>Variants:</strong></p>
+<ol>
+<li><strong>Model routing:</strong> route to a stronger model when the classifier flags difficulty. (Prelude to Module 6, where routing is the primary topic.)</li>
+<li><strong>Confidence routing:</strong> classifier returns a probability; below threshold goes to "escalate."</li>
+<li><strong>Multi-label routing:</strong> input can match multiple categories (rare; usually an indication you need a different pattern).</li>
+</ol>
+<div class="postmortem">
+<p><strong>The Router That Sent Refunds to Dev</strong></p>
+<p>A SaaS team built a routing workflow for support. Categories: billing, technical, refund, escalate. The classifier prompt didn't enumerate categories, it just said "categorize this." The model returned "feature_request," "complaint," "thanks," "refund" — categories that didn't exist in the dispatch table. The dispatch dict's <code>.get()</code> defaulted to "technical." Dev got 2,000 refund requests in their queue over a week.</p>
+<p><strong>Lesson:</strong> the classifier's output space must be explicit AND the dispatch must enforce it. Use enums. Use Pydantic. Use the API's structured output. Anything except <code>dict.get()</code>.</p>
+</div>
+<div class="code-exercise">
+<p><strong>Exercise 3.1 — Routing with structured output.</strong></p>
+<p>Refactor the router above to use Anthropic's tool-use mechanism for structured output (force the model to call a <code>classify</code> tool with a schema-validated category enum). Compare reliability before/after on a deliberately ambiguous test set we provide.</p>
+</div>
+<hr />
+<h2>Section 4 — Parallelization (≈5 pages)</h2>
+<p>Run multiple LLM calls in parallel. Two flavors:</p>
+<p><strong>Sectioning:</strong> independent subtasks aggregate into a final answer.
+- Code review: one call for security, one for performance, one for style. Combine.
+- Document Q&amp;A: split a 200-page doc into chunks, parallelize "find relevant info" across chunks, aggregate.</p>
+<p><strong>Voting:</strong> same task, multiple times, take majority/best.
+- Hard math problems: 5 reasoning attempts, vote on answer.
+- Faithfulness checks: run the same eval prompt 3x with different temperatures, take majority.</p>
+<pre><code class="language-python">import asyncio
+from anthropic import AsyncAnthropic
+
+async def parallel_code_review(diff: str) -&gt; CombinedReview:
+    client = AsyncAnthropic()
+    perspectives = [
+        (&quot;security&quot;, &quot;Review this diff for security vulnerabilities...&quot;),
+        (&quot;performance&quot;, &quot;Review this diff for performance issues...&quot;),
+        (&quot;style&quot;, &quot;Review this diff for style and maintainability...&quot;),
+    ]
+    tasks = [
+        client.messages.create(
+            model=&quot;claude-sonnet-4-6&quot;,
+            max_tokens=2000,
+            messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;{prompt}\n\nDiff:\n{diff}&quot;}],
+        )
+        for _, prompt in perspectives
+    ]
+    results = await asyncio.gather(*tasks)
+    return combine_reviews([(p[0], r.content[0].text) for p, r in zip(perspectives, results)])
+</code></pre>
+<p><strong>Latency:</strong> wall-clock = max of parallel calls (close to 1 call's latency). <strong>Cost:</strong> ~N× a single call.</p>
+<p><strong>Aggregation patterns:</strong>
+- <em>Concatenate</em> (when subtasks cover different ground): just stitch.
+- <em>Reduce</em> (when results need synthesis): one final LLM call to merge.
+- <em>Vote</em> (when calls did the same thing): take majority/highest-confidence.</p>
+<div class="brain">
+<p>You're parallelizing 50 chunks of a long document for a Q&amp;A task. Aggregation is "reduce" — one final synthesis call. The reduce call's input is now 50 summaries. Will it fit in context?</p>
+<p>(Hint: this is when parallelization meets compression. We come back to this in Module 8.)</p>
+</div>
+<p><strong>Voting variant for hallucination reduction (preview of Module 10):</strong></p>
+<pre><code class="language-python">async def vote_for_consistency(question: str, n_votes: int = 5) -&gt; Answer:
+    client = AsyncAnthropic()
+    tasks = [
+        client.messages.create(
+            model=&quot;claude-sonnet-4-6&quot;,
+            max_tokens=1000,
+            temperature=0.7,
+            messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: question}],
+        )
+        for _ in range(n_votes)
+    ]
+    answers = await asyncio.gather(*tasks)
+    extracted = [extract_answer(a.content[0].text) for a in answers]
+    return most_common(extracted)
+</code></pre>
+<p>This is Best-of-N reranking, an ACL Findings 2025 result that meaningfully reduces hallucination on factual tasks. We cite and verify when drafting.</p>
+<div class="gotcha">
+<p>Parallel calls don't share state. If you parallelize tool-using LLMs, each gets its own conversation. Shared tool-result memory across parallel branches is a thing you build (Module 9), not a thing you get for free.</p>
+</div>
+<hr />
+<h2>Section 5 — Orchestrator-Workers (≈5 pages)</h2>
+<p>A lead LLM decomposes a task and dispatches to worker LLMs. Workers are scoped, prompt-specialized, and return structured results.</p>
+<p><strong>Use case:</strong> Research synthesis. User asks: "Compare the carbon footprints of three given products and recommend the lowest." Orchestrator decides to spawn three "research one product" workers, then a "compare and recommend" worker.</p>
+<p>The shape:</p>
+<pre><code>                    [Orchestrator]
+                          |
+          decides: 3 product workers + 1 compare worker
+                          |
+        ┌─────────────┬───┴────┬─────────────┐
+        v             v        v             v
+  [Worker A]    [Worker B] [Worker C]   (after A,B,C return)
+                                         [Compare Worker]
+</code></pre>
+<pre><code class="language-python">@dataclass
+class Subtask:
+    role: str
+    prompt: str
+    tools: list[str] = field(default_factory=list)
+
+def orchestrator_workers(query: str) -&gt; str:
+    # Orchestrator decides
+    plan_resp = client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=2000,
+        tools=[PLAN_TOOL_SCHEMA],
+        tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;create_plan&quot;},
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;:
+            f&quot;Decompose this task into subtasks. Each subtask is independent and &quot;
+            f&quot;can be handled by a worker LLM with the available tools.\n\nTask: {query}&quot;
+        }],
+    )
+    plan: list[Subtask] = parse_plan(plan_resp)
+
+    # Workers execute
+    results = run_workers_parallel(plan)
+
+    # Synthesize
+    synthesis = client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=4000,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;:
+            f&quot;Original task: {query}\n\n&quot;
+            f&quot;Worker results:\n{format_results(results)}\n\n&quot;
+            f&quot;Produce the final answer.&quot;
+        }],
+    )
+    return synthesis.content[0].text
+</code></pre>
+<p><strong>Where this becomes an agent:</strong> if the orchestrator can decide to spawn <em>new</em> worker types not in its plan, or workers can request additional tools/workers, you've crossed into multi-agent (Module 14). This pattern keeps a fixed worker pool and a one-shot plan.</p>
+<div class="fireside">
+<p><strong>FIRESIDE CHAT: "Orchestrator-Workers" vs "Single Agent with Tools"</strong></p>
+<div class="cast">
+<div class="character architect"><span class="name">Architect:</span> Why are we doing orchestrator-workers? An agent could just call the same tools.</div>
+<div class="character agent"><span class="name">Orchestrator-Workers:</span> Three reasons. One: the orchestrator's plan is explicit and inspectable. You can log it, eval it, hand it to humans for approval. Two: workers run in parallel. Three: workers have isolated context — they don't see each other's noise.</div>
+<div class="character architect"><span class="name">Architect:</span> What about the cases where the agent's flexibility wins?</div>
+<div class="character agent"><span class="name">Orchestrator-Workers:</span> When the plan needs to revise mid-flight based on what workers find. I can't do that. The orchestrator commits, workers execute. If a worker finds something that should change the plan, it just returns it and the synthesis call has to handle it.</div>
+<div class="character architect"><span class="name">Architect:</span> So the rule is: known decomposition → me. Discovered decomposition → agent.</div>
+<div class="character agent"><span class="name">Orchestrator-Workers:</span> And known decomposition is more common than people think.</div>
+</div>
+</div>
+<hr />
+<h2>Section 6 — Evaluator-Optimizer (≈5 pages)</h2>
+<p>One LLM produces output. Another critiques. The producer revises. Loop until the critic passes.</p>
+<p><strong>Use case:</strong> producing legal contract clauses that pass a compliance check. Producer drafts. Evaluator checks against a checklist (cites missing clauses, ambiguous language, jurisdiction issues). Producer revises. Iterate up to N times or until evaluator returns "pass."</p>
+<pre><code class="language-python">def evaluator_optimizer(task: str, max_rounds: int = 3) -&gt; str:
+    draft = produce(task)
+    for round_i in range(max_rounds):
+        critique = evaluate(task, draft)
+        if critique.passed:
+            return draft
+        draft = revise(task, draft, critique.feedback)
+    return draft  # accept best-effort
+
+def produce(task: str) -&gt; str:
+    return client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=4000,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Draft for: {task}&quot;}],
+    ).content[0].text
+
+def evaluate(task: str, draft: str) -&gt; Critique:
+    resp = client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=2000,
+        tools=[CRITIQUE_TOOL_SCHEMA],
+        tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;submit_critique&quot;},
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;:
+            f&quot;Task: {task}\nDraft:\n{draft}\n\n&quot;
+            &quot;Evaluate against compliance checklist. Submit critique.&quot;
+        }],
+    )
+    return parse_critique(resp)
+
+def revise(task: str, draft: str, feedback: str) -&gt; str:
+    return client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=4000,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;:
+            f&quot;Task: {task}\n\nPrevious draft:\n{draft}\n\nFeedback:\n{feedback}\n\nRevise.&quot;
+        }],
+    ).content[0].text
+</code></pre>
+<p><strong>Critical design choice:</strong> different models for producer and evaluator. The classic mistake is using the same model for both — it tends to validate its own work. Use Opus to evaluate Sonnet's output, or use a fine-tuned classifier as the evaluator.</p>
+<p><strong>Termination:</strong> must have a <code>max_rounds</code> cap. Otherwise: infinite loops where the evaluator keeps finding new issues.</p>
+<div class="gotcha">
+<p>Evaluator-optimizer cost compounds fast. 3 rounds × (produce + evaluate + revise) = 7 LLM calls minimum. Use cheaper models when possible. Use the cheapest evaluator that still catches the relevant issues.</p>
+</div>
+<div class="brain">
+<p>The "evaluator validates its own work" problem isn't fully solved by using a different model. Why? What's a better fix?</p>
+<p>Hint: think about how the evaluator's prompt was generated.</p>
+</div>
+<hr />
+<h2>Section 7 — Cost &amp; Latency Comparison (≈3 pages)</h2>
+<p>A real benchmark. Same task ("summarize this 10-page report into 3 bullet key insights") implemented seven ways:</p>
+<table>
+<thead>
+<tr>
+<th>Approach</th>
+<th>Avg Latency</th>
+<th>Avg Cost</th>
+<th>Subjective Quality (1-5)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single LLM call (Sonnet)</td>
+<td>4.2s</td>
+<td>$0.018</td>
+<td>3.6</td>
+</tr>
+<tr>
+<td>Single LLM call (Opus)</td>
+<td>9.7s</td>
+<td>$0.071</td>
+<td>4.4</td>
+</tr>
+<tr>
+<td>Prompt chain (extract → distill → polish)</td>
+<td>11.3s</td>
+<td>$0.039</td>
+<td>4.5</td>
+</tr>
+<tr>
+<td>Routing (classify → specialized prompt)</td>
+<td>6.1s</td>
+<td>$0.022</td>
+<td>4.2</td>
+</tr>
+<tr>
+<td>Parallel sectioning (3 perspectives → reduce)</td>
+<td>5.8s</td>
+<td>$0.048</td>
+<td>4.3</td>
+</tr>
+<tr>
+<td>Orchestrator-workers</td>
+<td>14.2s</td>
+<td>$0.094</td>
+<td>4.4</td>
+</tr>
+<tr>
+<td>Agent loop (Module 2 hardened)</td>
+<td>31.7s</td>
+<td>$0.41</td>
+<td>4.4</td>
+</tr>
+</tbody>
+</table>
+<p>(Numbers are illustrative — we'll run real benchmarks with current models when drafting.)</p>
+<p><strong>The headline:</strong> for this task, prompt chain matches Opus single-call quality at half the cost. The agent loop is 22× more expensive than prompt chain for indistinguishable quality.</p>
+<div class="pullquote">
+<p>"Better quality" and "agent" aren't synonyms. They aren't even correlated.</p>
+</div>
+<hr />
+<h2>Section 8 — When to Upgrade to an Agent (≈3 pages)</h2>
+<p>Ironically, the workflow patterns module ends with "and here's when you should not use them."</p>
+<p>You're past workflow territory when:
+- The set of subtasks isn't enumerable in advance
+- Subtasks themselves spawn subtasks
+- The natural decomposition depends on intermediate results in ways you can't predict
+- Tool selection itself is the hard part of the task
+- You need true exploration</p>
+<p>You're still in workflow territory when (despite gut feeling):
+- The task is "complex" but decomposable
+- You want flexibility but the flexibility is enumerable
+- You think you need an agent because the prompt would be long (compose workflows; don't reach for agents)</p>
+<div class="exercise">
+<p>Classify each as workflow (which pattern?) or agent.</p>
+<ol>
+<li>Generate alt-text for 10K product images.</li>
+<li>Help a developer debug an issue by exploring their codebase, running commands.</li>
+<li>Extract structured data from invoices in 12 known formats.</li>
+<li>Plan a 5-day itinerary for a trip given preferences.</li>
+<li>Investigate why a specific ML training run produced anomalous loss curves.</li>
+<li>Translate documentation from English to French while preserving formatting.</li>
+</ol>
+<details class="answer">
+<summary>show answers</summary>
+
+1. **Workflow — single LLM call** per image, parallelized.
+2. **Agent.** Tool selection and exploration are the task.
+3. **Workflow — routing.** Twelve formats means twelve specialized handlers.
+4. **Workflow — prompt chaining or orchestrator-workers.** Plan is decomposable: research destinations, build day-by-day, optimize logistics.
+5. **Agent.** "Investigate" plus "anomalous" — you don't know what you'll find.
+6. **Workflow — prompt chaining or single call** with structured output.
+
+Most "agent" candidates collapse to workflows under inspection. The exceptions (2 and 5) are genuine agent territory: tool-driven exploration of unknown shape.
+</details>
+</div>
+<hr />
+<h2>Section 9 — What's Next (≈1 page)</h2>
+<p>Module 4 covers tools — the surface where agents live or die.</p>
+<p>Module 5 introduces MCP, which makes tool sets dynamic.</p>
+<p>Module 6 brings model routing, which extends the routing pattern from this module to a first-class architectural concern.</p>
+<p>By Module 13 we'll revisit these workflow patterns and ask: when does going multi-agent actually beat the orchestrator-workers pattern? Spoiler: less often than you'd think.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>2 No Dumb Questions</li>
+<li>2 Brain Power</li>
+<li>1 Fireside Chat (Orchestrator-Workers vs Single Agent)</li>
+<li>1 Production Postmortem (router default-route disaster)</li>
+<li>2 Watch It! blocks</li>
+<li>2 Sharpen Your Pencil exercises</li>
+<li>1 Code Exercise (structured output routing)</li>
+<li>1 Pullquote</li>
+<li>~6 substantial code blocks (one per pattern + benchmarks)</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam, fresh from hardening their agent loop in Module 2, encounters their PM in Section 1 with a "we need an agent for this" request. Sam audits the actual task, realizes it's a routing workflow, ships in 2 days instead of 2 weeks, saves the company $40K/month. Sam's arc this module: <strong>restraint</strong>. Knowing when not to reach for the shiny tool.</p>
+</div>
+<div class="page-budget">
+<p>S1 (Patterns at a glance): 3p
+S2 (Prompt chaining): 4p
+S3 (Routing): 4p
+S4 (Parallelization): 5p
+S5 (Orchestrator-Workers): 5p
+S6 (Evaluator-Optimizer): 5p
+S7 (Cost/latency): 3p
+S8 (When to upgrade): 3p
+S9 (Next): 1p
+Recurring elements (woven in): 3p
+TOTAL: ~36 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting:</strong></p>
+<ul>
+<li>Anthropic, "Building effective agents" (Dec 2024) — the canonical source for these five patterns</li>
+<li>Best-of-N hallucination reduction — ACL Findings 2025 paper, verify exact result claims</li>
+<li>Real benchmark numbers (cost/latency table in S7) — re-run with current pricing and current Sonnet/Opus/Haiku versions before drafting</li>
+<li>Anthropic API tool-use schema for structured output (S3 exercise) — verify current syntax</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- The five patterns themselves
+- Sectioning vs. voting variants of parallelization
+- Termination requirements for evaluator-optimizer
+- Decomposition vs. exploration distinction</p>
+<p><strong>Cross-references to lock down:</strong>
+- Module 6 will deepen "model routing" — make sure framing here doesn't preempt it
+- Module 8 (compression) will revisit the parallelization aggregation problem
+- Module 14 (multi-agent architectures) will compare orchestrator-workers vs. true multi-agent</p>
+</div>
+<div class="bullet-points">
+<h3>Module 3 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>Five workflow patterns cover ~80% of "agent" use cases</li>
+<li>Prompt chaining: ordered decomposition, +quality at +cost</li>
+<li>Routing: cheap classifier → specialized handlers; structured output prevents disasters</li>
+<li>Parallelization: sectioning (different jobs) and voting (same job, multiple times)</li>
+<li>Orchestrator-workers: lead LLM plans, workers execute in parallel, synthesizer reduces</li>
+<li>Evaluator-optimizer: produce-critique-revise; different models for producer and evaluator</li>
+<li>Cost &amp; quality benchmarks show workflows often match agent quality at fraction of cost</li>
+<li>Reach for an agent only when subtasks aren't enumerable or tool selection IS the task</li>
+</ul>
+</div>
+<hr style="border-top: 4px solid #c0392b; margin: 3em 0;">
+</body>
+</html>

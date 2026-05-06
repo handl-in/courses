@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 14 Outline — Multi-Agent Architectures, Coded</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 14 Outline — Multi-Agent Architectures, Coded</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 14 — OUTLINE</div>
+<div class="module-title">Multi-Agent Architectures, Coded</div>
+<div class="subtitle">Five patterns. Same task four ways. Real benchmarks.<br>Plus the two patterns that "won" production in 2026 and the three that didn't.</div>
+<div class="pages">Target length: ~38 pages (heavy code)</div>
+</div>
+<h2>What this module is</h2>
+<p>Module 13 established when multi-agent earns its cost. This module is the implementation: five canonical architectures, coded in raw Anthropic SDK plus LangGraph where it earns its place. We benchmark four of them on the same long-horizon research task to make the trade-offs concrete.</p>
+<p>The patterns: <strong>supervisor/orchestrator</strong> (Anthropic's research system shape — the one that survived production), <strong>hierarchical</strong> (multi-level supervisors), <strong>network/peer-to-peer</strong> (free mesh — mostly didn't survive), <strong>sequential pipeline</strong> (handoffs between specialists), <strong>debate/critique/judge</strong> (adversarial cycles). Communication patterns: shared state vs message passing. Failure handling: agent failures, partial results, fallback strategies.</p>
+<p>By the end the reader can: implement any of the five patterns, pick which one fits their task, instrument multi-agent for observability, and avoid the two architecture mistakes that account for most multi-agent disasters.</p>
+<div class="hook">
+<p>"There are five canonical multi-agent architectures. Two of them survived production in 2026. Two of them survived as research demos. One of them ('group chat') survives mostly in conference talks and venture pitches. Let's build all five so you can pick from a position of knowledge — not aesthetics."</p>
+</div>
+<hr />
+<h2>Section 1 — The Five Patterns at a Glance (≈3 pages)</h2>
+<p>A side-by-side. Each gets the deep treatment in its own section.</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Coordination</th>
+<th>Best For</th>
+<th>Production Status (2026)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Supervisor / Orchestrator-Worker</strong></td>
+<td>Central planner dispatches to peers</td>
+<td>Parallelizable exploration, research</td>
+<td>✅ Survived — dominant pattern</td>
+</tr>
+<tr>
+<td><strong>Hierarchical</strong></td>
+<td>Multiple supervisor levels</td>
+<td>Very large systems, organizational mirroring</td>
+<td>✅ Survived — for &gt;10-agent systems</td>
+</tr>
+<tr>
+<td><strong>Sequential Pipeline (Handoffs)</strong></td>
+<td>Linear chain, one-to-next</td>
+<td>Domain routing, specialist relay</td>
+<td>✅ Survived — for routing-heavy domains</td>
+</tr>
+<tr>
+<td><strong>Network / Peer-to-Peer (Group Chat)</strong></td>
+<td>Free mesh, agents talk to each other</td>
+<td>Brainstorming, debate, exploration</td>
+<td>⚠️ Mostly didn't survive — usually wrapped in a supervisor</td>
+</tr>
+<tr>
+<td><strong>Debate / Critique / Judge</strong></td>
+<td>Adversarial — one produces, others critique</td>
+<td>High-stakes outputs, quality matters &gt; speed</td>
+<td>✅ Survived — as a sub-pattern, not whole architecture</td>
+</tr>
+</tbody>
+</table>
+<p>The April 2026 "What Actually Survived in Production" article frames it cleanly: <strong>graph (i.e. supervisor with explicit transitions) and hierarchy are the two patterns that earn their cost in production. Free mesh and pure swarms are theater outside controlled subroutines.</strong></p>
+<p>We'll hold to that framing — without dismissing the other patterns, but being honest about where each lives in 2026.</p>
+<div class="pullquote">
+<p>The patterns that ship are the ones with explicit control flow. The patterns that demo well are the ones with emergent behavior. These are not the same set.</p>
+</div>
+<div class="nodumbq">
+<p><strong>Q: If supervisor and hierarchical are the survivors, why teach the others?</strong></p>
+<p>Three reasons. (1) The "non-survivors" survive as <em>sub-patterns inside</em> survivors — group chat works fine as a brainstorming step inside a supervisor; debate cycles work fine as a critique step. (2) Different tasks fit different patterns; "what survived in general" doesn't mean "what's best for your specific case." (3) Knowing why the failed patterns failed is essential to recognizing when you're building one accidentally.</p>
+</div>
+<hr />
+<h2>Section 2 — Pattern 1: Supervisor / Orchestrator-Worker (≈6 pages)</h2>
+<p>Anthropic's research system shape. The dominant production pattern. We code it twice — once in raw SDK, once in LangGraph — and discuss when to use which.</p>
+<p><strong>The architecture:</strong></p>
+<pre><code>                    ┌──────────────┐
+                    │  SUPERVISOR  │  ← Opus-class
+                    └──────┬───────┘
+                           │ plans, dispatches
+            ┌──────────────┼──────────────┐
+            ▼              ▼              ▼
+     ┌──────────┐   ┌──────────┐   ┌──────────┐
+     │ Worker 1 │   │ Worker 2 │   │ Worker 3 │  ← Sonnet-class, parallel
+     └────┬─────┘   └────┬─────┘   └────┬─────┘
+          │              │              │
+          └──────────────┼──────────────┘
+                         ▼
+                    ┌──────────────┐
+                    │  SYNTHESIZER │  ← could be supervisor or separate
+                    └──────────────┘
+</code></pre>
+<p><strong>Raw SDK implementation:</strong></p>
+<pre><code class="language-python">from anthropic import AsyncAnthropic
+
+class SupervisorAgent:
+    def __init__(
+        self,
+        client: AsyncAnthropic,
+        worker_factory,  # callable(task_spec) -&gt; WorkerAgent
+        supervisor_model: str = &quot;claude-opus-4-7&quot;,
+        synth_model: str = &quot;claude-opus-4-7&quot;,
+        max_workers: int = 5,
+    ):
+        self.client = client
+        self.worker_factory = worker_factory
+        self.supervisor_model = supervisor_model
+        self.synth_model = synth_model
+        self.max_workers = max_workers
+
+    async def run(self, query: str) -&gt; AgentResult:
+        # 1. Plan: supervisor decomposes
+        plan = await self._plan(query)
+        if len(plan.tasks) &gt; self.max_workers:
+            plan.tasks = plan.tasks[:self.max_workers]
+
+        # 2. Dispatch in parallel
+        worker_tasks = [
+            self.worker_factory(task_spec).run(task_spec.prompt)
+            for task_spec in plan.tasks
+        ]
+        worker_results = await asyncio.gather(*worker_tasks, return_exceptions=True)
+
+        # 3. Handle partial failures
+        successes = [r for r in worker_results if not isinstance(r, Exception)]
+        failures = [(t, r) for t, r in zip(plan.tasks, worker_results) if isinstance(r, Exception)]
+
+        # 4. Synthesize
+        synthesis = await self._synthesize(query, plan, successes, failures)
+        return synthesis
+
+    async def _plan(self, query: str) -&gt; Plan:
+        resp = await self.client.messages.create(
+            model=self.supervisor_model,
+            max_tokens=2000,
+            tools=[PLAN_TOOL_SCHEMA],
+            tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;create_plan&quot;},
+            messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: SUPERVISOR_PLAN_PROMPT.format(query=query)}],
+        )
+        return parse_plan(resp)
+
+    async def _synthesize(self, query, plan, successes, failures) -&gt; AgentResult:
+        resp = await self.client.messages.create(
+            model=self.synth_model,
+            max_tokens=4000,
+            messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: SYNTHESIS_PROMPT.format(
+                query=query,
+                successes=format_successes(successes),
+                failures=format_failures(failures),
+            )}],
+        )
+        return AgentResult(...)
+</code></pre>
+<p>We walk through every part. The plan tool's schema. The synthesis prompt's structure. How worker failures get represented to the synthesizer (don't hide them — let the synthesizer decide how to handle them).</p>
+<p><strong>LangGraph implementation:</strong></p>
+<pre><code class="language-python">from langgraph.graph import StateGraph, END
+
+class SupervisorState(TypedDict):
+    query: str
+    plan: Plan | None
+    worker_outputs: dict[str, str]
+    final_answer: str | None
+
+def supervisor_node(state: SupervisorState) -&gt; dict:
+    plan = make_plan(state[&quot;query&quot;])
+    return {&quot;plan&quot;: plan}
+
+def worker_node(state: SupervisorState, worker_id: str) -&gt; dict:
+    task = state[&quot;plan&quot;].tasks_by_id[worker_id]
+    output = run_worker(task)
+    return {&quot;worker_outputs&quot;: {worker_id: output}}
+
+def synthesizer_node(state: SupervisorState) -&gt; dict:
+    answer = synthesize(state[&quot;query&quot;], state[&quot;plan&quot;], state[&quot;worker_outputs&quot;])
+    return {&quot;final_answer&quot;: answer}
+
+graph = StateGraph(SupervisorState)
+graph.add_node(&quot;supervisor&quot;, supervisor_node)
+graph.add_node(&quot;synth&quot;, synthesizer_node)
+# Workers added dynamically based on plan
+graph.add_edge(&quot;supervisor&quot;, &quot;fan_out_workers&quot;)  # custom routing
+graph.add_edge(&quot;fan_out_workers&quot;, &quot;synth&quot;)
+graph.add_edge(&quot;synth&quot;, END)
+</code></pre>
+<p>LangGraph earns its place when:
+- You want explicit graph visualization for debugging
+- You need durable state with checkpointing (resume after crash)
+- You want time-travel debugging
+- You're already in the LangChain ecosystem</p>
+<p>Raw SDK earns its place when:
+- You want minimal dependencies
+- The graph is simple enough not to benefit from explicit nodes
+- You want full control over the execution model</p>
+<p>For this pattern, both are reasonable. We don't take a side; we show both.</p>
+<div class="code-exercise">
+<p><strong>Exercise 14.1 — Supervisor on a research task.</strong></p>
+<p>Build the supervisor pattern end-to-end (raw SDK version). Task: "Compare the carbon footprints of three given products and recommend the lowest." Your supervisor should:
+- Decompose into 3 product-research workers + 1 comparison worker
+- Run product workers in parallel
+- Pass results to comparison worker
+- Synthesize final recommendation</p>
+<p>Measure: total tokens, total wall-clock, quality (vs a single-agent baseline answer).</p>
+</div>
+<hr />
+<h2>Section 3 — Pattern 2: Hierarchical (≈4 pages)</h2>
+<p>Multi-level supervisors. Used when systems exceed ~5-10 agents and a flat supervisor becomes a bottleneck.</p>
+<pre><code>                  ┌──────────────┐
+                  │  CHIEF       │  
+                  └──────┬───────┘
+                         │
+              ┌──────────┼──────────┐
+              ▼                     ▼
+       ┌──────────┐          ┌──────────┐
+       │ Manager A│          │ Manager B│
+       └────┬─────┘          └────┬─────┘
+            │                     │
+       ┌────┼────┐           ┌────┼────┐
+       ▼    ▼    ▼           ▼    ▼    ▼
+      W1   W2   W3          W4   W5   W6
+</code></pre>
+<p>When this pattern earns its keep:
+- Tasks naturally have multi-level decomposition (plan team → research teams → individual researchers)
+- Single supervisor becomes a planning bottleneck or context overflow
+- Different sub-systems need different supervisor expertise</p>
+<p>When it doesn't:
+- &lt; 10 total agents — flat supervisor handles it
+- Task doesn't naturally hierarchical
+- Communication between branches is high (cross-cutting concerns kill the hierarchy advantage)</p>
+<p><strong>Code sketch (we'll show the relevant differences from supervisor pattern, not full duplication):</strong></p>
+<pre><code class="language-python">class ChiefAgent(SupervisorAgent):
+    &quot;&quot;&quot;A supervisor whose 'workers' are themselves supervisor agents.&quot;&quot;&quot;
+
+    async def run(self, query: str) -&gt; AgentResult:
+        plan = await self._plan_at_chief_level(query)
+        # Each &quot;task&quot; in the chief's plan is delegated to a manager (which is itself a supervisor)
+        manager_tasks = [
+            ManagerAgent(...).run(sub_query) for sub_query in plan.tasks
+        ]
+        results = await asyncio.gather(*manager_tasks)
+        return await self._synthesize(query, results)
+</code></pre>
+<div class="gotcha">
+<p>Hierarchical patterns multiply the per-level translation loss. The chief gets a summary from each manager, who got summaries from each worker. By the time information reaches the chief, it's been compressed twice. For information-dense tasks, this is where hierarchical loses to flat-supervisor + better tools.</p>
+</div>
+<div class="brain">
+<p>You have 12 sub-agents that need to coordinate. Flat supervisor (1 supervisor + 12 workers) or hierarchical (1 chief + 3 managers + 4 workers each)?</p>
+<p>(Depends on whether the 12 workers can be naturally grouped. If yes — say, 3 categories of 4 workers each — hierarchical reduces the supervisor's planning load and lets each manager specialize. If no — 12 unrelated tasks — flat is simpler, and the supervisor handles each independently.)</p>
+</div>
+<hr />
+<h2>Section 4 — Pattern 3: Sequential Pipeline / Handoff (≈4 pages)</h2>
+<p>Agents in a chain. Each handles its part, passes to the next. OpenAI Swarm's "handoff" pattern is the canonical implementation: an agent's tool returns another agent object, and control transfers.</p>
+<pre><code>[User Query] → [Triage Agent] → [Specialist A] → [Specialist B] → [Output]
+</code></pre>
+<p><strong>OpenAI Swarm-style implementation (using Anthropic SDK pattern):</strong></p>
+<pre><code class="language-python">@dataclass
+class HandoffResult:
+    next_agent: &quot;Agent | None&quot;
+    final_output: str | None
+
+class HandoffAgent:
+    def __init__(self, client, name: str, instructions: str, tools, handoff_targets: list[&quot;HandoffAgent&quot;]):
+        self.client = client
+        self.name = name
+        self.instructions = instructions
+        self.tools = tools
+        # Add a &quot;transfer_to&quot; tool for each possible handoff target
+        for target in handoff_targets:
+            self.tools.register(make_handoff_tool(target))
+
+    async def step(self, messages: list[dict]) -&gt; HandoffResult:
+        resp = await self.client.messages.create(
+            model=&quot;claude-sonnet-4-6&quot;,
+            system=self.instructions,
+            tools=self.tools.schemas(),
+            messages=messages,
+        )
+        for block in resp.content:
+            if block.type == &quot;tool_use&quot; and block.name.startswith(&quot;transfer_to_&quot;):
+                target_name = block.name.replace(&quot;transfer_to_&quot;, &quot;&quot;)
+                return HandoffResult(next_agent=lookup_agent(target_name), final_output=None)
+        # No handoff; this is the final response
+        return HandoffResult(next_agent=None, final_output=extract_text(resp))
+
+
+async def run_pipeline(start: HandoffAgent, query: str) -&gt; str:
+    current = start
+    messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: query}]
+    for _ in range(10):  # cap handoffs
+        result = await current.step(messages)
+        if result.final_output is not None:
+            return result.final_output
+        current = result.next_agent
+        messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;[transferred from {current.name}]&quot;})
+    raise PipelineExhausted(&quot;too many handoffs&quot;)
+</code></pre>
+<p>When this pattern earns its keep:
+- Domain routing problems (customer support: triage → billing/tech/refund/escalation)
+- Compliance boundaries (different agents have different data access)
+- Sequential refinement where each step has clear input/output</p>
+<p>When it doesn't:
+- Tasks where agents need each other's intermediate state (handoff loses context)
+- Loops (each handoff costs tokens; circular pipelines compound fast)
+- Cases where parallel exploration is the win (use supervisor instead)</p>
+<div class="postmortem">
+<p><strong>The Handoff Loop That Wouldn't End</strong></p>
+<p>A team's customer support pipeline: triage → billing → escalation → triage. Designed for the case where billing couldn't help and the user really needed re-triage. Worked in tests.</p>
+<p>In production, a single confused customer query bounced between billing and triage 23 times before the system gave up. Each handoff added ~$0.04. The customer got a "we're having trouble" message. Total cost: $0.92 for one unresolved query. Multiplied by the % of edge cases: real money.</p>
+<p>Fix: a max-handoffs counter (capped at 3). When exceeded, escalate to human. Better: the triage agent's prompt was updated to recognize "this is a re-routed query" and not re-route to the same destination.</p>
+<p><strong>Lesson:</strong> handoff loops are not theoretical. Cap them. Always cap them.</p>
+</div>
+<hr />
+<h2>Section 5 — Pattern 4: Network / Peer-to-Peer (Group Chat) (≈4 pages)</h2>
+<p>The pattern that mostly didn't survive. Multiple agents in a shared conversation, taking turns. AutoGen's GroupChat is the canonical implementation.</p>
+<pre><code>        ┌──── Agent A ────┐
+        │                 │
+        │   [shared       │
+        │    conversation]│
+        │                 │
+        └──── Agent B ─── Agent C
+</code></pre>
+<p>The mechanics: a "manager" picks who speaks next based on the conversation state. Each agent sees the full conversation. Each turn is a full LLM call with the accumulated history.</p>
+<p><strong>The fundamental problem:</strong> every agent reads everyone else's contributions every turn. A 4-agent debate over 5 rounds is 20 LLM calls minimum, with each call's input growing with the conversation. Quality often doesn't justify the cost.</p>
+<p>The April 2026 "What Survived in Production" piece: free mesh survived mostly as a controlled subroutine inside a supervisor, not as the outer architecture. Group chat is fine as a phase ("brainstorming step within a larger plan"); it's expensive as the whole system.</p>
+<p>When it does work:
+- Genuinely needs multiple perspectives that benefit from seeing each other's reasoning
+- High-stakes / quality-over-speed (legal review, scientific peer review)
+- Bounded scope (3-5 agents, capped rounds)</p>
+<p>When it doesn't:
+- Customer-facing latency-sensitive flows
+- Anything where a supervisor pattern would be cheaper
+- Anything where one strong agent + good tools would suffice</p>
+<p>We code a simple group-chat for completeness:</p>
+<pre><code class="language-python">class GroupChatManager:
+    def __init__(self, agents: list[Agent], max_rounds: int = 5):
+        self.agents = {a.name: a for a in agents}
+        self.max_rounds = max_rounds
+
+    async def run(self, query: str) -&gt; str:
+        messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: query}]
+        for round_i in range(self.max_rounds):
+            speaker_name = await self._select_speaker(messages)
+            speaker = self.agents[speaker_name]
+            response = await speaker.respond(messages)
+            messages.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: f&quot;[{speaker.name}] {response}&quot;})
+            if &quot;&lt;terminate&gt;&quot; in response.lower():
+                break
+        return await self._synthesize(messages)
+</code></pre>
+<div class="gotcha">
+<p>The biggest group-chat anti-pattern: not capping rounds. A productive debate at round 3 becomes a circular argument by round 8. Always cap; then use a synthesizer to extract the conclusion.</p>
+</div>
+<hr />
+<h2>Section 6 — Pattern 5: Debate / Critique / Judge (≈4 pages)</h2>
+<p>The adversarial pattern. One agent produces; one or more agents critique; a judge decides. Generalizes Module 11's reflection to multi-agent.</p>
+<p>The shape:</p>
+<pre><code>[Producer Agent] → produces output
+        │
+        ▼
+┌────────────────┐
+│ Critic Agent A │  ──┐
+└────────────────┘    │
+┌────────────────┐    ├──→ [Judge Agent] → final output (or revise)
+│ Critic Agent B │  ──┤
+└────────────────┘    │
+┌────────────────┐    │
+│ Critic Agent C │  ──┘
+└────────────────┘
+</code></pre>
+<p>When this pattern earns its keep:
+- Output quality matters more than speed (legal contracts, code review, scientific writing)
+- The producer is capable but variable
+- The critics catch genuinely different issues
+- The judge can act on critique decisively</p>
+<pre><code class="language-python">class DebateSystem:
+    def __init__(self, producer, critics: list[Agent], judge, max_rounds: int = 2):
+        self.producer = producer
+        self.critics = critics
+        self.judge = judge
+        self.max_rounds = max_rounds
+
+    async def run(self, task: str) -&gt; str:
+        draft = await self.producer.produce(task)
+        for round_i in range(self.max_rounds):
+            critiques = await asyncio.gather(*[
+                c.critique(task, draft) for c in self.critics
+            ])
+            decision = await self.judge.decide(task, draft, critiques)
+            if decision.accept:
+                return draft
+            draft = await self.producer.revise(task, draft, decision.feedback)
+        return draft
+</code></pre>
+<p><strong>Critical design notes:</strong></p>
+<ul>
+<li>Critics must be different from producer (model, prompt, or both). Same-model critique is rationalization.</li>
+<li>Judge should be the strongest model (Opus-class). Judge errors propagate.</li>
+<li>Each critic gets a focused angle (security, performance, style) rather than "general critique."</li>
+<li>Cap rounds. Quality gains saturate at 2-3.</li>
+</ul>
+<div class="brain">
+<p>You're building a code review agent system. You could implement it as: (a) supervisor with parallel security/performance/style workers, or (b) producer/critic/judge with the writer being a single agent and three critics.</p>
+<p>Which is which? Are these the same thing in disguise?</p>
+<p>(Almost the same. Both fan out parallel evaluation by aspect. The difference: (a) starts with a plan and dispatches workers to evaluate; (b) starts with a draft and dispatches critics to attack it. (a) is supervisor pattern; (b) is debate pattern. For code review specifically, (b) is usually better because the artifact-being-reviewed is a natural anchor, but (a) works fine too.)</p>
+</div>
+<hr />
+<h2>Section 7 — Communication: Shared State vs Message Passing (≈3 pages)</h2>
+<p>Across all patterns, two communication models:</p>
+<p><strong>Shared state.</strong> All agents read/write to a common store (memory, database, scratchpad). Coordination via state. Fast within a process; needs locks across processes.</p>
+<pre><code class="language-python">class SharedState:
+    def __init__(self):
+        self._lock = asyncio.Lock()
+        self._data = {}
+
+    async def write(self, key: str, value: Any):
+        async with self._lock:
+            self._data[key] = value
+
+    async def read(self, key: str) -&gt; Any:
+        return self._data.get(key)
+</code></pre>
+<p><strong>Message passing.</strong> Agents send explicit messages. No shared mutable state. Each agent's view is what it received.</p>
+<pre><code class="language-python">class MessageBus:
+    async def send(self, from_agent, to_agent, message): ...
+    async def receive(self, agent) -&gt; Message: ...
+</code></pre>
+<p>Trade-offs:
+- Shared state: simpler within a process; race conditions and lock contention at scale
+- Message passing: more architecturally clean; higher overhead per coordination</p>
+<p>Most production systems use a mix: shared state for the artifact being worked on, message passing for control flow.</p>
+<p>The "message" itself is critical. Free-form text loses information across handoffs (the "translation/paraphrase loss" the 2026 production-survival analysis names). Structured messages (JSON with explicit fields) preserve more. The format you pick is part of your architecture.</p>
+<div class="pullquote">
+<p>The hardest-to-debug bugs in multi-agent systems are communication bugs. The structure of messages between agents matters more than the structure of agents themselves.</p>
+</div>
+<hr />
+<h2>Section 8 — Same Task, Four Ways: A Benchmark (≈4 pages)</h2>
+<p>The payoff. We define a representative task — a research-and-recommend task that's plausibly multi-agent — and implement it four ways. Measure tokens, latency, quality.</p>
+<p><strong>Task:</strong> "Research and recommend the best Python web framework for a team building a real-time collaboration app, considering performance, ecosystem, learning curve, and our existing TypeScript expertise."</p>
+<p><strong>Four implementations:</strong></p>
+<ol>
+<li><strong>Single agent</strong> (Module 2 baseline) with web_search and web_fetch tools.</li>
+<li><strong>Supervisor / orchestrator-worker.</strong> Supervisor decomposes into 4 research workers (one per criterion) + 1 synthesizer.</li>
+<li><strong>Sequential pipeline.</strong> Triage → Performance researcher → Ecosystem researcher → Recommender.</li>
+<li><strong>Debate.</strong> Producer drafts a recommendation; 3 critics attack from different angles; judge decides.</li>
+</ol>
+<p>Sample expected results table (illustrative — re-run when drafting):</p>
+<table>
+<thead>
+<tr>
+<th>Approach</th>
+<th>Avg Tokens</th>
+<th>Avg Cost</th>
+<th>p95 Latency</th>
+<th>Quality Score</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single agent</td>
+<td>28K</td>
+<td>$0.18</td>
+<td>22s</td>
+<td>6.8/10</td>
+</tr>
+<tr>
+<td>Supervisor</td>
+<td>412K</td>
+<td>$2.78</td>
+<td>47s</td>
+<td>8.4/10</td>
+</tr>
+<tr>
+<td>Sequential pipeline</td>
+<td>95K</td>
+<td>$0.61</td>
+<td>38s</td>
+<td>7.6/10</td>
+</tr>
+<tr>
+<td>Debate</td>
+<td>178K</td>
+<td>$1.21</td>
+<td>52s</td>
+<td>8.1/10</td>
+</tr>
+</tbody>
+</table>
+<p>The headlines:
+- Supervisor wins on quality (matches Anthropic's findings) — at 15× the cost.
+- Pipeline is a moderate quality bump for moderate cost; the right answer for moderate-stakes domain routing.
+- Debate gets near-supervisor quality at 60% the cost — for tasks where the producer-critic loop fits.
+- Single agent is the right answer for low-stakes; everyone else is paying premiums for premium quality.</p>
+<p><strong>The lesson once again:</strong> quality and cost both move with architecture. The "best" is task-value-dependent. There's no architecture that wins on every dimension.</p>
+<div class="code-exercise">
+<p><strong>Exercise 14.2 — Build all four; benchmark.</strong></p>
+<p>Implement all four architectures on the same task. Run each on 10 representative queries. Generate the same table format. Discuss with your team: which architecture would you ship for which use case?</p>
+<p>(For most teams, the answer is: pipeline for routine tier, supervisor for premium tier, debate for compliance-required outputs. Single agent for everything else.)</p>
+</div>
+<hr />
+<h2>Section 9 — Failure Handling in Multi-Agent (≈3 pages)</h2>
+<p>What happens when a sub-agent fails. Three strategies:</p>
+<p><strong>1. Fail fast.</strong> First worker failure aborts the whole task. Simple; high cost on transient failures.</p>
+<p><strong>2. Retry the failed worker.</strong> Other workers continue; failed worker retried independently. Better resilience; slight coordination complexity.</p>
+<p><strong>3. Synthesize partial results.</strong> Failed workers' contributions are noted as missing; synthesizer works with what's available.</p>
+<pre><code class="language-python">async def run_workers_with_resilience(self, plan: Plan) -&gt; WorkerResults:
+    workers = [self.worker_factory(t) for t in plan.tasks]
+    results = await asyncio.gather(
+        *[w.run() for w in workers],
+        return_exceptions=True,
+    )
+    successes = []
+    failures = []
+    for task, result in zip(plan.tasks, results):
+        if isinstance(result, Exception):
+            failures.append((task, result))
+        else:
+            successes.append((task, result))
+    return WorkerResults(successes=successes, failures=failures)
+</code></pre>
+<p>The synthesizer prompt should know about failures:</p>
+<pre><code class="language-python">SYNTHESIS_WITH_FAILURES = &quot;&quot;&quot;Original task: {query}
+
+Successful sub-results:
+{successes}
+
+Failed sub-tasks (could not be completed):
+{failures}
+
+Produce the best answer you can with the information available. Note explicitly
+where information is missing due to failed sub-tasks; do not fill gaps with speculation.
+&quot;&quot;&quot;
+</code></pre>
+<p>This is the right approach more often than people think. A research task with 4 successful workers and 1 failure usually still gives a useful answer with the missing information called out — better than blocking the whole task or spending another retry budget on a worker that may fail again.</p>
+<hr />
+<h2>Section 10 — What's Next (≈1 page)</h2>
+<p>Module 15 covers swarms, stigmergy, and OpenAI Swarm-style handoff systems. Most of what's marketed as "swarm" is actually patterns covered in this module under different names; we'll separate what's real (handoff mechanics, stigmergy as a pattern) from what's theater.</p>
+<p>Module 17 (production) covers the observability, eval, and operational concerns multi-agent makes urgent.</p>
+<p>Module 18 (capstone) builds a real multi-agent research system applying everything from Modules 13-14.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>1 No Dumb Questions</li>
+<li>2 Brain Power prompts</li>
+<li>1 Production Postmortem (handoff loop)</li>
+<li>2 Watch It! / Gotcha blocks</li>
+<li>2 Code Exercises (supervisor on research, four-way benchmark)</li>
+<li>2 Pullquotes</li>
+<li>1 patterns-at-a-glance table</li>
+<li>1 benchmark results table</li>
+<li>5 architecture diagrams (one per pattern)</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam, having decided in Module 13 that the company's premium tier justifies multi-agent, comes to this module to pick the architecture. First instinct: group chat (it sounded most "agentic" in the demo). After reading Section 5, drops it. Builds supervisor pattern (Section 2). Then realizes the company's compliance review use case needs debate pattern (Section 6). Ships supervisor for premium research; debate for compliance reviews; pipeline for the existing customer support routing. Sam's arc this module: <strong>architecture follows task, not aesthetic. Three patterns coexist in production because they each fit different jobs.</strong></p>
+</div>
+<div class="page-budget">
+<p>S1 (Patterns at a glance): 3p
+S2 (Supervisor): 6p
+S3 (Hierarchical): 4p
+S4 (Sequential pipeline): 4p
+S5 (Network/group chat): 4p
+S6 (Debate/critique/judge): 4p
+S7 (Communication): 3p
+S8 (Four-way benchmark): 4p
+S9 (Failure handling): 3p
+S10 (Next): 1p
+Recurring elements: 2p
+TOTAL: ~38 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting:</strong></p>
+<ul>
+<li>Anthropic's research system architecture (June 2025 post) — the canonical supervisor pattern</li>
+<li>Anthropic Sub-Agents API — model field options, mechanics</li>
+<li>LangGraph current API for StateGraph, supervisor patterns, subgraphs</li>
+<li>OpenAI Swarm framework (Oct 2024 release) — handoff mechanics, routine concept, current status</li>
+<li>AutoGen GroupChat — current state (article noted main repo is "maintenance-only" as of 2026 — verify)</li>
+<li>"Multi-Agent in Production in 2026: What Actually Survived" (Lanham, Apr 2026) — survival analysis framing</li>
+<li>Digital Applied Q2 2026 patterns taxonomy</li>
+<li>CrewAI current API — for the Section 7 anti-pattern reference</li>
+<li>Comet/Opik observability for multi-agent traces (Section 9 cross-reference forward to M17)</li>
+<li>Anthropic API current pricing for benchmark cost calculations</li>
+<li>A2A protocol (Google ADK) — mention as context, but don't deep-dive</li>
+<li>Real benchmark results — re-run the four-way comparison with current models when drafting</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- The five architecture patterns and their structural diagrams
+- Communication models (shared state vs message passing)
+- Failure handling strategies (fail fast / retry / partial synthesis)
+- Trade-offs between patterns</p>
+<p><strong>Cross-references:</strong>
+- Module 13 — when multi-agent is justified at all
+- Module 11 — debate pattern is multi-agent reflection
+- Module 15 — swarms (handoff in network form)
+- Module 17 — observability
+- Module 18 — capstone applies these</p>
+</div>
+<div class="bullet-points">
+<h3>Module 14 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>Five canonical patterns: supervisor, hierarchical, sequential pipeline, network/group chat, debate/critique</li>
+<li>Supervisor and hierarchical are the survivors of 2026 production reality</li>
+<li>Sequential pipeline (handoffs) survives for routing-heavy domains; cap handoffs to prevent loops</li>
+<li>Network / group chat mostly survives only as a controlled subroutine, not whole architecture</li>
+<li>Debate / critique / judge pattern earns its cost on quality-over-speed tasks</li>
+<li>Communication structure (shared state vs message passing, free-form vs structured messages) often matters more than agent structure</li>
+<li>Same task, four architectures, four different cost-quality profiles — pick by task value</li>
+<li>Failure handling: synthesize partial results is usually better than fail-fast or aggressive retry</li>
+</ul>
+</div>
+</body>
+</html>

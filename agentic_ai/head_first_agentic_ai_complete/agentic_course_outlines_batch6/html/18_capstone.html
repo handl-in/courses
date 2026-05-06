@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 18 Outline — Capstone: Ship a Real Multi-Agent System</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 18 Outline — Capstone: Ship a Real Multi-Agent System</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 18 — OUTLINE</div>
+<div class="module-title">Capstone: Ship a Real Multi-Agent System</div>
+<div class="subtitle">Everything from Modules 1-17, applied to one real artifact.<br>Three implementations. Honest comparison. Framework or no framework.</div>
+<div class="pages">Target length: ~42 pages (heaviest in the book)</div>
+</div>
+<h2>What this module is</h2>
+<p>The capstone. We build a production-grade multi-agent research system that applies every concept from the prior modules — agent loop, tools, MCP, model routing, context engineering, compression, memory, hallucination defense, reflection, guardrails, multi-agent architecture, transactional patterns, observability, eval. We build it three times: raw Anthropic SDK, LangGraph, and CrewAI. Same spec, three implementations. Then we benchmark and discuss honestly when to use which.</p>
+<p>The system itself is real: an orchestrator + parallel research workers + critic + report writer that handles deep research queries with grounded citations, configurable depth, cost ceilings, full traces, and an eval harness fed from production traces.</p>
+<p>By the end the reader has working code (or a working understanding of working code) for a system they could ship — and the framework knowledge to make a defensible architectural choice on their next project.</p>
+<div class="hook">
+<p>"At every conference talk on multi-agent systems, someone asks the same question from the audience: 'so should we use a framework or not?' The honest answer is 'it depends, and here are the four things it depends on.' Let's actually answer the question by building the same system three ways and looking at the receipts."</p>
+</div>
+<hr />
+<h2>Section 1 — The Spec (≈3 pages)</h2>
+<p>The system we're building. A deep research agent with these properties:</p>
+<p><strong>Behavior.</strong>
+- Takes a research question (single sentence to a paragraph)
+- Plans a research strategy (decomposes into 3-6 sub-questions)
+- Dispatches parallel research workers to investigate each sub-question
+- Each worker has access to web search and web fetch tools
+- A critic agent reviews the gathered evidence for gaps and inconsistencies
+- A report writer synthesizes findings into a final report with citations
+- Total wall-clock budget: 5 minutes default
+- Total cost budget: $5 default per research run
+- Output: structured markdown report with inline citations</p>
+<p><strong>Production-grade requirements.</strong>
+- OpenTelemetry instrumentation (Module 17)
+- Cost limiter and loop detection (Module 17)
+- Hallucination defense layer on the report (Module 10)
+- Guardrails on input (topic check) and output (PII leak detection) (Module 12)
+- Reflection pattern: critic feedback feeds back into report revision (Module 11)
+- Eval harness with production-trace sampling (Module 17)
+- Graceful failure: partial results &gt; nothing if some workers fail (Module 14)
+- Configurable concurrency limits and depth caps (Module 7)</p>
+<p><strong>What we're NOT building.</strong>
+- Saga patterns (Module 16) — research is read-only; no compensations needed
+- Long-term memory (Module 9) — single-session for the capstone; readers can extend
+- Computer-use (Module 17) — out of scope
+- A full UI — we ship a CLI + library; UI is left as exercise</p>
+<p>This spec is small enough to actually build in a chapter, large enough to exercise the full stack. We won't be cute; we ship working code.</p>
+<div class="pullquote">
+<p>A spec is a promise to your future self. The spec is what you build <em>to</em>; everything else is decoration. We're going to keep our eyes on this list.</p>
+</div>
+<hr />
+<h2>Section 2 — Architecture Decisions (≈4 pages)</h2>
+<p>Before we code, we decide. This is where Modules 13's threshold test, 14's pattern selection, and 17's instrumentation choices show up.</p>
+<p><strong>Multi-agent or single agent?</strong> This task is the canonical Anthropic-research-system fit:
+- Parallelizable (sub-questions are independent)
+- High enough value (deep research output is worth $5+ in API cost)
+- Latency budget is generous (5 minutes is fine)
+- Sub-tasks need genuinely different focus (each sub-question has its own evidence)</p>
+<p>Threshold test (Module 13 §8): 5/5. Multi-agent is justified.</p>
+<p><strong>Which architecture (Module 14)?</strong> Supervisor / orchestrator-worker. Same shape as Anthropic's published research system. Other options considered and rejected:
+- Hierarchical: overkill at 4-6 workers
+- Sequential pipeline: loses parallelism (the whole point)
+- Group chat: cost explosion, no benefit on this task
+- Pure debate: doesn't fit ("debate" makes sense for opinion synthesis; "research" is evidence aggregation)</p>
+<p>We add a critic step at the end (Module 11's reflection / Module 14's debate-as-subpattern), but the outer architecture is supervisor.</p>
+<p><strong>Which model where (Module 6)?</strong>
+- <strong>Orchestrator</strong>: Opus (planning is high-leverage; mistakes propagate)
+- <strong>Workers</strong>: Sonnet (capable, faster, cheaper for fan-out)
+- <strong>Critic</strong>: Opus (validation needs strong reasoning; cheap critics are useless — Module 16 §6)
+- <strong>Report writer</strong>: Opus (final output quality is what users see)
+- <strong>Topic guardrail classifier</strong>: Haiku (cheap, fast)</p>
+<p>This routing trades cost vs quality where each one matters. Total expected cost: $1-3 per research depending on depth.</p>
+<p><strong>Context strategy (Modules 7-8).</strong>
+- Workers: their own context window per sub-question (isolation)
+- Workers return <em>structured findings</em> (not raw transcripts) to orchestrator
+- Orchestrator never sees worker raw context — only synthesized structured outputs (avoids supervisor context bloat)
+- Critic sees the report draft + the workers' structured findings (enough for cross-checking)
+- Report writer sees structured findings + critic feedback</p>
+<p>This is "isolate" + "compress" from Module 7's vocabulary.</p>
+<p><strong>Memory (Module 9).</strong> Single-session for the capstone. Episodic memory of the current research: what's been searched, what evidence has been found, what gaps remain.</p>
+<p><strong>Hallucination defense (Module 10).</strong> Citation enforcement — every claim in the report must cite a worker's finding. Report writer can't reference facts not in workers' outputs. Validate citations programmatically.</p>
+<p><strong>Reflection (Module 11).</strong> The critic step. Independent agent (different prompt, sees the workers' raw structured findings + the draft report) checks for: claims unsupported by evidence, missing perspectives, internal contradictions. Writer revises (max 1 revision round; quality saturates fast).</p>
+<p><strong>Guardrails (Module 12).</strong> Input: topic classifier (is this a research question? not a coding-help / personal-advice / off-topic query). Output: PII leak detection (the report shouldn't contain real-looking personal data).</p>
+<p><strong>Cost ceiling (Module 17).</strong> Per-research budget of $5 (configurable). Tracks running cost across all agents. Halts if exceeded. Returns partial results.</p>
+<p><strong>Observability (Module 17).</strong> Full OpenTelemetry instrumentation. Each agent invocation = a span. Each tool call = a span. Trace context propagates across sub-agent boundaries. Traces ship to Langfuse (chosen for self-hosting; LangSmith is a one-line swap).</p>
+<div class="brain">
+<p>Our orchestrator uses Opus; workers use Sonnet. Why not Haiku for workers since there are 4-6 of them and cost matters most there?</p>
+<p>(Workers do the actual research — searching, fetching, reading, synthesizing per sub-question. Quality of worker output gates everything downstream. Haiku-quality findings would propagate through the whole pipeline. The right place to economize is the topic classifier, not the workers. Cost-optimize where errors are recoverable; spend at quality-gating points.)</p>
+</div>
+<hr />
+<h2>Section 3 — Implementation 1: Raw Anthropic SDK (≈8 pages)</h2>
+<p>The minimal-dependency version. We code it in full and walk through it.</p>
+<p><strong>Project structure.</strong></p>
+<pre><code>research_capstone/
+├── pyproject.toml
+├── src/research_capstone/
+│   ├── __init__.py
+│   ├── orchestrator.py      ← supervisor agent
+│   ├── workers.py           ← research workers
+│   ├── critic.py            ← reflection critic
+│   ├── writer.py            ← report writer
+│   ├── tools.py             ← web_search, web_fetch
+│   ├── guardrails.py        ← input/output guardrails
+│   ├── instrumentation.py   ← OpenTelemetry setup
+│   ├── budgets.py           ← cost limiter, loop detector
+│   ├── eval/
+│   │   ├── harness.py
+│   │   └── sampler.py       ← production trace -&gt; eval queue
+│   └── cli.py
+</code></pre>
+<p><strong>The orchestrator.</strong></p>
+<pre><code class="language-python"># orchestrator.py (excerpt — full code in book)
+from anthropic import AsyncAnthropic
+from opentelemetry import trace as otel_trace
+
+class ResearchOrchestrator:
+    def __init__(
+        self,
+        client: AsyncAnthropic,
+        budget_usd: float = 5.0,
+        wall_clock_seconds: float = 300.0,
+        max_workers: int = 6,
+    ):
+        self.client = client
+        self.budget = CostLimiter(budget_usd)
+        self.deadline = wall_clock_seconds
+        self.max_workers = max_workers
+        self.tracer = otel_trace.get_tracer(__name__)
+
+    async def research(self, question: str) -&gt; ResearchReport:
+        with self.tracer.start_as_current_span(&quot;research.run&quot;) as span:
+            span.set_attribute(&quot;research.question&quot;, question)
+
+            # 1. Input guardrail
+            await self._check_input(question)
+
+            # 2. Plan
+            plan = await self._plan(question)
+
+            # 3. Dispatch workers in parallel
+            findings = await self._dispatch_workers(plan)
+
+            # 4. Critic
+            critique = await self._critique(question, plan, findings)
+
+            # 5. Writer (with optional revision based on critique)
+            report = await self._write(question, findings, critique)
+
+            # 6. Output guardrail
+            await self._check_output(report)
+
+            # 7. Return with full trace
+            return report
+</code></pre>
+<p>We walk through every method. The plan tool's schema. How workers stream findings back as structured JSON. How the critic's structured output feeds the writer. How partial-failure is handled (workers fail; surviving workers' findings still flow forward).</p>
+<p><strong>The worker.</strong></p>
+<pre><code class="language-python"># workers.py (excerpt)
+class ResearchWorker:
+    def __init__(self, client, sub_question: str, budget: CostLimiter, tracer):
+        ...
+
+    async def research(self) -&gt; WorkerFinding:
+        with self.tracer.start_as_current_span(&quot;worker.research&quot;) as span:
+            span.set_attribute(&quot;worker.sub_question&quot;, self.sub_question)
+
+            # Plan -&gt; tool calls -&gt; synthesize finding
+            messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: WORKER_PROMPT.format(
+                sub_question=self.sub_question
+            )}]
+
+            for turn in range(self.max_turns):
+                resp = await self.client.messages.create(
+                    model=&quot;claude-sonnet-4-6&quot;,
+                    max_tokens=4096,
+                    tools=[WEB_SEARCH_TOOL, WEB_FETCH_TOOL, FINISH_TOOL],
+                    messages=messages,
+                )
+                self.budget.add(resp.usage)  # propagates cost upward
+
+                # Process tool calls or finish
+                ...
+
+            return WorkerFinding(
+                sub_question=self.sub_question,
+                claim=...,
+                evidence=...,  # list of {source_url, snippet, retrieved_at}
+                confidence=...,
+            )
+</code></pre>
+<p><strong>The critic.</strong></p>
+<pre><code class="language-python"># critic.py (excerpt)
+class Critic:
+    async def critique(self, question, findings, draft_report) -&gt; Critique:
+        # Independent — uses Opus, different prompt, sees both workers' raw findings
+        # AND the draft report; flags claims unsupported by findings, gaps, contradictions
+        ...
+</code></pre>
+<p><strong>The writer.</strong></p>
+<pre><code class="language-python"># writer.py (excerpt)
+class Writer:
+    async def write(self, question, findings, critique=None) -&gt; Report:
+        # First pass: produce report citing findings
+        # If critique provided and has issues: revision pass
+        ...
+</code></pre>
+<p><strong>Wiring it together.</strong> A short <code>main.py</code> shows the CLI usage. We run it on a sample question end to end and show a real trace tree, real cost, real output.</p>
+<p>We also show what <em>fails</em>: pulling a typical edge case (a question that's mostly opinion, a question that has no good sources, a question where one worker times out) and walking through how the system handles each.</p>
+<div class="code-exercise">
+<p><strong>Exercise 18.1 — Run the raw-SDK capstone.</strong></p>
+<p>Clone the capstone repo (we provide it). Set your API key. Run on three questions:
+1. "What were the major findings of the 2025 Apollo retrospective study on RLHF?"
+2. "Compare the technical trade-offs between QUIC and HTTP/2 for low-latency video."
+3. "What are the strongest current critiques of effective altruism as a movement?"</p>
+<p>Inspect the traces (Langfuse dashboard). Note: total cost, wall-clock, which workers finished, which findings made it into the report, what the critic flagged.</p>
+<p>Modify: change the orchestrator to use Sonnet instead of Opus. Re-run. Compare quality and cost.</p>
+</div>
+<hr />
+<h2>Section 4 — Implementation 2: LangGraph (≈6 pages)</h2>
+<p>The same system in LangGraph. We don't repeat the conceptual content — we focus on what LangGraph adds and what it costs.</p>
+<p><strong>What LangGraph adds:</strong></p>
+<ul>
+<li>Explicit state graph: nodes, edges, conditional routing</li>
+<li>Built-in checkpointing: pause, inspect, resume, time-travel debug</li>
+<li>LangGraph Studio: visualize the graph, set breakpoints (genuinely the best agent IDE in 2026 per the field consensus)</li>
+<li>Tight integration with LangSmith for observability (one env var)</li>
+<li>Native MCP support</li>
+<li>Reducer logic for merging concurrent state updates (matters for parallel workers)</li>
+</ul>
+<p><strong>What it costs:</strong></p>
+<ul>
+<li>Mental model overhead — graph concepts, state schemas, reducers</li>
+<li>Lock-in to LangChain ecosystem</li>
+<li>More dependencies; bigger Docker images</li>
+<li>Closed-source self-hosting (LangSmith Enterprise-only for self-host)</li>
+</ul>
+<p><strong>The implementation:</strong></p>
+<pre><code class="language-python">from langgraph.graph import StateGraph, END
+from typing import TypedDict, Annotated
+from operator import add
+
+class ResearchState(TypedDict):
+    question: str
+    plan: dict
+    findings: Annotated[list[WorkerFinding], add]  # reducer for parallel workers
+    critique: dict | None
+    report: str | None
+
+def plan_node(state: ResearchState):
+    plan = make_plan(state[&quot;question&quot;])
+    return {&quot;plan&quot;: plan}
+
+def worker_node(state: ResearchState, sub_q: str):
+    finding = research_worker(sub_q)
+    return {&quot;findings&quot;: [finding]}  # gets merged via reducer
+
+def critic_node(state: ResearchState):
+    critique = critique_findings(state[&quot;question&quot;], state[&quot;findings&quot;])
+    return {&quot;critique&quot;: critique}
+
+def writer_node(state: ResearchState):
+    report = write_report(state[&quot;question&quot;], state[&quot;findings&quot;], state[&quot;critique&quot;])
+    return {&quot;report&quot;: report}
+
+graph = StateGraph(ResearchState)
+graph.add_node(&quot;plan&quot;, plan_node)
+graph.add_node(&quot;dispatch_workers&quot;, dispatch_workers_dynamic)
+graph.add_node(&quot;critic&quot;, critic_node)
+graph.add_node(&quot;writer&quot;, writer_node)
+
+graph.set_entry_point(&quot;plan&quot;)
+graph.add_edge(&quot;plan&quot;, &quot;dispatch_workers&quot;)
+graph.add_edge(&quot;dispatch_workers&quot;, &quot;critic&quot;)
+graph.add_edge(&quot;critic&quot;, &quot;writer&quot;)
+graph.add_edge(&quot;writer&quot;, END)
+
+agent = graph.compile(checkpointer=PostgresSaver(...))
+</code></pre>
+<p>The graph is more explicit. State management is structured. Checkpointing is one line.</p>
+<p>We walk through:
+- Dynamic worker dispatch (LangGraph supports this via <code>Send</code> for fan-out)
+- The reducer pattern for collecting parallel worker results
+- LangGraph Studio screenshots showing breakpoint debugging
+- The LangSmith trace for the same question we ran in Section 3</p>
+<p><strong>When LangGraph is the right choice:</strong>
+- You want time-travel debugging (genuinely valuable for complex agents)
+- You're already in LangChain (free integration win)
+- You need first-class durable checkpointing
+- You're building for a regulated industry (audit trail of every state transition)</p>
+<p><strong>When raw SDK is the right choice:</strong>
+- Minimum dependencies
+- The graph is simple enough that explicit nodes are overhead
+- You want full control over the execution model
+- You're shipping a library, not an application (smaller attack/dependency surface)</p>
+<div class="brain">
+<p>LangGraph's biggest selling point is checkpointing — pause/resume/time-travel. For our research capstone, do we actually need it?</p>
+<p>(For research that takes 2-5 minutes? Probably not. For agents that run for hours and need to survive process restarts? Critical. For our capstone the value of checkpointing is limited; we're using LangGraph here mainly to demonstrate the framework. For real production deployments, the question is: does your agent's lifetime exceed your process's lifetime? If yes, checkpointing is the answer; if no, you can skip the framework cost.)</p>
+</div>
+<hr />
+<h2>Section 5 — Implementation 3: CrewAI (≈4 pages)</h2>
+<p>Same system, third time. CrewAI is the role-based / fastest-prototype framework. We build it; we discuss its trade-offs honestly.</p>
+<p><strong>The implementation:</strong></p>
+<pre><code class="language-python">from crewai import Agent, Task, Crew, Process
+
+orchestrator = Agent(
+    role=&quot;Research Orchestrator&quot;,
+    goal=&quot;Plan and synthesize comprehensive research on the user's question&quot;,
+    backstory=&quot;An expert researcher who breaks complex questions into focused sub-questions&quot;,
+    llm=opus_client,
+)
+
+worker_template = Agent(
+    role=&quot;Research Worker&quot;,
+    goal=&quot;Find evidence on a specific sub-question&quot;,
+    backstory=&quot;A focused researcher who searches and reads sources to gather evidence&quot;,
+    llm=sonnet_client,
+    tools=[web_search_tool, web_fetch_tool],
+)
+
+critic = Agent(
+    role=&quot;Research Critic&quot;,
+    goal=&quot;Identify gaps and unsupported claims in research output&quot;,
+    backstory=&quot;A rigorous reviewer who flags weaknesses&quot;,
+    llm=opus_client,
+)
+
+writer = Agent(
+    role=&quot;Report Writer&quot;,
+    goal=&quot;Produce a clear, well-cited report&quot;,
+    backstory=&quot;A skilled writer who synthesizes evidence into clear prose&quot;,
+    llm=opus_client,
+)
+
+# Tasks define the work; CrewAI wires sequencing/parallelism via Process
+plan_task = Task(description=&quot;Plan research strategy for: {question}&quot;, agent=orchestrator)
+worker_tasks = [
+    Task(description=f&quot;Research: {sub_q}&quot;, agent=worker_template) for sub_q in sub_questions
+]
+critique_task = Task(description=&quot;Critique the gathered findings&quot;, agent=critic)
+write_task = Task(description=&quot;Write the final report&quot;, agent=writer)
+
+crew = Crew(
+    agents=[orchestrator, worker_template, critic, writer],
+    tasks=[plan_task, *worker_tasks, critique_task, write_task],
+    process=Process.hierarchical,
+    manager_llm=opus_client,
+)
+
+result = crew.kickoff(inputs={&quot;question&quot;: &quot;...&quot;})
+</code></pre>
+<p><strong>What CrewAI does well:</strong>
+- Fastest prototyping in the field (working multi-agent system in &lt;50 lines)
+- Role-based abstraction is intuitive — non-engineers can read it
+- Strong defaults; opinionated in helpful ways
+- Growing ecosystem</p>
+<p><strong>What CrewAI doesn't do as well:</strong>
+- Limited control over agent-to-agent communication (mediated through task outputs, not direct messaging)
+- No built-in checkpointing for long-running workflows
+- Coarse-grained error handling — failures are harder to recover from gracefully
+- Less production-tested for highly-custom flows (per 2026 community comparisons)</p>
+<p><strong>When CrewAI is the right choice:</strong>
+- Prototype phase, optimizing for time-to-working
+- Workflow is mostly linear or hierarchical
+- Team is small / mixed technical
+- You're willing to migrate later if production-scale issues emerge</p>
+<p><strong>When it isn't:</strong>
+- Custom control flow with cycles or conditional branching
+- Production-grade durability with checkpoints needed
+- Complex agent communication patterns
+- Compliance / audit-trail requirements</p>
+<div class="gotcha">
+<p>A common pattern: teams prototype on CrewAI, get something working in a day, then hit production-scale issues (no checkpointing, opaque failures, hard-to-customize flow) and migrate to LangGraph or raw SDK. This is fine — it's the right way to use CrewAI. The mistake is committing to CrewAI in production for a complex system without a migration path planned.</p>
+</div>
+<hr />
+<h2>Section 6 — Honest Comparison (≈4 pages)</h2>
+<p>Three implementations, same spec. We compare honestly.</p>
+<p><strong>Lines of code (approximate; varies by style):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Implementation</th>
+<th>Core LOC</th>
+<th>With instrumentation</th>
+<th>With eval harness</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Raw SDK</td>
+<td>~600</td>
+<td>~900</td>
+<td>~1,200</td>
+</tr>
+<tr>
+<td>LangGraph</td>
+<td>~400</td>
+<td>~600</td>
+<td>~900</td>
+</tr>
+<tr>
+<td>CrewAI</td>
+<td>~150</td>
+<td>~350</td>
+<td>~600</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cost on the same 10 research queries (illustrative — re-run when drafting):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Implementation</th>
+<th>Avg cost/research</th>
+<th>Variance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Raw SDK</td>
+<td>$1.83</td>
+<td>±$0.42</td>
+</tr>
+<tr>
+<td>LangGraph</td>
+<td>$1.91</td>
+<td>±$0.45</td>
+</tr>
+<tr>
+<td>CrewAI</td>
+<td>$2.27</td>
+<td>±$0.78</td>
+</tr>
+</tbody>
+</table>
+<p>The frameworks add some overhead (mostly framework-level prompts and orchestration calls); CrewAI's hierarchical process spawns extra coordination calls that show up in cost.</p>
+<p><strong>Wall-clock latency:</strong></p>
+<p>Comparable across all three; the wall-clock is dominated by the LLM calls and tool calls, not framework overhead. Differences are &lt;5%.</p>
+<p><strong>Quality on a 50-question eval set:</strong></p>
+<p>Comparable. Same prompts in different framework wrappings produce comparable outputs. Quality differences come from the prompts and the routing, not the framework.</p>
+<p><strong>Maintainability over 6 months:</strong></p>
+<p>This is harder to measure quantitatively but matters most. The honest assessment:
+- <strong>Raw SDK</strong>: easiest to debug; hardest to extend. Adding new agent types means writing new code; not generalizing existing patterns.
+- <strong>LangGraph</strong>: best for evolving systems; the graph abstraction maps naturally to growing complexity. Steepest learning curve.
+- <strong>CrewAI</strong>: easiest to evolve in shape (add agents, change tasks); but customizing existing agents' behavior beyond CrewAI's abstractions is awkward.</p>
+<p><strong>The decision matrix:</strong></p>
+<table>
+<thead>
+<tr>
+<th>If you...</th>
+<th>Pick...</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Want minimum dependencies and full control</td>
+<td>Raw SDK</td>
+</tr>
+<tr>
+<td>Are already on LangChain or need durable checkpointing or LangGraph Studio</td>
+<td>LangGraph</td>
+</tr>
+<tr>
+<td>Are prototyping and want time-to-working above all</td>
+<td>CrewAI</td>
+</tr>
+<tr>
+<td>Have multiple cycles, branching logic, regulated industry</td>
+<td>LangGraph</td>
+</tr>
+<tr>
+<td>Are shipping a library (not application)</td>
+<td>Raw SDK</td>
+</tr>
+<tr>
+<td>Have a team of mixed technical levels</td>
+<td>CrewAI</td>
+</tr>
+<tr>
+<td>Need to migrate later</td>
+<td>Build clean abstractions on raw SDK or LangGraph</td>
+</tr>
+</tbody>
+</table>
+<div class="pullquote">
+<p>Frameworks are tools. Tools have shapes. Pick the tool whose shape fits your problem; don't try to fit your problem to a tool. The right framework for your next agent is whatever you can ship and operate confidently.</p>
+</div>
+<hr />
+<h2>Section 7 — Production Concerns Across All Three (≈4 pages)</h2>
+<p>Things that have to be true regardless of which framework. Each implementation in this capstone has them; we cover what to verify and how.</p>
+<p><strong>1. OpenTelemetry instrumentation.</strong> Verify trace tree mirrors agent structure. Each LLM call → span. Each tool call → span. Trace context propagates across sub-agent boundaries.</p>
+<p><strong>2. Cost ceiling.</strong> Verify the per-research budget halts execution when exceeded. Test by setting budget = $0.50 and running — should halt cleanly with partial results.</p>
+<p><strong>3. Loop detection.</strong> Verify agents that get stuck (a tool that always fails) don't retry forever. Test with a deliberately-broken tool.</p>
+<p><strong>4. Guardrails.</strong> Verify input topic classifier rejects out-of-scope queries. Test with off-topic queries and adversarial prompts. Verify output PII detection blocks any leaked-looking PII.</p>
+<p><strong>5. Hallucination defense.</strong> Verify the citation checker catches claims without supporting evidence in workers' findings. Test by injecting a "fact" into the report writer's prompt that no worker found — citation check should flag it.</p>
+<p><strong>6. Eval harness.</strong> Verify production traces flow into the eval queue at 1% sampling + 100% on errors / negative feedback. Verify trajectory eval runs against the queue and produces actionable scores.</p>
+<p><strong>7. Failure handling.</strong> Verify that worker failures don't take down the whole research. Test by killing one worker mid-run — should continue with N-1 workers, surface the failure in the final report.</p>
+<p><strong>Pre-launch checklist:</strong></p>
+<ul>
+<li>[ ] Trace tree readable for sample queries</li>
+<li>[ ] Cost ceiling tested and verified</li>
+<li>[ ] Loop detection tested with broken tool</li>
+<li>[ ] Guardrails tested with attack suite</li>
+<li>[ ] Hallucination defense tested with injected false claims</li>
+<li>[ ] Eval harness producing scores on sample data</li>
+<li>[ ] Worker failure tested</li>
+<li>[ ] Documentation: what the agent does, what its limits are, when to escalate to a human</li>
+<li>[ ] On-call runbook: what to do when alerts fire</li>
+<li>[ ] Rollback plan: how to revert to previous version</li>
+</ul>
+<p>This is the same checklist that distinguishes "agent that works in demos" from "agent in production" from Module 17 — applied concretely.</p>
+<div class="code-exercise">
+<p><strong>Exercise 18.2 — Ship the capstone (your version).</strong></p>
+<p>Take whichever implementation you prefer. Customize it for a research domain you actually care about (your work, an industry you're learning, an academic field). Run it on 50 real questions. Iterate on prompts, routing, depth based on observed traces.</p>
+<p>Then: pick one production concern from the checklist above and add it if it's missing. Most likely candidates: better drift monitoring, additional guardrail layers, expanded eval harness.</p>
+<p>Deploy somewhere — even just locally with a CLI — that you can use it weekly for actual research. The capstone earns its name when it becomes a thing you use, not a thing you built.</p>
+</div>
+<hr />
+<h2>Section 8 — What You Now Know (≈3 pages)</h2>
+<p>A retrospective. The reader has shipped a multi-agent research system that uses every concept in the book. What they now know:</p>
+<p><strong>The conceptual stack</strong> (Modules 1-3): workflows vs agents, the agent loop, when to reach for which.</p>
+<p><strong>The building blocks</strong> (Modules 4-9): tools that don't lie, MCP that scales, model routing for economics, context engineering, compression, memory.</p>
+<p><strong>The reliability layer</strong> (Modules 10-12): hallucinations and grounding, reflection, guardrails.</p>
+<p><strong>The multi-agent layer</strong> (Modules 13-15): when multi-agent earns its cost, the architectures that survived production, the swarms that mostly didn't.</p>
+<p><strong>The transactional layer</strong> (Module 16): when agents touch real-world state, sagas and compensations.</p>
+<p><strong>The production layer</strong> (Module 17): evals, observability, cost, failure.</p>
+<p><strong>A working artifact</strong> (Module 18): the research system itself, built three ways, ready to extend.</p>
+<p><strong>What remains hard.</strong> Honest list. Even after this book, the reader will still face:</p>
+<ul>
+<li>Eval design for fuzzy domains (creative tasks, judgment calls, cross-cultural sensitivity)</li>
+<li>The 1-2% of agent failures that resist all the defense layers</li>
+<li>The framework migration that comes when prototype-CrewAI hits production-scale issues</li>
+<li>The cost-quality trade-offs that don't have right answers, only tier choices</li>
+<li>The drift that happens when models update under you</li>
+<li>The new failure modes that emerge as the field evolves</li>
+</ul>
+<p><strong>The honest framing:</strong> this book gave you 80% of what you need. The other 20% is judgment that comes from shipping, breaking, fixing, shipping again. The book's job is to compress your learning curve, not eliminate it.</p>
+<hr />
+<h2>Section 9 — Where to Go From Here (≈2 pages)</h2>
+<p>Pointers for the reader continuing the journey.</p>
+<p><strong>Stay current on these specific things:</strong>
+- OpenTelemetry GenAI semantic conventions (still evolving as of 2026)
+- The eval landscape (LLM-as-judge limitations are still being mapped)
+- Multi-agent coordination protocols (A2A, MCP — the standards game)
+- Production-survival case studies (what's worked, what hasn't, what changed)
+- Anthropic / OpenAI / Google's published agent engineering posts (the sources of the actual numbers in this book)</p>
+<p><strong>Build the next thing.</strong> The capstone is research-domain. Apply the same patterns to:
+- A coding agent for a narrow domain (a specific codebase, a specific stack)
+- An ops/SRE agent (instrumented carefully, sandboxed heavily)
+- A customer-facing support agent (with the full guardrail stack from Module 12)
+- A data analysis agent (Pandas + viz tools)
+- A document-processing pipeline (PDF, Word, structured extraction)</p>
+<p><strong>Communities worth being in:</strong>
+- LangChain / LangGraph forums for ecosystem updates
+- Anthropic Discord / forums for Claude-specific patterns
+- The agent observability platforms' communities (Langfuse, Laminar) — practical operational discussions
+- Papers Twitter / arXiv-sanity for research drift</p>
+<p><strong>The honest goodbye.</strong> You've finished the book. You can build the agents you set out to build. The field will move; the patterns in this book will become outdated in some specifics over the next 18 months. That's fine — the <em>judgment</em> you've built doesn't expire. Patterns shift; the discipline of asking "what's the actual failure mode?" and "what's this earning?" doesn't.</p>
+<p>Go ship something. The agents you build will be better than the agents the field built last year, because you started with the lessons of last year. That's the whole point.</p>
+<div class="pullquote">
+<p>The book ends. The work begins. You'll build agents better than the ones in this book — because the next year's lessons will be yours, not Sam's.</p>
+</div>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>0 No Dumb Questions (capstone is integrative; questions live in earlier modules)</li>
+<li>2 Brain Power prompts</li>
+<li>0 Production Postmortems (the capstone IS the postmortem of the book)</li>
+<li>1 Watch It! / Gotcha block</li>
+<li>2 Code Exercises (run the capstone, ship your version)</li>
+<li>2 Pullquotes</li>
+<li>1 architecture diagram (the system)</li>
+<li>1 framework decision matrix</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam ships the capstone. Three implementations live in three branches. The team picks LangGraph (already on LangChain elsewhere; LangSmith integration is one env var; checkpointing matters for the long-running deep-research tier). The system serves real customers. Sam keeps the raw-SDK version in the repo as the eval-comparison baseline. CrewAI version becomes the prototype platform for future agent ideas.</p>
+<p>A year later, Sam reads this book again. Most of it is still right. Some of the platforms have shifted. Anthropic's published numbers got refined. PreFlect-style prospective reflection became standard. SagaLLM-style validation became table stakes. What didn't change: the discipline of asking what each pattern earns, of reading traces honestly, of measuring before optimizing, of refusing to add agents without evidence.</p>
+<p>Sam closes the book. Goes to ship the next thing.</p>
+<p><strong>Sam's arc, end of book: from frazzled staff engineer to systems thinker who builds working agents and operates them with honesty. That's the arc.</strong></p>
+</div>
+<div class="page-budget">
+<p>S1 (Spec): 3p
+S2 (Architecture decisions): 4p
+S3 (Raw SDK implementation): 8p
+S4 (LangGraph implementation): 6p
+S5 (CrewAI implementation): 4p
+S6 (Honest comparison): 4p
+S7 (Production concerns): 4p
+S8 (What you now know): 3p
+S9 (Where to go from here): 2p
+Recurring elements: 4p
+TOTAL: ~42 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting:</strong></p>
+<ul>
+<li>Anthropic SDK current API and Python package versions</li>
+<li>LangGraph current API (StateGraph, Send for dynamic dispatch, checkpointers)</li>
+<li>LangSmith current pricing and self-host story</li>
+<li>CrewAI current API (Process types, hierarchical mode, manager_llm pattern)</li>
+<li>LangGraph Studio capabilities (the "best agent IDE" claim — verify scope)</li>
+<li>Langfuse self-host requirements (Postgres + ClickHouse)</li>
+<li>Real benchmark numbers — re-run the three implementations on the same 10-50 question test set with current models</li>
+<li>Anthropic model identifiers and pricing as of drafting</li>
+<li>AutoGen status (verify "maintenance mode" framing — if it's changed by drafting, update)</li>
+<li>Microsoft Agent Framework 1.0 GA (per articles, April 2026) — mention as alternative if relevant</li>
+<li>A2A protocol current state</li>
+<li>OpenAI Agents SDK current state (post-Swarm replacement)</li>
+<li>Gartner agentic AI cancellation prediction — verify the 40% / 2027 numbers</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- The architectural decisions section (the reasoning is durable even if specific framework versions change)
+- The pre-launch checklist
+- The decision matrix structure (specific frameworks may shift but the criteria are durable)
+- The retrospective on the book's structure</p>
+<p><strong>Cross-references:</strong> essentially every prior module. We list:
+- Module 1-3 (workflows, agent loop, patterns)
+- Module 4-5 (tools, MCP)
+- Module 6 (model routing)
+- Module 7-8 (context, compression)
+- Module 9 (memory)
+- Module 10-12 (reliability)
+- Module 13-15 (multi-agent)
+- Module 16 (sagas)
+- Module 17 (production)</p>
+</div>
+<div class="bullet-points">
+<h3>Module 18 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>The capstone is a deep-research multi-agent system: orchestrator + parallel workers + critic + writer</li>
+<li>We build it three times: raw SDK, LangGraph, CrewAI — same spec, three implementations</li>
+<li>Architecture decisions apply Module 13's threshold test, Module 14's pattern selection, Module 17's instrumentation</li>
+<li>Raw SDK: minimum dependencies, full control, easiest debug, hardest extend</li>
+<li>LangGraph: best for evolving production systems, durable checkpointing, LangSmith integration, steepest learning curve</li>
+<li>CrewAI: fastest prototyping, intuitive role-based, limits at custom complexity, expect migration eventually</li>
+<li>Quality is comparable across all three — frameworks differ on dev experience and operational concerns, not output quality</li>
+<li>Production concerns (instrumentation, ceilings, guardrails, eval harness) are framework-independent — every implementation needs them</li>
+</ul>
+</div>
+</body>
+</html>

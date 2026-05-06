@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 7 Outline — Context Engineering Foundations</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 7 Outline — Context Engineering Foundations</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 07 — OUTLINE</div>
+<div class="module-title">Context Engineering Foundations</div>
+<div class="subtitle">Prompt engineering was the warm-up.<br>This is the discipline that decides whether your agent ships.</div>
+<div class="pages">Target length: ~36 pages</div>
+</div>
+<h2>What this module is</h2>
+<p>Context engineering is the discipline that emerged in 2025 as engineers realized: building agents that work for one turn is prompt engineering; building agents that work over hundreds of turns and dozens of tool results is something else entirely. The framework that won — write, select, compress, isolate — comes from LangChain (Lance Martin, June 2025) and is now used at IBM, MongoDB, Letta, Mem0, Anthropic, and across the field.</p>
+<p>This module establishes the framework, the four memory types every agent eventually needs (episodic, semantic, procedural, working), and the design principles that make the next two modules (compression, memory systems) possible. Heavy on concepts and decision frameworks; the algorithms and code-heavy build come in Module 8 and Module 9.</p>
+<div class="hook">
+<p>"Your agent has a 200K context window. Sounds enormous. Then turn 12 dumps a 30K log file. Turn 14 fetches three 8K web pages. Turn 19 retrieves 12 documents from your knowledge base. Turn 22 the model is reasoning over 180K tokens of mostly garbage — paying $0.54 per turn — and missing the one fact that mattered, which is buried on line 43 of turn 7's tool result."</p>
+</div>
+<hr />
+<h2>Section 1 — From Prompt Engineering to Context Engineering (≈3 pages)</h2>
+<p>The shift. Prompt engineering optimized one input (a prompt) for one output (a completion). It implicitly assumed the prompt is what the model sees.</p>
+<p>In agents, that assumption breaks. Each turn, the model sees:</p>
+<ul>
+<li>The system prompt (rarely changes)</li>
+<li>Tool definitions (Module 4)</li>
+<li>The user's original message</li>
+<li>Every previous turn's assistant message</li>
+<li>Every previous turn's tool calls and results</li>
+<li>Whatever your agent code injected (retrieved memories, current state, etc.)</li>
+</ul>
+<p>The "prompt" — singular — has become "the context window" — a dynamic, growing, multi-source assemblage that you, the engineer, <em>compose</em> every turn. That composition is context engineering.</p>
+<div class="pullquote">
+<p>Prompt engineering is what to write. Context engineering is what to keep, what to fetch, what to summarize, what to throw away — every turn, forever.</p>
+</div>
+<p>What changed in 2024-2025 to make this a discipline:</p>
+<ol>
+<li><strong>Long agent horizons.</strong> Agents running for 50+ turns blew past naive context management.</li>
+<li><strong>Tool result bloat.</strong> Agents that fetch web pages, read files, query databases produce huge intermediate context.</li>
+<li><strong>Cost reality.</strong> A 200K-context Sonnet call costs ~$0.60. At dozens of calls per task, this is real money.</li>
+<li><strong>Quality degradation.</strong> Long contexts measurably degrade reasoning ("context rot" — well-documented). More context isn't better.</li>
+</ol>
+<div class="nodumbq">
+<p><strong>Q: Doesn't Claude Sonnet 4.6 have a 1M context window now? GPT-5.4 too? Doesn't that solve this?</strong></p>
+<p>No, for three reasons. (1) Cost: a 1M token call at $3/MTok input is $3 per call. (2) Latency: TTFT scales with input length. A 500K-token call has noticeably worse first-token latency. (3) Quality: long-context degradation is real and measurable. Even models marketed as "1M coherent" perform meaningfully better on focused 50K context than dumped 500K context. Bigger windows raise the ceiling on what's <em>possible</em>; they don't change what's <em>optimal</em>.</p>
+<p><strong>Q: Is context engineering just a fancy name for managing the conversation history?</strong></p>
+<p>It includes that. It also includes: deciding what to fetch from external memory, when to compress old turns, when to spawn a sub-agent with isolated context, when to write a fact to long-term memory, when to discard a tool result entirely. Conversation history is one input among many.</p>
+</div>
+<hr />
+<h2>Section 2 — The Write/Select/Compress/Isolate Framework (≈5 pages)</h2>
+<p>LangChain's framework, which became the field standard. Four verbs that describe everything you can do with context:</p>
+<p><strong>Write</strong> — persist information <em>outside</em> the context window so it's available later but doesn't consume tokens now. Examples: scratchpads, long-term memory stores, notes-to-self files, episode logs.</p>
+<p><strong>Select</strong> — pull information <em>into</em> the context window only when needed. Examples: retrieval (RAG-style), tool calls that fetch state, conditional prompt sections.</p>
+<p><strong>Compress</strong> — reduce the size of what's already in context while preserving meaning. Examples: summarization of old turns, dropping verbose tool outputs, replacing raw data with computed conclusions.</p>
+<p><strong>Isolate</strong> — split context across separate processes or sub-agents so each only sees what it needs. Examples: orchestrator-workers (Module 3), sub-agent delegation, multi-agent architectures (Module 14).</p>
+<p>Most production systems combine all four. A research agent might:
+- <strong>Write</strong> intermediate findings to a scratchpad after each search
+- <strong>Select</strong> the most relevant 3-5 findings when synthesizing
+- <strong>Compress</strong> old search results that didn't pan out
+- <strong>Isolate</strong> sub-research-tasks to separate sub-agents</p>
+<div class="brain">
+<p>Your agent's context just hit 150K tokens. You can spend the next hour applying any one strategy. Which do you reach for first?</p>
+<p>(Probably <strong>isolate</strong> — spinning off a sub-agent for the next subtask gives you a fresh window. Then <strong>compress</strong> if isolation isn't an option. <strong>Select</strong> assumes you have a retrieval system in place. <strong>Write</strong> doesn't help with the immediate problem; it helps with the next problem.)</p>
+</div>
+<p>We do a deep example: a customer support agent that answers questions across a 200-document knowledge base. We show the naive version (dump everything in context) and walk through applying each of the four strategies in turn, watching context size and quality both improve.</p>
+<div class="postmortem">
+<p><strong>The Chatbot That Got Dumber Every Day</strong></p>
+<p>A team built a Slack bot that helped engineers debug production issues. Naive design: every conversation in a channel was fed to the bot as context. Days 1-3 worked great. By day 14, context was 80K tokens of mostly stale conversation. By day 30, the bot was confidently mixing details from issues weeks apart, citing wrong customers, and giving advice based on solved problems.</p>
+<p>Cause: zero context engineering. No write (no separate fact memory), no select (every message included regardless of relevance), no compress (full transcript), no isolate (one bot, one growing context).</p>
+<p>Fix involved all four: write extracted facts to a memory store, select only conversation from the past 4 hours plus retrieved facts, compress with a 24-hour rolling summary, isolate per-thread instead of per-channel.</p>
+<p><strong>Lesson:</strong> the four strategies aren't optional. They're the minimum scaffolding for any agent that runs for more than a session.</p>
+</div>
+<hr />
+<h2>Section 3 — The Three (or Four) Memory Types (≈5 pages)</h2>
+<p>The memory taxonomy borrowed from cognitive science (Tulving 1972) and adapted by Letta, Mem0, LangMem, and others. The three memory types every production agent eventually distinguishes:</p>
+<p><strong>Working memory</strong> — what's in the current context window right now. Cleared between sessions or compressed continuously. Analog: human short-term memory, RAM.</p>
+<p><strong>Episodic memory</strong> — specific past events. "On 2026-04-15, the user asked about refund policy and I gave them this answer." Used for: continuity, personalization, learning from past interactions. Analog: human autobiographical memory.</p>
+<p><strong>Semantic memory</strong> — facts and preferences. "User works at Acme Corp." "User prefers TypeScript over JavaScript." "Company policy is no refunds after 30 days." Used for: stable knowledge that should persist. Analog: human factual knowledge.</p>
+<p><strong>Procedural memory</strong> — <em>how</em> to do things. Not facts, but learned workflows. "When asked to debug Python imports, first check <code>__init__.py</code> files, then PYTHONPATH, then virtual env." Used for: skill accumulation. Analog: human motor/skill memory. Mem0 added this as a first-class type in v1.0.0; Letta uses core memory blocks for similar effect.</p>
+<p>A fourth type that's emerging:</p>
+<p><strong>Reflective memory</strong> — explicit lessons learned from successes and failures, separate from episodic. "Last time I tried this approach to refund handling, the customer escalated. Try X first." This shows up under various names (reflection memory, retrospective memory, experience memory) and is closely tied to Module 11.</p>
+<div class="brain">
+<p>Map each to write/select/compress/isolate from Section 2:
+- Working memory ↔ ?
+- Episodic ↔ ?
+- Semantic ↔ ?
+- Procedural ↔ ?</p>
+<p>(Working = whatever's currently in context, the substrate compress and isolate operate on. Episodic, semantic, procedural all live in <em>write</em>-stores and become <em>select</em> candidates. Different memory types are storage; the four strategies are operations.)</p>
+</div>
+<div class="nodumbq">
+<p><strong>Q: Do I need all three memory types from day one?</strong></p>
+<p>No. Most production agents start with semantic memory only ("remember user preferences") and add episodic later when they need continuity ("what did we discuss yesterday?"). Procedural memory matters most for agents that should learn workflows over time — coding agents, research agents, ops agents.</p>
+<p><strong>Q: How is episodic memory different from just keeping conversation history?</strong></p>
+<p>Conversation history is raw. Episodic memory is <em>consolidated</em> — extracted, summarized, indexed. The Feb 2026 paper "Episodic Memory is the Missing Piece for Long-Term LLM Agents" (arXiv:2502.06975) argues that consolidation — converting events into compact, reusable representations — is the key mechanism. Storing every message verbatim is hoarding; episodic memory is filing.</p>
+</div>
+<hr />
+<h2>Section 4 — Where Context Comes From: Source Mapping (≈4 pages)</h2>
+<p>Before you engineer context, know what's flowing into it. We map every source:</p>
+<p><strong>Static (rarely changes):</strong>
+- System prompt
+- Tool definitions
+- Behavioral guidance / persona</p>
+<p><strong>Per-task:</strong>
+- User's original query
+- Initial state passed in (user ID, session ID, etc.)
+- Pre-loaded reference material (documents the user attached)</p>
+<p><strong>Dynamic (changes every turn):</strong>
+- Previous assistant messages
+- Tool call inputs
+- Tool call results — often the largest source
+- Retrieved memories (from semantic/episodic stores)
+- Sub-agent return values</p>
+<p><strong>Injected:</strong>
+- Time-sensitive context (current date, user timezone)
+- Permission/role context
+- Recent activity context (last login, recent purchases)</p>
+<p>We build a context-source diagram for a representative agent and label each source with: typical token cost, frequency of change, criticality to the task. Then we go through and ask of each: write, select, compress, or isolate?</p>
+<pre><code>┌─────────── CONTEXT WINDOW (this turn) ──────────────┐
+│                                                       │
+│  System prompt                          400 tok       │
+│  Tool definitions (12 tools)          1,800 tok       │
+│  ─────                                                │
+│  User query                              50 tok       │
+│  ─────                                                │
+│  Turn 1 assistant + tool call           120 tok       │
+│  Turn 1 tool result (web_fetch)       4,200 tok ← compress?
+│  Turn 2 assistant + tool call            90 tok       │
+│  Turn 2 tool result (db query)        2,300 tok       │
+│  Turn 3 assistant + tool call            80 tok       │
+│  Turn 3 tool result (web_fetch)      18,500 tok ← compress!
+│  ...                                                  │
+│  Retrieved memories (5 facts)           400 tok       │
+│  ─────                                                │
+│  TOTAL                              ~30,000 tok       │
+└──────────────────────────────────────────────────────┘
+</code></pre>
+<div class="gotcha">
+<p>Tool results are almost always the dominant source after a few turns. They're also where most teams ignore context engineering — every other source gets attention; tool results just accumulate. The compression module (Module 8) targets this directly.</p>
+</div>
+<hr />
+<h2>Section 5 — Design Principles (≈4 pages)</h2>
+<p>Six principles to apply when designing an agent's context:</p>
+<p><strong>1. Treat context as a resource, not a free input.</strong> Every token has cost (real $) and benefit (relevance to task). Optimize the ratio.</p>
+<p><strong>2. Write before you need to.</strong> Persist facts to memory the moment they appear, not when context fills up. Late writes lose information.</p>
+<p><strong>3. Select on demand, not on speculation.</strong> Don't pre-fetch "everything that might be relevant." Let the agent fetch when it knows it needs it. Speculative loading is how naive RAG bloats context.</p>
+<p><strong>4. Compress lossy, keep originals lossless.</strong> Compressed context is what the agent sees. Original tool results, raw data, full conversations stay in your logs / memory store / scratchpad. You can always re-fetch; you can't undelete.</p>
+<p><strong>5. Isolate when ownership boundaries change.</strong> A sub-task that needs different tools, different persona, or runs in parallel — that's a candidate for isolation. Same task, same tools, same context — keep it in one agent.</p>
+<p><strong>6. Measure before optimizing.</strong> Most teams do context engineering by gut feel. The teams that ship instrument first: token count per source per turn, retrieval hit rates, post-compression task success.</p>
+<div class="brain">
+<p>"Compress lossy, keep originals lossless." Why is this principle non-obvious enough to call out?</p>
+<p>(Because most engineers' first instinct is to throw away the raw tool result once it's been summarized. Then debugging an agent that got the wrong answer becomes impossible — you can't see what the model saw before the summary. Keep originals in logs/storage; only show summaries in context.)</p>
+</div>
+<div class="pullquote">
+<p>Context isn't what you have. Context is what you choose, every turn, to put in front of the model.</p>
+</div>
+<hr />
+<h2>Section 6 — A Reference Architecture (≈5 pages)</h2>
+<p>We design the context-engineered agent we'll extend in Modules 8-9. The architecture has six layers:</p>
+<pre><code>            ┌──────────────────────────────────────┐
+            │       AGENT LOOP (Module 2)          │
+            └──────────┬───────────────────────────┘
+                       │ assembles each turn's context
+                       ▼
+            ┌──────────────────────────────────────┐
+            │      CONTEXT BUILDER (this module)   │
+            │  - merges static + dynamic sources   │
+            │  - applies retrieval                 │
+            │  - applies compression               │
+            │  - injects memory                    │
+            └──────────────────────────────────────┘
+                       │
+        ┌──────────────┼──────────────┬─────────────┐
+        ▼              ▼              ▼             ▼
+   ┌─────────┐   ┌──────────┐   ┌──────────┐  ┌──────────┐
+   │WORKING  │   │ EPISODIC │   │ SEMANTIC │  │PROCEDURAL│
+   │MEM (RAM)│   │  STORE   │   │  STORE   │  │  STORE   │
+   └─────────┘   └──────────┘   └──────────┘  └──────────┘
+                       │
+                       ▼
+            ┌──────────────────────────────────────┐
+            │   COMPRESSION ENGINE (Module 8)      │
+            └──────────────────────────────────────┘
+</code></pre>
+<p><strong>The Context Builder</strong> is the new component. Every turn it:</p>
+<ol>
+<li>Pulls static context (system prompt, tools)</li>
+<li>Pulls dynamic context (working memory / message history)</li>
+<li>Decides what to retrieve (select from memory stores)</li>
+<li>Decides what to compress (compression engine, Module 8)</li>
+<li>Decides what to write (extract facts/episodes, send to stores)</li>
+<li>Returns the assembled <code>messages</code> list to the agent loop</li>
+</ol>
+<pre><code class="language-python">class ContextBuilder:
+    def __init__(
+        self,
+        memory: MemorySystem,
+        compressor: Compressor,
+        budget: ContextBudget,  # token budget for this turn
+    ):
+        self.memory = memory
+        self.compressor = compressor
+        self.budget = budget
+
+    async def build(
+        self,
+        system: str,
+        tool_schemas: list[dict],
+        working_memory: list[dict],
+        user_id: str,
+        task_id: str,
+    ) -&gt; list[dict]:
+        # Always-include
+        context = []
+
+        # Step 1: select relevant memories
+        retrieved = await self.memory.retrieve(
+            query=self._derive_query(working_memory),
+            user_id=user_id,
+            task_id=task_id,
+            max_tokens=self.budget.memory_budget,
+        )
+        if retrieved:
+            context.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: self._format_memories(retrieved)})
+
+        # Step 2: compress old working memory if needed
+        compressed_working = await self.compressor.compress(
+            working_memory,
+            target_tokens=self.budget.working_budget,
+        )
+        context.extend(compressed_working)
+
+        # Step 3: extract anything worth writing to long-term memory
+        facts = await self.memory.extract_writeable(working_memory)
+        if facts:
+            await self.memory.write(facts, user_id=user_id, task_id=task_id)
+
+        return context
+</code></pre>
+<p>We'll fill in <code>MemorySystem</code> (Module 9) and <code>Compressor</code> (Module 8). For now: the agent loop calls <code>ContextBuilder.build()</code> instead of building messages itself.</p>
+<div class="code-exercise">
+<p><strong>Exercise 7.1 — Wire the Context Builder.</strong></p>
+<p>Take the hardened agent from Module 2. Replace the inline <code>messages</code> construction with calls to a <code>ContextBuilder</code>. For now, the builder is a passthrough — no compression, no memory. The point is to introduce the seam. Modules 8 and 9 fill it in.</p>
+</div>
+<hr />
+<h2>Section 7 — Anti-Patterns (≈3 pages)</h2>
+<p>Common ways context engineering goes wrong.</p>
+<p><strong>Speculative dumping.</strong> "Let me include everything that might be relevant." Reality: you've increased cost, reduced quality, and now have to debug why the model is paying attention to the wrong thing.</p>
+<p><strong>Over-summarization.</strong> Compressing every tool result to one sentence. The model loses the specifics it needs to answer follow-ups.</p>
+<p><strong>Memory-as-trash-can.</strong> Writing everything to long-term memory "just in case." Then retrieval surfaces irrelevant junk. Be selective at write time, not just at read time.</p>
+<p><strong>Isolation as silver bullet.</strong> Spawning sub-agents whenever context grows. Each sub-agent has its own startup cost, its own context, and you've now multiplied your token spend. Isolate when it makes the work simpler, not when context feels uncomfortable.</p>
+<p><strong>No instrumentation.</strong> "We do context engineering." But you can't show me a graph of token cost per source per turn. You're not engineering; you're hoping.</p>
+<p><strong>Format inconsistency.</strong> Memories formatted one way, tool results formatted another, system prompts a third. The model wastes effort orienting. Pick a format (markdown sections with clear headers usually wins), use it everywhere.</p>
+<div class="postmortem">
+<p><strong>The Sub-Agent Cascade That 10x'd the Bill</strong></p>
+<p>A team noticed their main agent's context was getting big. They added "isolate as much as possible" as a heuristic — every subtask spawned a sub-agent. Sub-agents spawned sub-sub-agents. By the time a single user query resolved, 17 agents had run. Bill quintupled. Latency tripled. Quality unchanged because the sub-agents weren't doing meaningfully isolated work — they were just smaller copies of the same agent fighting over the same context.</p>
+<p>Fix: rule that isolation must justify itself by either (a) parallelism (Module 3 sectioning) or (b) genuinely different tools/persona for the sub-task. Most "isolation" reverted to compression instead.</p>
+<p><strong>Lesson:</strong> isolation isn't free. It's a structural change with a structural cost.</p>
+</div>
+<hr />
+<h2>Section 8 — What's Next (≈1 page)</h2>
+<p>Module 8 builds the <strong>Compression Engine</strong>: anchored iterative summarization, ACON's failure-driven optimization, budget-aware compression, distilled compressors. Code for all four. Benchmarks on real workloads.</p>
+<p>Module 9 builds the <strong>Memory System</strong>: vector store for semantic, knowledge graphs for entity-heavy queries, episodic store with consolidation, procedural memory as agent-rewritable instructions. Mem0/Letta/Zep architectural comparison. Layered memory pattern.</p>
+<p>After Modules 8-9, your agent has full context engineering. By Module 10 it also handles hallucinations; by Module 12 it has guardrails for off-topic drift.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>2 No Dumb Questions (one in Section 1, one in Section 3)</li>
+<li>3 Brain Power prompts</li>
+<li>2 Production Postmortems (Slack bot drift, sub-agent cascade)</li>
+<li>1 Watch It! / Gotcha block</li>
+<li>1 Code Exercise (wire the Context Builder)</li>
+<li>2 Pullquotes</li>
+<li>1 architecture diagram</li>
+<li>1 context-source breakdown diagram</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam's agent works on simple queries. PM tries it on the company's actual support workload — multi-turn debugging sessions that span hours. The agent loses track of what was discussed three turns ago, retrieves wrong docs, and racks up $0.40 per turn after turn 10. Sam realizes prompt-tuning won't fix this. Sam builds a Context Builder by Section 6 and refactors the agent. Performance improves but real wins wait for Modules 8-9. Sam's arc this module: <strong>the bottleneck moved</strong>.</p>
+</div>
+<div class="page-budget">
+<p>S1 (From prompt to context eng): 3p
+S2 (Write/Select/Compress/Isolate): 5p
+S3 (Memory types): 5p
+S4 (Source mapping): 4p
+S5 (Design principles): 4p
+S6 (Reference architecture): 5p
+S7 (Anti-patterns): 3p
+S8 (Next): 1p
+Recurring elements: 6p
+TOTAL: ~36 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting:</strong></p>
+<ul>
+<li>LangChain / Lance Martin "Context Engineering for Agents" (June 2025) — primary source for write/select/compress/isolate framework</li>
+<li>"Episodic Memory is the Missing Piece for Long-Term LLM Agents" (arXiv:2502.06975, Feb 2026) — for the consolidation argument</li>
+<li>"Memory in the Age of AI Agents" survey (arXiv:2512.13564, Dec 2025) — current taxonomy and field state</li>
+<li>Mem0 v1.0.0 procedural memory release notes — for procedural-memory-as-first-class</li>
+<li>Letta documentation on tiered memory (core / archival / recall)</li>
+<li>Zep / Graphiti documentation for graph-based memory</li>
+<li>LangMem SDK release notes (early 2025)</li>
+<li>Anthropic / Claude context length pricing (verify $3/MTok for Sonnet 4.6 input, current model strings)</li>
+<li>"Context Rot" research — find the citation; this matters for the long-context-doesn't-solve-it argument</li>
+<li>IBM Zurich "Cognitive Tools Framework" — referenced; verify</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- Tulving 1972 memory taxonomy (semantic, episodic, procedural)
+- The general principle that context composition matters
+- Anti-patterns (speculative dumping, etc. — these are universal)</p>
+<p><strong>Cross-references:</strong>
+- Module 8 implements the compression engine
+- Module 9 implements the memory system
+- Module 11 (reflection) ties to reflective/retrospective memory
+- Module 14 (multi-agent) is where isolation becomes architectural</p>
+</div>
+<div class="bullet-points">
+<h3>Module 7 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>Context engineering is the discipline of composing what the model sees every turn — across many sources</li>
+<li>Write/select/compress/isolate is the canonical four-strategy framework</li>
+<li>Working, episodic, semantic, procedural — the four memory types every production agent eventually distinguishes</li>
+<li>Tool results dominate context after a few turns; they're where most teams ignore engineering</li>
+<li>Six design principles, including: compress lossy, keep originals lossless; measure before optimizing</li>
+<li>The Context Builder is a real component sitting between the agent loop and memory/compression</li>
+<li>Anti-patterns: speculative dumping, over-summarization, memory-as-trash-can, isolation cascade</li>
+<li>Bigger context windows raise the ceiling but don't change what's optimal — engineering still matters</li>
+</ul>
+</div>
+</body>
+</html>

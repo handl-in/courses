@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 11 Outline — Reflection and Self-Correction</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 11 Outline — Reflection and Self-Correction</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 11 — OUTLINE</div>
+<div class="module-title">Reflection and Self-Correction</div>
+<div class="subtitle">Detection found the problem.<br>Reflection decides what to do about it — before the agent does it again.</div>
+<div class="pages">Target length: ~36 pages</div>
+</div>
+<h2>What this module is</h2>
+<p>Reflection is the loop closure for agent reliability. Detection (Module 10) tells you something went wrong. Reflection turns that signal into action: replan, retry, abstain, escalate, or learn — depending on when the detection fires and what the agent's already committed to.</p>
+<p>This module covers the two reflection paradigms the field converged on in 2025-2026: <strong>retrospective</strong> (act, observe failure, reflect, retry — the Reflexion / Self-Refine family) and <strong>prospective</strong> (criticize plans before execution — PreFlect, Feb 2026). We code both. We also cover the contrarian finding that reflection often <em>doesn't</em> help unless specifically architected for it (Kang et al., Oct 2025 — "Reflection steps during inference infrequently yield error correction unless specifically architected for multi-iteration or corrective reasoning"), and the certainty-guided suppression techniques that save 18-42% compute while preserving the benefit.</p>
+<p>By the end the reader can: add reflection to the Module 10 agent without exploding cost or latency, decide when to reflect prospectively vs retrospectively, and avoid the "reflection theater" anti-pattern where the agent confidently confirms its own wrong answers.</p>
+<div class="hook">
+<p>"Telling the model 'reflect on your answer' often makes things worse. The model rationalizes the answer it already gave instead of correcting it. Reflection done well is structural — different model, different prompt, different question, sometimes a different time. Reflection done badly is just paying twice for the same wrong answer."</p>
+</div>
+<hr />
+<h2>Section 1 — The Two Paradigms (≈4 pages)</h2>
+<p>The PreFlect paper (Feb 2026) cleanly names the split:</p>
+<p><strong>Retrospective reflection.</strong> The agent acts, observes failure, then reflects and updates future trials. Reflexion (Shinn et al., 2023), Self-Refine (Madaan et al., 2023), MIRROR (Guo et al., 2025), SAMULE (Ge et al., 2025). The whole reflection-after-failure family.</p>
+<pre><code>[Plan] → [Act] → [Observe failure] → [Reflect] → [Retry with lesson] → ...
+</code></pre>
+<p><strong>Prospective reflection.</strong> The agent generates a plan, then a critic inspects the plan <em>before</em> execution, flags issues, forces a revision. PreFlect (Feb 2026), AR (Wang et al., 2024).</p>
+<pre><code>[Draft plan] → [Critic inspects plan] → [Revise plan] → [Execute] → ...
+</code></pre>
+<p>Both have a place. Retrospective is necessary because some failures are unforeseeable and only visible after the fact. Prospective is cheaper because catching errors before execution avoids wasted tool calls, wasted tokens, wasted time.</p>
+<p>The empirical finding from Reflexion (the founding paper): adding reflection to ReAct improved accuracy by ~17% on its eval. Subsequent work has both replicated and complicated this — sometimes reflection helps; sometimes it doesn't; the conditions matter.</p>
+<div class="pullquote">
+<p>The question isn't "should I add reflection?" — it's "which reflection, when, with what critic, and how do I know it's actually correcting rather than rationalizing?"</p>
+</div>
+<div class="nodumbq">
+<p><strong>Q: Isn't asking the model to "double-check" already reflection?</strong></p>
+<p>A weak form. The Kang et al. Oct 2025 finding: reflection during inference rarely yields error correction unless the architecture is specifically designed for multi-iteration corrective reasoning. A "double-check the answer" prompt to the same model usually produces "yes that looks right" — confirmation bias, not correction.</p>
+<p><strong>Q: When does reflection actually help vs. just costing more?</strong></p>
+<p>When (1) the critic is meaningfully different from the producer (different model, different prompt, structured rubric), (2) the failure mode is detectable (incorrect tool use, missing requirements, internal contradictions), and (3) revision can act on the critique (the model can produce a different output, not just the same output with a defensive disclaimer). Without all three, reflection is theater.</p>
+</div>
+<hr />
+<h2>Section 2 — Retrospective Reflection: Reflexion-Style (≈5 pages)</h2>
+<p>The original pattern, still useful and widely deployed.</p>
+<p>The Reflexion architecture:</p>
+<pre><code>┌─────────────┐
+│   ACTOR     │  ← ReAct-style agent
+└──────┬──────┘
+       │ executes trajectory
+       ▼
+┌─────────────┐
+│  EVALUATOR  │  ← scores the trajectory (binary success/fail or scalar)
+└──────┬──────┘
+       │ if failed
+       ▼
+┌─────────────┐
+│SELF-REFLECT │  ← generates verbal feedback: &quot;what went wrong, how to fix&quot;
+└──────┬──────┘
+       │ stores in memory
+       ▼
+┌─────────────┐
+│  RETRY      │  ← actor re-runs, with reflection in context
+└─────────────┘
+</code></pre>
+<pre><code class="language-python">class ReflexionAgent:
+    def __init__(self, actor, evaluator, reflector, max_trials: int = 3):
+        self.actor = actor
+        self.evaluator = evaluator
+        self.reflector = reflector
+        self.max_trials = max_trials
+        self.reflections = []  # list of past reflections, persisted across trials
+
+    async def run(self, task: str) -&gt; AgentResult:
+        for trial in range(self.max_trials):
+            trajectory = await self.actor.execute(
+                task=task,
+                additional_context=self._format_reflections(),
+            )
+            evaluation = await self.evaluator.score(task, trajectory)
+
+            if evaluation.success:
+                return AgentResult(trajectory=trajectory, trials=trial + 1)
+
+            # Failed — reflect and retry
+            reflection = await self.reflector.reflect(
+                task=task,
+                trajectory=trajectory,
+                failure=evaluation.failure_reason,
+            )
+            self.reflections.append(reflection)
+
+        # Max trials reached without success
+        return AgentResult(trajectory=trajectory, trials=self.max_trials, success=False)
+
+    def _format_reflections(self) -&gt; str:
+        if not self.reflections:
+            return &quot;&quot;
+        return &quot;Lessons from past attempts:\n&quot; + &quot;\n&quot;.join(
+            f&quot;- {r.lesson}&quot; for r in self.reflections
+        )
+</code></pre>
+<p>The reflection prompt is where the work happens:</p>
+<pre><code class="language-python">REFLECTION_PROMPT = &quot;&quot;&quot;You are an autonomous agent that just attempted a task and failed.
+
+TASK: {task}
+
+YOUR ATTEMPT (trajectory):
+{trajectory}
+
+EVALUATOR FEEDBACK: {failure_reason}
+
+Your job: explain WHY this attempt failed and what you would do DIFFERENTLY next time.
+Be specific. Don't rationalize. Don't claim the attempt was actually correct.
+Output a short lesson (1-3 sentences) that another version of you, retrying this task,
+could use to avoid the same mistake.
+
+LESSON:&quot;&quot;&quot;
+</code></pre>
+<p><strong>Critical design notes:</strong></p>
+<ul>
+<li>The evaluator must be external to the actor. Self-evaluation of trajectories is the same trap as self-evaluation of answers (Module 10).</li>
+<li>Reflections accumulate across trials in this trial. Don't dump them across all tasks ever — different tasks have different lessons.</li>
+<li>Cap trials. Reflexion's original work used 1-5 trials; gains saturate quickly.</li>
+<li>Most failures are caught in trial 2; trial 3+ has diminishing returns.</li>
+</ul>
+<div class="brain">
+<p>Reflexion needs an evaluator that can score success/failure. For some tasks (math problems, code that runs tests) this is trivial. For open-ended tasks (writing, analysis) it's hard. How do you evaluate trajectory success when "success" itself is fuzzy?</p>
+<p>(Three approaches: rubric-based LLM judge (define what success looks like; judge against rubric), human-in-the-loop sampling (human labels a fraction; train signal from that), or downstream proxy (did the output get used? edited? rejected?). Without an evaluator, retrospective reflection has no signal to learn from.)</p>
+</div>
+<div class="code-exercise">
+<p><strong>Exercise 11.1 — Reflexion on a coding task.</strong></p>
+<p>Build the Reflexion loop. Task: agent writes Python functions that should pass given test cases. Evaluator: runs the tests and reports pass/fail with the failing test's output. Reflector: explains what about the failure suggests changes.</p>
+<p>Compare success rate over 3 trials with vs without reflection on a held-out set of 20 problems.</p>
+</div>
+<hr />
+<h2>Section 3 — Self-Refine: Reflection Within a Single Run (≈4 pages)</h2>
+<p>Self-Refine (Madaan et al., 2023) is the sibling pattern: instead of multi-trial, do produce → critique → revise as a single iterative loop.</p>
+<pre><code class="language-python">async def self_refine(producer, critic, task: str, max_iters: int = 3) -&gt; str:
+    output = await producer.produce(task)
+    for _ in range(max_iters):
+        critique = await critic.critique(task, output)
+        if critique.acceptable:
+            return output
+        output = await producer.revise(task, output, critique.feedback)
+    return output
+</code></pre>
+<p>This is exactly the evaluator-optimizer workflow pattern from Module 3. We didn't call it "reflection" then because it wasn't named that way in the workflow patterns paper. It is reflection — a tightly-scoped intra-task version.</p>
+<p><strong>When Self-Refine works:</strong>
+- Tasks with clear quality criteria (compliance, completeness, format)
+- Producer is capable but variable (Sonnet-class)
+- Critic is strong (Opus or specialized)
+- Revision can meaningfully improve (more iterations don't always; gains often saturate at 2-3)</p>
+<p><strong>When Self-Refine fails:</strong>
+- Producer can't produce <em>better</em> output, only different output (model ceiling reached)
+- Critic and producer are the same model (rationalization, not refinement)
+- Critique is too vague to act on</p>
+<div class="gotcha">
+<p>Self-Refine often shows large gains in research papers and modest gains in production. The papers use carefully-crafted critic prompts on tasks where the critic genuinely catches errors. In production, generic "make this better" critics produce generic improvements that don't move quality metrics. The critic prompt is the entire game.</p>
+</div>
+<hr />
+<h2>Section 4 — Prospective Reflection: PreFlect-Style (≈5 pages)</h2>
+<p>The newer pattern (PreFlect, Feb 2026). Catch errors <em>before</em> the agent commits to actions.</p>
+<p>The architecture:</p>
+<pre><code>┌─────────────┐
+│  PLANNER    │  ← agent generates initial plan (sequence of steps)
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│  CRITIC     │  ← inspects plan, flags issues (using distilled error patterns)
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│  REVISER    │  ← updates plan based on critique
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│  EXECUTOR   │  ← runs the (revised) plan
+└──────┬──────┘
+       │ on unexpected deviation
+       ▼
+┌─────────────┐
+│ RE-PLANNER  │  ← dynamic mid-execution plan update
+└─────────────┘
+</code></pre>
+<p>The PreFlect insight: prospective reflection works best when the critic has access to <strong>distilled planning errors</strong> from past trajectories. Don't ask the critic to invent issues; give it a taxonomy of common failure modes (specific to the task domain) and ask it to check each.</p>
+<pre><code class="language-python">class PreFlectAgent:
+    def __init__(self, planner, critic, executor, error_patterns: list[str]):
+        self.planner = planner
+        self.critic = critic
+        self.executor = executor
+        self.error_patterns = error_patterns  # distilled from history
+
+    async def run(self, task: str) -&gt; AgentResult:
+        plan = await self.planner.plan(task)
+
+        for revision_round in range(2):  # at most 2 critic passes
+            critique = await self.critic.review(
+                task=task, plan=plan, error_patterns=self.error_patterns,
+            )
+            if not critique.has_issues:
+                break
+            plan = await self.planner.revise(task, plan, critique)
+
+        # Execute, with mid-flight re-planning if needed
+        result = await self.executor.execute(plan, on_deviation=self._replan)
+        return result
+
+    async def _replan(self, current_plan, deviation):
+        # Mid-execution: agent encountered something unexpected, replan from here
+        return await self.planner.replan(current_plan, deviation)
+</code></pre>
+<p><strong>Where to get the error patterns:</strong> mine your own production failures. Cluster them. Generate a taxonomy. The critic prompts include the taxonomy. Update periodically as new failure modes emerge.</p>
+<p>Example taxonomy for a coding agent:
+- "Plan calls a tool that requires authentication without first checking auth state"
+- "Plan reads a file before checking if it exists"
+- "Plan modifies state in a loop without considering rate limits"
+- "Plan passes raw user input to an exec tool"</p>
+<p>The critic checks the proposed plan against each pattern. If a match, flags + suggests fix.</p>
+<div class="postmortem">
+<p><strong>The Critic That Caught the Production-DB Wipe</strong></p>
+<p>A team built a database migration agent. Plans involved running schema changes. Initially deployed without prospective reflection. Within two weeks, an agent ran <code>DROP TABLE users</code> on production because the user said "delete the users table from staging" and the agent's plan didn't include "verify environment is staging before destructive operation."</p>
+<p>Recovery: backups, panic, public apology, three-day incident.</p>
+<p>Fix: prospective critic with a destructive-operations taxonomy. Every plan involving DROP/DELETE/TRUNCATE/UPDATE-without-WHERE is flagged. Critic forces an environment check as the first step. In the year since, zero production incidents from this class. The critic rejects ~3% of plans; ~90% of those would have been bugs.</p>
+<p><strong>Lesson:</strong> prospective reflection's value isn't catching average mistakes — it's catching the catastrophic ones before they execute. The math overwhelmingly favors having one.</p>
+</div>
+<hr />
+<h2>Section 5 — Reflection That Doesn't Help (≈4 pages)</h2>
+<p>The contrarian section. Multiple 2025 papers (Kang et al. Oct, Ge et al. Mar, others) document that reflection often doesn't improve outcomes — and sometimes makes them worse.</p>
+<p><strong>Failure mode 1: Confirmation bias.</strong> Same model asked to reflect on its own answer mostly agrees with itself. The "reflection" is a rationalization. ~80% of self-reflective steps in the Kang et al. study produced no meaningful correction.</p>
+<p><strong>Failure mode 2: Spurious revision.</strong> The model changes a correct answer to an incorrect one because the critique prompt biased it toward "find something to change." Net negative.</p>
+<p><strong>Failure mode 3: Reflection theater.</strong> Long, eloquent self-critiques that don't change behavior. Token cost without quality gain. Common in production deployments where someone added "reflect carefully on your answer" to the prompt.</p>
+<p><strong>Failure mode 4: Cost-benefit collapse.</strong> Reflection adds 2-3× tokens per turn. If gains are &lt;5% on a task you're shipping at scale, the math doesn't work.</p>
+<p>The Kang et al. finding: certainty-guided reflection suppression saves 18-42% compute by <em>not</em> reflecting when the model's already confident. Confidence comes from entropy of token logits, semantic consistency across short samples, or rubric-based self-assessment with structured output.</p>
+<pre><code class="language-python">async def maybe_reflect(model_resp, critic, threshold: float = 0.85) -&gt; str:
+    confidence = await assess_confidence(model_resp)
+    if confidence &gt;= threshold:
+        return model_resp.text  # skip reflection — model is already confident
+    return await critic.critique_and_revise(model_resp.text)
+</code></pre>
+<p>When confidence is high, you save the reflection cost. When it's low, you reflect — which is when reflection actually helps.</p>
+<div class="brain">
+<p>A skeptic could say: "if the model is wrong but confident, certainty-guided suppression skips the reflection that would have caught it." Is that a real concern?</p>
+<p>(Yes, partially. Confident wrong answers are exactly the ones reflection would help most with. But: the data show that reflection doesn't reliably catch them either. So you're trading "reflect on everything for marginal-zero gain" against "reflect only when uncertain — when reflection actually helps." The latter is better economically and only slightly worse on quality.)</p>
+</div>
+<div class="gotcha">
+<p>The single biggest reflection anti-pattern: adding "reflect on your answer before responding" to every prompt. This is reflection theater. Either build a structural reflection step (different model as critic, explicit revision call) or don't — but inline self-critique buried in a prompt rarely changes outcomes.</p>
+</div>
+<hr />
+<h2>Section 6 — Reflection Granularity: Action vs Plan vs Trajectory (≈3 pages)</h2>
+<p>Reflection can fire at different levels. The right granularity depends on where errors originate.</p>
+<p><strong>Action-level.</strong> Reflect on each tool call before/after execution. Fine-grained, expensive, useful when individual actions are dangerous (the production-DB-wipe case).</p>
+<p><strong>Plan-level.</strong> Reflect on multi-step plans before any step executes (PreFlect). Cheaper than action-level, catches strategic errors.</p>
+<p><strong>Trajectory-level.</strong> Reflect after the whole task completes (Reflexion). Cheapest per-task, but errors only fixable on retry.</p>
+<p>A practical mix:
+- Plan-level critique on initial plan (catch strategic errors)
+- Action-level critique on flagged dangerous actions only (catch catastrophic single-step errors)
+- Trajectory-level reflection on failed runs to update procedural memory (Module 9) for future runs</p>
+<pre><code class="language-python">class LayeredReflection:
+    async def before_plan(self, plan): return await self.plan_critic.review(plan)
+    async def before_dangerous_action(self, action): return await self.action_critic.review(action)
+    async def after_failed_trajectory(self, traj): return await self.trajectory_reflector.reflect(traj)
+</code></pre>
+<div class="nodumbq">
+<p><strong>Q: Won't all these reflection layers stack into massive cost overhead?</strong></p>
+<p>Each layer has a different <em>frequency</em> and <em>gating</em>. Plan-level fires once per task. Action-level fires only on flagged actions (typically &lt;5% of actions). Trajectory-level fires only on failed trajectories. Net overhead is usually 10-30% of base cost, not multiples — and the gains can be 2-5× on reliability metrics for high-stakes domains.</p>
+</div>
+<hr />
+<h2>Section 7 — Reflection and Memory: Closing the Loop (≈3 pages)</h2>
+<p>Reflexion's real innovation wasn't the loop — it was <em>storing</em> the reflection so future runs benefit. This connects directly to Module 9's procedural and reflective memory.</p>
+<p>Pattern:</p>
+<pre><code class="language-python">async def reflect_and_persist(reflector, memory, task, trajectory, failure):
+    reflection = await reflector.reflect(task, trajectory, failure)
+
+    # Decide: is this a one-off lesson or a generalizable pattern?
+    if reflection.is_generalizable:
+        # Add to procedural memory — applies to similar future tasks
+        await memory.write_skill(Skill(
+            trigger_pattern=reflection.applicable_to,
+            instructions=reflection.lesson,
+            examples=[reflection.failed_example],
+        ))
+    else:
+        # Reflective memory — episodic with reflection tag
+        await memory.write_reflective_episode(...)
+</code></pre>
+<p>Over time, the procedural memory becomes a library of "lessons learned" the agent automatically pulls in when starting similar tasks. This is the closest thing agents have to <em>learning</em> in production without retraining.</p>
+<p>The "In Prospect and Retrospect" paper (Tan et al., ACL 2025) generalizes this into Reflective Memory Management — combining prospective reflection (summarize as you go) with retrospective reflection (refine retrieval based on what evidence got cited).</p>
+<div class="pullquote">
+<p>A reflection that's not stored is a lesson learned in the moment and forgotten in the next call. Memory makes reflection cumulative.</p>
+</div>
+<hr />
+<h2>Section 8 — Building It Into the Agent (≈4 pages)</h2>
+<p>We integrate reflection into the agent stack we've been building since Module 2.</p>
+<pre><code class="language-python">class ReflectiveAgent(Agent):  # extends Module 2-9 hardened agent
+    def __init__(self, *args, plan_critic=None, action_critic=None,
+                 trajectory_reflector=None, procedural_memory=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.plan_critic = plan_critic
+        self.action_critic = action_critic
+        self.trajectory_reflector = trajectory_reflector
+        self.procedural_memory = procedural_memory
+
+    async def run(self, query: str) -&gt; AgentResult:
+        # 1. Pull procedural memory: relevant lessons from past tasks
+        skills = await self.procedural_memory.retrieve_skills_for(query)
+
+        # 2. Generate initial plan
+        plan = await self._generate_plan(query, skills)
+
+        # 3. Prospective critique (PreFlect-style)
+        if self.plan_critic:
+            critique = await self.plan_critic.review(query, plan)
+            if critique.has_issues:
+                plan = await self._revise_plan(query, plan, critique)
+
+        # 4. Execute, with action-level checks on flagged actions
+        try:
+            result = await super().run(query, plan=plan, action_check=self.action_critic)
+        except AgentFailure as e:
+            # 5. Trajectory-level reflection on failure
+            if self.trajectory_reflector and self.allow_retry:
+                lesson = await self.trajectory_reflector.reflect(query, e.trajectory, e.reason)
+                if lesson.is_generalizable:
+                    await self.procedural_memory.write_skill(lesson.to_skill())
+                # Optional: retry with the lesson in context
+                ...
+            raise
+
+        return result
+</code></pre>
+<p>We run a complete example: an agent solving a moderate research task. Show:
+- Prospective critique flagging a missing verification step in the plan
+- Action critique flagging an attempt to write to a production system
+- (Optionally introduce a failure to demonstrate retrospective reflection + memory write)
+- Future run: same task class triggers the stored skill, avoids the same mistake</p>
+<div class="code-exercise">
+<p><strong>Exercise 11.2 — Add reflection to the production agent.</strong></p>
+<p>Take the agent from Module 10 (with hallucination defense). Add: plan-level critic with a small error pattern taxonomy, action-level critic for destructive operations, retrospective reflection on failed trajectories with persistence to procedural memory.</p>
+<p>Measure: gain in task success rate, latency overhead, cost overhead. Tune the gating thresholds (when to invoke each reflection layer) to match your stakes vs cost trade-off.</p>
+</div>
+<hr />
+<h2>Section 9 — What's Next (≈1 page)</h2>
+<p>Module 12 covers <strong>guardrails</strong> — the policy enforcement layer. Reflection is one part of a defense-in-depth strategy; guardrails cover topic drift, scope violations, output policy compliance, and the security material that complements hallucination + reflection.</p>
+<p>Module 14 (multi-agent) revisits reflection in the multi-agent setting: critic agents, debate patterns, judge cycles. The Reflexion-style pattern generalizes naturally to "one agent acts, another agent critiques."</p>
+<p>Module 17 (production) covers the eval and observability needed to know whether your reflection is actually helping — not just whether it's running.</p>
+<p>The capstone (Module 18) ships an agent with prospective + retrospective reflection wired in.</p>
+<hr />
+<h2>Recurring elements used in this module</h2>
+<ul>
+<li>1 chapter opener</li>
+<li>1 hook</li>
+<li>2 No Dumb Questions</li>
+<li>2 Brain Power prompts</li>
+<li>1 Production Postmortem (production-DB wipe prevented)</li>
+<li>2 Watch It! / Gotcha blocks</li>
+<li>2 Code Exercises (Reflexion on coding, integrate into production agent)</li>
+<li>2 Pullquotes</li>
+<li>2 architecture diagrams (retrospective and prospective)</li>
+<li>1 Bullet Points recap</li>
+</ul>
+<div class="sam-arc">
+<p>Sam adds "reflect on your answer before responding" to the agent's system prompt. Latency goes up 30%, quality unchanged (Section 5's Failure Mode 3). Sam reads the Kang et al. paper, removes the inline reflection, and instead adds prospective plan critique with a small destructive-operations taxonomy. Catches the next would-be production DB issue in pre-execution review. Adds retrospective reflection that writes lessons to procedural memory; agent gradually gets better at the team's specific task patterns. Sam's arc this module: <strong>structural reflection beats inline self-critique; the win is in the architecture, not the prompt</strong>.</p>
+</div>
+<div class="page-budget">
+<p>S1 (Two paradigms): 4p
+S2 (Reflexion-style): 5p
+S3 (Self-Refine): 4p
+S4 (Prospective / PreFlect): 5p
+S5 (Reflection that doesn't help): 4p
+S6 (Granularity): 3p
+S7 (Reflection + memory): 3p
+S8 (Integration): 4p
+S9 (Next): 1p
+Recurring elements: 3p
+TOTAL: ~36 pages</p>
+</div>
+<div class="sources">
+<p><strong>Must verify when drafting:</strong></p>
+<ul>
+<li>Reflexion paper (Shinn et al., 2023) — primary citation; ReAct +17% accuracy claim</li>
+<li>Self-Refine paper (Madaan et al., 2023) — primary citation</li>
+<li>PreFlect paper (Wang et al., arXiv:2602.07187, Feb 2026) — for prospective reflection paradigm and architecture</li>
+<li>Kang et al. Oct 2025 finding on reflection efficacy — exact paper, exact numbers (18-42% compute savings via certainty-guided suppression)</li>
+<li>MIRROR paper (Guo et al., 2025) — multi-agent intra/inter reflection</li>
+<li>SAMULE (Ge et al., 2025) — fine-tuned reflection model</li>
+<li>AR (Wang et al., 2024) — real-time adaptation with backup moves</li>
+<li>RMM "In Prospect and Retrospect" (Tan et al., ACL 2025) — for memory-augmented reflection</li>
+<li>Agent-R (cited Semantic Scholar) — iterative self-training with reflection</li>
+<li>The "reflection during inference rarely yields error correction" finding — verify the exact source and conditions</li>
+</ul>
+<p><strong>Stable knowledge:</strong>
+- Retrospective vs prospective taxonomy (now well-established)
+- Confirmation bias as failure mode
+- Plan-level vs action-level vs trajectory-level granularity
+- Memory-augmented reflection as cumulative learning</p>
+<p><strong>Cross-references:</strong>
+- Module 3 — Self-Refine = evaluator-optimizer workflow pattern; this module deepens it
+- Module 9 — procedural memory is where lessons persist
+- Module 10 — hallucination detection feeds reflection signals
+- Module 12 — guardrails; reflection is one defense layer
+- Module 14 — multi-agent reflection (debate, critique cycles)</p>
+</div>
+<div class="bullet-points">
+<h3>Module 11 in eight bullets</h3>
+<p>(filled at draft time)</p>
+<ul>
+<li>Two paradigms: retrospective (act, fail, reflect, retry) and prospective (critique plan before execution)</li>
+<li>Reflexion-style is the foundational pattern; needs external evaluator and capped trials</li>
+<li>Self-Refine is the intra-task version; same pattern as evaluator-optimizer workflow</li>
+<li>PreFlect introduces prospective reflection with distilled error patterns</li>
+<li>Reflection often doesn't help: confirmation bias, spurious revision, reflection theater, cost-benefit collapse</li>
+<li>Certainty-guided suppression saves 18-42% compute by skipping reflection when model is already confident</li>
+<li>Granularity matters: plan-level, action-level, trajectory-level — mix based on stakes</li>
+<li>Reflection that's stored to procedural memory becomes cumulative learning across runs</li>
+</ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 14 — Multi-Agent Architectures</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 14 — Multi-Agent Architectures</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 14</div>
+<div class="module-title">Multi-Agent Architectures</div>
+<div class="subtitle">For the cases that pass M13's framework, the actual architectures.<br>Four patterns, each with specific strengths, costs, and failure modes.</div>
+<div class="pages">~38 pages · the architectures, with code, with honest trade-offs</div>
+</div>
+<div class="hook">
+<p>Wednesday afternoon. Sam was sketching the <em>one</em> multi-agent system the platform team had committed to building this quarter — the research-on-demand feature for the sales team. It was the rare system that passed M13's five-question framework cleanly:</p>
+<ul>
+<li>Q1 Parallelizable? <strong>Yes.</strong> Each target company researched independently.</li>
+<li>Q2 High-value outcome? <strong>Yes.</strong> Pre-call briefs feeding $50K-$500K deal conversations.</li>
+<li>Q3 Clear subagent boundaries? <strong>Yes.</strong> One subagent per company; bounded scope.</li>
+<li>Q4 Team capability? <strong>Yes.</strong> Sam's team had built operational infrastructure for the deal-research workflow already.</li>
+<li>Q5 Tried single-agent? <strong>Yes</strong> — and the single-agent version had a hard ceiling. AEs preparing for back-to-back customer calls would queue up 5-8 research requests; the single-agent system processed them sequentially over 20+ minutes. Multi-agent could process them in parallel in under 4.</li>
+</ul>
+<p>The framework said multi-agent. Sam knew <em>that</em> much. What Sam didn't know was <em>which</em> multi-agent.</p>
+<p>The literature was a mess. Sam pulled up bookmarks: orchestrator-worker. Hub-and-spoke. Swarm. Conductor. Mesh. Hierarchical. Pipeline. Flat. Tree. Three-explorers-plus-critic. Each with claimed strengths. Each with breathless production reports. Each with their own framework's marketing pitch.</p>
+<p>Sam read through three architectures over coffee. Each one made sense in isolation. Each one sounded like the right answer when the author was advocating for it. By the third article, Sam had drawn a system on paper that combined elements from all three — and immediately recognized it as the multi-agent equivalent of the prompt accretion problem from M11. Patterns layered on patterns; complexity additive; design rationale lost.</p>
+<p>Sam closed the laptop and wrote down the core question: <em>"for THIS specific task — parallel research over independent companies, synthesizing into briefs — what's the simplest architecture that works?"</em></p>
+<p>Module 14 was about answering that question. Not by surveying every architecture. By understanding the four canonical patterns deeply enough to recognize which one the task wants.</p>
+</div>
+<hr />
+<h2>What this module is</h2>
+<p>M13 established when multi-agent earns its complexity. M14 covers the architectures themselves — for the cases that passed the framework. Four canonical patterns:</p>
+<ol>
+<li><strong>Orchestrator-worker</strong> (also called hub-and-spoke, conductor) — one central coordinator delegates to specialists. The pattern Anthropic's research system uses.</li>
+<li><strong>Hierarchical</strong> — orchestrator delegates to middle managers who delegate to workers. Tree-structured. Rare; specific use cases only.</li>
+<li><strong>Peer collaboration</strong> (also called debate, three-explorers-plus-critic) — multiple agents work on the same problem with different framings, then a judge synthesizes. Claude Code's Ultra Plan uses this.</li>
+<li><strong>Swarm</strong> (also called mesh, decentralized) — many agents working semi-independently with light coordination. Highest parallelism; hardest to debug.</li>
+</ol>
+<p>This module:</p>
+<ul>
+<li><strong>Section 1</strong> — terminology cleanup. The literature uses many names for the same patterns. We'll fix that.</li>
+<li><strong>Section 2</strong> — orchestrator-worker in depth, with full code. The pattern most teams should reach for first.</li>
+<li><strong>Section 3</strong> — hierarchical patterns. When the task tree has genuine depth.</li>
+<li><strong>Section 4</strong> — peer collaboration. When parallel exploration with synthesis beats sequential reasoning.</li>
+<li><strong>Section 5</strong> — swarm. The honest treatment of when this earns its place (rarely).</li>
+<li><strong>Section 6</strong> — choosing among the four. A decision framework with worked examples.</li>
+<li><strong>Section 7</strong> — Anthropic's first-party patterns: Claude Code subagents (the <code>code.claude.com/docs/sub-agents</code> design), Ultra Plan's three-explorers-plus-critic, Agent Teams.</li>
+<li><strong>Section 8</strong> — Sam's research-on-demand system, post-decision.</li>
+<li><strong>Section 9</strong> — the framework.</li>
+</ul>
+<p>By the end of this module:</p>
+<ul>
+<li>You'll know the four canonical multi-agent patterns and what each is for</li>
+<li>You'll have working code for orchestrator-worker and peer collaboration (the two most useful)</li>
+<li>You'll know when each pattern's emergent failure modes show up and how to design against them</li>
+<li>You'll be able to use Anthropic's Claude Code subagents pattern directly when it fits</li>
+</ul>
+<p>The discipline: each pattern earns its place when the task's structure matches it. The wrong pattern multiplies cost and complexity for no benefit; the right pattern handles parallelism, isolation, or capability heterogeneity that single-agent can't.</p>
+<div class="pullquote">
+<p>The biggest mistake teams make in multi-agent design isn't picking the wrong architecture — it's picking <em>several</em> architectures, layering them, and ending up with a system whose design rationale has been diluted to nothing. Each pattern in this module is a coherent answer to a specific question. Pick the one that matches your question.</p>
+</div>
+<hr />
+<h2>Section 1 — Terminology Cleanup</h2>
+<p>The multi-agent literature is full of overlapping names for similar patterns. Different authors call the same architecture different things; sometimes the same name covers fundamentally different patterns. Before we go further, the canonical names this module uses:</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Also called</th>
+<th>What it actually is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Orchestrator-worker</strong></td>
+<td>Hub-and-spoke, supervisor-worker, conductor, lead-and-subagents</td>
+<td>One coordinator delegates to specialists; specialists return; coordinator synthesizes</td>
+</tr>
+<tr>
+<td><strong>Hierarchical</strong></td>
+<td>Tree, multi-level orchestrator</td>
+<td>Orchestrator delegates to middle managers, who delegate to workers; tree of depth ≥ 3</td>
+</tr>
+<tr>
+<td><strong>Peer collaboration</strong></td>
+<td>Debate, multi-agent reflection, three-explorers-plus-critic</td>
+<td>Multiple agents tackle the same problem from different angles; a synthesizer combines</td>
+</tr>
+<tr>
+<td><strong>Swarm</strong></td>
+<td>Mesh, flat, decentralized</td>
+<td>Many agents working semi-independently; coordination through shared state or light messaging</td>
+</tr>
+</tbody>
+</table>
+<p>Three patterns I'll <em>not</em> call multi-agent:</p>
+<p><strong>Pipeline</strong> is workflows (M3). One LLM call's output flows to the next. No independent decision loops.</p>
+<p><strong>Single-agent with subtools</strong> is M2 + M4. The agent calls tools that internally invoke other LLM calls. One decision loop; multiple capabilities.</p>
+<p><strong>Single-agent with reflection</strong> is M11. The agent generates output and critiques itself. One context; one model; structured prompting.</p>
+<p>These are valuable patterns. They're not multi-agent in the M13/M14 sense — they don't have separate decision-making contexts that justify the coordination overhead.</p>
+<p>The four patterns this module covers each have <em>separate context windows</em>, <em>independent decision loops</em>, and <em>explicit coordination cost</em>. They're multi-agent in the strict sense.</p>
+<div class="nodumbq">
+<p><strong>Q: What about all the other "patterns" I see in the literature — blackboard, contract net, market-based, role-playing?</strong></p>
+<p>Most of those are either (a) variations on the four canonical patterns with different terminology, (b) academic patterns that haven't materialized in production, or (c) coordination mechanisms that work <em>within</em> one of the four patterns. Blackboard, for example, is a way of implementing inter-agent communication — it's a coordination mechanism, not an architecture pattern. Role-playing (where each agent plays a different character) is usually peer collaboration with extra costume. The four patterns in this module cover the production landscape; everything else is detail.</p>
+<p><strong>Q: Where does "MCP-coordinated multi-agent" fit?</strong></p>
+<p>MCP (Module 5) is the protocol layer. It's how agents talk to tools and to each other. It's not an architecture pattern; it's the messaging substrate that any of the four patterns can use. An orchestrator-worker system can communicate via MCP. A swarm can. Hierarchical can. MCP is plumbing, not architecture.</p>
+</div>
+<hr />
+<h2>Section 2 — Orchestrator-Worker</h2>
+<p>The pattern most teams should reach for first when multi-agent is justified. The Anthropic research system. The Claude Code main agent + sub-agents pattern. The pattern with the cleanest production track record.</p>
+<h3>What it is</h3>
+<p>One orchestrator agent. N worker agents. The orchestrator:</p>
+<ul>
+<li>Receives the user's task</li>
+<li>Decomposes it into subtasks</li>
+<li>Spawns workers, one per subtask</li>
+<li>Provides each worker with bounded scope and clear output expectations</li>
+<li>Waits for workers to complete</li>
+<li>Synthesizes worker outputs into the final result</li>
+</ul>
+<p>Workers:</p>
+<ul>
+<li>Run in their own context windows (separate from orchestrator)</li>
+<li>Have their own tool access (potentially different from orchestrator)</li>
+<li>Run their own decision loops (M2's hardened loop, scoped to the subtask)</li>
+<li>Return structured results to the orchestrator</li>
+</ul>
+<p>The architecture is a star: orchestrator at the center, workers at the points. Workers don't communicate with each other; all coordination flows through the orchestrator.</p>
+<h3>Why it works</h3>
+<p>Three properties make orchestrator-worker the production default:</p>
+<p><strong>1. Easy to reason about.</strong> The control flow is explicit and centralized. When something fails, you look at the orchestrator's plan and the worker's execution; the failure is in one or the other. Multi-agent debugging becomes single-agent debugging at two layers.</p>
+<p><strong>2. Workers are independent.</strong> A worker can fail, retry, get replaced, run on a different model — without affecting the others. This is the same property that makes microservices easier to operate than monoliths.</p>
+<p><strong>3. Synthesis is well-bounded.</strong> The orchestrator sees structured outputs from workers, not raw worker context. The synthesis problem is "given these N structured results, produce the final answer" — much easier than "given N parallel context windows, somehow combine them."</p>
+<h3>Anatomy of an orchestrator-worker system</h3>
+<pre><code class="language-python">from anthropic import AsyncAnthropic
+from pydantic import BaseModel, Field
+from typing import Literal
+import asyncio
+
+client = AsyncAnthropic()
+
+
+# ============== Worker side ==============
+
+class WorkerTask(BaseModel):
+    task_id: str
+    objective: str
+    context: dict  # bounded scope provided by orchestrator
+    expected_output_format: str  # what the orchestrator wants back
+
+
+class WorkerResult(BaseModel):
+    task_id: str
+    status: Literal[&quot;success&quot;, &quot;partial&quot;, &quot;failed&quot;]
+    findings: dict
+    confidence: float = Field(ge=0.0, le=1.0)
+    obstacles: list[str] = []  # things that prevented completion
+
+
+WORKER_SYSTEM_PROMPT = &quot;&quot;&quot;
+You are a specialized research worker. You've been given a focused task with
+clear scope. Your job is to:
+
+1. Use the tools available to investigate the specific objective.
+2. Stay within the bounds of the context provided. Do not explore tangents.
+3. Return structured findings matching the expected_output_format.
+4. If you can't complete the task, return partial results with explicit obstacles.
+
+You operate in your own context window — what you find here doesn't directly
+reach the orchestrator until you return your structured result. Be thorough
+within your scope; report concisely.
+&quot;&quot;&quot;.strip()
+
+
+async def run_worker(task: WorkerTask, *, model: str = &quot;claude-sonnet-4-6&quot;) -&gt; WorkerResult:
+    &quot;&quot;&quot;
+    Run one worker on one task. Returns structured result to orchestrator.
+    Worker has its own context window — fresh, bounded, focused.
+    &quot;&quot;&quot;
+    messages = [{
+        &quot;role&quot;: &quot;user&quot;,
+        &quot;content&quot;: (
+            f&quot;&lt;task&gt;\n{task.objective}\n&lt;/task&gt;\n\n&quot;
+            f&quot;&lt;context&gt;\n{json.dumps(task.context, indent=2)}\n&lt;/context&gt;\n\n&quot;
+            f&quot;&lt;output_format&gt;\n{task.expected_output_format}\n&lt;/output_format&gt;&quot;
+        ),
+    }]
+
+    # Run M2's hardened loop, scoped to this worker's context
+    final_response = await run_agent_loop(
+        messages=messages,
+        system=WORKER_SYSTEM_PROMPT,
+        tools=WORKER_TOOLS,  # bounded tool set for the worker's task
+        model=model,
+        max_turns=20,
+        max_tokens_total=80_000,  # per-worker budget
+    )
+
+    return parse_worker_result(final_response, task.task_id)
+
+
+# ============== Orchestrator side ==============
+
+class OrchestrationPlan(BaseModel):
+    overall_goal: str
+    subtasks: list[WorkerTask]
+    synthesis_strategy: str
+
+
+ORCHESTRATOR_SYSTEM_PROMPT = &quot;&quot;&quot;
+You are an orchestrator coordinating research workers. Your job:
+
+1. Analyze the user's request and decompose it into focused subtasks.
+2. For each subtask, write a clear objective, scope, and expected output format.
+3. Workers operate in isolated context windows — they need everything in the
+   task description to work effectively. Don't assume they have your context.
+4. After workers complete, synthesize their structured findings into the final
+   answer for the user.
+
+Decomposition discipline:
+- Subtasks should be genuinely independent (one worker doesn't need another's
+  output to start)
+- Subtask scope should be focused (one company, one document, one question)
+- Expected outputs should be structured (so synthesis is well-bounded)
+
+Avoid:
+- Spawning workers for trivial subtasks (orchestrator could handle them faster)
+- Decomposing serial tasks into &quot;subtasks&quot; that actually depend on each other
+- Workers with vague objectives (&quot;research this thoroughly&quot;)
+&quot;&quot;&quot;.strip()
+
+
+async def orchestrate(user_request: str, *, max_workers: int = 8) -&gt; str:
+    &quot;&quot;&quot;
+    Top-level orchestration. Plan, dispatch workers in parallel, synthesize.
+    &quot;&quot;&quot;
+    # Step 1: Plan
+    plan = await create_plan(user_request)
+    if len(plan.subtasks) &gt; max_workers:
+        # Cap the parallelism; reduce to the most important subtasks
+        plan.subtasks = await prune_subtasks(plan.subtasks, max_workers)
+
+    # Step 2: Dispatch workers in parallel
+    worker_results = await asyncio.gather(*[
+        run_worker(task) for task in plan.subtasks
+    ], return_exceptions=True)
+
+    # Handle worker failures gracefully (worker error → partial result; not
+    # whole-system failure)
+    parsed_results = []
+    for result in worker_results:
+        if isinstance(result, Exception):
+            parsed_results.append(WorkerResult(
+                task_id=&quot;?&quot;, status=&quot;failed&quot;, findings={},
+                confidence=0.0, obstacles=[str(result)],
+            ))
+        else:
+            parsed_results.append(result)
+
+    # Step 3: Synthesize
+    final_response = await synthesize(
+        original_request=user_request,
+        plan=plan,
+        worker_results=parsed_results,
+    )
+    return final_response
+
+
+async def create_plan(user_request: str) -&gt; OrchestrationPlan:
+    response = await client.messages.create(
+        model=&quot;claude-opus-4-7&quot;,  # Orchestration is high-stakes; use the best model
+        max_tokens=4096,
+        system=ORCHESTRATOR_SYSTEM_PROMPT,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_request}],
+        tools=[{
+            &quot;name&quot;: &quot;submit_plan&quot;,
+            &quot;description&quot;: &quot;Submit your decomposition plan.&quot;,
+            &quot;input_schema&quot;: OrchestrationPlan.model_json_schema(),
+        }],
+        tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;submit_plan&quot;},
+    )
+    block = next(b for b in response.content if b.type == &quot;tool_use&quot;)
+    return OrchestrationPlan(**block.input)
+
+
+async def synthesize(
+    original_request: str,
+    plan: OrchestrationPlan,
+    worker_results: list[WorkerResult],
+) -&gt; str:
+    response = await client.messages.create(
+        model=&quot;claude-opus-4-7&quot;,
+        max_tokens=8192,
+        system=(
+            &quot;You are synthesizing the findings of multiple research workers &quot;
+            &quot;into a final response. Each worker investigated one aspect of &quot;
+            &quot;the user's request. Your job is to combine their structured &quot;
+            &quot;findings into a coherent answer. Note any gaps, conflicts, or &quot;
+            &quot;areas where workers couldn't complete their tasks.&quot;
+        ),
+        messages=[{
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: (
+                f&quot;Original request: {original_request}\n\n&quot;
+                f&quot;Plan: {plan.synthesis_strategy}\n\n&quot;
+                f&quot;Worker results:\n{json.dumps([r.dict() for r in worker_results], indent=2)}\n\n&quot;
+                &quot;Produce the final response for the user.&quot;
+            ),
+        }],
+    )
+    return response.content[0].text
+</code></pre>
+<p>Five things in this code worth noting:</p>
+<p><strong>Bounded worker context.</strong> Each worker sees only its task description, not the orchestrator's full reasoning or other workers' contexts. The <code>WorkerTask</code> is the contract: everything the worker needs is there.</p>
+<p><strong>Structured returns.</strong> Workers return <code>WorkerResult</code> (Pydantic-typed). The orchestrator doesn't have to parse free-form worker output; the structure is enforced.</p>
+<p><strong>Parallel dispatch.</strong> <code>asyncio.gather</code> runs all workers in parallel. The wall-clock time is roughly the time of the slowest worker, not the sum.</p>
+<p><strong>Failure isolation.</strong> <code>return_exceptions=True</code> means one worker's exception doesn't kill the whole orchestration. The orchestrator gets a <code>failed</code> result back and synthesizes around it.</p>
+<p><strong>Model selection per role.</strong> Orchestrator on Opus 4.7 (high-stakes synthesis). Workers default to Sonnet 4.6 (the right cost-quality balance for focused subtasks). M6's discipline applied to multi-agent.</p>
+<h3>Where orchestrator-worker excels</h3>
+<ul>
+<li><strong>Parallel research over independent entities.</strong> The Anthropic research system. Sam's research-on-demand for sales.</li>
+<li><strong>Document analysis across many independent documents.</strong> Legal review pipelines, contract analysis, due diligence.</li>
+<li><strong>Comparison shopping across many products or vendors.</strong></li>
+<li><strong>Verification or fact-checking across many independent claims.</strong></li>
+</ul>
+<h3>Where it fails</h3>
+<ul>
+<li><strong>Tightly interdependent tasks.</strong> Workers can't do A without knowing what B found; the parallel structure breaks down.</li>
+<li><strong>Fuzzy decomposition.</strong> When the orchestrator can't produce clean subtask boundaries up front, workers get vague mandates and produce vague results.</li>
+<li><strong>Synthesis-dominated tasks.</strong> When 90% of the work is combining the workers' outputs (and the workers' work is trivial), the orchestrator's synthesis becomes the bottleneck and parallelism doesn't help.</li>
+</ul>
+<div class="gotcha">
+<p>A common failure: orchestrator-worker systems where the orchestrator's plan changes mid-execution. Worker A returns; orchestrator decides to spawn three new workers; those return; orchestrator decides to spawn more. The pattern degrades into ad-hoc agent spawning with no clean structure. The fix: commit to a plan up front; let it run to completion; <em>then</em> decide if a second round is needed. Iterative planning sounds adaptive but usually produces chaos. Plan once, dispatch, synthesize, optionally iterate.</p>
+</div>
+<hr />
+<h2>Section 3 — Hierarchical</h2>
+<p>The orchestrator-worker pattern extended to N levels. An orchestrator delegates to middle managers; middle managers delegate to workers. Tree-structured.</p>
+<h3>When this earns its place</h3>
+<p>Rarely, in production. The cases:</p>
+<p><strong>1. The task tree has genuine depth.</strong> A research project with both broad themes and deep sub-investigations. "Analyze the regulatory landscape for fintech" might decompose into "US," "EU," "APAC" themes; each theme decomposes into "banking regulation," "data privacy," "consumer protection" sub-investigations. Three levels of decomposition with real distinct structure at each level.</p>
+<p><strong>2. Different middle layers have genuinely different roles.</strong> A coding orchestrator might delegate to a "backend architecture" middle manager and a "frontend architecture" middle manager. Each has different specialist workers (database, API, infrastructure for backend; React, styling, accessibility for frontend). The middle layer adds value because it provides domain framing the workers benefit from.</p>
+<p><strong>3. Scaling parallelism beyond what one orchestrator can manage.</strong> When the number of workers exceeds what one orchestrator can plan and synthesize coherently (typically &gt;15-20), middle managers reduce the orchestrator's coordination load. This is rare; most production systems have &lt;10 workers.</p>
+<h3>When it doesn't</h3>
+<p>When orchestrator-worker would have done the job. The diagnostic: can you remove the middle layer and have the orchestrator delegate directly to workers? If yes, you don't need hierarchy. The middle layer's only justification is <em>adding genuine value</em> — domain expertise, decomposition the orchestrator can't do, scaling the orchestrator's coordination.</p>
+<p>Most teams reaching for hierarchy are over-engineering. The Bouchard "multi-agent overengineering" warning from M13 applies doubly: hierarchy is multi-agent stacked on multi-agent. Each level adds coordination overhead. The cumulative cost is significant.</p>
+<h3>Example structure</h3>
+<pre><code class="language-python">async def hierarchical_orchestrate(user_request: str) -&gt; str:
+    # Level 0: Top orchestrator
+    top_plan = await top_level_plan(user_request)
+
+    # Level 1: Middle managers run in parallel, each handling their own subtree
+    middle_results = await asyncio.gather(*[
+        run_middle_manager(theme) for theme in top_plan.themes
+    ])
+
+    # Level 0 again: Top orchestrator synthesizes middle managers' outputs
+    return await top_level_synthesize(user_request, middle_results)
+
+
+async def run_middle_manager(theme: ThemeTask) -&gt; ThemeResult:
+    # Level 1: Middle manager plans its subtree
+    middle_plan = await middle_level_plan(theme)
+
+    # Level 2: Workers run in parallel under this middle manager
+    worker_results = await asyncio.gather(*[
+        run_worker(subtask) for subtask in middle_plan.subtasks
+    ])
+
+    # Level 1 again: Middle manager synthesizes its subtree's outputs
+    return await middle_level_synthesize(theme, worker_results)
+</code></pre>
+<p>The structure mirrors orchestrator-worker, just nested. Each level has its own plan/dispatch/synthesize cycle.</p>
+<h3>Where hierarchical excels</h3>
+<ul>
+<li><strong>Large research projects with natural domain boundaries</strong> (the regulatory landscape example)</li>
+<li><strong>Complex codebase analysis spanning frontend/backend/infrastructure</strong></li>
+<li><strong>Document analysis across genuinely different document categories</strong></li>
+</ul>
+<h3>Where it fails</h3>
+<ul>
+<li><strong>When a flat orchestrator-worker structure would have worked.</strong> Most cases.</li>
+<li><strong>When the middle layer doesn't add domain value.</strong> It's just routing; remove it.</li>
+<li><strong>Operational complexity.</strong> Three levels of multi-agent operations is significantly harder than two. M16-17 territory but more so.</li>
+</ul>
+<div class="brain">
+<p>Sam's research-on-demand system processes 5-8 target companies per AE request. Should it use orchestrator-worker or hierarchical?</p>
+<p>(Orchestrator-worker. The companies don't have natural sub-themes that warrant middle managers. Each company is a worker. The orchestrator handles the 5-8 companies directly. Adding a middle layer — "manage the financial subagent for each company, manage the leadership subagent for each company" — would be hierarchical theater. The companies are independent; the orchestrator's coordination load (5-8 workers) is well within manageable bounds. Flat orchestrator-worker is the right call.)</p>
+</div>
+<hr />
+<h2>Section 4 — Peer Collaboration</h2>
+<p>The pattern Anthropic's Claude Code Ultra Plan uses: three explorers and one critic. Multiple agents work on the <em>same</em> problem from different angles; a synthesizer combines.</p>
+<h3>What it is</h3>
+<p>Unlike orchestrator-worker (where workers handle <em>different</em> parts of the task), peer collaboration has multiple agents handling the <em>same</em> part with different framings:</p>
+<ul>
+<li><strong>Explorer 1</strong> approaches the problem from perspective A</li>
+<li><strong>Explorer 2</strong> approaches the same problem from perspective B</li>
+<li><strong>Explorer 3</strong> approaches the same problem from perspective C</li>
+<li><strong>Critic</strong> evaluates the explorers' outputs and synthesizes a final answer</li>
+</ul>
+<p>The MAR paper from M11's research is the academic version of this. Anthropic's Ultra Plan is the production version. The MindStudio writeup describes Anthropic's framing: <em>"three parallel exploration agents each independently attempt the problem, and a dedicated critic agent evaluates their outputs before producing a final answer."</em></p>
+<h3>Why three explorers?</h3>
+<p>The structural argument: a single agent commits to an approach early and defends it (the M11 blind-spot problem). Multiple agents working independently from different framings produce diverse approaches. The critic gets to evaluate genuinely different angles.</p>
+<p>Three is a reasonable default — enough diversity to surface different approaches, few enough to keep cost manageable. Two is too few (no tiebreaker on disagreements). Five is usually too many (diminishing returns; the third, fourth, and fifth explorers tend to overlap).</p>
+<h3>Production code</h3>
+<pre><code class="language-python">class ExplorationResult(BaseModel):
+    perspective: str
+    approach: str
+    reasoning: str
+    confidence: float = Field(ge=0.0, le=1.0)
+    open_questions: list[str]
+
+
+EXPLORER_PROMPTS = {
+    &quot;first_principles&quot;: (
+        &quot;Approach this problem from first principles. Don't pattern-match to &quot;
+        &quot;similar problems you've seen. Reason from the fundamental constraints.&quot;
+    ),
+    &quot;comparative&quot;: (
+        &quot;Approach this problem by analogy to similar problems you've seen &quot;
+        &quot;before. What patterns from prior solutions apply here? What lessons &quot;
+        &quot;transfer?&quot;
+    ),
+    &quot;constraint_focused&quot;: (
+        &quot;Approach this problem by enumerating the constraints first. What MUST &quot;
+        &quot;be true of any solution? Then propose an approach that satisfies all &quot;
+        &quot;constraints.&quot;
+    ),
+}
+
+
+async def run_explorer(perspective: str, problem: str) -&gt; ExplorationResult:
+    &quot;&quot;&quot;
+    Single explorer agent. Independent context window. Specific perspective.
+    &quot;&quot;&quot;
+    prompt = EXPLORER_PROMPTS[perspective]
+    response = await client.messages.create(
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_tokens=4096,
+        system=(
+            &quot;You are an exploration agent solving a problem from a specific &quot;
+            &quot;perspective. Other agents are working on the same problem from &quot;
+            &quot;different angles. Your job is to provide YOUR perspective's best &quot;
+            &quot;approach, not to converge with others. Be specific and confident &quot;
+            &quot;about your view, while noting what you're uncertain about.\n\n&quot;
+            f&quot;Your perspective: {prompt}&quot;
+        ),
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: problem}],
+        tools=[{
+            &quot;name&quot;: &quot;submit_exploration&quot;,
+            &quot;description&quot;: &quot;Submit your exploration result.&quot;,
+            &quot;input_schema&quot;: ExplorationResult.model_json_schema(),
+        }],
+        tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;submit_exploration&quot;},
+    )
+    block = next(b for b in response.content if b.type == &quot;tool_use&quot;)
+    return ExplorationResult(**block.input)
+
+
+class CriticAssessment(BaseModel):
+    chosen_approach: str
+    reasoning: str
+    incorporates_perspectives: list[str]  # which explorers' insights are in the final
+    rejected_approaches: list[str]
+    rejected_reasons: list[str]
+
+
+async def run_critic(
+    problem: str,
+    explorations: list[ExplorationResult],
+) -&gt; CriticAssessment:
+    &quot;&quot;&quot;
+    Critic synthesizes the explorers' outputs into a final approach.
+    &quot;&quot;&quot;
+    response = await client.messages.create(
+        model=&quot;claude-opus-4-7&quot;,  # Stronger model for synthesis
+        max_tokens=4096,
+        system=(
+            &quot;You are a critic synthesizing multiple exploration agents' &quot;
+            &quot;approaches to a problem. Each explorer worked independently from &quot;
+            &quot;a specific perspective. Your job:\n\n&quot;
+            &quot;1. Evaluate each exploration's strengths and weaknesses.\n&quot;
+            &quot;2. Identify approaches that contradict each other and adjudicate.\n&quot;
+            &quot;3. Synthesize a final approach that incorporates the best of &quot;
+            &quot;the diverse perspectives.\n&quot;
+            &quot;4. Be explicit about what you're rejecting and why.&quot;
+        ),
+        messages=[{
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: (
+                f&quot;Original problem:\n{problem}\n\n&quot;
+                f&quot;Exploration results from {len(explorations)} agents:\n&quot;
+                f&quot;{json.dumps([e.dict() for e in explorations], indent=2)}\n\n&quot;
+                &quot;Provide your synthesized assessment.&quot;
+            ),
+        }],
+        tools=[{
+            &quot;name&quot;: &quot;submit_assessment&quot;,
+            &quot;description&quot;: &quot;Submit your critical synthesis.&quot;,
+            &quot;input_schema&quot;: CriticAssessment.model_json_schema(),
+        }],
+        tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;submit_assessment&quot;},
+    )
+    block = next(b for b in response.content if b.type == &quot;tool_use&quot;)
+    return CriticAssessment(**block.input)
+
+
+async def peer_collaboration(problem: str) -&gt; CriticAssessment:
+    &quot;&quot;&quot;
+    Run 3 explorers in parallel; have a critic synthesize.
+    &quot;&quot;&quot;
+    explorations = await asyncio.gather(*[
+        run_explorer(perspective, problem)
+        for perspective in EXPLORER_PROMPTS.keys()
+    ])
+    return await run_critic(problem, explorations)
+</code></pre>
+<p>The pattern is similar to orchestrator-worker but the <em>purpose</em> is different. Orchestrator-worker decomposes; peer collaboration multiplies perspectives. The critic isn't just synthesizing partitioned work — it's adjudicating between competing approaches.</p>
+<h3>Where peer collaboration excels</h3>
+<ul>
+<li><strong>Open-ended planning tasks.</strong> Architecture decisions, system design, complex code refactoring strategies.</li>
+<li><strong>Tasks where pattern-matching is a risk.</strong> First-principles thinking matters; multiple framings reduce the chance everyone falls into the same trap.</li>
+<li><strong>High-stakes decisions where being wrong is expensive.</strong> Multiple perspectives + critic synthesis produces more reliable judgments than single-agent reasoning.</li>
+</ul>
+<h3>Where it fails</h3>
+<ul>
+<li><strong>Routine tasks.</strong> The cost of 3 explorers + 1 critic isn't justified for "summarize this email."</li>
+<li><strong>Tasks with one clear right answer.</strong> Multiple framings on a deterministic problem produce three roughly-identical outputs and a critic that has nothing to do.</li>
+<li><strong>Latency-sensitive applications.</strong> 4 LLM calls (3 explorers + 1 critic) plus the synthesis adds up; for interactive use, this can push beyond acceptable thresholds.</li>
+</ul>
+<h3>Anthropic's Ultra Plan as the canonical case</h3>
+<p>Claude Code's Ultra Plan applies this pattern to <em>implementation planning</em>: when you ask Claude Code to plan a complex refactor, three explorer agents independently propose plans, a critic synthesizes. The result is a plan that benefits from multiple framings (first-principles, comparative, constraint-focused) before code gets written.</p>
+<p>The MindStudio framing: <em>"You get something closer to how a good engineering team actually works — multiple perspectives, then ruthless evaluation."</em> The pattern works because the alternative (one agent committing to a plan early) genuinely produces worse plans for genuinely hard problems.</p>
+<p>The cost: 4 LLM calls vs 1, with the orchestrator on Opus 4.7 (high stakes). Roughly 4-5× the inference cost of single-agent planning. Justified for plans that gate significant downstream work; overkill for routine queries.</p>
+<div class="pullquote">
+<p>Peer collaboration earns its place when committing to one approach early is the failure mode you're trying to prevent. For tasks where any reasonable approach works, it's expensive overkill. For tasks where the <em>choice of approach</em> is the hardest part, it's the right architecture.</p>
+</div>
+<hr />
+<h2>Section 5 — Swarm</h2>
+<p>The honest treatment. Swarm is the architecture pattern that gets the most enthusiastic coverage and the least production validation.</p>
+<h3>What it is</h3>
+<p>Many agents (often dozens, sometimes more) working semi-independently on related tasks. Coordination happens through:</p>
+<ul>
+<li>Shared state (a database, a file system, a message queue) that agents read and write</li>
+<li>Light messaging (broadcast announcements, request-response) without a central orchestrator</li>
+<li>Workspace isolation (git worktrees, containerized environments) so agents don't interfere</li>
+</ul>
+<p>Examples that get cited:</p>
+<ul>
+<li>Code-modification swarms where each agent works on a separate branch</li>
+<li>Research swarms where each agent investigates a different aspect with no central coordinator</li>
+<li>Content-generation swarms producing variations in parallel</li>
+</ul>
+<h3>What's true about swarm</h3>
+<p>It can produce high parallelism. When the work decomposes into many independent units, swarm processes them concurrently with no orchestrator bottleneck. For embarrassingly parallel tasks at scale, this is genuinely faster than orchestrator-worker.</p>
+<p>It has emergent quality benefits in some research settings. Multiple agents finding different angles on a problem can produce better aggregate results than one agent's sequential exploration.</p>
+<h3>What's also true about swarm</h3>
+<p>It's hard to debug. When something goes wrong in a swarm, "which agent failed" is often the wrong question — usually it's an emergent coordination failure across multiple agents. The trace is N parallel timelines with cross-references; debugging is genuinely harder than orchestrator-worker.</p>
+<p>It has goal drift. Without a central anchor (the orchestrator), agents can drift from the original task. The digitalapplied taxonomy notes: <em>"Failure modes: goal drift without supervisor anchor; coordination dead-locks; debugging difficulty."</em></p>
+<p>It's expensive. Many agents means many LLM calls. The token cost compounds harder than orchestrator-worker (which has fewer agents that each do more work). Swarm with 30 agents at 30K tokens each is 900K tokens before you've done any synthesis.</p>
+<p>It rarely earns its place over orchestrator-worker for the same task. The cases where swarm genuinely beats orchestrator-worker tend to be ones where:</p>
+<ol>
+<li>The number of parallel units is genuinely huge (&gt;20)</li>
+<li>Each unit is genuinely independent (no synthesis required)</li>
+<li>The orchestrator's coordination load would itself be the bottleneck</li>
+</ol>
+<p>These conditions are rare in production.</p>
+<h3>When swarm earns its place</h3>
+<p>Be honest: rarely. The cases:</p>
+<p><strong>1. Massively parallel research with no synthesis requirement.</strong> "Generate 50 product description variants" or "explore 100 hypothetical scenarios." The agents are doing the same kind of work; no synthesis; results aggregated by simple selection.</p>
+<p><strong>2. Code modification across genuinely independent files.</strong> A coding swarm that fixes 30 unrelated lint errors in 30 different files in parallel. Each agent has workspace isolation; no agent's change affects another's.</p>
+<p><strong>3. Open-ended research where the right structure isn't known.</strong> Some research tasks genuinely don't have a clean orchestrator-worker decomposition. Swarm can explore widely; the cost of redundancy is acceptable when you don't know what you're looking for.</p>
+<p>For everything else, orchestrator-worker is better.</p>
+<h3>Production swarm code (illustrative)</h3>
+<pre><code class="language-python">async def swarm_explore(
+    task: str,
+    *,
+    swarm_size: int = 20,
+    diversity_seed: list[str] = None,
+):
+    &quot;&quot;&quot;
+    Swarm exploration. Many agents work in parallel on related variants of
+    the task. Results aggregated, not synthesized.
+    &quot;&quot;&quot;
+    diversity_seed = diversity_seed or [f&quot;variation_{i}&quot; for i in range(swarm_size)]
+
+    # Each agent gets a slightly different framing
+    agent_tasks = [
+        f&quot;{task}\n\nAdditional context: {seed}&quot;
+        for seed in diversity_seed
+    ]
+
+    # Spawn N agents in parallel; each runs independently
+    results = await asyncio.gather(*[
+        run_swarm_agent(agent_task) for agent_task in agent_tasks
+    ], return_exceptions=True)
+
+    # Aggregation, not synthesis: rank/dedupe/select
+    valid_results = [r for r in results if not isinstance(r, Exception)]
+    return aggregate_swarm_results(valid_results)
+
+
+async def run_swarm_agent(task: str) -&gt; dict:
+    &quot;&quot;&quot;One swarm agent. No coordinator; runs to completion independently.&quot;&quot;&quot;
+    # ... independent agent loop
+</code></pre>
+<p>The aggregation step (<code>aggregate_swarm_results</code>) does ranking/dedup/selection — <em>not</em> synthesis. The output is "the best of the swarm's outputs," not "a unified result combining the swarm's work." This is the structural difference: swarm produces variants; aggregation picks; orchestrator-worker produces parts; synthesis combines.</p>
+<div class="gotcha">
+<p>The most common swarm anti-pattern: building swarm because "more agents = better results" without the structural justification. Teams ship a 20-agent swarm, see modest quality improvement over single-agent (which they could have gotten from M11 reflection at 5% the cost), and conclude swarm "works." It works in the sense that it doesn't crash; it doesn't work in the sense of justifying its cost. Before building swarm, prove that orchestrator-worker can't do the same task — with evidence, not intuition.</p>
+</div>
+<hr />
+<h2>Section 6 — Choosing Among the Four</h2>
+<p>A practical decision framework. Run through it after M13's gate (multi-agent earns its complexity); use it to pick which multi-agent pattern.</p>
+<h3>Question 1: What's the structure of the work?</h3>
+<p><strong>N independent subtasks with synthesis at the end</strong> → Orchestrator-worker. The dominant case.</p>
+<p><strong>One problem; multiple framings beneficial</strong> → Peer collaboration. When committing to one approach early is the risk.</p>
+<p><strong>Tree-structured task with genuine domain depth at multiple levels</strong> → Hierarchical. Rare; verify the middle layer adds value.</p>
+<p><strong>Massive parallelism with no central synthesis</strong> → Swarm. Rarer still; verify orchestrator-worker doesn't fit.</p>
+<h3>Question 2: What's the synthesis problem like?</h3>
+<p><strong>Combining structured outputs from different parts</strong> → Orchestrator-worker handles this. The synthesizer reads N structured results and combines.</p>
+<p><strong>Choosing among or merging competing approaches</strong> → Peer collaboration. The critic adjudicates.</p>
+<p><strong>Aggregating many similar outputs (rank, dedupe, select)</strong> → Swarm. No synthesis; aggregation suffices.</p>
+<p><strong>Synthesizing across multiple levels of nested results</strong> → Hierarchical. Each level synthesizes its children.</p>
+<h3>Question 3: What's the operational complexity tolerance?</h3>
+<p><strong>Low — small team, basic observability</strong> → Orchestrator-worker. Simplest to operate.</p>
+<p><strong>Medium — established multi-agent operations</strong> → Orchestrator-worker or peer collaboration.</p>
+<p><strong>High — distributed systems team, mature observability</strong> → Hierarchical or swarm acceptable. But still verify the simpler patterns wouldn't work first.</p>
+<h3>Worked examples</h3>
+<p><strong>Anthropic Research system:</strong> Q1 says N independent subtasks. Q2 says structured synthesis. Q3 says they have the operational sophistication. → Orchestrator-worker. (And that's what they built.)</p>
+<p><strong>Claude Code Ultra Plan:</strong> Q1 says one problem with multiple framings beneficial. Q2 says merging competing approaches. → Peer collaboration. (And that's what they built.)</p>
+<p><strong>Sam's research-on-demand:</strong> Q1 says 5-8 independent companies. Q2 says structured synthesis (combine company briefs into a presentation packet). Q3 says small team, established operations. → Orchestrator-worker.</p>
+<p><strong>A code-modification system fixing 30 unrelated lint errors:</strong> Q1 says massive parallelism. Q2 says no synthesis (each fix is independent). Q3 depends. → Swarm if the operational maturity is there; otherwise, batch into orchestrator-worker chunks of 5-10 files at a time.</p>
+<div class="brain">
+<p>A team is building a financial-research system: pulls financials for a target company, analyzes risks, summarizes management changes, evaluates competitive position, builds a final report. Run the framework.</p>
+<p>(Q1: Independent subtasks (financials, risks, management, competitive position) with synthesis at end → orchestrator-worker. Q2: Combining structured outputs into a coherent report → orchestrator-worker. Q3: Match team's operational capability. The answer is orchestrator-worker. Don't reach for hierarchical because there are five subtasks; that's still flat. Don't reach for peer collaboration because each subtask has a clear answer; multiple framings on "what's the company's revenue?" produce three identical numbers.)</p>
+</div>
+<hr />
+<h2>Section 7 — Anthropic's First-Party Multi-Agent Patterns</h2>
+<p>Anthropic ships multi-agent infrastructure in two products. Worth knowing the canonical implementations.</p>
+<h3>Claude Code subagents</h3>
+<p>The pattern documented at <code>code.claude.com/docs/sub-agents</code>. From the docs:</p>
+<blockquote>
+<p><em>"Subagents are specialized AI assistants that handle specific types of tasks... Each subagent runs in its own context window with a custom system prompt, specific tool access, and independent permissions."</em></p>
+</blockquote>
+<p>The orchestrator (the main Claude Code agent) delegates to subagents based on their descriptions. Each subagent has:</p>
+<ul>
+<li>A name and description (used by the orchestrator for routing)</li>
+<li>A system prompt (focused, scoped)</li>
+<li>A specific tool set (often more restrictive than the orchestrator)</li>
+<li>A permission mode (often more conservative)</li>
+</ul>
+<p>Built-in subagents Claude Code ships:</p>
+<ul>
+<li><strong>Explore</strong> — read-only agent on Haiku, optimized for fast file discovery and codebase search</li>
+<li><strong>Plan</strong> — research agent used during plan mode</li>
+<li><strong>General-purpose</strong> — capable agent for complex multi-step tasks requiring both exploration and action</li>
+</ul>
+<p>Definition format (Markdown + YAML frontmatter):</p>
+<pre><code class="language-yaml">---
+name: repo-explorer
+description: Search unfamiliar codebases, map entry points, summarize architecture. Do not edit files.
+tools: [Read, Grep, Glob]
+disallowedTools: [Edit, Write, Bash]
+model: haiku
+permissionMode: plan
+memory: project
+---
+
+Find the main app entry points, core data flow, and likely risk areas.
+Return a short summary with file paths, key abstractions, and open questions.
+</code></pre>
+<p>The architecture is orchestrator-worker. The orchestrator is the main Claude Code session; subagents are workers with bounded scope. The discipline of "subagents cannot spawn other subagents" prevents infinite nesting and keeps the architecture flat.</p>
+<p>Two key insights from the Claude Code design:</p>
+<p><strong>Subagents as context-management primitive.</strong> From the architecture guide: <em>"That isolation is valuable even if you never care about specialization. Large-file research, codebase exploration, and dependency review are verbose. If you keep them in the main session, you burn context budget quickly."</em> Subagents preserve the main session's context by handling verbose work in isolation.</p>
+<p><strong>Subagents as cost control.</strong> Read-heavy work goes to Haiku-based subagents; the main session stays on Sonnet/Opus. M6's per-step model selection applied to multi-agent.</p>
+<h3>Claude Code Ultra Plan</h3>
+<p>Anthropic's three-explorers-plus-critic implementation, available on Ultra subscriptions. From the description:</p>
+<blockquote>
+<p><em>"Ultra Plan mode uses multi-agent exploration and critique to create a detailed implementation plan. So it's not just one Claude thinking through your task, it's multiple agents exploring the problem, checking each other's work, and giving you the best possible plan before a single line of code gets written."</em></p>
+</blockquote>
+<p>The architecture is peer collaboration. Three exploration agents work the same problem from different angles; a critic synthesizes. The output: a detailed plan the user can review and edit before execution begins.</p>
+<p>The critical insight from the buzzrag writeup: <em>"It addresses the oversight problem... It maintains AI autonomy while inserting a mandatory human checkpoint. The question is whether this actually scales."</em> Ultra Plan is <em>deliberately</em> slower than single-agent planning — the slowness is the feature. For high-stakes plans, the user reviews the result of multi-agent exploration rather than getting the first thing one agent thought of.</p>
+<p>The cost: roughly 4-5× single-agent planning, plus the user's review time. Justified for plans that gate significant downstream work.</p>
+<h3>Agent Teams</h3>
+<p>Anthropic's pattern for <em>peer coordination across separate sessions</em> (vs subagents which work within one session). The pubnub article frames the distinction:</p>
+<blockquote>
+<p><em>"Subagents stay inside one session and report back to the parent. Agent teams add peer coordination across separate sessions... that coordination can use about 7x more tokens in plan-heavy workflows and comes with more operational overhead."</em></p>
+</blockquote>
+<p>Agent Teams uses MCP-based communication between agents in different sessions. The architecture is closer to swarm or mesh than orchestrator-worker — agents are peers, not strict hierarchical roles. The cost (7× tokens) reflects the coordination overhead.</p>
+<p>When to use Agent Teams:</p>
+<ul>
+<li>Multiple specialists need to collaborate as peers (not delegate)</li>
+<li>The work spans multiple sessions over time</li>
+<li>Inter-session coordination is genuinely required</li>
+</ul>
+<p>When not to:</p>
+<ul>
+<li>A single session with subagents would have worked (most cases)</li>
+<li>The "peers" are actually doing different parts of one workflow (orchestrator-worker fits)</li>
+</ul>
+<h3>What this means for your design</h3>
+<p>If you're building on Claude Code, the subagents pattern is the canonical orchestrator-worker for that environment. Don't reinvent it.</p>
+<p>If you're building agentic features in Claude Code Ultra Plan style, the three-explorers-plus-critic is the canonical peer collaboration pattern. Use it for high-stakes planning.</p>
+<p>If you're building outside Claude Code (your own application using the Anthropic API), the patterns from Sections 2-5 are the implementation reference. The architectural shapes are the same; the framework infrastructure is yours to build.</p>
+<hr />
+<h2>Section 8 — Sam's Research-on-Demand System</h2>
+<p>Returning to the cold open. Sam ran the Section 6 framework:</p>
+<ul>
+<li><strong>Q1:</strong> N independent subtasks (one per company; 5-8 per AE request) → orchestrator-worker</li>
+<li><strong>Q2:</strong> Structured synthesis into a unified packet → orchestrator-worker</li>
+<li><strong>Q3:</strong> Team has multi-agent operational capability from the deal-research workflow → orchestrator-worker is operationally feasible</li>
+</ul>
+<p>The framework said orchestrator-worker. Cleanly. Sam didn't need hierarchical (no domain-deep tree), didn't need peer collaboration (no contested-approach problem; each company is its own clean problem), didn't need swarm (8 companies isn't massive parallelism).</p>
+<h3>The architecture</h3>
+<pre><code class="language-python">class CompanyResearchTask(BaseModel):
+    company_name: str
+    deal_context: str
+    research_focus: list[str]  # which sections matter most for this AE
+
+
+class CompanyResearchResult(BaseModel):
+    company_name: str
+    profile: dict
+    financial_summary: dict
+    leadership_summary: dict
+    competitive_position: dict
+    key_risks: list[str]
+    confidence: float
+    obstacles: list[str] = []
+
+
+class ResearchPacket(BaseModel):
+    ae_id: str
+    request_id: str
+    company_briefs: list[dict]  # one per company
+    cross_company_insights: list[str]  # patterns across the set
+    preparation_priorities: list[str]  # what to focus on for each call
+
+
+async def research_on_demand(
+    ae_id: str,
+    target_companies: list[str],
+    deal_contexts: dict[str, str],  # company_name -&gt; deal stage description
+) -&gt; ResearchPacket:
+    &quot;&quot;&quot;
+    AE provides 5-8 target companies; system researches all in parallel,
+    synthesizes into a packet for back-to-back call prep.
+    &quot;&quot;&quot;
+    # Step 1: Plan
+    plan = await create_research_plan(ae_id, target_companies, deal_contexts)
+
+    # Step 2: Dispatch one company-researcher worker per company
+    company_results = await asyncio.gather(*[
+        run_company_researcher(task) for task in plan.company_tasks
+    ], return_exceptions=True)
+
+    # Step 3: Synthesize into research packet
+    packet = await synthesize_packet(
+        ae_id=ae_id,
+        plan=plan,
+        company_results=[r for r in company_results if not isinstance(r, Exception)],
+        failures=[i for i, r in enumerate(company_results) if isinstance(r, Exception)],
+    )
+
+    return packet
+
+
+async def run_company_researcher(
+    task: CompanyResearchTask,
+) -&gt; CompanyResearchResult:
+    &quot;&quot;&quot;
+    One worker. Researches one company. Independent context. M2 hardened loop.
+    &quot;&quot;&quot;
+    return await run_agent_loop(
+        system=COMPANY_RESEARCHER_SYSTEM_PROMPT,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: _format_research_task(task)}],
+        tools=COMPANY_RESEARCH_TOOLS,  # company_lookup, market_research, etc.
+        model=&quot;claude-sonnet-4-6&quot;,
+        max_turns=12,
+        max_tokens_total=120_000,
+    )
+</code></pre>
+<p>The structure is exactly orchestrator-worker:</p>
+<ul>
+<li><strong>Orchestrator</strong> plans (which companies, what focus per company), dispatches in parallel, synthesizes into packet</li>
+<li><strong>Workers</strong> are company-researchers, one per target company, with focused mandate</li>
+<li><strong>Synthesis</strong> is structured — combine 5-8 <code>CompanyResearchResult</code> objects into one <code>ResearchPacket</code></li>
+</ul>
+<h3>What Sam preserved from M2-M12</h3>
+<p>Each worker is a fully-disciplined single agent:</p>
+<ul>
+<li>M2 hardened loop with <code>max_turns</code> and budget caps</li>
+<li>M4 well-designed tools (the existing <code>company_lookup</code>, <code>competitor_analysis</code>, <code>market_research</code> from earlier modules)</li>
+<li>M7 context engineering (the worker's system prompt is at the right altitude; tools are bounded)</li>
+<li>M9 memory (workers can read existing brief archives via the <code>list_briefs</code> / <code>get_brief</code> tools)</li>
+<li>M10 hallucination discipline (worker outputs are entity-verified before returning)</li>
+<li>M11 reflection (the synthesizer runs a final-pass critic before returning the packet)</li>
+<li>M12 guardrails (the orchestrator's input is filtered; workers' outputs are policy-checked)</li>
+</ul>
+<p>The multi-agent architecture isn't <em>replacing</em> the single-agent disciplines. It's <em>adding</em> parallel coordination on top of fully-disciplined single agents.</p>
+<h3>The metrics</h3>
+<p>Three months after rollout:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Single-agent (sequential)</th>
+<th>Multi-agent (parallel)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Median time for 5-company packet</td>
+<td>21 minutes</td>
+<td>3.2 minutes</td>
+</tr>
+<tr>
+<td>Median time for 8-company packet</td>
+<td>34 minutes</td>
+<td>4.1 minutes</td>
+</tr>
+<tr>
+<td>Tokens per 5-company packet</td>
+<td>~280K</td>
+<td>~480K</td>
+</tr>
+<tr>
+<td>Tokens per 8-company packet</td>
+<td>~445K</td>
+<td>~770K</td>
+</tr>
+<tr>
+<td>Cost per 5-company packet</td>
+<td>$4.20</td>
+<td>$7.20</td>
+</tr>
+<tr>
+<td>Cost per 8-company packet</td>
+<td>$6.70</td>
+<td>$11.55</td>
+</tr>
+<tr>
+<td>Quality (AE-rated rubric)</td>
+<td>7.6/10</td>
+<td>8.1/10</td>
+</tr>
+</tbody>
+</table>
+<p>The trade-offs:</p>
+<ul>
+<li><strong>Latency:</strong> dramatically better. 21 minutes → 3 minutes for 5 companies. AEs prepping back-to-back calls can use the system <em>during</em> prep, not the night before.</li>
+<li><strong>Cost:</strong> ~70% increase. Acceptable: each packet supports a $50K-$500K deal conversation; $7-12 per packet is rounding error.</li>
+<li><strong>Quality:</strong> modestly better. The parallel context windows let each worker focus deeply on one company without competing for attention budget.</li>
+</ul>
+<p>The AE team's response was unambiguous. The packet system rolled out company-wide within four weeks. AEs reported being able to prep for 6-8 calls in a morning where they'd previously prepped for 2-3.</p>
+<p>Sam wrote one more lesson for the playbook: <em>"the right multi-agent pattern is the simplest one that handles the structure of the work. We had clean parallel structure; orchestrator-worker fit. Anything more sophisticated would have been over-engineering."</em></p>
+<div class="code-exercise">
+<p><strong>Exercise 14.1 — Pattern selection.</strong></p>
+<p>Take a problem you're considering for multi-agent. Run the Section 6 framework:</p>
+<ol>
+<li><strong>Q1: What's the structure of the work?</strong> Independent subtasks? Multiple framings? Tree-structured? Massive parallelism?</li>
+<li><strong>Q2: What's the synthesis problem?</strong> Structured combination? Adjudication? Aggregation? Multi-level synthesis?</li>
+<li><strong>Q3: What's your operational tolerance?</strong> Match operational complexity to team capability.</li>
+<li><strong>Pick one pattern.</strong> Don't combine patterns; commit to the one that matches.</li>
+<li><strong>Sketch the implementation.</strong> Worker contract, orchestrator plan, synthesis approach.</li>
+<li><strong>Cost estimate.</strong> How many LLM calls? What models? What's the token multiplier vs single-agent?</li>
+</ol>
+<p>If the framework points to "no clean pattern fits," that's signal to revisit M13's framework — multi-agent might not have been the right call after all. The patterns in M14 are deliberately distinct. If your problem doesn't fit one cleanly, the architecture probably needs to be simpler than multi-agent.</p>
+</div>
+<hr />
+<h2>Section 9 — The Framework</h2>
+<p>Building multi-agent systems for the cases that pass M13's gate:</p>
+<p><strong>1. Default to orchestrator-worker.</strong> The clearest, most operable pattern. Reach for it first. It handles most multi-agent use cases that pass M13's framework.</p>
+<p><strong>2. Use peer collaboration for one specific case.</strong> When committing to one approach early is the failure mode (open-ended planning, architecture decisions, high-stakes design). Three explorers + one critic is the canonical structure.</p>
+<p><strong>3. Reach for hierarchical only when the task tree has genuine depth.</strong> Verify the middle layer adds domain value. Most cases that "feel hierarchical" are actually flat orchestrator-worker with extra steps.</p>
+<p><strong>4. Reach for swarm rarely.</strong> When parallelism is massive (&gt;20 units), each unit is genuinely independent (no synthesis), and orchestrator-worker would itself bottleneck on coordination. These conditions are rare in production.</p>
+<p><strong>5. Each agent is fully M2-M12 disciplined.</strong> Multi-agent doesn't replace single-agent discipline; it adds coordination on top. Workers have hardened loops, well-designed tools, context engineering, hallucination discipline, guardrails. M2 through M12 still apply per agent.</p>
+<p><strong>6. Bounded scope per worker.</strong> Workers' tasks should be focused, with clear inputs, expected output formats, and budget caps. Workers shouldn't have to ask the orchestrator for clarification mid-execution.</p>
+<p><strong>7. Structured returns, not free-form.</strong> Workers return Pydantic-typed results. Synthesis is "given these N structured results, produce the final answer" — well-bounded.</p>
+<p><strong>8. Failure isolation.</strong> One worker's failure should produce a partial result, not crash the orchestration. <code>return_exceptions=True</code> in <code>asyncio.gather</code>; graceful synthesis around partial failures.</p>
+<p><strong>9. Use Anthropic's first-party patterns when you can.</strong> Claude Code subagents for that environment. Three-explorers-plus-critic for peer collaboration. Don't reinvent infrastructure that exists.</p>
+<p><strong>10. Match operational complexity to team capability.</strong> Multi-agent operations is harder than single-agent. M16-17 cover the operational disciplines, but the foundation is "your team has to be able to debug what you build."</p>
+<p>The discipline this enforces: <strong>multi-agent is a deliberate response to specific structural requirements, with the simplest pattern that handles those requirements.</strong> Not the most sophisticated; the simplest. Sam's research-on-demand earned its complexity by passing M13's framework, then chose the simplest M14 pattern that handled the structure (orchestrator-worker), then implemented each agent with full M2-M12 discipline. That's the production multi-agent recipe.</p>
+<hr />
+<h2>Recap: Module 14 in eight bullets</h2>
+<div class="bullet-points">
+<ul>
+<li>Four canonical multi-agent patterns: orchestrator-worker (one coordinator + N workers + synthesis), hierarchical (orchestrator + middle managers + workers; tree depth ≥ 3), peer collaboration (multiple agents on same problem + critic synthesis), swarm (many agents with light coordination, no central synthesis).</li>
+<li>Orchestrator-worker is the production default. The Anthropic research system, the Claude Code subagents pattern, and most multi-agent systems that ship and survive use this architecture. Easy to reason about, workers are independent, synthesis is well-bounded.</li>
+<li>Hierarchical earns its place rarely. The middle layer must add domain value (genuine sub-orchestration ability), not just routing. Most "hierarchical" sketches are actually flat orchestrator-worker that should be flattened.</li>
+<li>Peer collaboration earns its place when committing to one approach early is the failure mode. Three explorers + one critic (Anthropic Ultra Plan's pattern) for high-stakes planning, architecture decisions, complex code refactoring. 4-5× cost; justified when the choice of approach is the hardest part.</li>
+<li>Swarm rarely earns its place. Massive parallelism (&gt;20 units), each genuinely independent, no synthesis required, orchestrator-worker would bottleneck on coordination. These conditions are rare. When they apply, swarm with workspace isolation; otherwise orchestrator-worker.</li>
+<li>Each agent in a multi-agent system is fully M2-M12 disciplined. Multi-agent doesn't replace single-agent discipline; it adds coordination on top. Workers have hardened loops, well-designed tools, hallucination prevention, guardrails. The complexity is additive.</li>
+<li>Anthropic's first-party patterns: Claude Code subagents (orchestrator-worker with bounded subagents in their own contexts), Ultra Plan (peer collaboration with three explorers + critic), Agent Teams (peer coordination across separate sessions; ~7× cost). Use these when the environment supports them rather than reinventing.</li>
+<li>The right pattern is the simplest one that handles the structure of the work. Sam's research-on-demand had clean parallel structure → orchestrator-worker fit. Anything more sophisticated would have been over-engineering. The framework: Q1 work structure, Q2 synthesis problem, Q3 operational tolerance.</li>
+</ul>
+</div>
+<hr />
+<div class="sam-arc">
+<p><strong>Sam, after the research-on-demand rollout.</strong></p>
+<p>Friday afternoon, a month after launch. Sam pulled the metrics dashboard. The system was processing 200-300 packets per week. Median latency was holding at 3.2 minutes for 5-company packets. Cost per packet was $7-12. Quality, by the AE team's own rubric, was 8.1/10 — modestly better than the single-agent baseline.</p>
+<p>The platform team lead pinged Sam: <em>"What did you learn from the build?"</em></p>
+<p>Sam thought about it. The biggest lesson wasn't technical. It was the discipline of <em>not getting fancy</em>. The literature had every pattern available — hierarchical, peer collaboration, swarm, hybrid combinations. Sam had read all of them. And the right answer for this specific task was the most basic multi-agent pattern: orchestrator-worker.</p>
+<p>Sam typed back: <em>"The Section 6 framework picked orchestrator-worker. I went with it. Worked. Resisting the urge to layer in additional sophistication was harder than implementing the architecture itself."</em></p>
+<p>The team lead's reply: <em>"That's the lesson. Document it for the playbook."</em></p>
+<p>Sam wrote it up over the weekend. Three additions to the platform's design review checklist:</p>
+<ol>
+<li><strong>For new multi-agent systems, run M13 framework first. If it doesn't pass, build single-agent.</strong></li>
+<li><strong>For systems that pass M13, run M14 Section 6 framework. Pick one pattern; don't combine.</strong></li>
+<li><strong>Implement workers with full M2-M12 discipline. Multi-agent is <em>additive</em> to single-agent rigor, not a replacement for it.</strong></li>
+</ol>
+<p>Two new agents went through this checklist over the next quarter. One was building a contract-comparison system (compare a draft contract to template) — Q1 said "two-document comparison, not parallel exploration"; the framework said don't go multi-agent. The team built single-agent with good tools. Worked.</p>
+<p>The other was building a regulatory-research system spanning multiple jurisdictions. Q1 said parallel exploration across independent jurisdictions; framework said orchestrator-worker. The team built it; it shipped on schedule.</p>
+<p>Sam noticed the company's overall architecture was getting <em>simpler</em>, not more complex, even as more multi-agent systems were being built. The framework was acting as a filter — only the right systems passed; only the simplest patterns got chosen. The deal-research workflow, the customer-success bot, the deal Q&amp;A agent, the research-on-demand packet system, the regulatory-research system. Each one fit-for-purpose. Each one defensible in code review. Each one handling its actual problem with the simplest architecture that worked.</p>
+<p>Sam's arc this module: <strong>the architecture matches the structure of the work, and that's the only thing that matters.</strong> Not the architecture's sophistication. Not the agent count. Not the framework's recommendation alone. The structure of the work. Orchestrator-worker for parallel-with-synthesis. Peer collaboration for multiple-framings. Hierarchical for genuine tree depth. Swarm for massive-parallelism-no-synthesis. Match the pattern to the structure; everything else follows.</p>
+<p>The book's second half was now well-launched. Two more architecture modules (M15 communication patterns), then operations (M16-17), then the capstone (M18). Six modules left. The single-agent foundations were solid. The multi-agent gate was working. The patterns themselves were now in hand. What remained was the connective tissue: how agents talk to each other (M15), how the system stays reliable in production (M16-17), and how it all comes together at the end (M18).</p>
+</div>
+<hr />
+<h2>What's next</h2>
+<p>Module 15 covers inter-agent communication patterns: structured handoffs (the contract between orchestrator and worker), shared memory and blackboard patterns, voting and consensus mechanisms (when peer agents need to agree), message-passing protocols, and the emergent-behavior controls that distinguish working multi-agent systems from chaos.</p>
+<p>After M15, the architecture arc closes. Module 16 covers sagas — the transactional safety pattern for agent systems that take real-world actions across multiple steps. Module 17 covers observability for production agents. Module 18 is the capstone: a complete system pulling together every layer from the book.</p>
+<p>For now: take the framework from Section 6. If you have a multi-agent system in production or in design, run it through Q1-Q3 explicitly. If your system uses a pattern that doesn't match the structure of the work — orchestrator-worker for tree-structured tasks, hierarchical for flat tasks, swarm for tasks that need synthesis — the cost is real and the simplification is usually possible. Match the pattern to the structure.</p>
+<p>The architectures from M14 are powerful tools when applied to the right problems. M13's gate ensures you reach for them only when justified. M14's selection ensures you reach for the <em>right one</em> when you do. Together they're the architectural discipline that turns multi-agent from "the trendy thing we're trying" into "the right answer for the problems that need it."</p>
+</body>
+</html>

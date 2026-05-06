@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 11 — Reflection and Self-Correction</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE: Agentic AI Course
+   Outlines edition — same visual system as PyTorch course
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+  --code-bg: #2d2d2d;
+  --code-fg: #f5f5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--ink);
+  padding-bottom: 6px;
+  margin-top: 0.6em;
+  line-height: 1.1;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.35em;
+  color: var(--accent);
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+}
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--highlight);
+  margin-top: 1.2em;
+  margin-bottom: 0.3em;
+}
+
+/* PROSE */
+p { margin: 0.8em 0; }
+strong { color: var(--accent); font-weight: 700; }
+em { color: var(--highlight); }
+
+/* CODE */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: #f0ead6;
+  color: #4a3000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 14px 18px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+  border-left: 4px solid var(--accent);
+  margin: 1em 0;
+}
+pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* LISTS */
+ul, ol { padding-left: 28px; }
+li { margin: 4px 0; }
+
+/* TABLES */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  background: var(--paper);
+}
+th, td {
+  border: 1.5px solid var(--ink);
+  padding: 8px 12px;
+  text-align: left;
+}
+th {
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+
+/* CHAPTER OPENER */
+.chapter-opener {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin: 1.5em 0 2em 0;
+  position: relative;
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: var(--accent);
+  letter-spacing: 2px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.2em;
+  margin: 8px 0;
+  line-height: 1.1;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.4em;
+  color: var(--accent);
+  margin-top: 10px;
+  line-height: 1.3;
+}
+.chapter-opener .pages {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1em;
+  margin-top: 8px;
+}
+
+/* HOOK / OPENER */
+.hook {
+  font-family: 'Caveat', cursive;
+  font-size: 1.45em;
+  color: var(--accent);
+  border-left: 4px dashed var(--accent);
+  padding: 8px 18px;
+  margin: 1.2em 0;
+  line-height: 1.4;
+}
+
+/* NO DUMB Q */
+.nodumbq {
+  background: #fff8e1;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: #8b6914;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* SHARPEN YOUR PENCIL */
+.exercise {
+  background: var(--paper);
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.exercise details.answer {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f5f5dc;
+  border-left: 3px solid var(--highlight);
+}
+.exercise details.answer summary {
+  cursor: pointer;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+}
+
+/* BRAIN POWER */
+.brain {
+  background: linear-gradient(135deg, #f3e5d8 0%, #fef3a4 100%);
+  border-radius: 50px / 30px;
+  padding: 16px 26px;
+  margin: 1.4em 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25em;
+  line-height: 1.4;
+  border: 2px solid #c8a165;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  color: #8b6914;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: #fff5e6;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1.5px;
+}
+.fireside .speaker {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* CAST / DIALOGUE */
+.cast {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.6em 0;
+}
+.cast .character {
+  margin: 12px 0;
+  padding-left: 60px;
+  position: relative;
+  min-height: 50px;
+}
+.cast .character::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--marker);
+  border: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+.cast .character.sam::before { content: "S"; background: #ffd6cc; }
+.cast .character.architect::before { content: "A"; background: #cce5ff; }
+.cast .character.workflow::before { content: "W"; background: #d4f1d4; }
+.cast .character.agent::before { content: "Ag"; background: #f1d4f1; font-size: 0.9em; }
+.cast .character.skeptic::before { content: "🤨"; background: #f5f5dc; }
+.cast .character .name {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* SAM'S DISASTER LOG */
+.disaster-log {
+  background: #ffe5e5;
+  border-left: 5px solid #b03030;
+  border-radius: 4px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'Bitter', serif;
+}
+.disaster-log::before {
+  content: "📓 FROM SAM'S DISASTER LOG";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PRODUCTION POSTMORTEM (was: scenario) */
+.postmortem {
+  background: #f5f5dc;
+  border: 2px solid var(--highlight);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+}
+.postmortem::before {
+  content: "💀 PRODUCTION POSTMORTEM";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.05em;
+  color: var(--highlight);
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* WATCH IT */
+.gotcha {
+  background: #ffe0e0;
+  border: 2px solid #b03030;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.gotcha::before {
+  content: "⚠️ WATCH IT!";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #b03030;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* MYTH */
+.myth {
+  background: #efe8ff;
+  border: 2px solid #6a3ec0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+}
+.myth::before {
+  content: "💥 MYTH-BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #6a3ec0;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* BULLET POINTS */
+.bullet-points {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 16px 22px;
+  margin: 1.6em 0;
+}
+.bullet-points h3 {
+  font-family: 'Permanent Marker', cursive;
+  margin-top: 0;
+  color: var(--accent);
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 4px;
+}
+
+/* KEY TAKEAWAY */
+.key {
+  background: #fff8e1;
+  border-left: 5px solid var(--highlight);
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-family: 'Bitter', serif;
+}
+.key::before {
+  content: "🔑 KEY TAKEAWAY";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--highlight);
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* SOURCES */
+.sources {
+  background: #f0f0f0;
+  border-left: 4px solid #555;
+  padding: 12px 18px;
+  margin: 1.4em 0;
+  font-size: 0.9em;
+}
+.sources::before {
+  content: "📚 SOURCES TO VERIFY BEFORE DRAFTING";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #444;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* PAGE BUDGET */
+.page-budget {
+  background: #e8f4f8;
+  border: 2px solid #2c7da0;
+  border-radius: 6px;
+  padding: 14px 20px;
+  margin: 1.4em 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+.page-budget::before {
+  content: "📐 PAGE BUDGET";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2c7da0;
+  margin-bottom: 8px;
+  letter-spacing: 1.5px;
+}
+
+/* PULLQUOTE */
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  text-align: center;
+  border-top: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  margin: 1.5em 0;
+  line-height: 1.3;
+}
+
+/* SECTION DIVIDER */
+hr {
+  border: none;
+  border-top: 2px dashed var(--softline);
+  margin: 2em 0;
+}
+
+/* CODE-EXERCISE BOX */
+.code-exercise {
+  background: #1a1a1a;
+  color: #f5f5dc;
+  border-radius: 8px;
+  padding: 16px 22px;
+  margin: 1.5em 0;
+  font-family: 'Bitter', serif;
+}
+.code-exercise::before {
+  content: "💻 CODE EXERCISE";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1em;
+  color: #fef3a4;
+  margin-bottom: 10px;
+  letter-spacing: 1.5px;
+}
+.code-exercise code {
+  background: #2d2d2d;
+  color: #f5f5dc;
+}
+
+/* SAM ARC BEAT */
+.sam-arc {
+  background: #fff0e6;
+  border-left: 5px solid #c0392b;
+  border-radius: 4px;
+  padding: 12px 18px;
+  margin: 1.2em 0;
+  font-style: italic;
+}
+.sam-arc::before {
+  content: "📍 SAM'S ARC THIS MODULE";
+  display: block;
+  font-style: normal;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #c0392b;
+  margin-bottom: 6px;
+  letter-spacing: 1.5px;
+}
+
+/* PRINT */
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .nodumbq, .exercise, .brain, .fireside, .cast,
+  .gotcha, .myth, .bullet-points, .key, .sources, .page-budget,
+  .postmortem, .disaster-log, .code-exercise, .sam-arc {
+    page-break-inside: avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+<h1>Module 11 — Reflection and Self-Correction</h1>
+<div class="chapter-opener">
+<div class="module-num">MODULE 11</div>
+<div class="module-title">Reflection and Self-Correction</div>
+<div class="subtitle">Asking the model to check its own work is one of the most effective things you can do.<br>Asking it the wrong way is one of the most expensive.</div>
+<div class="pages">~38 pages · turning a single answer into a deliberate process</div>
+</div>
+<div class="hook">
+<p>The deal-research workflow's brief evaluator was producing weird verdicts. Sam noticed it on a Tuesday afternoon: the same brief, run through the evaluator twice in a row, came back with different scores. First time: 6.5/10, with feedback flagging "weak competitive analysis." Second time: 8/10, with no mention of competitive analysis at all.</p>
+<p>This wasn't a hallucination problem from M10. The facts in the brief were grounded. The evaluator wasn't fabricating anything. It just couldn't make up its mind about what was good and what wasn't.</p>
+<p>Sam ran the evaluator twenty times on the same brief. Scores ranged from 5 to 9. Standard deviation 1.3. The mean was 6.8, which sounded reasonable until Sam looked at the distribution: two clusters — one around 5.5, one around 7.5. The evaluator was reading the brief through <em>different lenses</em> on different runs. One lens noticed weak competitive analysis. Another lens noticed strong financial detail. Same brief; same evaluator; same prompt; different verdicts.</p>
+<p>Worse: when Sam re-ran the brief generator with the 6.5/10 feedback, the <em>next</em> version of the brief got a 5/10 from the evaluator — because now the evaluator was reading through a third lens that flagged "lacks executive summary punch" (which the original 6.5 evaluation hadn't mentioned).</p>
+<p>The evaluator-optimizer loop was thrashing. Each iteration was nominally improving the brief but the evaluator's own inconsistency meant the optimizer was chasing different targets each time. Output quality wasn't converging; it was wandering.</p>
+<p>Sam looked at the evaluator's prompt: a single LLM call, asking for a score and feedback in one pass. No reflection. No self-check. The evaluator was an LLM call dressed up as a process — which made it about as reliable as any single LLM call.</p>
+<p>Sam wrote the line: <em>"the evaluator from M3 needs the discipline from M11. Otherwise the optimization loop is just expensive noise."</em></p>
+</div>
+<hr />
+<h2>What this module is</h2>
+<p>Hallucinations (M10) are about generation-time correctness — what the model produces in the first place. This module is about <em>post-generation</em> discipline: catching mistakes after the fact, refining outputs through structured iteration, and adding the deliberate-thinking surfaces that turn a single LLM call into a more reliable process.</p>
+<p>The pattern goes by many names — reflection, self-correction, self-critique, verbal reinforcement, iterative refinement. Reflexion (Shinn et al. 2023) gave the field its canonical framing: the agent produces output, evaluates the output, generates linguistic feedback, and incorporates that feedback into its next attempt. Self-Refine (Madaan et al. 2023) generalized this into a generate-critique-correct loop without external supervision. Anthropic's "think" tool and adaptive/interleaved thinking are the platform-native versions of the same idea — surfaces for the model to deliberate rather than just produce.</p>
+<p>The structure of this module:</p>
+<ul>
+<li><strong>Section 1</strong> — what reflection actually is and the three places you can apply it (within a single response, between agent turns, across runs)</li>
+<li><strong>Section 2</strong> — Anthropic's first-party surfaces: extended thinking (adaptive), interleaved thinking, the "think" tool. When to use each</li>
+<li><strong>Section 3</strong> — the core reflection loop pattern from Reflexion and Self-Refine, with production code</li>
+<li><strong>Section 4</strong> — the evaluator-optimizer pattern from M3 lifted into the agent context, with the discipline that fixes Sam's thrashing evaluator</li>
+<li><strong>Section 5</strong> — the limits of reflection: blind-spot reinforcement, diminishing returns, when reflection makes things worse</li>
+<li><strong>Section 6</strong> — multi-agent reflection patterns (preview of M13) and when single-agent isn't enough</li>
+<li><strong>Section 7</strong> — cost calibration: iteration caps, token budgets, the hard limits that prevent infinite loops</li>
+<li><strong>Section 8</strong> — putting it together: Sam's evaluator rebuilt</li>
+<li><strong>Section 9</strong> — the framework</li>
+</ul>
+<p>By the end of this module:</p>
+<ul>
+<li>You'll know when reflection is high-leverage and when it's just expensive</li>
+<li>You'll have working code for the canonical reflection patterns</li>
+<li>You'll understand why naive reflection often fails (the blind-spot problem) and how to address it</li>
+<li>You'll be able to use Anthropic's first-party thinking surfaces correctly — adaptive vs interleaved vs the "think" tool</li>
+</ul>
+<p>The connection to M10: hallucination prevention happens at generation time; reflection happens after. The agent that produced a hallucinated response in M10 could, with reflection, catch it before delivering it. The two are complementary.</p>
+<div class="pullquote">
+<p>Reflection is one of the most effective techniques in the agent toolkit and one of the most commonly misapplied. Done well, it produces dramatic quality improvements at modest cost. Done poorly, it inflates token bills, increases latency, and sometimes produces <em>worse</em> output than no reflection at all.</p>
+</div>
+<hr />
+<h2>Section 1 — What Reflection Actually Is</h2>
+<p>The word "reflection" is doing a lot of work in agent literature. Let me decompose it.</p>
+<p><strong>Generation-time reflection.</strong> The model deliberates before producing the final output. Chain-of-thought prompting is the simplest version: "think step by step." Anthropic's extended thinking is the platform-native version: the model reasons in dedicated thinking tokens before generating the user-facing response. Within a single API call.</p>
+<p><strong>Post-generation reflection.</strong> The model (or a separate critic model) evaluates the produced output and either revises it or signals that revision is needed. M10's iterative refinement (Technique 6) was a single-pass version of this. The full Reflexion / Self-Refine pattern is the multi-iteration version.</p>
+<p><strong>Inter-turn reflection.</strong> Between turns of an agent loop, the agent reflects on what just happened — what tool result came back, whether the plan is still working, whether to adjust. Anthropic's interleaved thinking is the platform-native version: thinking blocks <em>between</em> tool calls.</p>
+<p><strong>Cross-run reflection.</strong> After a session ends, the agent (or a meta-agent) reflects on what happened across the whole run. What worked? What didn't? Lessons get stored in memory (M9) for future sessions. ExpeL, AutoGuide, and similar 2024–2026 frameworks formalize this.</p>
+<p>This module focuses on the first three. Cross-run reflection sits at the intersection of M9 (memory) and what's becoming a research field of its own (continual learning for agents); we'll touch it briefly in Section 6.</p>
+<h3>What all four have in common</h3>
+<p>The shared structure: <strong>the model is given a chance to evaluate its own work and adjust before that work becomes load-bearing for downstream decisions.</strong> Without reflection, every model output goes directly to use. With reflection, there's a deliberate pause — a place to catch errors before they propagate.</p>
+<p>The shared cost: <strong>every reflection step is another LLM call (or extra tokens within one call).</strong> Reflection is not free. The decision to reflect — and how much — is a cost-quality trade-off, exactly like the model selection trade-off from M6.</p>
+<div class="nodumbq">
+<p><strong>Q: Isn't reflection just chain-of-thought with extra steps?</strong></p>
+<p>Chain-of-thought is <em>one</em> form of generation-time reflection. The broader pattern includes things CoT doesn't cover: separate critic models that look at finished output (post-generation), thinking blocks between tool calls (inter-turn), and lessons stored across sessions (cross-run). CoT is the simplest case; reflection is the family.</p>
+<p><strong>Q: What's the actual evidence that reflection works?</strong></p>
+<p>Mixed, but real. Reflexion (Shinn et al. 2023) showed dramatic gains on HotPotQA and HumanEval. Anthropic's "think" tool eval showed the highest pass^1 score (0.812) on a retail benchmark vs no thinking. But — and this is the key caveat — reflection's gains depend heavily on the <em>quality of the reflection signal</em>. Bad evaluators produce bad reflections, which can make output <em>worse</em> (Section 5 covers this). Reflection is high-leverage when the conditions are right; expensive when they aren't.</p>
+</div>
+<hr />
+<h2>Section 2 — Anthropic's First-Party Reflection Surfaces</h2>
+<p>Anthropic ships several thinking-related capabilities. They're related but distinct, and using the wrong one for your use case is a common mistake. Let me clarify.</p>
+<h3>Adaptive thinking (Sonnet 4.6, Opus 4.6/4.7)</h3>
+<p>The default thinking mode on the current Claude lineup. The model dynamically decides when and how much to think based on two factors: the <code>effort</code> parameter you set (low/medium/high) and the query's complexity. On easy queries, the model responds directly without thinking. On hard queries, it thinks deeply.</p>
+<pre><code class="language-python">response = client.messages.create(
+    model=&quot;claude-sonnet-4-6&quot;,
+    max_tokens=8192,
+    thinking={&quot;type&quot;: &quot;adaptive&quot;, &quot;effort&quot;: &quot;medium&quot;},
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_question}],
+)
+</code></pre>
+<p>When to use:</p>
+<ul>
+<li><strong>You want generation-time deliberation but don't want to manage budget yourself.</strong> The model calibrates depth.</li>
+<li><strong>Your workload has heterogeneous difficulty.</strong> Some queries warrant deep thinking; others don't. Adaptive handles both correctly.</li>
+<li><strong>You're on Opus 4.7.</strong> This is the only thinking mode supported on Opus 4.7 — the model always thinks adaptively.</li>
+</ul>
+<p>The <code>effort</code> parameter is the main control. Anthropic's internal evaluations report adaptive thinking reliably outperforming the older fixed-budget extended thinking on the same workloads.</p>
+<h3>Extended thinking with <code>budget_tokens</code> (legacy mode)</h3>
+<p>The older mode, still supported on Sonnet 4.6 and Opus 4.6 but deprecated for those. Replaced by adaptive on newer models.</p>
+<pre><code class="language-python"># Legacy pattern — prefer adaptive on current models
+response = client.messages.create(
+    model=&quot;claude-sonnet-4-6&quot;,
+    max_tokens=16384,
+    thinking={&quot;type&quot;: &quot;enabled&quot;, &quot;budget_tokens&quot;: 8000},
+    messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_question}],
+)
+</code></pre>
+<p>When to use:</p>
+<ul>
+<li><strong>You need a hard ceiling on thinking costs.</strong> <code>budget_tokens</code> is a strict cap; adaptive is a soft signal.</li>
+<li><strong>You're maintaining older code or running on older Claude versions.</strong> Migrating to adaptive is the recommended path forward.</li>
+</ul>
+<p>For new builds on current models, prefer adaptive. The exception is the rare case where you need exact cost predictability (regulated workloads, fixed-price contracts) and the soft <code>effort</code> signal isn't sufficient.</p>
+<h3>Interleaved thinking</h3>
+<p>Thinking blocks <em>between tool calls</em> in an agent loop. After the agent receives a tool result, the model thinks before deciding the next action. This is structurally different from adaptive/extended thinking, which both happen in one shot before generating output.</p>
+<pre><code class="language-python"># Interleaved thinking — Sonnet 4.5 and earlier required a beta header.
+# Opus 4.6/4.7 enable it automatically when adaptive thinking is on.
+response = client.messages.create(
+    model=&quot;claude-sonnet-4-6&quot;,
+    max_tokens=16384,
+    thinking={&quot;type&quot;: &quot;adaptive&quot;, &quot;effort&quot;: &quot;high&quot;},
+    tools=tools,
+    messages=messages,
+)
+</code></pre>
+<p>When to use:</p>
+<ul>
+<li><strong>Long agent trajectories with many tool calls.</strong> Interleaved thinking lets the agent re-plan after each tool result instead of grinding through a frozen plan.</li>
+<li><strong>Tasks where tool results can reveal new information that should change the plan.</strong> Research, debugging, exploratory work.</li>
+<li><strong>High-uncertainty environments where the agent can't predict tool outcomes.</strong> Each result deserves a moment of thought before the next action.</li>
+</ul>
+<p>When <em>not</em> to use:</p>
+<ul>
+<li><strong>Latency-sensitive tasks with predictable tool sequences.</strong> If the agent knows what it's doing turn-by-turn, interleaved thinking is overhead.</li>
+<li><strong>Simple workflows where the tool sequence is fixed.</strong> A workflow from M3 doesn't benefit from interleaved thinking; an open-ended agent often does.</li>
+</ul>
+<p>The Anthropic AWS blog post on interleaved thinking with Strands frames it well: <em>"Interleaved thinking expands on the model's ability to self-reflect, correct errors, and orchestrate a workflow of reasoning and tool use."</em> The mechanism is exactly the inter-turn reflection from Section 1, baked into the platform.</p>
+<h3>The "think" tool</h3>
+<p>A different thing entirely. Not built-in thinking — <em>a tool</em> you give the agent that does nothing except give it a place to write down a thought.</p>
+<pre><code class="language-python">THINK_TOOL = {
+    &quot;name&quot;: &quot;think&quot;,
+    &quot;description&quot;: (
+        &quot;Use this tool to think through a problem. The 'thought' parameter is &quot;
+        &quot;for your own reasoning. It does not affect the user-visible output.&quot;
+    ),
+    &quot;input_schema&quot;: {
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;properties&quot;: {
+            &quot;thought&quot;: {
+                &quot;type&quot;: &quot;string&quot;,
+                &quot;description&quot;: &quot;Your reasoning, plan, or analysis.&quot;
+            },
+        },
+        &quot;required&quot;: [&quot;thought&quot;],
+    },
+}
+</code></pre>
+<p>The tool returns nothing useful. The point is that calling it forces the model to verbalize its reasoning explicitly, in a place the model has been trained to think hard about (tool call inputs).</p>
+<p>Anthropic's research showed this simple pattern produced the highest pass^1 score (0.812) on a retail policy compliance benchmark. The reason: the model can think <em>anywhere</em> with adaptive thinking, but the "think" tool gives it a <em>deliberate</em>, <em>named</em> surface to think on, which seems to elicit better-structured reasoning than free-form thinking.</p>
+<p>When to use:</p>
+<ul>
+<li><strong>Compliance-heavy tasks.</strong> Policy checks, rule-following, multi-step reasoning under constraints.</li>
+<li><strong>Tasks where the model's reasoning needs to be auditable.</strong> The tool calls are visible in the trace; thinking blocks are not always (some are summarized).</li>
+<li><strong>Workloads that don't have access to native thinking</strong> (Haiku 4.5 doesn't support extended thinking; the "think" tool does the same job for it).</li>
+</ul>
+<p>When not to use:</p>
+<ul>
+<li><strong>Tasks already covered by adaptive/interleaved thinking.</strong> Adding the "think" tool on top is redundant and adds tool-selection overhead.</li>
+</ul>
+<h3>Choosing among the four</h3>
+<table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>When</th>
+<th>Cost</th>
+<th>Best for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Adaptive thinking</td>
+<td>Generation-time deliberation</td>
+<td>Variable</td>
+<td>Default for hard tasks on Sonnet 4.6 / Opus</td>
+</tr>
+<tr>
+<td>Extended thinking (legacy)</td>
+<td>Need strict cost ceiling</td>
+<td><code>budget_tokens</code> cap</td>
+<td>Regulated workloads only</td>
+</tr>
+<tr>
+<td>Interleaved thinking</td>
+<td>Inter-turn deliberation in agent loops</td>
+<td>Variable</td>
+<td>Long agent trajectories with tools</td>
+</tr>
+<tr>
+<td>"think" tool</td>
+<td>Explicit auditable reasoning</td>
+<td>One tool call</td>
+<td>Haiku, compliance work, policy adherence</td>
+</tr>
+</tbody>
+</table>
+<p>For most agents on Sonnet 4.6 or Opus 4.7: adaptive thinking with appropriate effort. Interleaved thinking is auto-enabled for tool use. Add the "think" tool only when you specifically need auditable reasoning steps or you're on Haiku.</p>
+<div class="brain">
+<p>A coding agent runs many tool calls per session — file reads, test runs, code edits. A customer-support agent answers one question per session. Both are on Sonnet 4.6. Which thinking surfaces should each get?</p>
+<p>(Coding agent: adaptive thinking with high effort, plus interleaved thinking auto-enabled on Sonnet 4.6 — it benefits from re-planning after each test result. Customer-support agent: adaptive thinking with medium effort. The single-shot nature means interleaved thinking adds nothing; the per-question complexity warrants moderate generation-time deliberation. Don't crank both to maximum on every workload — the cost compounds and the quality gain plateaus.)</p>
+</div>
+<hr />
+<h2>Section 3 — The Core Reflection Loop</h2>
+<p>The platform features in Section 2 give you thinking <em>within</em> a model call or between tool calls. Reflection as a <em>loop pattern</em> — generate → critique → revise → repeat — is something you build on top.</p>
+<p>The canonical structure from Reflexion / Self-Refine:</p>
+<pre><code class="language-python">async def reflection_loop(
+    initial_prompt: str,
+    *,
+    max_iterations: int = 3,
+    quality_threshold: float = 0.85,
+    model: str = &quot;claude-sonnet-4-6&quot;,
+) -&gt; dict:
+    &quot;&quot;&quot;
+    Generate → critique → revise → repeat, until the critic is satisfied
+    or we hit the iteration cap.
+    &quot;&quot;&quot;
+    history = []
+    candidate = await generate(initial_prompt, model=model)
+
+    for iteration in range(max_iterations):
+        critique = await critique_response(initial_prompt, candidate, model=model)
+        history.append({
+            &quot;iteration&quot;: iteration,
+            &quot;candidate&quot;: candidate,
+            &quot;critique&quot;: critique,
+        })
+
+        if critique.score &gt;= quality_threshold and not critique.required_changes:
+            return {
+                &quot;final&quot;: candidate,
+                &quot;iterations_used&quot;: iteration + 1,
+                &quot;history&quot;: history,
+                &quot;converged&quot;: True,
+            }
+
+        candidate = await revise(
+            initial_prompt,
+            previous=candidate,
+            feedback=critique.feedback,
+            model=model,
+        )
+
+    return {
+        &quot;final&quot;: candidate,
+        &quot;iterations_used&quot;: max_iterations,
+        &quot;history&quot;: history,
+        &quot;converged&quot;: False,
+    }
+</code></pre>
+<p>Three pieces, each its own design decision:</p>
+<h3>The generator</h3>
+<p>The model that produces the candidate output. Same as your normal generation step. Nothing special about it.</p>
+<pre><code class="language-python">async def generate(prompt: str, *, model: str) -&gt; str:
+    response = await client.messages.create(
+        model=model,
+        max_tokens=4096,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}],
+    )
+    return response.content[0].text
+</code></pre>
+<h3>The critic</h3>
+<p>The model that evaluates the candidate. This is where most reflection systems succeed or fail.</p>
+<pre><code class="language-python">from pydantic import BaseModel, Field
+
+
+class Critique(BaseModel):
+    score: float = Field(ge=0.0, le=1.0)
+    strengths: list[str]
+    weaknesses: list[str]
+    required_changes: list[str]
+    feedback: str
+
+
+CRITIQUE_SYSTEM_PROMPT = &quot;&quot;&quot;
+You are a rigorous critic evaluating a candidate response to a user request.
+
+Your job is to identify weaknesses precisely. Score the response from 0.0 to
+1.0 against these criteria:
+- Accuracy: are the claims correct and grounded?
+- Completeness: does it address all parts of the request?
+- Clarity: is it well-structured and readable?
+- Actionability: can the user act on it?
+
+Be specific. Vague feedback like &quot;could be better&quot; produces vague revisions.
+Concrete feedback like &quot;the second paragraph contradicts the first paragraph
+on competitor pricing&quot; produces targeted revisions.
+
+If the response meets all criteria well, return high score and empty
+required_changes. Do not invent flaws to look thorough.
+&quot;&quot;&quot;.strip()
+
+
+async def critique_response(
+    original_prompt: str,
+    candidate: str,
+    *,
+    model: str,
+) -&gt; Critique:
+    response = await client.messages.create(
+        model=model,
+        max_tokens=2048,
+        system=CRITIQUE_SYSTEM_PROMPT,
+        messages=[{
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: (
+                f&quot;Original request:\n{original_prompt}\n\n&quot;
+                f&quot;Candidate response:\n{candidate}\n\n&quot;
+                &quot;Evaluate the candidate and return your critique as JSON.&quot;
+            ),
+        }],
+        tools=[{
+            &quot;name&quot;: &quot;submit_critique&quot;,
+            &quot;description&quot;: &quot;Submit your evaluation.&quot;,
+            &quot;input_schema&quot;: Critique.model_json_schema(),
+        }],
+        tool_choice={&quot;type&quot;: &quot;tool&quot;, &quot;name&quot;: &quot;submit_critique&quot;},
+    )
+    block = next(b for b in response.content if b.type == &quot;tool_use&quot;)
+    return Critique(**block.input)
+</code></pre>
+<p>Three things to notice:</p>
+<p><strong>Structured output.</strong> The critic returns a typed object, not free-form text. This forces it to commit to a score, list specific strengths/weaknesses, and identify discrete required changes. The structure constrains hand-waving.</p>
+<p><strong>Specificity in the prompt.</strong> The instruction "concrete feedback... produces targeted revisions" is doing real work. Vague critics produce vague feedback; vague feedback produces wandering revisions. Sam's evaluator from the cold open was producing exactly this kind of vague output.</p>
+<p><strong>The "do not invent flaws" instruction.</strong> Critics that are too aggressive produce <em>false negatives</em> — they reject candidates that were fine. The instruction calibrates the critic toward honesty, not maximum criticism.</p>
+<h3>The reviser</h3>
+<p>The model that takes the critique and produces a revised candidate.</p>
+<pre><code class="language-python">REVISION_SYSTEM_PROMPT = &quot;&quot;&quot;
+You are revising a previous response based on critic feedback. Your job is
+to address the specific weaknesses identified, while preserving what was good.
+
+Do not rewrite from scratch unless the critic specifies. Targeted revision
+beats wholesale replacement.
+&quot;&quot;&quot;.strip()
+
+
+async def revise(
+    original_prompt: str,
+    previous: str,
+    feedback: str,
+    *,
+    model: str,
+) -&gt; str:
+    response = await client.messages.create(
+        model=model,
+        max_tokens=4096,
+        system=REVISION_SYSTEM_PROMPT,
+        messages=[{
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: (
+                f&quot;Original request:\n{original_prompt}\n\n&quot;
+                f&quot;Previous response:\n{previous}\n\n&quot;
+                f&quot;Critique feedback:\n{feedback}\n\n&quot;
+                &quot;Produce a revised response addressing the feedback.&quot;
+            ),
+        }],
+    )
+    return response.content[0].text
+</code></pre>
+<p>The key discipline: <strong>targeted revision over wholesale rewrite.</strong> A reviser that throws away the previous candidate and starts over loses the parts that were good and burns tokens regenerating them. A reviser that targets the specific weaknesses preserves quality.</p>
+<h3>Convergence and termination</h3>
+<p>Two termination conditions:</p>
+<ul>
+<li><strong>Quality threshold met.</strong> The critic returns a score above the threshold and empty <code>required_changes</code>. Stop and return.</li>
+<li><strong>Iteration cap hit.</strong> The loop has run <code>max_iterations</code> times. Stop and return whatever's in hand.</li>
+</ul>
+<p>The <code>converged</code> field in the return value tells the caller which case happened. Non-converged outputs may need different handling — escalation to a human, fallback to a stronger model, or a clear "best effort" signal.</p>
+<p>The Section 7 cost discussion will tell you how to set the iteration cap. For now: 2 or 3 is the right default. Diminishing returns set in fast.</p>
+<div class="pullquote">
+<p>Targeted revision over wholesale rewrite. The reviser's job is to fix the specific weaknesses identified — not to throw away the previous output and start over. Wholesale rewrites lose the good parts and waste tokens.</p>
+</div>
+<hr />
+<h2>Section 4 — The Evaluator-Optimizer Pattern, Hardened</h2>
+<p>M3 introduced the evaluator-optimizer workflow: generator produces output, evaluator scores it, generator revises until the evaluator is satisfied. Sam's brief evaluator was an instance of this pattern.</p>
+<p>The cold open showed the failure mode: the <em>evaluator itself</em> was inconsistent. Same input, different verdicts. The optimizer was chasing a moving target.</p>
+<p>The fix has three parts: making the evaluator more consistent, making its feedback more actionable, and adding the structural discipline that prevents the loop from degenerating.</p>
+<h3>Part 1: Make the evaluator more consistent</h3>
+<p>The single biggest fix for evaluator inconsistency is <strong>explicit, decomposed criteria</strong>. Sam's evaluator was using a holistic prompt: "rate the brief 0-10 with feedback." That asks the model to compress many dimensions of quality into one score, which is exactly the kind of task where models produce different verdicts on different runs.</p>
+<p>The fix: decompose into specific criteria, each scored independently, then combine.</p>
+<pre><code class="language-python">class BriefEvaluation(BaseModel):
+    accuracy_score: float = Field(ge=0.0, le=1.0)
+    accuracy_notes: str
+
+    completeness_score: float = Field(ge=0.0, le=1.0)
+    completeness_notes: str
+
+    clarity_score: float = Field(ge=0.0, le=1.0)
+    clarity_notes: str
+
+    actionability_score: float = Field(ge=0.0, le=1.0)
+    actionability_notes: str
+
+    overall_score: float = Field(ge=0.0, le=1.0)
+    required_changes: list[str]
+    optional_improvements: list[str]
+
+
+BRIEF_EVALUATOR_PROMPT = &quot;&quot;&quot;
+You are evaluating a deal-research brief produced for an account executive.
+Score the brief on four independent criteria, then compute an overall score.
+
+ACCURACY (0.0-1.0):
+- Are all factual claims grounded in the research findings provided?
+- Are sources cited correctly?
+- Are numbers, dates, names accurate?
+
+COMPLETENESS (0.0-1.0):
+- Does it cover all required sections (Executive Summary, Financial Profile,
+  Leadership, Market Position, Recent Developments, Key Risks)?
+- Is each section adequately developed (150-300 words)?
+- Are gaps in research findings explicitly noted?
+
+CLARITY (0.0-1.0):
+- Is it well-structured with clear section headers?
+- Is the writing concise and direct?
+- Could a busy reader extract the key points in 5 minutes?
+
+ACTIONABILITY (0.0-1.0):
+- Does it surface specific, useful information for a customer call?
+- Are risks and opportunities flagged clearly?
+- Could the AE walk into a call better-prepared after reading?
+
+OVERALL: weighted average. Accuracy 35%, completeness 25%, clarity 20%,
+actionability 20%.
+
+REQUIRED CHANGES: things that MUST be fixed before the brief is shippable.
+Be specific. &quot;Improve competitive analysis&quot; is not specific. &quot;Section 4 lacks
+discussion of how the target's pricing compares to the two named competitors&quot;
+is specific.
+
+OPTIONAL IMPROVEMENTS: things that would improve the brief but are not blockers.
+&quot;&quot;&quot;.strip()
+</code></pre>
+<p>This single change — decomposing the score — improves consistency dramatically. Each sub-score has a narrower target. Combining them is deterministic. The variance between runs drops because no single dimension carries all the weight.</p>
+<p>Sam re-ran the 20-call experiment with the decomposed evaluator. Standard deviation dropped from 1.3 to 0.4. The two-cluster bimodal distribution disappeared. Same brief now got consistently 7.0 ± 0.4.</p>
+<h3>Part 2: Make feedback actionable</h3>
+<p>The second fix: <strong>specific feedback over vague suggestions.</strong> "Improve competitive analysis" is unactionable; the optimizer can't tell what to do. "Section 4 doesn't compare the target's pricing to the two named competitors mentioned in section 1" is actionable; the optimizer knows exactly what to fix.</p>
+<p>The system prompt above already encodes this. The Pydantic schema enforces it: <code>required_changes</code> is a list of distinct items, each (per the prompt) phrased specifically.</p>
+<p>The downstream effect: the optimizer's revisions converge faster because each iteration has clear targets. Sam's loop went from 4-5 iterations on average (often non-convergent) to 1-2 iterations (almost always convergent on iteration 2).</p>
+<h3>Part 3: Prevent loop degeneration</h3>
+<p>A subtle failure mode of evaluator-optimizer loops: <strong>the evaluator and optimizer collude</strong>. After enough iterations, the optimizer learns the evaluator's idiosyncratic preferences (because both are LLMs with shared training distributions). The brief becomes increasingly tuned to the evaluator's quirks, scoring better and better on the evaluator while becoming <em>worse</em> in some dimensions the evaluator doesn't measure well.</p>
+<p>The defense: <strong>anchor the evaluator in external criteria, not just LLM judgment.</strong></p>
+<p>For Sam's brief evaluator, the external anchors:</p>
+<ul>
+<li><strong>Schema validation.</strong> All six required sections present? Each within the 150-300 word target? This is deterministic; the LLM evaluator can't drift on it.</li>
+<li><strong>Entity verification (M10).</strong> All named entities (companies, people, dates, dollar figures) appear in the source research? Not in the source → fail.</li>
+<li><strong>Citation check.</strong> All claims that should be cited have citations? Citations point to actual source material? Programmatic check.</li>
+</ul>
+<p>The combined evaluator becomes:</p>
+<pre><code class="language-python">async def evaluate_brief(brief: str, source_research: str) -&gt; dict:
+    # Programmatic checks first — fast, deterministic
+    schema_check = check_schema_compliance(brief)
+    entity_check = await verify_entities_against_source(brief, source_research)
+    citation_check = await verify_citations(brief, source_research)
+
+    # If hard checks fail, no need for the LLM evaluator
+    if not schema_check.passed:
+        return {&quot;score&quot;: 0.0, &quot;feedback&quot;: schema_check.violations, &quot;type&quot;: &quot;structural&quot;}
+    if entity_check.unverified:
+        return {&quot;score&quot;: 0.3, &quot;feedback&quot;: f&quot;Unverified entities: {entity_check.unverified}&quot;,
+                &quot;type&quot;: &quot;factual&quot;}
+
+    # LLM evaluator only for subjective quality
+    llm_eval = await llm_evaluate(brief, source_research)
+    return {
+        &quot;score&quot;: llm_eval.overall_score,
+        &quot;feedback&quot;: llm_eval.required_changes,
+        &quot;subscores&quot;: {
+            &quot;accuracy&quot;: llm_eval.accuracy_score,
+            &quot;completeness&quot;: llm_eval.completeness_score,
+            &quot;clarity&quot;: llm_eval.clarity_score,
+            &quot;actionability&quot;: llm_eval.actionability_score,
+        },
+        &quot;type&quot;: &quot;subjective&quot;,
+    }
+</code></pre>
+<p>The LLM evaluator now only handles the genuinely subjective dimensions. Structure, facts, and citations get checked deterministically. The collusion failure mode goes away because the deterministic checks can't be gamed — either the section is there or it isn't, either the entity appears in the source or it doesn't.</p>
+<div class="gotcha">
+<p>A specific mistake teams make: stacking a critic on top of a generator using the <em>same model</em>. Sonnet generates; Sonnet critiques. The shared training distribution means the critic has correlated blind spots with the generator. If the generator confabulates a particular kind of fact, the critic is also less likely to catch that kind of fabrication. The fix: use a <em>stronger</em> critic than generator (Opus critiquing Sonnet output), use a critic with <em>different</em> prompts that surface different perspectives, or — when stakes warrant — use multiple critics with different framings (Section 6).</p>
+</div>
+<hr />
+<h2>Section 5 — The Limits of Reflection</h2>
+<p>Reflection works. Reflection also fails in specific, predictable ways. Knowing the failure modes is what separates "applies reflection" from "applies reflection well."</p>
+<h3>Limit 1: The blind-spot problem</h3>
+<p>The most cited failure mode in the 2024–2026 literature. Single-agent reflection tends to repeat earlier misconceptions on hard examples. The MAR paper (December 2025) found this empirically: <em>"self reflections tend to repeat earlier misconceptions and do not introduce new reasoning paths on difficult examples."</em></p>
+<p>The mechanism: when the model produces an output and is then asked to critique it, the critique runs on the same context, with the same model, drawing on the same patterns. The model's blind spots — places where its training didn't distinguish a plausible answer from a correct one — are blind in <em>both</em> the generation and the critique. Asking the same model to find what it can't see doesn't help.</p>
+<p>The empirical result: reflection produces meaningful gains on tasks where the model has the right knowledge but applied it sloppily; minimal gains on tasks where the model's underlying capability is the bottleneck. The 6.2-point gain MAR reported on HumanEval pass@1 (76.4 → 82.6) over single-agent Reflexion came from explicitly diversifying the critique perspectives — multiple agents with different reasoning personas, exactly to dodge the shared blind-spot problem.</p>
+<p>The defenses:</p>
+<ul>
+<li><strong>Use a stronger model as critic.</strong> Opus 4.7 critiquing Sonnet 4.6 catches blind spots Sonnet doesn't have. Cost goes up; quality follows. M6's stronger-as-critic pattern earns its place here.</li>
+<li><strong>Different prompts surface different perspectives.</strong> If the generator was prompted as a "helpful assistant," prompt the critic as a "rigorous fact-checker" or "skeptical reader." Different framings activate different reasoning patterns.</li>
+<li><strong>External anchors (Section 4 Part 3).</strong> Programmatic checks find what no LLM critic can find — structural problems, entity fabrication, citation gaps.</li>
+<li><strong>Multi-agent reflection (Section 6).</strong> Multiple critics with different personas. Most expensive; highest ceiling.</li>
+</ul>
+<h3>Limit 2: Diminishing returns</h3>
+<p>The 2026 design patterns guide cited in research observed: <em>"In the author's experience, returns diminish after two to three iterations for code generation and summarization tasks, though analytical or research-heavy domains sometimes benefit from a fourth pass."</em></p>
+<p>This matches Sam's own experience after rebuilding the evaluator. Iteration 1 typically produces meaningful improvement. Iteration 2 sometimes catches issues the first iteration missed. Iteration 3 occasionally helps. Iteration 4+ rarely helps and often makes things subtly worse (over-tuning, drift).</p>
+<p>The implication: <strong>set hard iteration caps.</strong> Two iterations as the default. Three for analytical work. Don't let the loop run longer hoping for more improvement; set a hard ceiling and accept the output if it's not done by then.</p>
+<h3>Limit 3: Reflection on fundamentally wrong outputs</h3>
+<p>Reflection improves <em>partially-correct</em> output toward more-correct output. It does not fix <em>fundamentally wrong</em> output.</p>
+<p>If the generator produced a brief that's structured around the wrong company (entity confusion early in research), reflection iterates on the wrong-company brief. The critic might catch a typo or a clarity issue, but it can't say "this is about Mercer Industries when it should be about Mercer Healthcare" unless the critic has access to the right ground truth — and if it has that, you should have wired in entity verification (M10 Pattern A) at the entity stage rather than trying to catch it via reflection.</p>
+<p>The implication: <strong>reflection is not a substitute for upstream correctness.</strong> The hallucination disciplines from M10, the tool design from M4, the context engineering from M7-M9 — those have to work first. Reflection is the layer above; it improves outputs that are mostly right and might be wrong in specific ways. It doesn't rescue outputs that are categorically wrong.</p>
+<h3>Limit 4: Cost compounds</h3>
+<p>Every reflection iteration is another LLM call. A 3-iteration reflection loop costs roughly 3× the unreflected single call (one generation + two reflections + two revisions = five calls, but with shorter critique calls than full generations). For high-volume systems, this matters.</p>
+<p>The cost calibration:</p>
+<ul>
+<li><strong>Cheap workloads with low stakes.</strong> No reflection. Single-shot generation; accept the output as-is.</li>
+<li><strong>Medium workloads with medium stakes.</strong> One iteration of reflection (generate → critique → revise once). Captures most of the benefit at modest cost.</li>
+<li><strong>High-stakes workloads.</strong> Two or three iterations, with stronger critic models. Pay for the quality.</li>
+</ul>
+<p>The mistake to avoid: applying reflection prophylactically. Section 7 expands on the cost calibration framework.</p>
+<h3>Limit 5: When reflection makes things worse</h3>
+<p>The most concerning failure mode: reflection produces <em>worse</em> output than no reflection at all. This happens in specific cases:</p>
+<ul>
+<li><strong>The critic is biased toward criticism.</strong> A critic prompted to "find every flaw" finds flaws even when the output is good. The reviser then changes things that didn't need changing, often in ways that introduce new problems.</li>
+<li><strong>The critic and reviser share idiosyncratic preferences.</strong> Both prefer formal tone, both insert equivocation, both remove specific examples in favor of generalities. Multiple iterations make the output progressively more generic.</li>
+<li><strong>The reviser overcorrects.</strong> Critique mentions one weakness; reviser rewrites that section completely, losing context the original had right.</li>
+<li><strong>The critic hallucinates flaws.</strong> The critique points to a problem that isn't there; the reviser dutifully addresses it, introducing actual problems.</li>
+</ul>
+<p>The defense: <strong>measure end-to-end quality, not just consistency.</strong> A reflection loop that produces consistent output isn't necessarily producing <em>good</em> output. Sam's hardened evaluator from Section 4 was much more consistent than the original — but the team also ran a quality eval (independent rubric, manual review) to verify the consistency was tracking quality, not just convergence. Without that check, the loop could have been confidently producing worse-and-worse output and the metrics would have shown improvement.</p>
+<div class="postmortem">
+<p><strong>The Reflection Loop That Made Things Worse</strong></p>
+<p>A team had a customer-email-drafting agent. They added a reflection step: the agent would draft an email, critique it, revise, and send. The critique prompt asked the model to "identify ways the email could be more empathetic and professional."</p>
+<p>After deploying the reflection step, complaints from customer-facing reps went up. The emails were technically polished, but they had become <em>generic</em> — they no longer mentioned specific customer details that the original drafts had included. The team pulled traces.</p>
+<p>What was happening: the critic model was suggesting changes like "could be more empathetic by acknowledging the customer's situation broadly" — generic, professional-sounding additions. The reviser implemented these by replacing customer-specific phrasing with the generic framings. After 2-3 iterations, every email read like it had been written by a corporate communications template.</p>
+<p>Two fixes shipped:</p>
+<ol>
+<li>
+<p><strong>Critic prompt rewritten.</strong> New instruction: "Identify weaknesses precisely. Do not suggest generic improvements. Specific feedback only — name the exact phrase that should change and why."</p>
+</li>
+<li>
+<p><strong>Specificity preservation rule.</strong> The reviser was instructed: "Do not replace specific customer details (names, situations, account specifics) with generic framings. Specificity is more empathetic than generic professionalism."</p>
+</li>
+</ol>
+<p>After the fixes, the rep complaints stopped. Email quality (measured by an independent rubric) recovered. The reflection loop now improved emails rather than genericizing them.</p>
+<p><strong>Lesson:</strong> A reflection loop is only as good as its critic. A vague or biased critic produces vague or biased revisions. Watch end-to-end quality, not just whether the loop converges. If the loop is converging on something worse than where it started, the critic is the problem.</p>
+</div>
+<hr />
+<h2>Section 6 — Multi-Agent Reflection</h2>
+<p>The blind-spot problem from Section 5 motivated the field's move toward multi-agent reflection. Single-agent reflection has correlated blind spots with the generator. Multi-agent reflection uses multiple critics with different framings to catch what one critic misses.</p>
+<p>This is a natural extension of M3's evaluator-optimizer pattern, but with multiple evaluators. We'll preview it briefly here; M13 covers multi-agent architectures in depth.</p>
+<h3>The pattern</h3>
+<pre><code class="language-python">async def multi_critic_reflection(
+    candidate: str,
+    original_prompt: str,
+    *,
+    critics: list[dict],  # [{name, prompt, model}]
+) -&gt; dict:
+    &quot;&quot;&quot;
+    Run multiple critics in parallel, each with a different framing.
+    Aggregate the critiques into combined feedback.
+    &quot;&quot;&quot;
+    individual_critiques = await asyncio.gather(*[
+        run_critic(candidate, original_prompt, **critic_config)
+        for critic_config in critics
+    ])
+
+    # Aggregate: pool all required_changes, deduplicate, rank by frequency
+    all_changes = []
+    for critique in individual_critiques:
+        all_changes.extend(critique.required_changes)
+    aggregated = aggregate_changes(all_changes)
+
+    return {
+        &quot;individual_critiques&quot;: individual_critiques,
+        &quot;aggregated_changes&quot;: aggregated,
+        &quot;consensus_score&quot;: sum(c.score for c in individual_critiques) / len(critics),
+    }
+
+
+CRITICS_FOR_BRIEF = [
+    {
+        &quot;name&quot;: &quot;factuality&quot;,
+        &quot;prompt&quot;: &quot;Critique this brief focusing on factual accuracy and citation grounding.&quot;,
+        &quot;model&quot;: &quot;claude-opus-4-7&quot;,
+    },
+    {
+        &quot;name&quot;: &quot;audience_fit&quot;,
+        &quot;prompt&quot;: (
+            &quot;Critique this brief from the perspective of a busy AE who will read it &quot;
+            &quot;in 5 minutes. Is it useful for prepping a customer call?&quot;
+        ),
+        &quot;model&quot;: &quot;claude-sonnet-4-6&quot;,
+    },
+    {
+        &quot;name&quot;: &quot;completeness&quot;,
+        &quot;prompt&quot;: (
+            &quot;Critique this brief for completeness. Are required sections present? &quot;
+            &quot;Are gaps acknowledged? Are competitor analyses substantive?&quot;
+        ),
+        &quot;model&quot;: &quot;claude-sonnet-4-6&quot;,
+    },
+]
+</code></pre>
+<p>Three critics, three perspectives:</p>
+<ul>
+<li><strong>Factuality</strong> — strict on fabrication, citations, accuracy</li>
+<li><strong>Audience fit</strong> — practical, "would the AE find this useful"</li>
+<li><strong>Completeness</strong> — structural, all-bases-covered</li>
+</ul>
+<p>The MAR paper's finding: this kind of multi-perspective critique consistently produces better revisions than single-perspective critique. The blind spots of any one critic are often visible to another.</p>
+<h3>Cost vs benefit</h3>
+<p>Multi-critic reflection is expensive — N critic calls per iteration, each potentially using a stronger model. A 3-critic loop with 2 iterations runs 7+ calls per request (1 generation + 3 × 2 critiques + 2 revisions).</p>
+<p>When justified:</p>
+<ul>
+<li><strong>High-stakes outputs</strong> — legal briefs, medical recommendations, financial analyses</li>
+<li><strong>Outputs with multi-dimensional quality</strong> — where "good" requires several different things simultaneously</li>
+<li><strong>Workflows where the cost of being wrong dwarfs the cost of computation</strong></li>
+</ul>
+<p>When not justified:</p>
+<ul>
+<li><strong>High-volume routine outputs</strong> — most customer support replies, standard summaries</li>
+<li><strong>Tasks where one critic's framing covers the relevant dimensions</strong> — schema-validated extraction, simple Q&amp;A</li>
+<li><strong>Latency-sensitive applications</strong> — multi-critic adds 2-3× latency</li>
+</ul>
+<p>The principle from Module 6 applies: match the verification cost to the stakes. Multi-critic reflection is the ceiling; most workloads don't need to reach for it.</p>
+<h3>The judge model pattern</h3>
+<p>A variation that's become popular: instead of aggregating critiques programmatically, have a <em>judge</em> model synthesize the multiple critiques into unified feedback.</p>
+<pre><code class="language-python">async def judge_synthesize(
+    candidate: str,
+    individual_critiques: list,
+    *,
+    model: str = &quot;claude-opus-4-7&quot;,
+) -&gt; str:
+    response = await client.messages.create(
+        model=model,
+        max_tokens=2048,
+        messages=[{
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: (
+                f&quot;Candidate response:\n{candidate}\n\n&quot;
+                f&quot;Critiques from multiple reviewers:\n&quot;
+                + &quot;\n\n&quot;.join(f&quot;=== {c.name} ===\n{c.feedback}&quot; for c in individual_critiques)
+                + &quot;\n\n&quot;
+                &quot;Synthesize these critiques into a single, coherent feedback document. &quot;
+                &quot;Identify which concerns are most important. Resolve disagreements between &quot;
+                &quot;reviewers — for example, if one reviewer says 'too detailed' and another &quot;
+                &quot;says 'lacking specifics,' adjudicate. Output the unified feedback.&quot;
+            ),
+        }],
+    )
+    return response.content[0].text
+</code></pre>
+<p>The judge resolves contradictions between critics, prioritizes the most important issues, and produces a single coherent revision target. The MAR paper found judge-synthesized critiques produced better revisions than naively aggregated ones.</p>
+<p>This is the multi-agent pattern getting close to a full multi-agent architecture — generator, multiple critics, a judge. Module 13 will formalize this.</p>
+<div class="nodumbq">
+<p><strong>Q: Multi-agent reflection sounds expensive. When is it actually worth it?</strong></p>
+<p>The math: a single-critic 2-iteration loop runs ~5 calls. A 3-critic 2-iteration loop with a judge runs ~10 calls. So roughly 2× cost for multi-agent. The quality difference: MAR reported a 6.2-point pass@1 gain on HumanEval; on subjective tasks like brief writing, the gains are usually 5-15% by independent rubric scoring. So 2× cost for ~10% quality lift is the typical trade-off. Worth it for high-stakes workloads (legal, financial); usually not for routine ones.</p>
+<p><strong>Q: Can I get the multi-perspective benefit without multiple critics?</strong></p>
+<p>Partially. Asking a single critic to evaluate from multiple framings in one call ("first evaluate for factual accuracy, then for audience fit, then for completeness, then synthesize") captures some of the benefit at lower cost. But the shared-context limitation (one model, one inference) means it's not as good as truly separate critic calls. It's a middle-ground option for cases where multi-agent is too expensive but single-agent is too narrow.</p>
+</div>
+<hr />
+<h2>Section 7 — Cost Calibration: Hard Caps and Budgets</h2>
+<p>Reflection burns tokens. Without explicit caps, it can burn many tokens.</p>
+<h3>The iteration cap</h3>
+<p>Hard limit on the number of generate-critique-revise cycles. The 2026 design patterns guide:</p>
+<blockquote>
+<p><em>"Without a maximum iteration cap, reflection loops can cycle indefinitely, burning tokens without improving output. Returns diminish after two to three iterations for code generation and summarization tasks, though analytical or research-heavy domains sometimes benefit from a fourth pass."</em></p>
+</blockquote>
+<p>Defaults that work:</p>
+<ul>
+<li><strong>Routine outputs:</strong> 1 iteration (generate → critique → revise once → ship). Captures most of the gain at minimum cost.</li>
+<li><strong>Standard production:</strong> 2 iterations. The default for medium-stakes work.</li>
+<li><strong>High-stakes outputs:</strong> 3 iterations max. Usually converges in 2; the third is a buffer.</li>
+<li><strong>Research / analysis:</strong> 4 iterations. The exception case.</li>
+</ul>
+<p>Anything beyond 4 is almost certainly diminishing-or-negative returns. If the loop hasn't converged by then, escalate (human review, stronger model, different approach).</p>
+<h3>Token budget per cycle</h3>
+<p>Per-iteration token cap, separate from total. Prevents one runaway critique or revision from dominating the cost.</p>
+<pre><code class="language-python">ITERATION_TOKEN_BUDGET = 4096  # max output tokens per critic/reviser call
+
+
+async def critique_with_budget(prompt: str, candidate: str, model: str) -&gt; Critique:
+    response = await client.messages.create(
+        model=model,
+        max_tokens=ITERATION_TOKEN_BUDGET,
+        ...
+    )
+    return ...
+</code></pre>
+<p>A critic that produces a 10,000-token critique is signaling that something's wrong with the prompt design — the critic shouldn't need that many tokens to identify weaknesses. Cap it; if outputs get cut off, fix the prompt.</p>
+<h3>Total budget per request</h3>
+<p>Cumulative ceiling across all iterations. Prevents the loop from running 4 iterations × multi-critic × stronger models from blowing past your unit-economics target.</p>
+<pre><code class="language-python">async def reflection_with_budget(
+    initial_prompt: str,
+    *,
+    max_iterations: int = 2,
+    total_token_budget: int = 32000,
+    ...
+) -&gt; dict:
+    tokens_used = 0
+    iterations_completed = 0
+
+    while iterations_completed &lt; max_iterations and tokens_used &lt; total_token_budget:
+        critique = await critique_response(...)
+        tokens_used += critique.usage_tokens
+
+        if tokens_used &gt;= total_token_budget:
+            break  # budget exhausted; ship what we have
+
+        if critique.score &gt;= threshold:
+            return {&quot;final&quot;: candidate, &quot;tokens_used&quot;: tokens_used, ...}
+
+        candidate = await revise(...)
+        tokens_used += revise.usage_tokens
+        iterations_completed += 1
+</code></pre>
+<p>Two terminal conditions: convergence (good) and budget exhaustion (acceptable). Both produce a usable output. Neither lets the loop run wild.</p>
+<h3>When to skip reflection entirely</h3>
+<p>Some workloads don't earn reflection. The decision criteria:</p>
+<ul>
+<li><strong>Cost of error is low.</strong> The user can just ask again if the answer is bad.</li>
+<li><strong>Single-shot quality is already high.</strong> If the unreflected baseline meets quality bar, reflection is overhead.</li>
+<li><strong>Latency budget is tight.</strong> Sub-second response targets don't accommodate reflection.</li>
+<li><strong>Volume is high and stakes are low.</strong> A high-volume customer-acknowledgment generator probably doesn't need reflection per request.</li>
+</ul>
+<p>Sam's deal-research evaluator earned reflection because its outputs gated downstream optimizer iterations. The customer-success bot's individual responses generally didn't earn reflection — they're high-volume, conversational, with cheap-to-fix errors. Different workloads, different reflection budgets.</p>
+<div class="brain">
+<p>You have an agent that generates legal contract summaries for review by lawyers. Average input length 50 pages; average output length 500 words; 100 requests per day. Should you add reflection? With what budget?</p>
+<p>(Yes, definitely. High stakes (legal review), low volume (100/day means cost compounds slowly), high cost-of-error (a missed clause has six-figure consequences). Use 2-3 iterations of single-critic reflection with Opus as both generator and critic, plus entity verification on named clauses. Total cost per request might be 10× a single Sonnet call — but at 100 requests/day, that's still affordable, and the quality lift is worth the spend.)</p>
+</div>
+<hr />
+<h2>Section 8 — Putting It Together: Sam's Evaluator Rebuilt</h2>
+<p>Returning to the cold open. Sam rebuilt the brief evaluator using everything in this module:</p>
+<p><strong>Architecture:</strong></p>
+<pre><code class="language-python">async def evaluate_brief_v2(
+    brief: str,
+    source_research: str,
+    *,
+    max_revisions: int = 2,
+) -&gt; dict:
+    # Programmatic structural checks (deterministic, fast)
+    schema_check = check_schema_compliance(brief)
+    if not schema_check.passed:
+        return {
+            &quot;decision&quot;: &quot;reject&quot;,
+            &quot;reason&quot;: &quot;structural&quot;,
+            &quot;details&quot;: schema_check.violations,
+        }
+
+    # Entity and citation verification (M10 Pattern A)
+    entity_check = await verify_entities_against_source(brief, source_research)
+    if entity_check.unverified:
+        return {
+            &quot;decision&quot;: &quot;reject&quot;,
+            &quot;reason&quot;: &quot;factual&quot;,
+            &quot;details&quot;: entity_check.unverified,
+        }
+
+    citation_check = await verify_citations(brief, source_research)
+    if citation_check.unverified:
+        return {
+            &quot;decision&quot;: &quot;reject&quot;,
+            &quot;reason&quot;: &quot;citations&quot;,
+            &quot;details&quot;: citation_check.unverified,
+        }
+
+    # LLM evaluator with decomposed criteria (Section 4 Part 1)
+    llm_eval = await llm_evaluate_decomposed(brief, source_research)
+
+    return {
+        &quot;decision&quot;: &quot;accept&quot; if llm_eval.overall_score &gt;= 0.75 else &quot;revise&quot;,
+        &quot;reason&quot;: &quot;subjective_quality&quot;,
+        &quot;score&quot;: llm_eval.overall_score,
+        &quot;subscores&quot;: {
+            &quot;accuracy&quot;: llm_eval.accuracy_score,
+            &quot;completeness&quot;: llm_eval.completeness_score,
+            &quot;clarity&quot;: llm_eval.clarity_score,
+            &quot;actionability&quot;: llm_eval.actionability_score,
+        },
+        &quot;required_changes&quot;: llm_eval.required_changes,
+        &quot;optional_improvements&quot;: llm_eval.optional_improvements,
+    }
+</code></pre>
+<p><strong>The optimizer loop:</strong></p>
+<pre><code class="language-python">async def write_brief_with_reflection(
+    research: dict,
+    *,
+    max_revisions: int = 2,
+) -&gt; dict:
+    candidate = await generate_brief(research)
+    history = []
+
+    for iteration in range(max_revisions + 1):
+        evaluation = await evaluate_brief_v2(candidate, research)
+        history.append({&quot;iteration&quot;: iteration, &quot;evaluation&quot;: evaluation})
+
+        if evaluation[&quot;decision&quot;] == &quot;accept&quot;:
+            return {
+                &quot;final&quot;: candidate,
+                &quot;evaluation&quot;: evaluation,
+                &quot;iterations_used&quot;: iteration,
+                &quot;history&quot;: history,
+                &quot;converged&quot;: True,
+            }
+
+        if evaluation[&quot;decision&quot;] == &quot;reject&quot;:
+            # Hard reject (structural / factual / citation) — fix the upstream issue
+            return {
+                &quot;final&quot;: None,
+                &quot;evaluation&quot;: evaluation,
+                &quot;history&quot;: history,
+                &quot;converged&quot;: False,
+                &quot;escalation_needed&quot;: True,
+            }
+
+        # decision == &quot;revise&quot; — actionable subjective feedback
+        if iteration &lt; max_revisions:
+            candidate = await revise_brief(
+                research,
+                previous=candidate,
+                feedback=evaluation[&quot;required_changes&quot;],
+            )
+
+    return {
+        &quot;final&quot;: candidate,
+        &quot;evaluation&quot;: evaluation,
+        &quot;iterations_used&quot;: max_revisions,
+        &quot;history&quot;: history,
+        &quot;converged&quot;: False,
+    }
+</code></pre>
+<p><strong>What changed from the broken version:</strong></p>
+<ol>
+<li><strong>Decomposed evaluator</strong> — four sub-scores instead of one holistic score. Variance dropped from 1.3 to 0.4 standard deviation.</li>
+<li><strong>Programmatic anchors</strong> — schema, entity, and citation checks happen first. The LLM evaluator only handles subjective quality.</li>
+<li><strong>Specific feedback discipline</strong> — <code>required_changes</code> is a list of specific items, each phrased actionably.</li>
+<li><strong>Iteration cap</strong> — max 2 revisions. Convergence usually happens in 1.</li>
+<li><strong>Three terminal states</strong> — accept (ship), revise (iterate), reject (escalate). Clear handling for each.</li>
+</ol>
+<p><strong>The before-and-after metrics</strong> (Sam ran this on a sample of 50 briefs):</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Evaluator standard deviation on same brief</td>
+<td>1.3</td>
+<td>0.4</td>
+</tr>
+<tr>
+<td>Average iterations to convergence</td>
+<td>4.2</td>
+<td>1.6</td>
+</tr>
+<tr>
+<td>Non-convergent runs (loop hits cap)</td>
+<td>35%</td>
+<td>4%</td>
+</tr>
+<tr>
+<td>Quality (independent rubric, 0-10)</td>
+<td>6.4</td>
+<td>7.8</td>
+</tr>
+<tr>
+<td>Tokens per brief end-to-end</td>
+<td>28K</td>
+<td>18K</td>
+</tr>
+<tr>
+<td>End-to-end latency</td>
+<td>47s</td>
+<td>22s</td>
+</tr>
+</tbody>
+</table>
+<p>Better quality, fewer iterations, lower cost, faster latency. The hardened reflection loop wasn't <em>more</em> expensive than the broken one — it was <em>less</em> expensive, because it converged faster and didn't thrash.</p>
+<p>Sam wrote a one-line lesson: <em>"a sloppy evaluator costs more than a rigorous one. The rigor is the optimization."</em></p>
+<div class="code-exercise">
+<p><strong>Exercise 11.1 — Reflection audit.</strong></p>
+<p>Pick a workflow in your stack that has an evaluator-optimizer loop or any reflection step. Run the consistency test:</p>
+<ol>
+<li><strong>Pick a representative input.</strong> A real production input (or test input) that's representative of typical work.</li>
+<li><strong>Run the evaluator 20 times</strong> on the same candidate output. Plot the score distribution.</li>
+<li><strong>If standard deviation is &gt; 0.3 on a 0-1 scale</strong>, you have an evaluator-consistency problem. Apply Section 4 Part 1 (decomposed criteria) and re-test.</li>
+<li><strong>Look at the feedback the evaluator produces.</strong> Is it specific or vague? Could a generator act on it concretely? If not, apply Section 4 Part 2 and re-test.</li>
+<li><strong>Audit one converged loop end-to-end.</strong> What does the brief look like at iteration 1 vs iteration 3? Is it actually better, or is it different in ways that don't matter?</li>
+<li><strong>Measure the quality with an independent rubric.</strong> Don't trust the evaluator to evaluate itself. Use a different framing or a stronger model.</li>
+</ol>
+<p>Most teams ship their first reflection loop and never run this audit. The audit reveals exactly the failure modes from Section 5 (blind spots, generic genericization, criticism for criticism's sake). Once you see them, the fixes are straightforward.</p>
+</div>
+<hr />
+<h2>Section 9 — The Framework</h2>
+<p>Adding reflection discipline to a system you're building:</p>
+<p><strong>1. Diagnose whether you need reflection.</strong> Cost of error vs cost of inference. Volume vs stakes. Single-shot quality vs reflection-improved quality. Don't add reflection prophylactically.</p>
+<p><strong>2. Pick the right Anthropic surface.</strong> Adaptive thinking for generation-time deliberation on hard tasks. Interleaved thinking for inter-turn deliberation in agent loops. The "think" tool for compliance work or Haiku-tier auditable reasoning. Match the surface to the workload.</p>
+<p><strong>3. Build the core reflection loop with structured critics.</strong> Pydantic schemas for critique output. Specific feedback discipline in the prompt. Targeted revision over wholesale rewrite. Iteration cap (default 2).</p>
+<p><strong>4. Decompose evaluator criteria.</strong> Single holistic scores produce inconsistent verdicts. Multiple sub-scores combined deterministically produce stable evaluation.</p>
+<p><strong>5. Anchor in external criteria.</strong> Programmatic checks for structure, entities, citations. The LLM evaluator handles only the genuinely subjective. Prevents collusion between evaluator and optimizer.</p>
+<p><strong>6. Watch for the limit failure modes.</strong> Blind-spot reinforcement (use stronger or differently-framed critics). Diminishing returns (cap iterations). Genericization (preserve specificity). Worse-than-no-reflection outcomes (measure end-to-end quality, not just convergence).</p>
+<p><strong>7. Reach for multi-agent reflection only when warranted.</strong> High-stakes, multi-dimensional quality, error costs that justify 2-3× compute. Most workloads don't need it.</p>
+<p><strong>8. Cap costs explicitly.</strong> Iteration limits. Per-call token budgets. Total budget per request. Reflection that runs unbounded is reflection that ships products at unit-economics-killing cost.</p>
+<p>The discipline this enforces: <strong>reflection is a deliberate intervention, not a default.</strong> Applied to the right workloads with the right structure, it produces meaningful quality lift. Applied unreflectively, it inflates costs without proportional benefit — and sometimes makes things worse.</p>
+<hr />
+<h2>Recap: Module 11 in eight bullets</h2>
+<div class="bullet-points">
+<ul>
+<li>Reflection is the family of patterns that give the model a chance to evaluate its own work before that work becomes load-bearing. Includes generation-time (CoT, extended thinking), post-generation (Reflexion, Self-Refine), inter-turn (interleaved thinking), and cross-run (memory-backed lessons).</li>
+<li>Anthropic's first-party surfaces: adaptive thinking (default on Sonnet 4.6 / Opus), interleaved thinking (auto-enabled on Opus 4.7), the "think" tool (auditable reasoning, especially useful on Haiku). Pick the surface that matches your workload's structure.</li>
+<li>The core reflection loop: generate → critique → revise → repeat with iteration cap. Pydantic-typed critique output with specific feedback. Targeted revision over wholesale rewrite. Diminishing returns set in fast — 2 iterations is usually the right default.</li>
+<li>Evaluator-optimizer pattern hardening: decompose holistic scores into sub-criteria (drops variance ~3×), make feedback actionable (specific items, not vague suggestions), anchor in programmatic checks (entities, citations, schema) so the loop can't collude.</li>
+<li>Limits of reflection: blind-spot reinforcement (single-agent reflects on its own context), diminishing returns after 2-3 iterations, can't fix fundamentally-wrong output, and sometimes produces worse results (genericization, over-criticism). Watch for these.</li>
+<li>Multi-agent reflection (preview of M13) addresses blind-spot reinforcement at higher cost. Multiple critics with different framings, sometimes a judge model synthesizing. Justified for high-stakes outputs; overkill for routine ones.</li>
+<li>Cost calibration is non-negotiable. Iteration caps (2 default, 3 max for analytical, 4 absolute ceiling). Per-call token budgets. Total budget per request. Without caps, reflection burns tokens indefinitely.</li>
+<li>Sam's evaluator rebuild produced better quality at lower cost: variance dropped 3×, iterations dropped from 4.2 to 1.6, tokens dropped from 28K to 18K, quality went from 6.4/10 to 7.8/10. The rigor is the optimization.</li>
+</ul>
+</div>
+<hr />
+<div class="sam-arc">
+<p><strong>Sam, after the evaluator rebuild.</strong></p>
+<p>Two weeks of work. Tuesday afternoon when the broken evaluator was discovered to Friday two weeks later when the rebuilt version shipped.</p>
+<p>The biggest learning wasn't a technical one. The biggest learning was that <em>reflection had been hiding the underlying problem</em>. The original evaluator's inconsistency had made the optimizer thrash, and the thrashing had been read by the team as "reflection just adds variance, what can you do." The fix wasn't to remove reflection. The fix was to make the evaluator deserve its role.</p>
+<p>Sam thought about this on the walk home that Friday. The first ten modules of work — loops, workflows, tools, MCP, models, context, compaction, memory, hallucinations — had all been about <em>upstream correctness</em>. Make the things that produce output as correct as possible. Module 11 was the first module that was about <em>epistemic discipline</em> — knowing what you know, knowing what you don't, building processes that surface the difference.</p>
+<p>The reflection loop, done right, was that discipline encoded in code. The evaluator wasn't perfect, so it was decomposed. The feedback wasn't actionable, so it was schema-constrained. The loop could collude with itself, so it was anchored in programmatic checks. Each fix was an admission that the previous version was making claims it couldn't back up — and a refactor that aligned the system's behavior with its actual capabilities.</p>
+<p>Sam's arc this module: <strong>the rigor is the optimization.</strong> The hardened loop, the structured workflows, the careful tools, the compactions and memories — they all had this same shape. A version that worked sometimes, a discovery of why it was sometimes-wrong, and a refactor that made the discipline match the requirement. M11 was that pattern applied to the agent's own self-evaluation.</p>
+<p>The deal-research workflow was now operating at a level Sam could defend in a code review: every model call had an explainable purpose, every reflection step had a defensible justification, every iteration cap had a reason. The system was no longer just <em>working</em>; it was <em>auditable</em>.</p>
+<p>Two more reliability modules to go. Then the multi-agent arc. The book was building toward something Sam could see now: a system where every layer was honest about what it was doing, and the layers composed without gaps. M12 — guardrails at the boundaries — was next.</p>
+</div>
+<hr />
+<h2>What's next</h2>
+<p>Module 12 is guardrails. Input filtering, output checks, topical and behavioral constraints. The cousin of Module 5's protocol-level security, applied at the per-call layer. The agent that's been told "don't fabricate citations" in M10 still needs an output-time check that <em>verifies</em> it didn't fabricate one. M12 is where those checks live — the boundary discipline that catches what the upstream layers missed.</p>
+<p>After M12, the reliability arc closes (M10 hallucinations, M11 reflection, M12 guardrails). Then M13–15 take the system multi-agent (when complexity is justified, the architectures, the patterns). M16–17 are operations (sagas, observability). M18 is the capstone.</p>
+<p>For now: take the audit exercise from Section 8. Run the 20-call consistency test on any reflection step in your system. The variance you see will tell you whether you're using reflection or just paying for it. The fix path is in Section 4. The rigor is the optimization — for evaluators, for loops, for the whole system.</p>
+</body>
+</html>
