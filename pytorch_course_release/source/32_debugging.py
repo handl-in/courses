@@ -1,0 +1,722 @@
+#!/usr/bin/env python3
+"""Module 32: Debugging training runs — full HF vibe."""
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent))
+from build_module import emit
+
+BODY = r"""
+<div class="module-header">
+  <div class="module-tag">Part IX · Module 32</div>
+  <h1 class="module-title"><em>Debugging</em> training runs</h1>
+  <p class="module-sub">— the four-layer failure model, the NaN walking tree, loss curve forensics, gradient-norm patterns, and the bisection mindset that turns "the model isn't training" into a tractable diagnosis</p>
+</div>
+
+<p>You will run a training job and something will go wrong. This is not pessimism; it's an empirical observation about real ML engineering. Loss will spike, NaNs will appear, the model will train but produce gibberish, OOM will hit at step 4000, the eval will silently diverge from train. Each of these has its own diagnostic approach and a small set of likely causes. <strong>This module is the consolidated playbook.</strong></p>
+
+<p>The skills covered here are scattered through the rest of the course — hooks (M5), gradcheck (M6), init schemes (M8), mixed precision (M14), memory profiling (M12, M20), the four bottleneck shapes (M13). M32's job is to organize them into a systematic diagnostic workflow you can apply when you don't know what's wrong. <em>Most debugging time isn't spent fixing bugs; it's spent localizing them.</em> Master the localization and the fixes usually become obvious.</p>
+
+<div class="keyidea">
+Training failures fall into four layers: <strong>numerical</strong> (NaN, inf, divergence), <strong>algorithmic</strong> (wrong loss, wrong masks, wrong gradient flow), <strong>systems</strong> (hangs, OOM, slow), and <strong>scientific</strong> (training runs but the model is bad). Each layer has different diagnostic patterns. <strong>Numerical bugs</strong> are caught with hooks and gradcheck — they're loud. <strong>Algorithmic bugs</strong> often pass numerical tests but produce wrong loss curves — caught by sanity checks (overfit a tiny batch, compare to a known-good reference). <strong>Systems bugs</strong> are caught with the profiler (M13) and memory snapshot (M20). <strong>Scientific bugs</strong> are the worst — loss looks fine, model trains, but eval diverges from training because of distribution shift, data leakage, or evaluation methodology issues. The reflex: <em>don't guess. Bisect.</em> Halve the search space until the failure is local enough to see.
+</div>
+
+<h2>Two new faces — the diagnostic pair</h2>
+
+<div class="character" style="--c: #1a1612;">
+  <div class="avatar" style="background: #1a1612; color: #fff;">D</div>
+  <div>
+    <p class="who">Debugger</p>
+    <p class="name">"I bisect. When you don't know where the bug is, halve the search space."</p>
+    <p class="says">My core technique applies to every layer of failure. Loss diverging? Halve the LR — does it still diverge? Halve again. Gibberish output? Run with a tiny model on a tiny dataset — does it overfit? If yes, scale up; if no, the architecture is wrong. NaN at step 1000? Run with a fixed seed; the NaN appears at the same step. Now save the activations at step 999 and 1000 — diff them. <em>I never guess at fixes</em>. I localize, then I look. Most bugs that seem mysterious are obvious once they're surrounded by enough context. The patient bisection is what turns "it's broken" into "it's the layer-norm epsilon."</p>
+  </div>
+</div>
+
+<div class="character" style="--c: #c1502e;">
+  <div class="avatar" style="background: #c1502e; color: #fff;">!</div>
+  <div>
+    <p class="who">Sentinel</p>
+    <p class="name">"I catch the first NaN. I'm the hook on every module that fires when something goes off."</p>
+    <p class="says">By the time loss is NaN, the actual cause may be 50 layers ago. I'm a forward hook on every module that asserts the output is finite and within a sane range. The first time something explodes, I fire — with the module name, the activation statistics, and the input that caused it. <em>Without me, you're back-tracking from a symptom to a cause through ten thousand floating-point operations.</em> I'm cheap to install (one decorator) and I save you hours per failure. Use me whenever a training run is acting weird; remove me once you know it's clean. Cost: ~2-5% per-step throughput. Value: orders of magnitude in debugging time.</p>
+  </div>
+</div>
+
+<h2>The four-layer failure model</h2>
+
+<p>Before any specific tool, internalize the taxonomy. Symptoms come from one of four layers:</p>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 740 380" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs>
+    <marker id="arrD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f5f5b"/>
+    </marker>
+  </defs>
+  <text x="370" y="22" font-size="14" font-weight="700" fill="#1a1612" text-anchor="middle">The four-layer failure model: start from symptom, identify layer, apply tool</text>
+
+  <!-- Symptom box -->
+  <g transform="translate(280, 50)">
+    <rect x="0" y="0" width="180" height="50" fill="#fff8a8" stroke="#1a1612" stroke-width="2"/>
+    <text x="90" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1612">Observed symptom</text>
+    <text x="90" y="38" text-anchor="middle" font-size="10" fill="#1a1612">"my training is broken"</text>
+  </g>
+
+  <!-- Four layer boxes branching out -->
+  <g transform="translate(20, 140)">
+    <rect x="0" y="0" width="160" height="100" fill="#fcecec" stroke="#c1502e" stroke-width="2"/>
+    <text x="80" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1612">① Numerical</text>
+    <text x="10" y="42" font-size="9" fill="#1a1612">NaN, inf, exploding</text>
+    <text x="10" y="56" font-size="9" fill="#1a1612">grads, divergence</text>
+    <text x="10" y="76" font-size="10" font-weight="700" fill="#c1502e">Tools:</text>
+    <text x="10" y="89" font-size="9" fill="#1a1612">hooks, gradcheck, fp32</text>
+  </g>
+
+  <g transform="translate(195, 140)">
+    <rect x="0" y="0" width="160" height="100" fill="#fff5d8" stroke="#d4a017" stroke-width="2"/>
+    <text x="80" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1612">② Algorithmic</text>
+    <text x="10" y="42" font-size="9" fill="#1a1612">loss not decreasing,</text>
+    <text x="10" y="56" font-size="9" fill="#1a1612">wrong masks/gradients</text>
+    <text x="10" y="76" font-size="10" font-weight="700" fill="#d4a017">Tools:</text>
+    <text x="10" y="89" font-size="9" fill="#1a1612">overfit-tiny, ref impl</text>
+  </g>
+
+  <g transform="translate(370, 140)">
+    <rect x="0" y="0" width="160" height="100" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="2"/>
+    <text x="80" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1612">③ Systems</text>
+    <text x="10" y="42" font-size="9" fill="#1a1612">OOM, hang, slow,</text>
+    <text x="10" y="56" font-size="9" fill="#1a1612">device errors</text>
+    <text x="10" y="76" font-size="10" font-weight="700" fill="#1f5f5b">Tools:</text>
+    <text x="10" y="89" font-size="9" fill="#1a1612">profiler, mem snapshot</text>
+  </g>
+
+  <g transform="translate(545, 140)">
+    <rect x="0" y="0" width="175" height="100" fill="#ffd5dc" stroke="#b85a6c" stroke-width="2"/>
+    <text x="87" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1612">④ Scientific</text>
+    <text x="10" y="42" font-size="9" fill="#1a1612">loss fine, model bad</text>
+    <text x="10" y="56" font-size="9" fill="#1a1612">data leakage, eval bug</text>
+    <text x="10" y="76" font-size="10" font-weight="700" fill="#b85a6c">Tools:</text>
+    <text x="10" y="89" font-size="9" fill="#1a1612">eval bisection, audits</text>
+  </g>
+
+  <!-- Arrows from symptom to each -->
+  <path d="M 320 105 L 100 135" stroke="#c1502e" stroke-width="1.5" fill="none" marker-end="url(#arrD)"/>
+  <path d="M 350 105 L 275 135" stroke="#d4a017" stroke-width="1.5" fill="none" marker-end="url(#arrD)"/>
+  <path d="M 390 105 L 450 135" stroke="#1f5f5b" stroke-width="1.5" fill="none" marker-end="url(#arrD)"/>
+  <path d="M 420 105 L 632 135" stroke="#b85a6c" stroke-width="1.5" fill="none" marker-end="url(#arrD)"/>
+
+  <!-- Bottom annotations: which symptoms go where -->
+  <text x="20" y="280" font-size="12" font-weight="700" fill="#1a1612">Routing symptoms to the right layer:</text>
+  <text x="40" y="300" font-size="10" fill="#1a1612">  • "loss is NaN"        → ① numerical (NaN walking tree)</text>
+  <text x="40" y="316" font-size="10" fill="#1a1612">  • "loss not decreasing"  → ② algorithmic (overfit tiny batch first)</text>
+  <text x="40" y="332" font-size="10" fill="#1a1612">  • "OOM at step 4000"     → ③ systems (memory snapshot at peak)</text>
+  <text x="40" y="348" font-size="10" fill="#1a1612">  • "train loss good, eval bad" → ④ scientific (eval bisection)</text>
+
+  <text x="370" y="375" font-family="'Caveat', cursive" font-size="20" fill="#1a1612" text-anchor="middle">most "mystery" failures are scientific — and the hardest to localize</text>
+</svg>
+</div>
+
+<p>Why categorize? Because <em>each layer has a different diagnostic toolkit</em>. Reaching for a profiler when your loss is NaN won't help; reaching for a hook when the issue is data leakage won't help. The first move is layer identification.</p>
+
+<p>The cost ordering matters too. Numerical bugs tend to be loud (NaN crashes, gradient explosions); systems bugs are loud in a different way (OOM, hangs); algorithmic bugs are quieter (silently wrong loss); scientific bugs are silent until you evaluate. <em>Loud bugs are easier; silent bugs require discipline to catch.</em></p>
+
+<h2>Layer 1: Numerical bugs and the NaN walking tree</h2>
+
+<p>"Loss is NaN" is the most common explicit failure. The cause is almost always one of a small set; walk them in order:</p>
+
+<div class="table-wrap">
+<table>
+<caption>The NaN walking tree — diagnose by checking each cause in order</caption>
+<thead><tr><th>Order</th><th>Cause</th><th>Signal</th><th>Fix</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>fp16 overflow (not bf16)</td><td>NaN appears in fp16 forward, esp. softmax/exp</td><td>Switch to bf16 (M14); if fp16 required, use GradScaler</td></tr>
+<tr><td>2</td><td>Missing fp32 in softmax/norm</td><td>NaN in attention scores or layer norm</td><td>Cast inputs to fp32 inside softmax/norm; cast back at output (M14, M23)</td></tr>
+<tr><td>3</td><td>Bad init</td><td>NaN at step 1; activations grow exponentially through depth</td><td>Reduce init std; add residual scaling 1/sqrt(2·n_layer) (M8)</td></tr>
+<tr><td>4</td><td>LR too high</td><td>NaN after 100-1000 steps; gradient norm spikes immediately before</td><td>Reduce LR by 5-10×; add warmup; clip grads at 1.0 (M9)</td></tr>
+<tr><td>5</td><td>Unstable loss formulation</td><td>NaN at specific data examples; <code>log(0)</code>, <code>div by 0</code></td><td>Use log-sum-exp trick; add ε to denominators; clamp</td></tr>
+<tr><td>6</td><td>Mixed-precision accumulator</td><td>Gradients vanish then NaN; reductions in low precision</td><td>fp32 accumulators in custom kernels (M14, M23, M25)</td></tr>
+<tr><td>7</td><td>Bad data</td><td>NaN at one specific batch and only that batch</td><td>Inspect the batch; check for inf/nan in inputs; data sanitization</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>The walking strategy: <strong>start with #1, fix it (or rule it out), then #2, etc</strong>. About 80% of NaN bugs are in the top three. If you reach #6 or #7, you're in unusual territory.</p>
+
+<h3>Forward-hook bisection: catch the first NaN</h3>
+
+<p>When NaN appears partway through the forward pass, the actual <em>cause</em> may be many layers earlier — by the time you observe NaN in the output, the propagation has obscured the source. <strong>Forward hooks let you catch the first module whose output goes bad.</strong></p>
+
+<pre><code><span class="kw">def</span> <span class="fn">install_nan_sentinel</span>(model, abort_on_nan=<span class="kw">True</span>):
+    <span class="kw">def</span> <span class="fn">make_hook</span>(name):
+        <span class="kw">def</span> <span class="fn">hook</span>(module, inputs, output):
+            <span class="kw">if</span> <span class="fn">isinstance</span>(output, torch.Tensor):
+                <span class="kw">if</span> torch.<span class="fn">isnan</span>(output).<span class="fn">any</span>() <span class="kw">or</span> torch.<span class="fn">isinf</span>(output).<span class="fn">any</span>():
+                    abs_max = output.<span class="fn">abs</span>().<span class="fn">max</span>().<span class="fn">item</span>()
+                    n_nan = torch.<span class="fn">isnan</span>(output).<span class="fn">sum</span>().<span class="fn">item</span>()
+                    n_inf = torch.<span class="fn">isinf</span>(output).<span class="fn">sum</span>().<span class="fn">item</span>()
+                    <span class="fn">print</span>(<span class="fn">f</span><span class="str">"BAD OUTPUT in {name}: max|out|={abs_max:.2e} "</span>
+                          <span class="fn">f</span><span class="str">"nan={n_nan} inf={n_inf}"</span>)
+                    <span class="kw">if</span> abort_on_nan:
+                        <span class="kw">raise</span> <span class="fn">RuntimeError</span>(<span class="fn">f</span><span class="str">"first NaN/inf in {name}"</span>)
+        <span class="kw">return</span> hook
+
+    <span class="kw">for</span> name, module <span class="kw">in</span> model.<span class="fn">named_modules</span>():
+        module.<span class="fn">register_forward_hook</span>(<span class="fn">make_hook</span>(name))</code></pre>
+
+<p>Install at the start of training; remove once stable. The first time NaN appears, you get the exact module name. From there:</p>
+
+<ol>
+  <li><strong>Localize the call site</strong>: name the module printed by Sentinel (e.g., <code>blocks.7.attn.q_proj</code>). That's where the bad output originates.</li>
+  <li><strong>Inspect inputs</strong>: at the next iteration, when Sentinel fires, examine the inputs to that module. Are they already bad? Then the cause is upstream.</li>
+  <li><strong>Walk upstream</strong>: if inputs are good but outputs are bad, the bug is <em>in</em> that module. If inputs are already bad, the prior module is the new suspect.</li>
+</ol>
+
+<p><strong>Backward hooks</strong> work analogously for "gradient is NaN":</p>
+
+<pre><code>module.<span class="fn">register_full_backward_hook</span>(
+    <span class="kw">lambda</span> mod, grad_in, grad_out: <span class="fn">check_nan</span>(<span class="str">"backward"</span>, mod, grad_out)
+)</code></pre>
+
+<p>Use these when forward is fine but backward NaN-explodes. The first NaN in backward is usually the module right before a numerically unstable operation in forward (e.g., a softmax that produced 0.0, then 1/0 in backward).</p>
+
+<h3>The gradcheck ritual</h3>
+
+<p>If you've written a custom op (M6, M23), <strong>run <code>torch.autograd.gradcheck</code> in fp64 every time you change the backward</strong>. Hand-derived backwards have a strikingly high bug rate.</p>
+
+<pre><code><span class="kw">from</span> torch.autograd <span class="kw">import</span> gradcheck
+
+<span class="com"># Use fp64 — finite-diff gradcheck is too noisy in lower precision</span>
+inputs = (
+    torch.<span class="fn">randn</span>(<span class="num">4</span>, <span class="num">128</span>, dtype=torch.float64, requires_grad=<span class="kw">True</span>, device=<span class="str">"cuda"</span>),
+    <span class="com"># ... other inputs</span>
+)
+<span class="fn">assert</span> <span class="fn">gradcheck</span>(my_op, inputs, eps=<span class="num">1e-6</span>, atol=<span class="num">1e-5</span>)</code></pre>
+
+<p>If gradcheck fails: the analytical backward is wrong. Common cause: missing a term in the chain rule. Diagnose by checking each input's gradient separately — fp64 finite-diff vs analytical, with very tight tolerance. Whichever input fails first is the gradient with the bug.</p>
+
+<h2>Layer 2: Algorithmic bugs</h2>
+
+<p>"Training runs but the loss curve looks wrong." Numerical setup is fine; the model is computing something, just not the right something. These are subtler than NaNs because everything appears to work.</p>
+
+<h3>The overfit-tiny-batch test</h3>
+
+<p>The single most useful sanity check in deep learning: <strong>can your model overfit a tiny batch?</strong> If the architecture, loss, and optimizer are wired correctly, training on 16-64 examples for 1000 steps should drive the loss to near-zero. If it can't, the model has a structural bug.</p>
+
+<pre><code><span class="com"># Sanity check before any real training</span>
+tiny_batch = <span class="fn">next</span>(<span class="fn">iter</span>(real_loader))
+<span class="kw">for</span> step <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1000</span>):
+    optimizer.<span class="fn">zero_grad</span>()
+    loss = <span class="fn">model</span>(tiny_batch).loss
+    loss.<span class="fn">backward</span>()
+    optimizer.<span class="fn">step</span>()
+    <span class="kw">if</span> step % <span class="num">100</span> == <span class="num">0</span>:
+        <span class="fn">print</span>(<span class="fn">f</span><span class="str">"step {step} loss {loss.item():.4f}"</span>)
+<span class="com"># Healthy: loss decreases monotonically toward 0.001 or below</span>
+<span class="com"># Pathological: loss plateaus near random initialization (≈ log(vocab_size))</span></code></pre>
+
+<p>If overfit fails, the bug is structural. Common causes:</p>
+
+<ul>
+  <li><strong>Missing mask</strong>: causal mask not applied; model can see the future and trivially achieves training loss = 0... wait, that's a sign it <em>worked too well</em>. Actually missing causal mask makes overfit succeed instantly with eval garbage; check for that signal too.</li>
+  <li><strong>Wrong loss target</strong>: predicting the wrong thing (off-by-one in next-token prediction; using prompt loss instead of response loss in SFT).</li>
+  <li><strong>Disconnected gradient</strong>: a tensor was created with <code>torch.no_grad()</code>, <code>.detach()</code>, or in a <code>@torch.no_grad()</code> region, so gradients don't flow.</li>
+  <li><strong>Frozen parameters</strong>: <code>requires_grad=False</code> on parameters that should train. Check <code>sum(p.numel() for p in model.parameters() if p.requires_grad)</code>.</li>
+  <li><strong>Init collapses to zero</strong>: all-zero or near-zero init for a Linear layer outputs zeros; gradient through zero is zero; nothing learns.</li>
+  <li><strong>Optimizer not seeing parameters</strong>: <code>torch.optim.AdamW(model.params)</code> typo for <code>model.parameters()</code>; or you constructed the optimizer before adding modules.</li>
+</ul>
+
+<p>The fix once you know overfit-tiny works: <em>scale up one axis at a time</em>. Larger batch → still overfits? Larger model? Real data? Each step might surface a new bug, but you'll know which addition broke it.</p>
+
+<h3>Comparing to a reference implementation</h3>
+
+<p>For canonical components (RMSNorm, attention, RoPE, AdamW), <em>diff against a reference</em>. Take the same inputs through your implementation and Hugging Face's (or PyTorch's), check the outputs match to numerical precision.</p>
+
+<pre><code><span class="kw">import</span> torch
+<span class="kw">from</span> transformers.models.llama.modeling_llama <span class="kw">import</span> LlamaRMSNorm
+
+x = torch.<span class="fn">randn</span>(<span class="num">2</span>, <span class="num">10</span>, <span class="num">128</span>, dtype=torch.float32)
+<span class="com"># Build reference</span>
+ref = <span class="fn">LlamaRMSNorm</span>(<span class="num">128</span>, eps=<span class="num">1e-6</span>)
+<span class="com"># Build mine — copy ref's weight</span>
+mine = <span class="fn">MyRMSNorm</span>(<span class="num">128</span>, eps=<span class="num">1e-6</span>)
+mine.weight.data.<span class="fn">copy_</span>(ref.weight.data)
+
+out_ref = <span class="fn">ref</span>(x)
+out_mine = <span class="fn">mine</span>(x)
+<span class="fn">print</span>(<span class="str">"max diff:"</span>, (out_ref - out_mine).<span class="fn">abs</span>().<span class="fn">max</span>().<span class="fn">item</span>())
+<span class="com"># Healthy: &lt;1e-6 in fp32, &lt;1e-3 in bf16 (numerical noise)</span>
+<span class="com"># Bug: anything noticeably larger</span></code></pre>
+
+<p>If you see a meaningful difference: it's an algorithmic bug. Common ones for transformer components: wrong RMSNorm formula (forgetting to multiply by weight), wrong RoPE pairing (interleaved vs halved from M30), wrong masked positions (off-by-one in causal mask), wrong sinusoid frequencies.</p>
+
+<h2>Loss curve forensics</h2>
+
+<p>The shape of your loss curve tells you what's wrong. Six archetypes worth recognizing:</p>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 740 380" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs></defs>
+  <text x="370" y="22" font-size="14" font-weight="700" fill="#1a1612" text-anchor="middle">Six loss curve archetypes — recognize the shape, know the cause</text>
+
+  <!-- Panel 1: Healthy -->
+  <g transform="translate(20, 50)">
+    <rect x="0" y="0" width="220" height="140" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="1.5"/>
+    <text x="110" y="20" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1612">① Healthy</text>
+    <text x="110" y="34" text-anchor="middle" font-size="9" fill="#6b5d4f">smooth descent, occasional dips</text>
+    <!-- curve -->
+    <path d="M 20 60 Q 50 80 90 95 Q 130 110 170 118 Q 200 122 200 124" stroke="#1f5f5b" stroke-width="2" fill="none"/>
+    <!-- axes -->
+    <line x1="20" y1="125" x2="200" y2="125" stroke="#6b5d4f" stroke-width="0.5"/>
+    <line x1="20" y1="50" x2="20" y2="125" stroke="#6b5d4f" stroke-width="0.5"/>
+  </g>
+
+  <!-- Panel 2: LR too high -->
+  <g transform="translate(260, 50)">
+    <rect x="0" y="0" width="220" height="140" fill="#fcecec" stroke="#c1502e" stroke-width="1.5"/>
+    <text x="110" y="20" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1612">② LR too high</text>
+    <text x="110" y="34" text-anchor="middle" font-size="9" fill="#c1502e">brief dip then explosion</text>
+    <!-- curve -->
+    <path d="M 20 60 Q 40 70 60 85 Q 80 95 90 90 Q 110 75 130 50 Q 150 60 200 60" stroke="#c1502e" stroke-width="2" fill="none"/>
+    <line x1="20" y1="125" x2="200" y2="125" stroke="#6b5d4f" stroke-width="0.5"/>
+    <line x1="20" y1="50" x2="20" y2="125" stroke="#6b5d4f" stroke-width="0.5"/>
+    <text x="110" y="115" text-anchor="middle" font-size="9" font-weight="700" fill="#c1502e">→ NaN imminent</text>
+  </g>
+
+  <!-- Panel 3: Plateau near random -->
+  <g transform="translate(500, 50)">
+    <rect x="0" y="0" width="220" height="140" fill="#fff5d8" stroke="#d4a017" stroke-width="1.5"/>
+    <text x="110" y="20" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1612">③ Plateau near random</text>
+    <text x="110" y="34" text-anchor="middle" font-size="9" fill="#d4a017">flat at log(vocab_size)</text>
+    <!-- curve flat near top -->
+    <path d="M 20 60 L 200 62" stroke="#d4a017" stroke-width="2" fill="none"/>
+    <line x1="20" y1="125" x2="200" y2="125" stroke="#6b5d4f" stroke-width="0.5"/>
+    <line x1="20" y1="50" x2="20" y2="125" stroke="#6b5d4f" stroke-width="0.5"/>
+    <text x="110" y="105" text-anchor="middle" font-size="9" font-weight="700" fill="#d4a017">→ structural bug</text>
+    <text x="110" y="118" text-anchor="middle" font-size="9" fill="#1a1612">(disconnected grads, frozen params)</text>
+  </g>
+
+  <!-- Panel 4: Spikes that recover -->
+  <g transform="translate(20, 210)">
+    <rect x="0" y="0" width="220" height="140" fill="#fff8a8" stroke="#1a1612" stroke-width="1.5"/>
+    <text x="110" y="20" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1612">④ Spikes that recover</text>
+    <text x="110" y="34" text-anchor="middle" font-size="9" fill="#1a1612">grad clip is working</text>
+    <!-- curve with spikes -->
+    <path d="M 20 65 Q 40 80 50 85 L 55 60 Q 60 88 75 92 L 80 70 Q 85 96 100 100 Q 130 110 170 116 Q 200 119 200 120" stroke="#1a1612" stroke-width="2" fill="none"/>
+    <line x1="20" y1="125" x2="200" y2="125" stroke="#6b5d4f" stroke-width="0.5"/>
+    <line x1="20" y1="50" x2="20" y2="125" stroke="#6b5d4f" stroke-width="0.5"/>
+    <text x="110" y="115" text-anchor="middle" font-size="9" fill="#1a1612">→ acceptable; reduce LR if too frequent</text>
+  </g>
+
+  <!-- Panel 5: Spikes that don't recover -->
+  <g transform="translate(260, 210)">
+    <rect x="0" y="0" width="220" height="140" fill="#fcecec" stroke="#c1502e" stroke-width="1.5"/>
+    <text x="110" y="20" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1612">⑤ Spikes that don't recover</text>
+    <text x="110" y="34" text-anchor="middle" font-size="9" fill="#c1502e">numerical instability</text>
+    <!-- curve with spike that climbs after -->
+    <path d="M 20 80 Q 60 95 90 105 L 95 70 Q 100 90 110 92 L 115 50 Q 120 70 200 75" stroke="#c1502e" stroke-width="2" fill="none"/>
+    <line x1="20" y1="125" x2="200" y2="125" stroke="#6b5d4f" stroke-width="0.5"/>
+    <line x1="20" y1="50" x2="20" y2="125" stroke="#6b5d4f" stroke-width="0.5"/>
+    <text x="110" y="113" text-anchor="middle" font-size="9" fill="#c1502e">→ post-norm instability,</text>
+    <text x="110" y="120" text-anchor="middle" font-size="9" fill="#c1502e">bad data, fp16 issues</text>
+  </g>
+
+  <!-- Panel 6: Train decreasing, eval flat or increasing -->
+  <g transform="translate(500, 210)">
+    <rect x="0" y="0" width="220" height="140" fill="#ffd5dc" stroke="#b85a6c" stroke-width="1.5"/>
+    <text x="110" y="20" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1612">⑥ Train ↓, eval flat/up</text>
+    <text x="110" y="34" text-anchor="middle" font-size="9" fill="#b85a6c">overfit OR data leakage</text>
+    <!-- two curves: train decreasing, eval flat -->
+    <path d="M 20 65 Q 50 80 90 95 Q 130 105 170 110 Q 200 113 200 114" stroke="#1f5f5b" stroke-width="2" fill="none"/>
+    <text x="50" y="73" font-size="8" fill="#1f5f5b">train</text>
+    <path d="M 20 80 L 200 82" stroke="#b85a6c" stroke-width="2" fill="none"/>
+    <text x="50" y="92" font-size="8" fill="#b85a6c">eval</text>
+    <line x1="20" y1="125" x2="200" y2="125" stroke="#6b5d4f" stroke-width="0.5"/>
+    <line x1="20" y1="50" x2="20" y2="125" stroke="#6b5d4f" stroke-width="0.5"/>
+    <text x="110" y="115" text-anchor="middle" font-size="9" font-weight="700" fill="#b85a6c">→ scientific failure layer</text>
+  </g>
+
+  <text x="370" y="375" font-family="'Caveat', cursive" font-size="20" fill="#1a1612" text-anchor="middle">"loss is bad" is too vague — name the SHAPE first</text>
+</svg>
+</div>
+
+<p>Reading the panels in order:</p>
+
+<ol>
+  <li><strong>Healthy</strong>: smooth monotonic descent, occasional dips. Initial sharp drop (model learns the prior token distribution), then slower descent (learns structure). What every healthy run looks like.</li>
+  <li><strong>LR too high</strong>: a brief dip then climbing back up, often spiking. Reduce LR by 5-10×, add warmup.</li>
+  <li><strong>Plateau near random</strong>: loss is flat at <code>log(vocab_size)</code> — random-initialization perplexity. The model isn't learning anything. <em>Structural bug</em>: disconnected gradients, frozen parameters, wrong loss. Run the overfit-tiny test.</li>
+  <li><strong>Spikes that recover</strong>: occasional sharp rises followed by return to trend. Gradient clipping is working — clips are firing on the spikes. Tolerable if rare; if &gt;5% of steps trigger clipping, reduce LR.</li>
+  <li><strong>Spikes that don't recover</strong>: a spike that the run never climbs back from. Indicates numerical instability the optimizer can't compensate for — post-norm at depth, fp16 overflow, bad data. Check the batch that triggered the spike.</li>
+  <li><strong>Train decreasing, eval flat or increasing</strong>: classic overfit shape, BUT also the signature of <em>data leakage</em>, <em>distribution shift</em>, or <em>evaluation methodology bugs</em>. The scientific layer.</li>
+</ol>
+
+<p>Pattern matching is a real skill. After a few hundred runs you recognize the shapes instantly; until then, log loss frequently and look at the curves regularly.</p>
+
+<h2>Gradient norm tracking</h2>
+
+<p>Per-layer gradient norms reveal the health of gradient flow. Log them at every step (or sample, every 100 steps) and visualize:</p>
+
+<pre><code><span class="kw">def</span> <span class="fn">log_grad_norms</span>(model, step):
+    <span class="kw">for</span> name, p <span class="kw">in</span> model.<span class="fn">named_parameters</span>():
+        <span class="kw">if</span> p.grad <span class="kw">is</span> <span class="kw">not</span> <span class="kw">None</span>:
+            grad_norm = p.grad.<span class="fn">norm</span>().<span class="fn">item</span>()
+            wandb.<span class="fn">log</span>({<span class="fn">f</span><span class="str">"grad_norm/{name}"</span>: grad_norm}, step=step)
+    <span class="com"># Total grad norm too</span>
+    total = torch.nn.utils.<span class="fn">clip_grad_norm_</span>(model.<span class="fn">parameters</span>(), <span class="fn">float</span>(<span class="str">"inf"</span>))
+    wandb.<span class="fn">log</span>({<span class="str">"grad_norm/total"</span>: total.<span class="fn">item</span>()}, step=step)</code></pre>
+
+<p>The patterns to recognize:</p>
+
+<div class="table-wrap">
+<table>
+<caption>Gradient norm patterns and what they mean</caption>
+<thead><tr><th>Pattern</th><th>Likely cause</th><th>Fix</th></tr></thead>
+<tbody>
+<tr><td>All layers near 1.0, stable</td><td>Healthy</td><td>—</td></tr>
+<tr><td>Early layers near 0, late layers normal</td><td>Vanishing gradients</td><td>Init scheme issue (M8); check residual connections; check norms</td></tr>
+<tr><td>Late layers exploding (10×+ early layers)</td><td>Init too aggressive at depth</td><td>Apply 1/sqrt(2·n_layer) scaling to residual outputs (M8)</td></tr>
+<tr><td>Spike on every step</td><td>LR too high or unstable loss</td><td>Reduce LR; check loss formulation</td></tr>
+<tr><td>Steady drift up over 1000s of steps</td><td>Optimizer divergence (esp. without weight decay)</td><td>Add weight decay; check Adam β₂ (often 0.95 better than 0.999 for LLMs)</td></tr>
+<tr><td>Total norm = 0 for some parameters</td><td>Frozen or disconnected</td><td>Check requires_grad; trace gradient flow with hooks</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Per-layer is more diagnostic than total. Total grad norm of 5.0 might mean "every layer at 5.0 (mild explosion)" or "one layer at 50.0, rest near 0 (specific pathology)" — wildly different fixes. <em>Always log per-layer when investigating</em>.</p>
+
+<h2>Layer 3: Systems bugs</h2>
+
+<p>Failures in this category: OOM, hangs, stragglers, dataloader bottlenecks, NCCL errors. The diagnostic toolkit is the profiler (M13) and the memory snapshot (M20).</p>
+
+<h3>OOM diagnostics — the cost ladder</h3>
+
+<p>When you hit OOM, the question isn't "how do I get more memory" but "where is the memory going and what can I trade off?" The fixes form a ladder of increasing cost (engineering effort + throughput hit):</p>
+
+<div class="table-wrap">
+<table>
+<caption>OOM fix ladder — apply in order, escalate as needed</caption>
+<thead><tr><th>Fix</th><th>Memory savings</th><th>Throughput cost</th><th>Engineering effort</th></tr></thead>
+<tbody>
+<tr><td>Reduce microbatch size</td><td>Linear in batch</td><td>~0% (with grad accum)</td><td>~zero</td></tr>
+<tr><td>Mixed precision (bf16) if not already</td><td>~2× model + activations</td><td>+10-30% throughput</td><td>One-line</td></tr>
+<tr><td>Activation checkpointing (M12)</td><td>~5-10× activations</td><td>−20% throughput</td><td>Wrap blocks</td></tr>
+<tr><td>FSDP / ZeRO-3 (M17)</td><td>~N× across N GPUs</td><td>−10-15% throughput</td><td>One-line wrap</td></tr>
+<tr><td>Offload optimizer state to CPU</td><td>~4× (Adam state)</td><td>−40-60% throughput</td><td>Config change</td></tr>
+<tr><td>Quantization (M26)</td><td>2-4× weights</td><td>±0% inference, training varies</td><td>Library integration</td></tr>
+<tr><td>Tensor parallel (M18)</td><td>~N× across N GPUs</td><td>−5-10% throughput</td><td>Significant</td></tr>
+<tr><td>Pipeline parallel (M18)</td><td>Per-stage memory</td><td>Bubble cost</td><td>Significant</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>The discipline: <em>start at the top of the ladder; only descend when needed</em>. Reducing microbatch is free and almost always works. Activation checkpointing is the next step. Most OOM problems for sub-70B models are solved by step 3 of the ladder.</p>
+
+<p>The diagnostic flow:</p>
+
+<ol>
+  <li><strong>Take a memory snapshot</strong> at the OOM step: <code>torch.cuda.memory._record_memory_history()</code> + <code>torch.cuda.memory._dump_snapshot()</code> (M20). Visualize via <code>https://pytorch.org/memory_viz</code>.</li>
+  <li><strong>Identify the dominant consumers</strong>: weights, activations, optimizer state, KV cache?</li>
+  <li><strong>Apply the right fix</strong> from the ladder. If activations dominate: checkpointing. If optimizer state dominates: FSDP or offload. If weights dominate: quantization or model parallel.</li>
+</ol>
+
+<h3>Hangs and stragglers in distributed training</h3>
+
+<p>"Training stops at step N forever, no error." The dreaded silent hang. Common causes in priority order:</p>
+
+<ol>
+  <li><strong>One rank crashed silently</strong>: check all rank logs, not just rank 0. NCCL collectives wait forever for the missing rank.</li>
+  <li><strong>Ranks taking different code paths</strong>: an <code>if</code> branching on rank-local data leads to one rank doing one collective and another rank doing a different one. Both wait. Set <code>NCCL_DEBUG=INFO</code> to see what each rank is doing.</li>
+  <li><strong>Variable-length data without proper handling</strong>: one rank's batch has 100 samples, another has 99, and the ranks call different numbers of all-reduces. Pad to fixed shapes or use NCCL's variable-size operations.</li>
+  <li><strong>Network issue</strong>: rare but real. Check <code>nccl-tests</code> for cluster health.</li>
+  <li><strong>Deadlock on locks</strong>: typically in custom dataloader workers using shared resources. <code>py-spy dump --pid &lt;trainer&gt;</code> shows where each rank is stuck.</li>
+</ol>
+
+<p>The single most useful debugging incantation:</p>
+
+<pre><code>NCCL_DEBUG=INFO TORCH_DISTRIBUTED_DEBUG=DETAIL python train.py</code></pre>
+
+<p>Floods the logs but tells you exactly which collective is hanging on which rank.</p>
+
+<h2>Layer 4: Scientific bugs</h2>
+
+<p>The hardest layer. Loss looks fine, training runs cleanly, but the model isn't learning what you think it's learning.</p>
+
+<h3>Train-eval divergence</h3>
+
+<p>You expected eval loss to track training loss; instead, eval loss is flat or rising while train loss decreases. The pattern from archetype #6.</p>
+
+<p>Three common causes, each with its own diagnosis:</p>
+
+<ul>
+  <li><strong>Overfitting</strong>: classical, expected at high parameter-to-data ratios. Fix: more data, regularization (weight decay, dropout), early stopping. The "easy" case if the gap appears gradually after thousands of steps.</li>
+  <li><strong>Data leakage</strong>: training data overlaps with eval data, sometimes in subtle ways (paraphrases, near-duplicates, same source documents split differently). Fix: aggressive deduplication; check eval data origin. <em>This makes loss look better than reality</em>.</li>
+  <li><strong>Distribution shift</strong>: training data is from one distribution, eval from another, even though they "should be" the same. Examples: training on a snapshot of web data; eval on a recent snapshot — different distributional balance. Fix: align distributions; report eval on multiple sets.</li>
+</ul>
+
+<p>Diagnostic: <strong>shrink the eval set to exact-overlap test cases (memorization probes)</strong>. If your training data contains <code>"the capital of France is Paris"</code> verbatim and eval contains the same string, the model should perfect-predict it. If it does: model is fine, the gap is elsewhere. If it doesn't: the model isn't learning even in-distribution.</p>
+
+<h3>Tokenizer mismatches</h3>
+
+<p>An entire category of bugs: <em>training and inference use different tokenizations</em>. The model trained on tokens [a, b, c] for "hello"; at inference, the tokenizer produces [a, d] for "hello" — different sequence, gibberish output.</p>
+
+<p>The check: <code>tokenizer.decode(tokenizer.encode(text)) == text</code> for several sample texts. Should be true. If false, you have a tokenizer round-trip issue.</p>
+
+<p>For chat models, additional checks: <strong>verify chat template</strong>. The training-time template (e.g., Llama-3's <code>&lt;|begin_of_text|&gt;...&lt;|end_of_text|&gt;</code>) must match the inference-time template exactly. <em>One missing special token can break generation entirely</em>.</p>
+
+<h3>Eval methodology bugs</h3>
+
+<p>The evaluation itself can have bugs that make your model look better or worse than it really is. Common issues:</p>
+
+<ul>
+  <li><strong>Wrong loss masking on eval</strong>: SFT eval should compute loss on response tokens only (matching training); computing on full sequence underestimates eval loss vs train.</li>
+  <li><strong>Inconsistent generation parameters</strong>: comparing models with temperature 0.7 vs 1.0 — one will look better not because it is.</li>
+  <li><strong>Stale benchmarks</strong>: the eval set leaked into the model's training data via the web. Check known contamination indicators.</li>
+  <li><strong>Numerical precision differences</strong>: eval in fp32 vs training in bf16 produces small differences; for sensitive metrics (top-k accuracy on close logits), this can matter.</li>
+</ul>
+
+<p>The reflex: <strong>before believing an eval delta, verify the eval is reproducible</strong>. Run it twice; small variance is normal, large variance means the eval has a bug.</p>
+
+<h2>The reproducibility checklist</h2>
+
+<p>"Works on my machine but not on the cluster" is debugging's nightmare. The following checklist catches most reproducibility issues:</p>
+
+<div class="table-wrap">
+<table>
+<caption>Reproducibility checklist for cross-machine training</caption>
+<thead><tr><th>Item</th><th>Check</th></tr></thead>
+<tbody>
+<tr><td>Random seed</td><td>Set torch, numpy, random, AND CUDA seeds; <code>torch.manual_seed(42); torch.cuda.manual_seed_all(42)</code></td></tr>
+<tr><td>DataLoader determinism</td><td>Set <code>generator=torch.Generator().manual_seed(s)</code>; use <code>worker_init_fn</code> to seed workers (M10)</td></tr>
+<tr><td>CUDA non-determinism</td><td><code>torch.use_deterministic_algorithms(True)</code> + <code>CUBLAS_WORKSPACE_CONFIG=:4096:8</code></td></tr>
+<tr><td>Library versions</td><td>Pin PyTorch, transformers, triton, CUDA toolkit; export with <code>pip freeze &gt; requirements.txt</code></td></tr>
+<tr><td>GPU model differences</td><td>A100 vs H100 produce slightly different results in some kernels (esp. attention); document the GPU type</td></tr>
+<tr><td>Dataloader shuffle</td><td>Same shuffle seed across runs; <code>DistributedSampler(set_epoch=epoch)</code> for distributed</td></tr>
+<tr><td>Master weights vs model weights</td><td>Save master weights (fp32) for reproducibility; bf16-only checkpoints aren't bit-exact reloadable</td></tr>
+<tr><td>Mixed precision behavior</td><td>bf16 vs fp16 produce different round-off behaviors; pin the dtype</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Note that <strong>perfect determinism is expensive</strong>. <code>torch.use_deterministic_algorithms(True)</code> can slow training 20-50% and forbids some kernels (cuBLAS chooses different algorithms per call by default). For most production runs, <em>statistical reproducibility</em> (similar loss curves) is sufficient; <em>bit-exact reproducibility</em> is for debugging only.</p>
+
+<h2>The bisection mindset</h2>
+
+<p>The single most underrated debugging skill: <strong>when you don't know where the bug is, halve the search space</strong>.</p>
+
+<p>Examples in practice:</p>
+
+<ul>
+  <li><strong>Loss diverging at step 1000</strong>: was it diverging at 500? Run with checkpoint loaded at 500, retrain. If it diverges at 1500 (500 more steps in): the bug accumulates. If it diverges immediately: the checkpoint at 500 is already bad, bug was earlier.</li>
+  <li><strong>OOM at some point in training</strong>: at step 0, memory is X; at OOM step, memory is Y. Bisect: at step OOM/2, what's memory? Linear growth means a leak; sudden growth means a specific event.</li>
+  <li><strong>Model produces gibberish</strong>: replace half the architecture with a known-good reference (e.g., Hugging Face's). Does it work? If yes, the bug is in the half you replaced; if no, in the half you kept. Halve again.</li>
+  <li><strong>Distributed hang</strong>: half the ranks log "passed step 100"; other half don't. The passing half is fine; bug is in the other half. Reduce world size to just one rank from the failing group; debug locally.</li>
+  <li><strong>Eval regression after a code change</strong>: bisect the commit history. <code>git bisect</code> + an automated eval script localizes the offending commit in log₂(N) tries.</li>
+</ul>
+
+<p>The mindset: <em>don't try to understand the whole system at once</em>. Understand "is the bug before this point or after this point" — a binary question — and apply it recursively. Each halving reduces the search space by 50%; eight halvings narrows 1000 candidates to about 4.</p>
+
+<h2>The full diagnostic playbook</h2>
+
+<p>Putting it together. When you observe a training failure:</p>
+
+<ol>
+  <li><strong>Identify the layer</strong>: numerical / algorithmic / systems / scientific. Use the symptom router from earlier.</li>
+  <li><strong>For numerical</strong>: install Sentinel hooks; walk the NaN tree; check fp32 reductions in softmax/norm/cross-entropy.</li>
+  <li><strong>For algorithmic</strong>: run overfit-tiny; if fails, structural bug. Compare against reference implementation; diff outputs.</li>
+  <li><strong>For systems</strong>: profile (M13) for slow / hangs; memory snapshot (M20) for OOM. Apply the OOM ladder or the four-bottleneck shapes.</li>
+  <li><strong>For scientific</strong>: verify reproducibility; check tokenizer round-trip; eval on memorization probes; check for data leakage.</li>
+  <li><strong>If still stuck</strong>: bisect. Find a known-good state (earlier checkpoint, smaller model, simpler eval) and a known-bad state. Halve.</li>
+  <li><strong>Document what you tried</strong>: a debugging journal. The same bug will reappear; future-you will thank past-you.</li>
+</ol>
+
+<p>The discipline is in NOT trying random fixes. <em>Each diagnostic step localizes the bug; each random fix obscures it.</em></p>
+
+<div class="ndq">
+<h4>About debugging</h4>
+
+<p class="q">When should I install Sentinel hooks vs run gradcheck?</p>
+<p class="a">Different scopes. Sentinel hooks (forward/backward NaN checks) catch numerical issues during a real training run — the kind that depend on actual data and accumulated state. Gradcheck verifies the analytical backward of a custom op against finite differences in fp64 — it catches math bugs, not numerical-precision bugs. <em>Use gradcheck once when writing the op (and after every change); use Sentinel hooks during development training when something feels off</em>. They're complementary.</p>
+
+<p class="q">My loss is healthy at step 100, then NaN at step 500. Hooks installed but never fire on forward — only on backward. What's happening?</p>
+<p class="a">A common pattern: the <em>forward</em> produces a finite-but-degenerate value (e.g., a softmax entry equal to exactly 0.0), and the <em>backward</em> divides by it, producing NaN. Forward looks healthy; backward explodes. The fix: find the operation in the backward graph that divides by a saved forward output, and add an epsilon. Common culprits: softmax outputs (use log-softmax + log-sum-exp trick), denominators in normalization, attention weights when masked positions get exactly -inf.</p>
+
+<p class="q">How aggressive should I be with overfit-tiny tests?</p>
+<p class="a">Use them <em>before any real training</em>, every time you change the architecture, loss, or data pipeline. They take minutes and catch hours of debugging. The check: 16-64 examples, 500-1000 steps, loss should drive to near-zero (perplexity &lt; 1.05 or so). If not, the architecture has a bug. <em>Don't proceed to real training until overfit-tiny passes</em>. The 5 minutes you save by skipping it tend to cost 5 hours later.</p>
+
+<p class="q">My distributed training hangs at exactly the same step every time. NCCL_DEBUG shows ranks 0-3 waiting on an all-reduce; ranks 4-7 waiting on a different all-reduce. What's going on?</p>
+<p class="a">Classic divergent code path. Some ranks called all-reduce A, others called all-reduce B, and now both groups are waiting for the other. Causes are usually rank-dependent control flow: an <code>if</code> on rank-local data, a length-dependent number of operations, conditional skipping of layers. Diagnose with <code>NCCL_DEBUG=INFO</code> + <code>TORCH_DISTRIBUTED_DEBUG=DETAIL</code>; one will be at "step 100, op X", the other at "step 100, op Y". Examine your code at op X vs Y to find the divergence. Fix by ensuring all ranks always call the same collective sequence.</p>
+
+<p class="q">When does a bug really require bisection vs just careful reasoning?</p>
+<p class="a">If you can predict the cause from the symptom (e.g., "loss spike + bf16 + softmax = needs fp32 in softmax"), reason. If multiple causes seem equally plausible (e.g., "loss isn't decreasing — could be init, LR, gradient flow, mask, optimizer setup"), bisect. <em>Reasoning works when the symptom maps cleanly to a known cause; bisection is for when the symptom underconstrains the cause</em>. The skill is recognizing which situation you're in. Junior engineers tend to reason when they should bisect; senior engineers reach for bisection earlier.</p>
+
+<p class="q">How do I know if a slow-training problem is dataloader-bound vs GPU-bound?</p>
+<p class="a">Profile with the four-bottleneck-shapes mental model from M13. Run with the profiler for 50 steps; look at the GPU timeline. <strong>Dataloader-bound</strong>: the GPU sits idle (no kernels running) at the start of every step, waiting for data. Fix: more workers, pin_memory, prefetch_factor higher, persistent_workers=True. <strong>GPU-bound</strong>: the GPU is busy throughout each step, no idle gaps. You're already running as fast as the model lets you; further gains require kernel-level work or larger batches. <em>The shape of idle gaps in the timeline is diagnostic</em>; you don't need separate tools.</p>
+</div>
+
+<h2>Code Magnets: install a NaN sentinel</h2>
+
+<p>You're installing a forward-hook sentinel that fires on the first NaN/inf and prints the offending module. Three magnets are wrong choices.</p>
+
+<div class="magnets">
+<p>Arrange the magnets into a working sentinel installer.</p>
+
+<div class="magnet-pool">
+  <span class="magnet">def install_nan_sentinel(model):</span>
+  <span class="magnet">    def make_hook(name):</span>
+  <span class="magnet">        def hook(module, inputs, output):</span>
+  <span class="magnet">        def hook(module, inputs):</span>
+  <span class="magnet">            if isinstance(output, torch.Tensor):</span>
+  <span class="magnet">                if torch.isnan(output).any() or torch.isinf(output).any():</span>
+  <span class="magnet">                if output.isnan() or output.isinf():</span>
+  <span class="magnet">                    print(f"BAD OUTPUT in {name}")</span>
+  <span class="magnet">                    raise RuntimeError(f"first NaN/inf in {name}")</span>
+  <span class="magnet">        return hook</span>
+  <span class="magnet">    for name, module in model.named_modules():</span>
+  <span class="magnet">        module.register_forward_hook(make_hook(name))</span>
+  <span class="magnet">        module.register_forward_pre_hook(make_hook(name))</span>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<pre><code><span class="kw">def</span> <span class="fn">install_nan_sentinel</span>(model):
+    <span class="kw">def</span> <span class="fn">make_hook</span>(name):
+        <span class="kw">def</span> <span class="fn">hook</span>(module, inputs, output):
+            <span class="kw">if</span> <span class="fn">isinstance</span>(output, torch.Tensor):
+                <span class="kw">if</span> torch.<span class="fn">isnan</span>(output).<span class="fn">any</span>() <span class="kw">or</span> torch.<span class="fn">isinf</span>(output).<span class="fn">any</span>():
+                    <span class="fn">print</span>(<span class="fn">f</span><span class="str">"BAD OUTPUT in {name}"</span>)
+                    <span class="kw">raise</span> <span class="fn">RuntimeError</span>(<span class="fn">f</span><span class="str">"first NaN/inf in {name}"</span>)
+        <span class="kw">return</span> hook
+    <span class="kw">for</span> name, module <span class="kw">in</span> model.<span class="fn">named_modules</span>():
+        module.<span class="fn">register_forward_hook</span>(<span class="fn">make_hook</span>(name))</code></pre>
+<p>The traps:</p>
+<ul>
+  <li><code>def hook(module, inputs):</code> with two args: that's a <em>forward pre-hook</em> signature — fires before the module runs and only sees inputs, not output. Useless for catching bad outputs. Forward hooks have signature <code>(module, inputs, output)</code> — three args.</li>
+  <li><code>if output.isnan() or output.isinf():</code>: tensor methods <code>isnan()</code> and <code>isinf()</code> return <em>tensors</em>, not booleans. <code>if tensor</code> is ambiguous — if the tensor has multiple elements, raises an error; if it has one element, evaluates that element's truthiness. The correct pattern is <code>.any()</code> after the check, which reduces to a single bool.</li>
+  <li><code>module.register_forward_pre_hook(make_hook(name))</code>: pre-hooks fire before the forward and don't see the output. We want post-forward hooks (the regular <code>register_forward_hook</code>) so we can inspect the output.</li>
+</ul>
+<p>The pattern: <strong>forward hook (3-arg signature) → check output is a Tensor → use .any() to reduce isnan/isinf to a bool → print module name → raise to abort training</strong>. Aborting means the next training run will fail immediately on the bug; without aborting, you might miss subsequent occurrences and lose the diagnostic value.</p>
+</details>
+</div>
+
+<h2>Who does what?</h2>
+
+<div class="matching">
+<p class="intro">Match each debugging concept to its real role.</p>
+
+<div class="match-grid">
+  <div class="header">Concept</div>
+  <div class="header">Real role</div>
+
+  <div>The four-layer failure model</div>
+  <div>A. Numerical / algorithmic / systems / scientific — categorize the symptom first.</div>
+
+  <div>NaN walking tree</div>
+  <div>B. Diagnostic order for "loss is NaN" — fp16, missing fp32, bad init, LR, etc.</div>
+
+  <div>Forward-hook sentinel</div>
+  <div>C. Catches the first NaN/inf in any module's output, with the module name.</div>
+
+  <div>Overfit-tiny test</div>
+  <div>D. Sanity check before real training: can the model overfit 16-64 examples?</div>
+
+  <div>Loss curve archetypes</div>
+  <div>E. Six canonical shapes (healthy, LR-too-high, plateau, spikes-recover, spikes-don't, train-eval-divergence) — recognize the shape, know the cause.</div>
+
+  <div>Per-layer gradient norm tracking</div>
+  <div>F. Reveals vanishing/exploding gradient patterns invisible in total grad norm.</div>
+
+  <div>Bisection mindset</div>
+  <div>G. When you don't know where the bug is, halve the search space recursively.</div>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<p>
+<strong>Four-layer failure model</strong> → A<br>
+<strong>NaN walking tree</strong> → B<br>
+<strong>Forward-hook sentinel</strong> → C<br>
+<strong>Overfit-tiny test</strong> → D<br>
+<strong>Loss curve archetypes</strong> → E<br>
+<strong>Per-layer gradient norm</strong> → F<br>
+<strong>Bisection mindset</strong> → G
+</p>
+<p>The mental shortcut: <em>categorize the symptom (4 layers), walk the NaN tree, install hooks to catch the first bad value, sanity-check with overfit-tiny, recognize loss-curve shapes, log per-layer grad norms, bisect when stuck</em>.</p>
+</details>
+</div>
+
+<h2>Exercises</h2>
+
+<div class="exercise">
+<p><strong>1.</strong> A team's GPT-style model trains for 800 steps with healthy loss curves, then NaN appears. The Sentinel hook fires on <code>blocks.11.attn.softmax</code>. They're using bf16 throughout. What's the most likely cause and fix?</p>
+<details class="answer"><summary>show answer</summary>
+<p>The softmax in attention is being computed in bf16. bf16 has wide range but only 7-bit mantissa — exponentials of values near the maximum can produce results that are far enough apart in magnitude that rounding produces zeros where there shouldn't be any. The softmax then divides by a sum that's effectively the largest entry, and a near-zero entry gets rounded to exactly zero. Subsequent computations may divide by it (especially in backward) and produce NaN.</p>
+<p>The standard fix: <strong>compute the softmax in fp32</strong>. Cast the attention scores to fp32 before softmax, do the softmax in fp32, cast the result back to bf16 for the matmul with V. PyTorch's <code>F.scaled_dot_product_attention</code> handles this internally; the bug appears in hand-rolled implementations that skip the fp32 promotion. <em>This is the M14 mixed-precision recipe applied to attention</em> — and it's the second-most-common NaN cause in transformer training (after fp16 overflow).</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>2.</strong> A team's loss decreases healthily but their model produces gibberish at generation time. Greedy decoding gives <code>"the the the the..."</code>. They've checked the architecture against a reference and it matches; gradcheck passes. What's likely wrong?</p>
+<details class="answer"><summary>show answer</summary>
+<p>This is a generation-time bug, not a training-time bug. Three most-likely candidates, in priority order:</p>
+<p>(1) <strong>Tokenizer mismatch</strong>: training and generation use different tokenizers (or chat templates). Verify with <code>tokenizer.decode(tokenizer.encode("hello world")) == "hello world"</code> — should be true. For chat models, verify the chat template tokens match what was used during SFT.</p>
+<p>(2) <strong>RoPE position bug</strong>: at generation, the position index for each new token must increment correctly. If the same position (0) is used for every decode step, the rotations don't advance and attention scores become degenerate. The KV cache typically stores post-RoPE keys; <code>start_pos</code> must increment each decode step (M29).</p>
+<p>(3) <strong>Causal mask absent during prefill</strong>: if the model was trained with causal masking but generation doesn't apply it during prefill, attention sees future tokens — which don't exist in the cache, leading to garbage. <code>F.scaled_dot_product_attention(..., is_causal=True)</code> on prefill, <code>False</code> on single-token decode.</p>
+<p>The diagnostic test: run the model on the same prompt at training-time (loss computation) and generation-time (forward + sampling). The output logits should match. If they differ, you have a setup difference between paths.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>3.</strong> A team observes that their training run reproduces perfectly on a single H100 but produces meaningfully different loss curves on different machines (also H100s). They've set <code>torch.manual_seed</code> and <code>torch.cuda.manual_seed_all</code>. What's likely going on?</p>
+<details class="answer"><summary>show answer</summary>
+<p>Several possibilities, in order of likelihood:</p>
+<p>(1) <strong>cuBLAS non-determinism</strong>: cuBLAS chooses among multiple matmul algorithms based on shape, and the selection can vary with workspace memory. Set <code>CUBLAS_WORKSPACE_CONFIG=:4096:8</code> and <code>torch.use_deterministic_algorithms(True)</code>. Slows training by 20-50% but eliminates this source.</p>
+<p>(2) <strong>DataLoader worker non-determinism</strong>: the worker processes spawn at slightly different times across machines, and unless you've used <code>worker_init_fn</code> with the worker_id-based seed, they shuffle differently. Use the recipe from M10 to seed each worker deterministically.</p>
+<p>(3) <strong>Different driver/library versions</strong>: same GPU model can run different cuDNN versions on different machines, producing slightly different kernels. Pin everything: PyTorch version, CUDA version, cuDNN version (via NVIDIA driver pinning).</p>
+<p>(4) <strong>Multi-GPU non-determinism</strong>: NCCL all-reduces have non-deterministic order at the bit level (the reduction tree is built dynamically). For exact reproducibility, set <code>NCCL_DETERMINISTIC=1</code>.</p>
+<p>For most production runs, <em>statistical reproducibility</em> (loss curves match within noise) is enough; bit-exact reproducibility is for debugging specific issues. If you really need bit-exact, the cost is real.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>4.</strong> Your model's training loss decreases beautifully, but on the held-out eval set, accuracy is barely above chance. You've ruled out overfitting (regularization is appropriate, gap is too large for normal overfit). Walk through your diagnostic plan.</p>
+<details class="answer"><summary>show answer</summary>
+<p>Train-eval divergence with low eval accuracy is the scientific failure layer. The diagnostic walk:</p>
+<p>(1) <strong>Memorization probe</strong>: extract a few exact training-data examples and run them through the model at eval time. Does it predict them well? If yes, the model is fine; the gap is in eval. If no, training itself isn't producing a usable model — probably a tokenizer or template bug.</p>
+<p>(2) <strong>Tokenizer round-trip</strong>: verify <code>tokenizer.decode(tokenizer.encode(text)) == text</code> on training and eval samples. Check chat templates if applicable. A subtle template difference is a common cause of train-good-eval-bad.</p>
+<p>(3) <strong>Eval methodology</strong>: is loss computed the same way on train and eval? In SFT, are response tokens the only ones with loss? Are eval samples being preprocessed differently?</p>
+<p>(4) <strong>Distribution shift</strong>: are training and eval really from the same distribution? Look at length statistics, vocabulary distribution, topic distribution. Common case: training data is filtered for length 200-2048; eval has uniform 50-4096. The model never learned to handle short or long inputs.</p>
+<p>(5) <strong>Data leakage in reverse</strong>: is the eval set somehow easier than training (filtered to "good" examples)? Check eval set construction.</p>
+<p>(6) <strong>Bisect the training run</strong>: load the checkpoint at step N and step N/2; eval both. Where did the divergence start? If it started immediately, the issue is in the data pipeline or template; if it grew gradually, overfitting or distribution shift.</p>
+<p>The pattern across these: <em>each step rules out a class of cause</em>. Most "scientific" failures end up being tokenizer mismatches or eval methodology bugs, not deep modeling issues.</p>
+</details>
+</div>
+
+<div class="bullet-points">
+<h3>What just happened?</h3>
+<ul>
+  <li>Training failures fall into <strong>four layers</strong>: numerical (NaN, inf), algorithmic (wrong loss/gradient), systems (OOM, hang, slow), scientific (loss fine, model bad).</li>
+  <li>Each layer has its own diagnostic toolkit. <strong>Identifying the layer is the first move</strong> — wrong tool for the layer wastes time.</li>
+  <li><strong>The NaN walking tree</strong>: 7 causes in priority order — fp16 overflow, missing fp32 in softmax/norm, bad init, LR too high, unstable loss formulation, mixed-precision accumulator, bad data. Walk it in order.</li>
+  <li><strong>Forward-hook sentinel</strong>: install a hook on every module that fires on the first NaN/inf output. Catches the cause near the source instead of the symptom 50 layers later. ~2-5% throughput cost.</li>
+  <li><strong>Backward hooks</strong> work analogously for backward NaNs (typical cause: division by saved-forward zero in backward).</li>
+  <li><strong>gradcheck in fp64</strong> is mandatory for hand-written backwards. Tight tolerances catch math bugs the regular training won't.</li>
+  <li><strong>Overfit-tiny test</strong>: can the model drive loss to near-zero on 16-64 examples? If not, structural bug. The single most useful sanity check in deep learning.</li>
+  <li><strong>Reference comparison</strong>: diff your implementation against a reference (Hugging Face, PyTorch). Same inputs through both, outputs should match to numerical precision.</li>
+  <li><strong>Six loss curve archetypes</strong>: healthy (smooth descent), LR-too-high (dip then explode), plateau-near-random (structural bug), spikes-that-recover (grad clip working), spikes-that-don't (numerical instability), train-eval-divergence (overfit OR data leakage OR distribution shift).</li>
+  <li><strong>Per-layer gradient norm tracking</strong> reveals patterns invisible in total grad norm. Vanishing in early layers → init issue. Exploding in late → init at depth. Steady drift up → optimizer divergence.</li>
+  <li><strong>OOM ladder</strong>: reduce microbatch → bf16 → activation checkpointing → FSDP → offload optimizer → quantization → tensor parallel → pipeline parallel. Each step has higher engineering cost; start at the top.</li>
+  <li><strong>Distributed hangs</strong>: usually divergent code paths between ranks. Set <code>NCCL_DEBUG=INFO TORCH_DISTRIBUTED_DEBUG=DETAIL</code> to see what each rank is doing.</li>
+  <li><strong>Scientific bugs</strong> are silent failures: train-eval divergence, tokenizer mismatches, eval methodology bugs. Memorization probes, tokenizer round-trip checks, and distribution-shift audits are the diagnostic tools.</li>
+  <li><strong>Reproducibility checklist</strong>: seed torch+numpy+CUDA, seed dataloader workers, set deterministic algorithms, pin library versions. Bit-exact reproducibility costs ~20-50% throughput.</li>
+  <li><strong>The bisection mindset</strong>: when you don't know where the bug is, halve the search space recursively. Each halving cuts candidates by 50%; eight halvings localize among 1000 candidates to ~4.</li>
+  <li>The discipline: <strong>localize first, fix second</strong>. Random fixes obscure bugs; patient diagnosis reveals them. Junior engineers reason when they should bisect; senior engineers bisect earlier.</li>
+  <li>The reflex: when training breaks, ask "which of the four layers?" Then apply that layer's tools. Don't reach for a profiler when loss is NaN; don't reach for hooks when eval is bad.</li>
+</ul>
+</div>
+
+<p>This concludes Part IX. M29 built a transformer end-to-end, M30 unpacked RoPE, M31 covered post-training, M32 (this module) consolidated debugging, and M33 explored Mamba and SSMs. Combined with the original 28 modules, you now have a complete framework: from <code>x.stride()</code> to <code>fully_shard</code> to <code>tl.dot</code> to RoPE rotations to DPO to parallel scans — and the debugging skills to make them all work in practice.</p>
+
+<div class="module-footer">
+  <span>PyTorch · From Tensor to Kernel</span>
+  <span class="num">32</span>
+  <span>Debugging training runs</span>
+</div>
+"""
+
+emit("32_debugging", "Module 32 — Debugging training runs", BODY)

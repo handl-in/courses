@@ -1,0 +1,1743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Welcome back to Maya and Sam</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 02</p>
+</div>
+<div class="module-title">
+<p>Bloom Filters, WAL &amp; Checkpointing</p>
+</div>
+<div class="subtitle">
+<p>The support cast that makes both B-trees and LSM trees actually work in production</p>
+</div>
+</div>
+<div class="opener">
+<p>You've nailed the storage engines from Module 01. Now the interviewer says: <em>"Walk me through what protects the database from data loss when the server loses power. And while you're at it, why doesn't recovery take forever after a crash?"</em></p>
+<p>If your answer involves the word "magic" anywhere, this module is for you.</p>
+</div>
+<h1>Welcome back to Maya and Sam</h1>
+<p>Sam stares at his coffee. He looks like someone who just realized his preparation has a hole.</p>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+OK, the storage engines made sense. Random writes vs sequential. B-tree vs LSM. Got it. But yesterday I tried to draw what happens during a <em>crash</em>. And I just... drew a question mark.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Good. That gap is exactly what gets exposed in interviews. Most candidates know the storage engines from a textbook. Almost none can talk through what happens when the power dies mid-write.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+So what <em>does</em> happen?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+That depends on three things working together. Three things you've probably heard mentioned but might not have integrated. Bloom filters. Write-ahead log. Checkpointing. The interviewers love this trio because they reveal whether you understand the engineering, not just the data structures.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+Wait — Bloom filters? I thought those were for reads. What do they have to do with crashes?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+They don't! That's why people get confused. These three live in the same chapter not because they solve the same problem, but because they're <em>all</em> the unsexy machinery underneath modern storage engines. They're the stuff that makes Module 01's engines actually viable in production.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+So how do I keep them straight?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+One sentence each. Bloom filters protect reads. WAL protects writes. Checkpointing protects recovery time. Memorize that and the rest follows.</p>
+</div>
+</div>
+<div class="keyidea">
+<p><strong>Bloom filters</strong> make reads cheap by skipping data that definitely isn't there.
+<strong>WAL</strong> makes writes durable by recording the change before applying it.
+<strong>Checkpointing</strong> bounds recovery time by periodically saying "everything before this point is safely persisted."</p>
+</div>
+<div class="pause">
+<p>Before reading any further, see if you can repeat that one-sentence-each summary out loud. If you can, you already have the spine of the chapter.</p>
+</div>
+<h1>Part 1: Bloom Filters</h1>
+<p>We covered Bloom filters briefly in Module 01 when talking about LSM tree reads. Time to actually understand them.</p>
+<h2>The bouncer at the club</h2>
+<div class="metaphor">
+<p>A bouncer stands at the door of an exclusive club. He has a list of approved guests. Tens of thousands of names.</p>
+<p>Two ways he could check the list:</p>
+<p><strong>Strategy A</strong>: When you arrive, he flips through the entire list looking for your name. Takes a few minutes per guest. Line gets long. Cars honk.</p>
+<p><strong>Strategy B</strong>: He has a magic stamp that, when pressed against your hand, instantly tells him: "this person is <em>definitely not</em> on the list" or "this person is <em>probably</em> on the list." If "probably," he flips the list to verify. If "definitely not," he turns you away immediately.</p>
+<p>The stamp is wrong sometimes — occasionally says "probably" for someone not on the list. But it's <em>never wrong</em> in the other direction. If it says "definitely not," it's right.</p>
+<p>Most arrivals get the "definitely not" answer (the club is exclusive). The line moves fast. The bouncer only does the slow lookup when the stamp says "maybe."</p>
+<p>That stamp is a Bloom filter.</p>
+</div>
+<div class="keyidea">
+<p>A Bloom filter answers "is this key possibly in the set?" with two possible answers:</p>
+<ul>
+<li><strong>"Definitely not present"</strong> — and it's <em>always right</em>.</li>
+<li><strong>"Probably present"</strong> — and it might be lying. False positives possible.</li>
+</ul>
+<p>It can never say "definitely present." It can never give a false negative. That asymmetry is the whole point.</p>
+</div>
+<h2>How it actually works</h2>
+<p>A Bloom filter is just a big array of bits, all initially zero. Plus a few hash functions.</p>
+<div class="workout">
+<p><strong>Inserting a key (e.g., "alice"):</strong></p>
+<div class="step">
+<p>Hash "alice" through hash function 1. Get a bit position, say 3.</p>
+</div>
+<div class="step">
+<p>Hash "alice" through hash function 2. Get bit position 7.</p>
+</div>
+<div class="step">
+<p>Hash "alice" through hash function 3. Get bit position 11.</p>
+</div>
+<div class="step">
+<p>Set bits 3, 7, and 11 to 1. Done.</p>
+</div>
+</div>
+<div class="workout">
+<p><strong>Querying for a key (e.g., "carol"):</strong></p>
+<div class="step">
+<p>Hash "carol" through all three hash functions. Get bit positions, say 3, 8, 11.</p>
+</div>
+<div class="step">
+<p>Check those three bits. Are they all 1?</p>
+</div>
+<div class="step">
+<p>If <em>any</em> are 0 → <strong>definitely not present</strong>. (If carol had been inserted, all three would have been set.)</p>
+</div>
+<div class="step">
+<p>If <em>all</em> are 1 → <strong>probably present</strong>. But it could be coincidence — those bits might have been set by other inserts.</p>
+</div>
+</div>
+<p>Let's see this with concrete numbers.</p>
+<div class="diagram">
+<p>Initial state (16-bit filter):</p>
+<p>index: 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+  bits:  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0</p>
+<p>Insert "alice":     hash1=3, hash2=7, hash3=11
+  → set bits 3, 7, 11</p>
+<p>index: 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+  bits:  0  0  0  1  0  0  0  1  0  0  0  1  0  0  0  0
+                  ↑           ↑           ↑</p>
+<p>Insert "bob":       hash1=5, hash2=7, hash3=14
+  → set bits 5, 7, 14  (bit 7 already set, no change)</p>
+<p>index: 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+  bits:  0  0  0  1  0  1  0  1  0  0  0  1  0  0  1  0
+                  ↑     ↑     ↑           ↑        ↑</p>
+<p>─────────────────────────────────────────────────────</p>
+<p>Query "carol":      hash1=3, hash2=8, hash3=11
+  Check bits 3, 8, 11:    1     0     1
+  → bit 8 is 0  →  DEFINITELY NOT PRESENT.  ✓ correct.</p>
+<p>Query "dan":        hash1=3, hash2=7, hash3=14
+  Check bits 3, 7, 14:    1     1     1
+  → all bits set  →  PROBABLY PRESENT.  ✗ but dan was never inserted!
+                                          (false positive)</p>
+</div>
+<p>The false positive happens because dan's bits <em>coincidentally</em> overlap with the union of bits set by alice and bob. The more keys inserted, the more bits get set, the higher the false positive rate.</p>
+<h2>Why does this matter? Two words: less I/O.</h2>
+<p>Recall from Module 01: an LSM tree read might check 50 SSTables. Each SSTable check is a disk seek if the answer isn't cached. <strong>Without Bloom filters, that's 50 disk seeks per query.</strong></p>
+<div class="scenario">
+<p><strong>The 50-SSTable problem.</strong></p>
+<p>A Cassandra table has accumulated 50 SSTables (compaction is behind, perhaps after a write storm). You query for <code>user:42</code>.</p>
+<p>Without Bloom filters: 50 SSTable lookups. Each costs ~10ms on disk if not cached. That's a <strong>500ms query</strong> for a single key.</p>
+<p>With Bloom filters: 49 filters say "definitely not here" — that's 49 instant in-memory rejections at maybe 100 nanoseconds each. The 50th says "maybe" and we do one disk seek to confirm. <strong>Total: ~10ms instead of 500ms.</strong></p>
+<p>The Bloom filter just made the query 50x faster.</p>
+</div>
+<div class="pullquote">
+<p>A Bloom filter is the cheapest "no" you can get in a database.</p>
+</div>
+<h2>The two knobs</h2>
+<p>When implementing a Bloom filter, you choose two things:</p>
+<p><strong>Size (m)</strong>: how many bits in the array.</p>
+<p><strong>Hash count (k)</strong>: how many hash functions per insert/query.</p>
+<p>These knobs trade off space against false positive rate.</p>
+<div class="diagram">
+<p>Approximate false positive rate:</p>
+<pre><code>  n = number of items inserted
+  m = number of bits in filter
+  k = number of hash functions
+</code></pre>
+<p>False positive rate ≈ (1 - e^(-kn/m))^k</p>
+<p>CONCRETE EXAMPLES (n = 1 million items):</p>
+<p>┌────────────┬──────────┬─────────────────────┐
+  │ Filter size│ Hash fns │ False positive rate │
+  ├────────────┼──────────┼─────────────────────┤
+  │   1.2 MB   │    7     │       ~1%            │
+  │   1.8 MB   │   10     │      ~0.1%           │
+  │   2.4 MB   │   14     │     ~0.01%           │
+  └────────────┴──────────┴─────────────────────┘</p>
+<p>For comparison: storing 1M 32-byte keys in a hash set:
+  ~32 MB minimum. Often more with overhead.</p>
+</div>
+<div class="insider">
+<p>Production systems target 1-10% false positive rate per Bloom filter. The reason isn't laziness — it's that the cost of a false positive (one extra disk seek) is much smaller than the cost of a fatter filter (more RAM consumed across thousands of SSTables). 1-2% is a sweet spot for most LSM databases.</p>
+</div>
+<h2>Same idea, two more ways</h2>
+<p>For people whose brains work differently:</p>
+<div class="metaphor">
+<p><strong>Way 2: the receipt analogy.</strong></p>
+<p>You're at a wedding. Each guest signs a single book using three different pens at three positions. To check if "Alice" attended, look at three positions in the book — if all three have ink, probably yes. If any are blank, definitely no.</p>
+<p>If the book is small and there are many guests, eventually every position has ink, and the check tells you "probably yes" for everyone — <em>useless</em>. So you make the book bigger as the guest list grows.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 3: the spam filter analogy.</strong></p>
+<p>A simple email spam filter checks several "fingerprints" of an incoming message against a known-spam database. If even one fingerprint isn't in the spam database, the message is <em>definitely not</em> a known spam (so let it through cheaply). If all fingerprints match, it might be spam (do a more expensive deep check).</p>
+<p>Same shape. Same asymmetry. "Definitely not" is fast and reliable. "Probably yes" requires more work.</p>
+</div>
+<h2>Where you'll see Bloom filters in the wild</h2>
+<table>
+<thead>
+<tr>
+<th>System</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cassandra, ScyllaDB</strong></td>
+<td>One Bloom filter per SSTable to skip non-matching SSTables on read</td>
+</tr>
+<tr>
+<td><strong>HBase, BigTable</strong></td>
+<td>Same pattern as Cassandra</td>
+</tr>
+<tr>
+<td><strong>RocksDB / LevelDB</strong></td>
+<td>Same — per-SSTable Bloom filters</td>
+</tr>
+<tr>
+<td><strong>Bitcoin</strong></td>
+<td>SPV nodes use Bloom filters to ask full nodes for relevant transactions</td>
+</tr>
+<tr>
+<td><strong>Chrome</strong></td>
+<td>Malicious URL pre-check (definitely-safe URLs skip the network call)</td>
+</tr>
+<tr>
+<td><strong>Akamai, CDN edge caches</strong></td>
+<td>"Is this URL definitely not in the denylist?" before expensive checks</td>
+</tr>
+<tr>
+<td><strong>Postgres</strong> (extension)</td>
+<td><code>pg_bloom</code> indexes for very large tables with selective queries</td>
+</tr>
+</tbody>
+</table>
+<div class="tip">
+<p>Bloom filters are part of a family of "probabilistic data structures." Their cousins include <strong>HyperLogLog</strong> (cardinality estimation — "how many distinct values?") and <strong>Count-Min Sketch</strong> (frequency estimation — "approximately how often does X appear?"). Knowing all three exist signals breadth.</p>
+</div>
+<h2>Common questions</h2>
+<div class="nodumbq">
+<div class="q">
+<p>Q: Can I delete from a Bloom filter?</p>
+</div>
+<div class="a">
+<p>A: Standard Bloom filter, no. Once a bit is set, you can't unset it without potentially breaking other items that share that bit. There's a variant called the <strong>Counting Bloom Filter</strong> where each "bit" is actually a small counter, supporting deletion at ~4x the space cost. For LSM tree applications, deletes don't matter — when an SSTable is compacted away, its Bloom filter goes with it, and the merged SSTable gets a fresh filter.</p>
+</div>
+<div class="q">
+<p>Q: What if my hash functions are bad?</p>
+</div>
+<div class="a">
+<p>A: Then your false positive rate is much worse than the math predicts. Real implementations use known-good hashes — MurmurHash, xxHash, Cityhash. Sometimes one hash is computed and bit-mixed to produce multiple "virtual" hashes (cheaper than running multiple hash functions). Avoid CRC32 — it's not designed for uniform distribution.</p>
+</div>
+<div class="q">
+<p>Q: Are there alternatives?</p>
+</div>
+<div class="a">
+<p>A: Yes — <strong>Cuckoo filters</strong> (support deletion, similar space efficiency) and <strong>XOR filters</strong> (smaller space, faster lookup, immutable once built). For <em>immutable</em> filters (write once, query many), XOR filters are state-of-the-art. RocksDB has been experimenting with <strong>Ribbon filters</strong>. Bloom is the classic; the others are evolutions.</p>
+</div>
+<div class="q">
+<p>Q: What's the right false positive rate?</p>
+</div>
+<div class="a">
+<p>A: Depends on the cost of a false positive vs the cost of memory. For LSM tree SSTable filters, 1% is typical because the false positive cost is one wasted disk seek. For something like a malicious-URL pre-check where false positives mean blocking a legitimate page, target much lower. As always: measure your specific cost ratios.</p>
+</div>
+</div>
+<h1>Part 2: Write-Ahead Logging (WAL)</h1>
+<p>This is the heart of database durability. If you understand only one thing in this chapter, make it WAL.</p>
+<h2>The "write the receipt first" trick</h2>
+<div class="scenario">
+<p><strong>The durability problem in one sentence:</strong> if your database crashes after acknowledging a write but before the data is on disk, the write is lost.</p>
+<p>Imagine: client sends <code>INSERT INTO orders ...</code>, the server writes the row to its in-memory buffer, sends "OK!" back to the client, then <em>bzzzt</em> — power dies. The in-memory buffer is gone. The "OK!" was a lie.</p>
+<p>How do we prevent this without making every write painfully slow by waiting for the disk?</p>
+</div>
+<p>The answer: <strong>write to the log first, ack, modify the data file later (asynchronously).</strong></p>
+<div class="metaphor">
+<p><strong>Restaurant kitchen analogy.</strong></p>
+<p>A waiter takes your order. Before yelling it back to the kitchen, she <strong>writes it on a paper ticket</strong> and clips it to the rail. Then she yells the order. The cook starts cooking. Eventually the food comes out.</p>
+<p>Why the ticket?</p>
+<p>Because if the cook is busy and forgets, the ticket is still there. If the waiter goes on break and another waiter takes over, the ticket tells them what's pending. <strong>The ticket is durable evidence that the order was taken</strong>, separate from the kitchen's actual cooking work.</p>
+<p>If the kitchen burns down before cooking, you can read the tickets and remake the orders.</p>
+<p>That's the WAL. The ticket is the WAL entry. The cooking is updating the actual database pages. The two are decoupled.</p>
+</div>
+<div class="keyidea">
+<p>WAL = a sequential, append-only log on disk. Every change is <em>first</em> written to the log, <em>then</em> applied to the actual data files. On crash, you replay the log from the last known-good point and the database recovers exactly to its pre-crash state.</p>
+</div>
+<h2>How a write actually flows</h2>
+<div class="workout">
+<p><strong>Single INSERT going through Postgres-style WAL:</strong></p>
+<div class="step">
+<p>Client sends <code>INSERT INTO orders VALUES (...)</code>.</p>
+</div>
+<div class="step">
+<p>The database parses, plans, locks rows, and prepares to apply the change.</p>
+</div>
+<div class="step">
+<p><strong>The change is recorded in the WAL buffer</strong> — a small in-memory area that batches WAL records.</p>
+</div>
+<div class="step">
+<p><strong>fsync.</strong> The WAL buffer is flushed to disk. <em>This is the moment the write becomes durable.</em> The OS confirms bytes are on the platter (or in the SSD's persistent cache).</p>
+</div>
+<div class="step">
+<p>The data page in memory is modified to reflect the new row.</p>
+</div>
+<div class="step">
+<p>The database acknowledges the client. <strong>"OK!"</strong></p>
+</div>
+<div class="step">
+<p><em>Much later, asynchronously</em>, the dirty data page is written to the actual data file. This may happen seconds or minutes later, during a checkpoint (Part 3).</p>
+</div>
+<div class="step">
+<p><em>Even later</em>, the WAL record can be discarded — but only after the data page that depends on it has been flushed to disk.</p>
+</div>
+</div>
+<div class="pause">
+<p>Look at step 4. <strong>That's the only place the disk got involved synchronously.</strong> And it was a sequential append to one log file — the cheapest disk operation possible.</p>
+<p>The expensive thing — modifying the actual data page on disk in its random location — happens asynchronously, batched, in the background. The user never waits for it.</p>
+</div>
+<h2>Why this is brilliant</h2>
+<p>Sequential I/O is fast (Module 01). Random I/O is slow.</p>
+<p>A naive durable database would do this for every write:
+1. Modify the data page (random write to disk — slow).
+2. Wait for it to be durable.
+3. Ack.</p>
+<p>A WAL-based database does:
+1. Append to log (sequential write — fast).
+2. Wait for <em>the log</em> to be durable.
+3. Ack.</p>
+<p>The data page write happens later, batched with other dirty pages, sequentially as much as possible. <strong>The user-facing latency is dominated by one sequential append, not one random page write.</strong></p>
+<div class="pullquote">
+<p>WAL turns durable writes into append-only operations — the cheapest kind.</p>
+</div>
+<h2>The fsync question</h2>
+<p><code>fsync()</code> is the syscall that says "really, actually write this to disk and don't return until you're sure." It's the most expensive thing you can do per write.</p>
+<p>Different systems handle fsync differently. Here's the spectrum:</p>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Behavior</th>
+<th>Durability</th>
+<th>Throughput</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>fsync per commit</strong></td>
+<td>Force WAL to disk on every transaction</td>
+<td>Strong (no loss)</td>
+<td>Limited by IOPS — maybe ~1000-5000 commits/sec on NVMe</td>
+</tr>
+<tr>
+<td><strong>Group commit</strong></td>
+<td>Batch fsyncs across many concurrent transactions</td>
+<td>Strong (small lag at most)</td>
+<td>High — 10-100x more commits/sec</td>
+</tr>
+<tr>
+<td><strong>Periodic fsync</strong></td>
+<td>e.g., fsync every 1 second (Redis appendfsync everysec)</td>
+<td>Up to 1 second of data loss on crash</td>
+<td>Highest — limited only by network/CPU</td>
+</tr>
+<tr>
+<td><strong>No fsync</strong></td>
+<td>Trust the OS to flush eventually</td>
+<td>Lose recent writes on crash</td>
+<td>Maximum — but probably wrong for production</td>
+</tr>
+</tbody>
+</table>
+<div class="warning">
+<p>"Postgres is durable by default" — only because <code>synchronous_commit = on</code> calls fsync on every commit. Set <code>synchronous_commit = off</code> and Postgres trades safety for ~5x throughput. Many shops do this for non-critical workloads. <strong>Know which mode your system runs in before claiming durability properties.</strong></p>
+</div>
+<div class="insider">
+<p><strong>Group commit</strong> is one of the most beautiful optimizations in database engineering. Imagine 10 transactions are all ready to commit at once. Instead of doing 10 separate fsyncs, the database batches them — one fsync flushes all 10 transactions' WAL records at once. Each transaction still gets ack'd only after fsync completes, so durability is maintained, but throughput improves linearly with concurrency. Postgres, MySQL, and SQL Server all do this.</p>
+</div>
+<h2>A real-world war story</h2>
+<div class="reallyworld">
+<p><strong>The 2018 Reddit Postgres incident.</strong></p>
+<p>Reddit was running Postgres with read replicas across availability zones. One of those replicas was being prepared for a production cutover.</p>
+<p>A configuration check that should have happened — verifying replication and sync settings on the new replica before promotion — got missed during the migration. The new replica was operating with weaker sync settings than the old leader.</p>
+<p>When the old leader crashed unexpectedly, automatic failover promoted the misconfigured replica to leader. Writes that had been acked on the old leader but not yet replicated to the new one... vanished.</p>
+<p>Result: dozens of customer-visible inconsistencies. Comments and votes that had been visible disappeared. Took the team hours to triage what was lost and notify users.</p>
+<p><strong>The lesson, in interview-friendly form</strong>: durability isn't a checkbox. It's a configuration <em>matrix</em> you have to verify across the whole replication topology. "We use Postgres" doesn't mean your data is safe. "We use Postgres with <code>synchronous_commit = on</code>, sync replication to a primary replica with <code>synchronous_standby_names</code> configured, and verified failover behavior under load" — that means your data is safe.</p>
+</div>
+<div class="reallyworld">
+<p><strong>fsyncgate (2018).</strong></p>
+<p>For years, Postgres assumed that when fsync returned an error, you could retry. Turns out on Linux, fsync errors could be swallowed by the kernel — the next fsync would return success even if previous writes had failed.</p>
+<p>The Postgres team had to redesign error handling. The lesson nobody saw coming: <strong>the OS layer can lie to you about durability</strong>, and the database has to defend against it.</p>
+<p>The deeper meta-lesson: durability is a property of the <em>whole stack</em> — DB, OS, filesystem, disk firmware. The DB can do everything right and still lose data if the OS or hardware misbehaves. This is why "is your fsync actually fsyncing?" is a serious question for high-stakes systems.</p>
+</div>
+<h2>What does a WAL record look like?</h2>
+<div class="diagram">
+<p>Conceptually, a WAL record is small:</p>
+<p>┌──────────────────────────────────────────────────────────┐
+  │ LSN: 0/AB12CD80                                          │  ← log sequence number
+  │ Type: INSERT                                              │
+  │ Transaction: 4729                                         │
+  │ Table: orders                                             │
+  │ Page: 4892                                                │
+  │ Tuple data: { id=99, amount=50.00, user_id=42, ... }     │
+  │ CRC: a3f9b1c2                                             │  ← checksum
+  └──────────────────────────────────────────────────────────┘</p>
+<p>Each record is appended to the WAL file. The WAL grows
+  forever (until a checkpoint says "everything before this
+  point is safely in the data files; you can throw it away").</p>
+<p>WAL files in Postgres are 16 MB by default. Each one is
+  written sequentially front-to-back, then a new file starts.</p>
+<p>Multiple records pack into a WAL record buffer in memory,
+  then fsync writes the buffer to disk in one go.</p>
+</div>
+<div class="tip">
+<p>The <strong>LSN (Log Sequence Number)</strong> is just a monotonically increasing pointer into the WAL — like a byte offset. Every page in the database has an LSN that records "the last WAL record that affected this page." On recovery, you can compare a page's LSN with the WAL records and skip any records whose changes are already reflected. <strong>This is what makes WAL replay idempotent.</strong> You can crash mid-recovery and restart recovery; you won't apply changes twice.</p>
+</div>
+<h1>Part 3: Checkpointing</h1>
+<p>We've done two of three. Now: how do we keep the WAL from growing forever?</p>
+<h2>The video game save point</h2>
+<div class="metaphor">
+<p>You're playing a roguelike video game. If you die, you start from the last save point. The further back the save point, the more you have to replay. The more frequent the save points, the more pauses you experience as the game writes the save file.</p>
+<p>That's checkpointing. The "save point" is a moment when the database says: <strong>"I solemnly declare that everything before this LSN is safely in the data files on disk. The WAL up to here is no longer needed for recovery."</strong></p>
+<p>Crash recovery now only has to replay from the last checkpoint forward. Bounded. Predictable.</p>
+</div>
+<div class="keyidea">
+<p>A checkpoint is when the database flushes all dirty data pages to disk and records "as of this LSN, everything is durable." Recovery starts from the most recent checkpoint, not from the beginning of time.</p>
+</div>
+<h2>The mechanics</h2>
+<div class="workout">
+<p><strong>What happens during a checkpoint:</strong></p>
+<div class="step">
+<p>The database notes the current LSN — call it the "checkpoint LSN."</p>
+</div>
+<div class="step">
+<p>It enumerates all <em>dirty</em> pages — pages in the buffer pool that have been modified but not yet flushed to disk.</p>
+</div>
+<div class="step">
+<p>It writes those pages to the data file (random I/O — this is the expensive part).</p>
+</div>
+<div class="step">
+<p>It updates a control file with the checkpoint LSN.</p>
+</div>
+<div class="step">
+<p>WAL records older than that LSN can now be discarded (or recycled into new WAL files).</p>
+</div>
+</div>
+<p>After a checkpoint:
+- All in-memory state is mirrored on disk.
+- The WAL has a clear "start point" for any future recovery.
+- The database is back to a "everything caught up" state.</p>
+<h2>The checkpoint dilemma</h2>
+<p>Here's the tension that makes checkpointing tunable:</p>
+<div class="compare">
+<div class="vs-left">
+<h4>Frequent checkpoints</h4>
+<ul>
+<li>✓ Fast crash recovery — less WAL to replay.</li>
+<li>✓ Smaller WAL files on disk — old segments can be discarded sooner.</li>
+<li>✗ I/O storms during each checkpoint — many dirty pages flush at once.</li>
+<li>✗ Latency spikes for foreground queries while the I/O happens.</li>
+</ul>
+</div>
+<div class="vs-right">
+<h4>Infrequent checkpoints</h4>
+<ul>
+<li>✓ Smoother write performance — no big I/O bursts.</li>
+<li>✓ Less total work overall (fewer redundant page flushes).</li>
+<li>✗ Long crash recovery — could be many gigabytes of WAL to replay.</li>
+<li>✗ Larger WAL files accumulate on disk.</li>
+</ul>
+</div>
+</div>
+<p>You're trading <strong>steady-state smoothness</strong> against <strong>recovery time</strong>. Both costs are real.</p>
+<div class="scenario">
+<p><strong>The checkpoint storm.</strong></p>
+<p>A team running Postgres notices that every 5 minutes, p99 latency spikes from 20ms to 800ms for about 30 seconds. Then it returns to normal.</p>
+<p>The pattern is suspiciously regular. They check <code>checkpoint_timeout</code> — set to 5 minutes. <strong>The latency spikes are checkpoints.</strong></p>
+<p>Each checkpoint flushes ~2 GB of dirty pages to disk in 30 seconds. That's 67 MB/sec of random I/O hitting the same disk that's serving foreground queries. The disk's IOPS budget gets eaten by the checkpoint, and queries queue up.</p>
+<p>The fix wasn't to remove checkpoints — that would explode recovery time. The fix was to <strong>spread the I/O over more time</strong>.</p>
+</div>
+<h2>The Postgres lever: checkpoint_completion_target</h2>
+<p>This is one of those Postgres details that distinguishes a senior from someone who just deployed Postgres once.</p>
+<div class="insider">
+<p><strong><code>checkpoint_completion_target = 0.9</code></strong> (the modern default since Postgres 14).</p>
+<p>This says: spread the checkpoint's I/O over 90% of the interval between checkpoints. So if checkpoints happen every 5 minutes, the dirty page flushes are smeared over 4.5 minutes instead of bursting in 30 seconds.</p>
+<p>Same total I/O. Much smoother distribution. Much smaller latency spikes.</p>
+<p>When someone says "we tuned <code>checkpoint_completion_target</code>" in an interview, you should immediately know they're someone who has actually operated a real Postgres cluster.</p>
+</div>
+<h2>Three ways to think about checkpointing</h2>
+<div class="metaphor">
+<p><strong>Way 2: garbage collection.</strong></p>
+<p>Checkpointing is to the WAL what garbage collection is to memory. The WAL grows as you allocate (write); checkpointing reclaims it after the data is safely persisted. Like GC, you tune frequency to balance pause time against heap size.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 3: the photocopy analogy.</strong></p>
+<p>Imagine a busy office where every change to a document is first written on yellow sticky notes, then later transcribed into the actual binder. The sticky notes are the WAL. The binder is the data file.</p>
+<p>If a fire starts, you need both the binder and the recent sticky notes to reconstruct the truth.</p>
+<p>A checkpoint is when an intern walks through the office, transcribes all the recent sticky notes into the binder, and throws those sticky notes away. The binder is now up-to-date as of the checkpoint, and you no longer need those old stickies for recovery.</p>
+<p>The faster the intern works, the less work needs to be redone after a fire — but the intern's photocopying is itself disruptive (she's bumping into people).</p>
+</div>
+<h1>How they all work together</h1>
+<p>Time to integrate. Here's a single write going through all three mechanisms in concert.</p>
+<div class="diagram">
+<p>CLIENT WRITE: INSERT INTO orders ...</p>
+<pre><code>   │
+   │  (1) Append WAL record to in-memory buffer
+   ▼
+</code></pre>
+<p>┌──────────────────────┐
+   │  WAL buffer (RAM)    │
+   └──────────────────────┘
+       │
+       │  (2) fsync — flush buffer to WAL file on disk
+       ▼
+   ┌──────────────────────┐
+   │  WAL file (disk)     │  ← protects DURABILITY
+   └──────────────────────┘
+       │
+       │  (3) modify page in buffer pool
+       ▼
+   ┌──────────────────────┐
+   │  Buffer pool (RAM)   │  ← page now "dirty"
+   │  page LSN updated    │
+   └──────────────────────┘
+       │
+       │  (4) ACK CLIENT
+       ▼</p>
+<pre><code>   ... time passes, more writes happen ...
+
+   │  (5) checkpoint trigger fires
+   │      (every checkpoint_timeout, or every checkpoint_segments)
+   ▼
+</code></pre>
+<p>┌──────────────────────┐
+   │  Flush dirty pages   │  ← protects RECOVERY TIME
+   │  to data files       │
+   │  Update checkpoint   │
+   │  LSN in control file │
+   └──────────────────────┘
+       │
+       │  (6) WAL segments older than checkpoint LSN can be recycled
+       ▼</p>
+<p>─────────────────────────────────────────────────────</p>
+<p>Meanwhile, for a READ:
+       │
+       │  Request comes in
+       ▼
+   ┌──────────────────────┐
+   │  Bloom filter check  │  ← protects READ LATENCY
+   │  (LSM tree only)     │
+   └──────────────────────┘
+       │
+       │  if "definitely not": return immediately
+       │  if "probably yes":  do the disk seek
+       ▼
+   ┌──────────────────────┐
+   │  Actual disk read    │
+   └──────────────────────┘</p>
+</div>
+<div class="brain">
+<p>A subtle but important point about WAL replay safety:</p>
+<p>After a crash, recovery reads the WAL from the last checkpoint and replays each record. But the data file might <em>already contain</em> some of those changes — pages that got flushed before the crash but happened to be referenced in WAL records after the checkpoint LSN.</p>
+<p>How do we avoid applying the same change twice?</p>
+<p><strong>Each page on disk has its own LSN</strong> — the LSN of the last WAL record that affected that page. During replay, each WAL record is checked against its target page's current LSN. If the page's LSN ≥ the record's LSN, <em>the change is already there</em>, skip the record.</p>
+<p>This is <strong>idempotent recovery</strong>. You can crash mid-recovery, restart, replay the same records, and end up with the same correct state. It's also why WAL replay is safe to retry — exactly-once recovery semantics fall out naturally.</p>
+</div>
+<h1>Sharpen your pencil</h1>
+<div class="exercise">
+<p><strong>Exercise 1.</strong> A Postgres database is in trouble. Crash recovery has been taking 15 minutes after each unexpected restart. The team is evaluating four ideas: (a) reducing <code>max_wal_size</code>, (b) raising <code>checkpoint_timeout</code> to make checkpoints less frequent, (c) increasing <code>shared_buffers</code>, (d) moving WAL to a separate disk.</p>
+<p>Rank these from most to least helpful for the recovery time problem. One sentence each.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>(a) reducing <code>max_wal_size</code></strong> — most helpful. Forces more frequent checkpoints, bounding the amount of WAL recovery has to replay.</p>
+<p><strong>(d) WAL on separate disk</strong> — second. Doesn't reduce recovery time directly, but does reduce I/O contention during checkpoints, allowing them to complete faster (and thus increasing how aggressively you can checkpoint).</p>
+<p><strong>(c) larger shared_buffers</strong> — third. Could help by reducing dirty-page flush volume, but secondary effect.</p>
+<p><strong>(b) raising checkpoint_timeout</strong> — actively <em>worse</em>. That's the opposite direction — less frequent checkpoints = more WAL to replay = slower recovery.</p>
+<p>The senior reflex: recovery time = work to do after crash = WAL between last checkpoint and crash. Either reduce that WAL volume (more frequent checkpoints) or replay it faster (better hardware). Don't change settings that move you the wrong way.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2.</strong> A teammate proposes: "Our writes are too slow. Let's just turn off fsync." Three things you'd say in response, in interview-style sentences.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<ol>
+<li>
+<p>"Before we touch fsync, can we measure where the latency is actually going? If it's WAL fsync, we have options. If it's buffer pool contention or lock waits or planning time, fsync is irrelevant."</p>
+</li>
+<li>
+<p>"Disabling fsync drops durability — any write acked but not yet flushed is lost on power failure. For most production workloads that's a felony, not an optimization. The right intermediate move is <code>synchronous_commit = off</code>, which keeps fsync calls but lets the <em>commit</em> not wait for them. You lose at most a few hundred milliseconds of writes on crash, which some workloads can tolerate."</p>
+</li>
+<li>
+<p>"If we genuinely need to disable fsync — maybe a CI database or a cache — let's wrap that in a checklist: separate database, no replication off it, periodic <code>pg_dump</code> snapshots, explicit acceptance from the data owner. This isn't a knob you turn casually."</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3.</strong> Explain to non-technical Sam, in two sentences, what a Bloom filter does and why an LSM tree needs one.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>A Bloom filter is a small data structure that can answer "definitely not in this dataset" instantly without checking the actual data. An LSM tree might have dozens of files on disk that <em>could</em> contain a key, and without Bloom filters every read would have to check all of them — but with Bloom filters, most files can be skipped in nanoseconds, turning a slow query into a fast one.</p>
+</div>
+</div>
+<h1>There are no dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p>Q: If WAL is so important, why don't I see it mentioned more often when developers talk about Postgres?</p>
+</div>
+<div class="a">
+<p>A: Because it's invisible when it's working. Developers see WAL only when (a) something goes wrong (replication slot fills the disk, fsync errors), (b) they're performance-tuning (synchronous_commit, wal_compression), or (c) they're configuring replication. The other 99% of the time, WAL just hums along. Senior engineers know it's there.</p>
+</div>
+<div class="q">
+<p>Q: Are WAL and the transaction log the same thing?</p>
+</div>
+<div class="a">
+<p>A: Yes — different vendors call it different things. Postgres: WAL. MySQL: redo log (the WAL) plus binlog (a higher-level replication log). SQL Server: transaction log. Oracle: redo log. They all serve the same fundamental purpose: durable record of changes for recovery.</p>
+</div>
+<div class="q">
+<p>Q: What if my WAL fills the disk?</p>
+</div>
+<div class="a">
+<p>A: The database stops accepting writes (better than corruption). You investigate. Common causes: a replication slot is "holding" WAL because a downstream consumer hasn't acked, or a long-running transaction is preventing WAL recycling, or <code>archive_command</code> is failing and WAL is being kept for backup. The fix depends on the cause; the lesson is to monitor <code>pg_wal</code> directory size and have alerts.</p>
+</div>
+<div class="q">
+<p>Q: Does the WAL exist for LSM trees too?</p>
+</div>
+<div class="a">
+<p>A: Yes — LSM trees call it the <strong>commit log</strong>. Same purpose: append-only durable log of changes, used to recover the in-memory memtable on crash. Cassandra's commit log, RocksDB's WAL, BigTable's "tablet log" — all variants of the same idea. The principle "write to log before applying" is universal.</p>
+</div>
+<div class="q">
+<p>Q: How is checkpointing different from "auto-save"?</p>
+</div>
+<div class="a">
+<p>A: Conceptually identical, but the consequences differ. Auto-save in a word processor is "if you crash, you lose at most N minutes of typing." Checkpoint in a database is "if you crash, recovery replays at most N minutes of WAL — but no committed data is ever lost." The difference: a database protects every committed write via WAL fsync; a word processor without WAL might lose anything since the last save.</p>
+</div>
+<div class="q">
+<p>Q: What's the relationship between checkpointing and consistency?</p>
+</div>
+<div class="a">
+<p>A: Checkpointing has nothing to do with logical consistency (constraints, transactions). It only handles durability and recovery time. Consistency is enforced by the transaction system above it. Checkpointing happens to all committed transactions equally; it doesn't pick winners.</p>
+</div>
+<div class="q">
+<p>Q: Can a Bloom filter ever return a false negative?</p>
+</div>
+<div class="a">
+<p>A: Never, with a standard Bloom filter, <em>given correct hash functions and an unmodified bit array</em>. False negatives would happen only if (a) bits got corrupted, (b) the filter was reset/cleared without re-inserting, or (c) the implementation has a bug. The math guarantees no false negatives. If you're seeing them, you have a bug.</p>
+</div>
+<div class="q">
+<p>Q: What's the deal with "double write buffer" in MySQL?</p>
+</div>
+<div class="a">
+<p>A: MySQL InnoDB has an additional safety mechanism: it writes pages to a "double write buffer" <em>before</em> writing them to their actual location. This protects against torn writes — a partial page write where half the page is new and half is old (which can happen if power fails mid-write). Postgres handles torn writes via "full page writes" in the WAL — it logs entire pages on first modification after a checkpoint. Same problem, different solution.</p>
+</div>
+</div>
+<h1>Three myths to dynamite</h1>
+<div class="myth">
+<p><strong>"WAL is slow because it's a log."</strong></p>
+<p>False. WAL is <em>fast</em> precisely because it's a log — append-only sequential I/O is the fastest disk operation possible. What's slow is <code>fsync()</code>, the syscall that forces the log to actually reach the platter. The performance question is "how often do we fsync?" not "do we use a WAL?"</p>
+</div>
+<div class="myth">
+<p><strong>"Bloom filters never give wrong answers."</strong></p>
+<p>False. Bloom filters give <em>false positives</em> — they sometimes say "probably present" when the key isn't actually there. They never give false negatives. That asymmetry is the entire point.</p>
+</div>
+<div class="myth">
+<p><strong>"More frequent checkpoints are always better."</strong></p>
+<p>False. More frequent checkpoints reduce recovery time but introduce I/O storms that hurt foreground latency. The right cadence is workload-specific. The senior move is <code>checkpoint_completion_target</code> to spread the I/O smoothly, plus monitoring of both checkpoint duration and recovery time to find a balance.</p>
+</div>
+<h1>Interview gotchas</h1>
+<div class="gotcha">
+<p><strong>Saying "Postgres has WAL because of ACID."</strong> Yes and no — WAL implements <em>durability</em>, the D in ACID. Atomicity is implemented through WAL too (rollback uses the log). But Isolation and Consistency are mostly handled at higher layers (MVCC, constraints). Don't conflate WAL with all of ACID.</p>
+</div>
+<div class="gotcha">
+<p><strong>Mentioning Bloom filters but not their failure mode.</strong> If you say "Bloom filters speed up reads" without immediately following with "they have a tunable false positive rate," the interviewer thinks you've memorized the term but don't understand the tradeoff.</p>
+</div>
+<div class="gotcha">
+<p><strong>Confusing WAL with the replication log.</strong> They overlap (Postgres physical replication ships the WAL, MySQL replication ships the binlog) but conceptually they're different — one is for local recovery, the other for remote consistency. Some systems use the same log for both; some use separate ones (MySQL's redo log + binlog).</p>
+</div>
+<div class="gotcha">
+<p><strong>Treating "synchronous_commit = on" as "synchronous_replication = on".</strong> They're independent. <code>synchronous_commit</code> controls whether <em>local</em> commit waits for <em>local</em> WAL fsync. <code>synchronous_standby_names</code> controls whether commit waits for <em>remote</em> replicas to ack. You can have one without the other.</p>
+</div>
+<div class="gotcha">
+<p><strong>Forgetting that fsync can lie.</strong> OS, filesystem, and disk firmware can all return "fsync OK" without actually persisting data — depending on caching layers, write barriers, and hardware. Real durability requires verifying the entire stack honors fsync semantics. Cheap consumer SSDs and badly-configured RAID controllers without battery-backed cache are common culprits.</p>
+</div>
+<h1>Mock interview</h1>
+<div class="mock-interview">
+<div class="turn q">
+<p>A user complains that their INSERT was acknowledged at 10:32:00. The server lost power at 10:32:02. After recovery, the row isn't there. Walk me through what could have happened.</p>
+</div>
+<div class="turn a">
+<p>Two big possibilities, and which one applies depends on the database's configuration.</p>
+<p>The first and most likely: the database was running with weakened durability settings. In Postgres, that's <code>synchronous_commit = off</code> — the server returns ack to the client <em>before</em> fsync of the WAL completes, in exchange for higher throughput. With async commit, you can lose up to a few hundred milliseconds of writes on power loss. The window between ack and durability is small, but real.</p>
+<p>The second: the WAL fsync was lost at the OS or hardware level. This is what fsyncgate exposed in 2018 — Linux can in some scenarios drop fsync errors silently. Or the disk controller has a write cache that wasn't power-protected and lost a few seconds of writes. The database thinks it persisted; reality says it didn't.</p>
+</div>
+<div class="commentary">
+<p>Names two specific failure modes with concrete configuration knobs. Doesn't say "it's complicated" — gives actionable hypotheses.</p>
+</div>
+<div class="turn q">
+<p>The team is using <code>synchronous_commit = on</code> and the hardware is enterprise-grade. So neither of those should apply. What else could go wrong?</p>
+</div>
+<div class="turn a">
+<p>A few less common but real possibilities:</p>
+<p>One: <strong>the ack was wrong</strong> — meaning the client thinks it got 10:32:00 but actually didn't, or it was a network artifact. Worth checking the client logs against server logs to confirm the ack was real.</p>
+<p>Two: <strong>the row was committed and then deleted</strong> by another transaction we don't know about. Recovery doesn't undo committed deletes. Worth checking application logs for any DELETE that could have run between the INSERT and the crash.</p>
+<p>Three: <strong>wrong replica was promoted</strong> during failover. If the cluster has replicas and replication was async, the failover might have promoted a replica that didn't yet have the row. The original primary's WAL with the row is now "history that isn't in the new primary."</p>
+<p>Four: <strong>partial WAL write that didn't survive</strong> the corruption check. WAL records have CRCs; on recovery, if a record's CRC fails, it's discarded. Normally this only loses unflushed writes, not committed ones — but if there's torn writes due to bad hardware, you can lose more.</p>
+<p>I'd want to see the postgres log around 10:32 to know which scenario fits.</p>
+</div>
+<div class="commentary">
+<p>Goes beyond "the obvious answer." Suggests evidence to gather before concluding. This is what makes the answer feel like real production debugging instead of textbook recitation.</p>
+</div>
+<div class="turn q">
+<p>Suppose it turns out to be scenario three — async replica promoted before the row replicated. How would you prevent it next time?</p>
+</div>
+<div class="turn a">
+<p>A few hardening options, ordered by cost:</p>
+<p><strong>Cheapest</strong>: enable <code>synchronous_standby_names</code> so commits on the primary don't return until at least one replica has the WAL. This trades some primary write latency for guaranteed durability across the failover boundary.</p>
+<p><strong>More robust</strong>: use a quorum-based replication setup — <code>ANY 2 (replica1, replica2, replica3)</code> — so commits wait for two of three replicas. Survives one replica being slow without giving up safety.</p>
+<p><strong>Even more robust</strong>: introduce explicit fencing during failover — a tool like Patroni or Stolon that enforces "old primary cannot accept writes after demotion, even if it thinks it's still primary." Prevents split-brain that could re-introduce divergent writes.</p>
+<p><strong>Architectural</strong>: move to a database with built-in synchronous quorum, like CockroachDB or Spanner-style systems, where every write goes through Raft consensus and there's no "async tail" to lose.</p>
+<p>The right choice depends on the throughput vs durability budget for the workload, and the team's operational maturity. For most Postgres shops, sync replication to a single replica is the practical answer.</p>
+</div>
+<div class="commentary">
+<p>Notice the structure: cheapest fix first, then escalating costs. Senior engineers always present a ladder of options, not a single answer.</p>
+</div>
+<div class="turn q">
+<p>Last question — switching topics — when you describe LSM tree reads, you mentioned Bloom filters. Why are they specifically suited to LSM trees rather than B-trees?</p>
+</div>
+<div class="turn a">
+<p>The fit comes from the read pattern of LSM trees. An LSM tree read may need to check <em>many</em> files (SSTables) because the same key might appear in many places, and you need to find the most recent version. Bloom filters answer "is the key definitely not in this file?" cheaply — letting most SSTables be skipped without disk seeks.</p>
+<p>B-trees don't have this multi-file problem. A B-tree read is a single tree traversal — there's no "which of these 50 files might contain the key" decision. The B-tree's index <em>is</em> the location. So the Bloom filter's primary use case doesn't apply.</p>
+<p>That said, Postgres has a <code>pg_bloom</code> extension that adds Bloom-filter-style indexes for very large tables with many candidate filter columns. The use case is different — multi-column equality predicates over wide tables — but the structure is the same.</p>
+</div>
+<div class="commentary">
+<p>Connects the data structure to the problem it solves. Then mentions a counter-example (pg_bloom) to show breadth without contradicting the main point.</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<h3>Bloom Filter / WAL / Checkpoint — One Page</h3>
+<h4>Bloom filter</h4>
+<p>Probabilistic set membership test. Says "definitely not present" or "probably present." Never gives false negatives. Tunable false positive rate via filter size and hash count.</p>
+<p><strong>Used by</strong>: LSM trees per SSTable, denylists, dedup pre-checks, cache pre-checks, distributed systems looking up cross-node data.</p>
+<p><strong>Always pair with</strong>: hash function quality (MurmurHash, xxHash), counting variant for deletion, alternatives (Cuckoo, XOR filters).</p>
+<h4>Write-Ahead Log (WAL)</h4>
+<p>Append-only durable log of changes. Every change written to log <em>before</em> applied to data files. Sequential disk I/O — fast. Protected by <code>fsync()</code>.</p>
+<p><strong>Three durability modes</strong>:
+- fsync per commit (Postgres default <code>synchronous_commit = on</code>) — strong, slower.
+- group commit — strong, batches multiple commits' fsyncs.
+- async fsync (Postgres <code>synchronous_commit = off</code>) — risk small data loss, much faster.</p>
+<p><strong>Always pair with</strong>: fsync, group commit, dirty pages, LSN, replay, recovery.</p>
+<h4>Checkpointing</h4>
+<p>Periodic flush of dirty pages to data files. Bounds crash recovery time by saying "WAL before this LSN is no longer needed for recovery."</p>
+<p><strong>The dilemma</strong>: frequent = fast recovery + I/O storms; infrequent = smooth performance + slow recovery. Tune via <code>checkpoint_timeout</code>, <code>max_wal_size</code>, <code>checkpoint_completion_target</code>.</p>
+<h4>How they work together</h4>
+<ol>
+<li>Write hits the WAL buffer (RAM).</li>
+<li>fsync flushes WAL to disk (durability).</li>
+<li>Page modified in buffer pool (in-memory).</li>
+<li>Client ack'd.</li>
+<li>Eventually, checkpoint flushes dirty pages to data files.</li>
+<li>WAL before checkpoint discarded.</li>
+</ol>
+<h4>The 30-second verbal answer</h4>
+<p>"WAL gives durability via append-only sequential I/O — every change logged before applied. Checkpoints periodically flush dirty pages so the WAL doesn't grow forever and recovery has a bounded amount to replay. Bloom filters speed up LSM tree reads by letting the database skip SSTables that definitely don't contain a key."</p>
+<h4>Always mention together</h4>
+<p>Storage engine ↔ WAL ↔ buffer pool ↔ fsync ↔ checkpoint ↔ recovery.</p>
+</div>
+<h1>What's next</h1>
+<p>You now have the <em>foundational</em> layer: storage engine choice (Module 01), plus the support cast (this module). Reads, writes, durability, recovery — all covered.</p>
+<p>Module 03 introduces the <strong>third major axis</strong> of storage choice: row vs column layout. The decision that decides whether your database is good at OLTP or OLAP. We'll get into why BigQuery is 100x faster than Postgres for analytical aggregations even on the same hardware.</p>
+<p>After that, Module 04 dives into <strong>indexes</strong> — secondary, composite, covering — the topic that produces more "how is this query so slow?" Stack Overflow questions than any other.</p>
+<p>Take a break. Come back. The patterns are starting to compound.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="01_storage_engines.html" class="prev">&laquo; 01 Storage</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="03_row_vs_columnar.html" class="next">03 Row vs Col &raquo;</a>
+</nav>
+</body>
+</html>

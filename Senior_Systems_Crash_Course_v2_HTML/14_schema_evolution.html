@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam learns about contracts</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 14</p>
+</div>
+<div class="module-title">
+<p>Schema Evolution &amp; Schema Registry</p>
+</div>
+<div class="subtitle">
+<p>How to change the structure of your data without breaking every consumer downstream</p>
+</div>
+</div>
+<div class="opener">
+<p>You add a column. The deploy goes out. Five minutes later, three downstream services start throwing errors and the on-call channel lights up.</p>
+<p>Schema evolution is the unglamorous discipline of changing data shapes safely. It's also where most CDC pipelines, microservice integrations, and data lakehouses quietly fall apart. By the end of this module, you'll know exactly which changes are safe, which require ceremony, and how schema registries make the whole thing tractable.</p>
+</div>
+<h1>Sam learns about contracts</h1>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+OK so we've got CDC streaming changes from Postgres into Kafka and downstream into a bunch of consumers. Yesterday I added a column to the <code>users</code> table — <code>loyalty_tier</code>. Just a <code>VARCHAR</code>. Innocent enough. Twenty minutes later I'm in a war room because three consumer services started crashing.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Welcome to schema evolution. The thing nobody mentions in tutorials about microservices.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+The column was <em>additive</em>. Why would adding something break anything?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Depends entirely on how the consumers are written. If they use a strict deserializer that fails on unknown fields — which is the <em>default</em> in many systems — your "additive" change is a breaking change. The producer's events suddenly have a field consumers don't expect. Crash.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+That's not adding, that's mismatching.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Exactly. Schema evolution is fundamentally about <em>contracts</em> between producers and consumers. The producer doesn't have one consumer — it might have ten, scattered across teams, each consuming the same events with different code, different versions, different tolerance for change. <strong>Every schema change is a coordination problem with people who aren't in the room.</strong></p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+And a schema registry helps with that?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+A schema registry centralizes the contract. Every event is tagged with a schema version. Every consumer knows which version they expect. Compatibility rules are enforced at <em>publish time</em>, before anyone gets paged. By the end of this module you'll know which changes are forward-compatible, which are backward-compatible, why the difference matters, and what the operational discipline looks like.</p>
+</div>
+</div>
+<div class="keyidea">
+<p>Schema evolution is the discipline of changing data structure safely across producers and consumers that may upgrade independently. <strong>Backward compatibility</strong> = new schemas work with old data. <strong>Forward compatibility</strong> = old code works with new data. <strong>Full compatibility</strong> = both. Schema registries enforce these guarantees at publish time, preventing breaking changes from reaching consumers.</p>
+</div>
+<h1>Why schema evolution is hard</h1>
+<p>It's hard because of one fact: <strong>you don't deploy producers and consumers atomically.</strong></p>
+<div class="scenario">
+<p><strong>The fundamental coordination problem:</strong></p>
+<p>You have a <code>UserCreated</code> event. Producer service emits it; 6 consumer services process it (search index, analytics warehouse, billing, notification, recommendation, fraud detection).</p>
+<p>You want to add a new field, <code>loyalty_tier</code>. The producer is ready. You deploy.</p>
+<p>But:
+- Consumer A deployed yesterday with the old schema. Hasn't restarted.
+- Consumer B is in the middle of a slow blue/green deploy. Half its instances are old, half are new.
+- Consumer C is owned by another team, who hasn't deployed in 3 weeks. They didn't even know you were changing the schema.
+- Consumer D processes events from Kafka where there are 6 hours of <em>old</em> events still queued, plus <em>new</em> events being written.</p>
+<p><strong>Every consumer must handle both old and new versions of events for some window of time.</strong> The "window" might be milliseconds (instant deploy) or weeks (slow rollouts, third-party consumers, retention of historical data).</p>
+<p>The producer cannot assume anything about consumer state. It must change the schema in a way that <em>all</em> consumers can handle, regardless of which version they're running.</p>
+</div>
+<div class="pullquote">
+<p>You don't deploy producers and consumers atomically. Therefore every schema change must be safe under partial deployment.</p>
+</div>
+<h1>The two compatibility directions</h1>
+<p>This is the central mental model. Memorize it.</p>
+<div class="keyidea">
+<p><strong>Backward compatibility</strong>: a new consumer can read old data. (New code, old events.)
+<strong>Forward compatibility</strong>: an old consumer can read new data. (Old code, new events.)
+<strong>Full compatibility</strong>: both at once.</p>
+</div>
+<div class="diagram">
+<pre><code>                THE COMPATIBILITY DIRECTIONS
+</code></pre>
+<p>Producer (v1)  ────────────────►  Consumer (v1)
+                                          │
+                                          │ deploys
+                                          ▼
+  Producer (v1)  ────────────────►  Consumer (v2)   ← BACKWARD COMPAT
+                                                       Consumer reads v1
+                                                       data correctly.</p>
+<p>─────────────────────────────────────────────────────────────────</p>
+<p>Producer (v1)  ────────────────►  Consumer (v1)
+        │
+        │ deploys
+        ▼
+  Producer (v2)  ────────────────►  Consumer (v1)  ← FORWARD COMPAT
+                                                      Old consumer reads v2
+                                                      data correctly.</p>
+<p>─────────────────────────────────────────────────────────────────</p>
+<p>Both directions safe → FULL COMPATIBILITY
+  Producer and consumer can each upgrade independently
+  in either order, including mixing versions during rollout.</p>
+</div>
+<div class="scenario">
+<p><strong>A practical example.</strong></p>
+<p>You have an event:</p>
+<pre><code class="language-json">{ &quot;user_id&quot;: 42, &quot;name&quot;: &quot;Alice&quot; }
+</code></pre>
+<p>You want to add <code>email</code>.</p>
+<p><strong>Backward compatible?</strong> A v2 consumer expecting <code>{user_id, name, email}</code> reads a v1 event missing <code>email</code>. The consumer has to handle missing-field gracefully — typically by treating <code>email</code> as nullable. <strong>Yes, backward compatible if the new field is optional or has a default.</strong></p>
+<p><strong>Forward compatible?</strong> A v1 consumer (only knows <code>user_id, name</code>) reads a v2 event with the extra <code>email</code> field. The consumer has to <em>ignore</em> unknown fields. <strong>Yes, forward compatible if consumers are permissive about extra fields.</strong></p>
+<p>If the new field is required and consumers reject events missing it: not backward compatible.
+If consumers reject events with unknown fields: not forward compatible.</p>
+<p><strong>The discipline</strong>: your producers and consumers must be designed for both directions, every time.</p>
+</div>
+<h1>Safe vs unsafe schema changes</h1>
+<p>Here's the cheat sheet you'll consult forever.</p>
+<table>
+<thead>
+<tr>
+<th>Change</th>
+<th>Backward</th>
+<th>Forward</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Add optional field</strong></td>
+<td>✅</td>
+<td>✅</td>
+<td>Safe. Consumers default to null/missing.</td>
+</tr>
+<tr>
+<td><strong>Add required field</strong></td>
+<td>❌</td>
+<td>✅</td>
+<td>Old data has no value for it. Avoid.</td>
+</tr>
+<tr>
+<td><strong>Remove optional field</strong></td>
+<td>✅</td>
+<td>❌</td>
+<td>New data missing it; old consumers expecting it might break.</td>
+</tr>
+<tr>
+<td><strong>Remove required field</strong></td>
+<td>❌</td>
+<td>❌</td>
+<td>Always breaking. Avoid at all costs.</td>
+</tr>
+<tr>
+<td><strong>Rename field</strong></td>
+<td>❌</td>
+<td>❌</td>
+<td>Effectively remove + add. Always breaking.</td>
+</tr>
+<tr>
+<td><strong>Change field type (compatible widening)</strong></td>
+<td>✅</td>
+<td>⚠️</td>
+<td>int→long is safe-ish; consumers may need adjusting.</td>
+</tr>
+<tr>
+<td><strong>Change field type (incompatible)</strong></td>
+<td>❌</td>
+<td>❌</td>
+<td>int→string. Always breaking.</td>
+</tr>
+<tr>
+<td><strong>Reorder fields</strong></td>
+<td>✅</td>
+<td>✅</td>
+<td>In named-field formats (JSON, Avro). Breaking in positional (Protobuf without field numbers).</td>
+</tr>
+<tr>
+<td><strong>Add enum value</strong></td>
+<td>⚠️</td>
+<td>❌</td>
+<td>Old consumers don't know the new value. May crash on switch statement.</td>
+</tr>
+<tr>
+<td><strong>Make optional field required</strong></td>
+<td>❌</td>
+<td>✅</td>
+<td>Old data may have null. Backward-incompatible.</td>
+</tr>
+<tr>
+<td><strong>Change default value</strong></td>
+<td>⚠️</td>
+<td>⚠️</td>
+<td>Old data uses old default; new data uses new. Subtle bugs.</td>
+</tr>
+</tbody>
+</table>
+<div class="warning">
+<p><strong>The most common mistake</strong>: assuming "additive" changes are safe. Adding a field <em>can</em> break consumers if:
+- They use strict deserialization (default in many libraries).
+- They use the new field in routing logic and don't handle missing.
+- They don't expect the field at all and have schema-validation failures.</p>
+<p><strong>Treat every schema change as risky</strong> until proven otherwise. The same rule applies whether you're using JSON, Avro, Protobuf, or SQL.</p>
+</div>
+<h1>Three serialization formats, three philosophies</h1>
+<p>Schema evolution behaves differently depending on the wire format. Senior engineers know which format to choose for which problem.</p>
+<div class="compare">
+<div class="vs-left">
+<h4>JSON</h4>
+<p><b>Schema</b>: implicit (in the consumer code).</p>
+<p><b>Strength</b>: human-readable, debuggable, ubiquitous.</p>
+<p><b>Weakness</b>: no enforced contract. Consumers each interpret. Easy to drift.</p>
+<p><b>Compatibility</b>: depends entirely on consumer behavior. Strict parsers reject unknown fields; permissive parsers ignore.</p>
+<p><b>Use when</b>: REST APIs, simple events, when human inspection matters.</p>
+</div>
+<div class="vs-right">
+<h4>Avro</h4>
+<p><b>Schema</b>: explicit, attached to data (or via registry).</p>
+<p><b>Strength</b>: rich evolution rules; producer + consumer schemas can differ explicitly.</p>
+<p><b>Weakness</b>: not human-readable; requires schema for any interpretation.</p>
+<p><b>Compatibility</b>: enforced via reader/writer schema rules. Default-based field resolution.</p>
+<p><b>Use when</b>: data lakehouses (Iceberg, Hudi), Confluent Kafka, structured pipelines.</p>
+</div>
+</div>
+<div class="compare">
+<div class="vs-left">
+<h4>Protobuf</h4>
+<p><b>Schema</b>: explicit, compiled .proto files.</p>
+<p><b>Strength</b>: compact, fast, strong evolution rules via field numbers.</p>
+<p><b>Weakness</b>: not human-readable; requires .proto for interpretation.</p>
+<p><b>Compatibility</b>: field numbers are the contract. Adding fields is safe; never reuse a number.</p>
+<p><b>Use when</b>: gRPC, internal microservice communication, performance-critical wire formats.</p>
+</div>
+<div class="vs-right">
+<h4>JSON Schema / OpenAPI</h4>
+<p><b>Schema</b>: separate documents describing JSON structure.</p>
+<p><b>Strength</b>: language-agnostic, integrates with existing JSON APIs.</p>
+<p><b>Weakness</b>: validation is optional and easy to skip.</p>
+<p><b>Compatibility</b>: depends on how strictly enforced.</p>
+<p><b>Use when</b>: REST APIs that want documented and validated contracts.</p>
+</div>
+</div>
+<div class="insider">
+<p><strong>The modern data platform stack typically uses Avro or Protobuf for events</strong>, not JSON. Reasons:
+- Compact wire format (Avro/Protobuf are ~10x smaller than JSON for the same data).
+- Schema is enforceable, not just documented.
+- Evolution rules are baked into the format.</p>
+<p><strong>Confluent's Schema Registry</strong> is the dominant tool for managing schemas alongside Kafka. Stores Avro schemas (or Protobuf, or JSON Schema), enforces compatibility rules at publish time. <strong>Mention Confluent Schema Registry by name</strong> in interviews about Kafka and CDC, and you sound like someone who's worked in this space.</p>
+</div>
+<h1>Schema registry: the central enforcer</h1>
+<div class="keyidea">
+<p>A <strong>schema registry</strong> is a service that stores schema definitions, assigns version numbers, and enforces compatibility rules at write time. Producers register schemas before publishing events. Consumers retrieve schemas to deserialize correctly. The registry rejects schema changes that violate the configured compatibility rules.</p>
+</div>
+<div class="diagram">
+<pre><code>                      SCHEMA REGISTRY ARCHITECTURE
+</code></pre>
+<p>┌─────────────────┐
+  │  Producer       │
+  │  (publishes     │  1. Register schema for "user_events"
+  │   events)       │  ───────────►
+  └─────────────────┘                ┌────────────────────┐
+                                     │  Schema Registry   │
+                                     │                    │
+                                     │  Stores:           │
+                                     │  - schema versions │
+                                     │  - compatibility   │
+                                     │    rules           │
+                                     │  - schema IDs      │
+                                     └────────────────────┘
+                                                ▲
+                                                │
+                                                │ 4. Fetch schema by ID
+                                                │
+  ┌─────────────────┐                            │
+  │  Consumer       │  ──────────────────────────┘
+  │  (reads events  │
+  │   from Kafka)   │
+  └─────────────────┘</p>
+<p>Wire format:
+  ┌──────────┬──────────────────────────────────────┐
+  │ schema   │  serialized payload                   │
+  │ ID (4 B) │  (Avro/Protobuf bytes)                │
+  └──────────┴──────────────────────────────────────┘</p>
+<p>Each event carries a 4-byte schema ID (not the full schema).
+  Consumers fetch the schema definition from the registry once,
+  cache it, and use it to deserialize.</p>
+</div>
+<h2>What the registry enforces</h2>
+<div class="workout">
+<p><strong>The publish-time check:</strong></p>
+<div class="step">
+<p>Producer attempts to register a new schema version for a topic.</p>
+</div>
+<div class="step">
+<p>Registry compares new schema against existing schemas using configured compatibility level.</p>
+</div>
+<div class="step">
+<p>If the change is incompatible (per the rules), <strong>registry rejects the publish</strong>. Producer must fix the schema before continuing.</p>
+</div>
+<div class="step">
+<p>If compatible, registry assigns a new version number and stores the schema.</p>
+</div>
+<div class="step">
+<p>Producer's events now reference this schema by ID.</p>
+</div>
+</div>
+<p>This is the moment a breaking change is <em>prevented from reaching consumers</em>. <strong>Without a registry, breaking changes propagate; consumers discover them at runtime.</strong> With a registry, the offending deploy fails at the publish step, before any event is sent.</p>
+<h2>Compatibility levels</h2>
+<p>Confluent Schema Registry supports several compatibility modes. Choose based on consumer flexibility:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Allows</th>
+<th>Use when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>NONE</strong></td>
+<td>Any change</td>
+<td>Never use in production — defeats the purpose</td>
+</tr>
+<tr>
+<td><strong>BACKWARD</strong></td>
+<td>New consumers can read old data</td>
+<td>Consumers upgrade <em>after</em> producers</td>
+</tr>
+<tr>
+<td><strong>FORWARD</strong></td>
+<td>Old consumers can read new data</td>
+<td>Consumers upgrade <em>before</em> producers</td>
+</tr>
+<tr>
+<td><strong>FULL</strong></td>
+<td>Both directions</td>
+<td>Independent producer/consumer upgrades</td>
+</tr>
+<tr>
+<td><strong>BACKWARD_TRANSITIVE</strong></td>
+<td>Backward against ALL prior versions</td>
+<td>Stricter — most paranoid</td>
+</tr>
+<tr>
+<td><strong>FORWARD_TRANSITIVE</strong></td>
+<td>Forward against ALL prior versions</td>
+<td>Stricter</td>
+</tr>
+<tr>
+<td><strong>FULL_TRANSITIVE</strong></td>
+<td>Both, against all versions</td>
+<td>Maximum strictness</td>
+</tr>
+</tbody>
+</table>
+<div class="insider">
+<p><strong>The default to choose: FULL_TRANSITIVE.</strong> It's the strictest, but it gives you the most flexibility in production:</p>
+<ul>
+<li>Producers can be deployed in any order.</li>
+<li>Consumers can be deployed in any order.</li>
+<li>Old events in Kafka still consumable by new consumers.</li>
+<li>New events publishable while old consumers are still running.</li>
+</ul>
+<p>The discipline cost: every schema change must be designed to be compatible in both directions, against every prior version. This forces good practices — never remove fields, never change types incompatibly, always use optional new fields.</p>
+<p><strong>Mention "FULL_TRANSITIVE compatibility" in an interview</strong> about schema design, and you signal you've done this in production.</p>
+</div>
+<h1>The expand-then-contract pattern</h1>
+<p>When you genuinely need a breaking change — rename a field, change a type — the canonical pattern is <strong>expand then contract</strong>.</p>
+<div class="workout">
+<p><strong>The two-phase migration:</strong></p>
+<div class="step">
+<p><strong>Expand</strong>: producer writes both the old and new field. Consumers continue to read the old field.</p>
+</div>
+<div class="step">
+<p><strong>Migrate consumers</strong>: each consumer is updated to read the new field instead of the old. Deploy at their own pace.</p>
+</div>
+<div class="step">
+<p><strong>Verify</strong>: confirm all consumers have migrated. Check metrics, logs, no consumers still reading the old field.</p>
+</div>
+<div class="step">
+<p><strong>Contract</strong>: producer stops writing the old field. The old field is gone.</p>
+</div>
+</div>
+<div class="scenario">
+<p><strong>Renaming <code>email</code> to <code>email_address</code>:</strong></p>
+<p><strong>Phase 1</strong>: producer writes <code>{user_id, email, email_address}</code> — both fields, identical values.</p>
+<p><strong>Phase 2</strong>: consumers update to read <code>email_address</code>. They can deploy at their own pace; old code still reads <code>email</code>.</p>
+<p><strong>Phase 3</strong>: monitor. Use schema registry to see which consumers are still on old schema versions. Reach out to teams who haven't migrated.</p>
+<p><strong>Phase 4</strong>: producer drops <code>email</code>, writes only <code>{user_id, email_address}</code>.</p>
+<p>The whole migration might take <em>weeks</em> depending on consumer count. The senior reflex: <strong>plan migrations as multi-phase deployments, not single deploys.</strong></p>
+</div>
+<div class="warning">
+<p><strong>Don't skip Phase 3.</strong> It's tempting to "just deploy and see what breaks." That's how outages happen. Verify migration completion before contracting. <strong>The migration window is when you're paying the dual-write cost; the contract step is when it's safe to stop.</strong></p>
+</div>
+<h1>Database schema evolution: the OLTP variant</h1>
+<p>So far we've been talking about events and message buses. Database schemas have similar issues, with extra wrinkles.</p>
+<h2>The classic Postgres pitfalls</h2>
+<div class="warning">
+<p><strong>Adding a column with a default value used to lock the table for a full rewrite.</strong> Pre-Postgres 11, <code>ALTER TABLE ADD COLUMN ... DEFAULT 'foo'</code> would rewrite every row. For a 100M-row table, that's hours of exclusive lock — production outage.</p>
+<p><strong>Postgres 11+ fixed this for non-volatile defaults</strong>: the default is stored as metadata, not written to existing rows. Adding a column with a default is now fast.</p>
+<p><strong>But this is one of many gotchas.</strong> Senior Postgres engineers know which ALTER TABLE operations are safe and which are dangerous.</p>
+</div>
+<div class="insider">
+<p><strong>The Postgres ALTER TABLE safety reference:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Lock type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ADD COLUMN</code> (no default, nullable)</td>
+<td>ACCESS EXCLUSIVE briefly</td>
+<td>Fast — just metadata</td>
+</tr>
+<tr>
+<td><code>ADD COLUMN ... DEFAULT 'x'</code> (PG 11+)</td>
+<td>ACCESS EXCLUSIVE briefly</td>
+<td>Fast since PG 11</td>
+</tr>
+<tr>
+<td><code>ADD COLUMN ... DEFAULT 'x'</code> (PG 10-)</td>
+<td>ACCESS EXCLUSIVE for full rewrite</td>
+<td><strong>Avoid on large tables</strong></td>
+</tr>
+<tr>
+<td><code>DROP COLUMN</code></td>
+<td>ACCESS EXCLUSIVE briefly</td>
+<td>Fast — but data isn't reclaimed until VACUUM FULL</td>
+</tr>
+<tr>
+<td><code>ALTER COLUMN TYPE</code></td>
+<td>Often requires full rewrite</td>
+<td><strong>Slow</strong> — same lock duration as a table scan</td>
+</tr>
+<tr>
+<td><code>ADD CONSTRAINT</code> (non-validated, NOT NULL with default)</td>
+<td>ACCESS EXCLUSIVE briefly</td>
+<td>Fast</td>
+</tr>
+<tr>
+<td><code>VALIDATE CONSTRAINT</code></td>
+<td>ROW SHARE</td>
+<td>Slow but online</td>
+</tr>
+<tr>
+<td><code>RENAME COLUMN</code></td>
+<td>ACCESS EXCLUSIVE briefly</td>
+<td>Fast — metadata only</td>
+</tr>
+<tr>
+<td><code>CREATE INDEX</code></td>
+<td>SHARE</td>
+<td>Slow but online</td>
+</tr>
+<tr>
+<td><code>CREATE INDEX CONCURRENTLY</code></td>
+<td>ROW EXCLUSIVE</td>
+<td>Slow, online, <strong>always use in prod</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>The senior reflex</strong>: before any DDL on a production table, look up its lock requirements. Don't run blind.</p>
+</div>
+<h2>The dance: backward-compatible DDL</h2>
+<p>For a deploy where the application code and the schema both change:</p>
+<div class="workout">
+<p><strong>The expand-then-contract pattern, applied to a column rename in a database:</strong></p>
+<div class="step">
+<p><strong>Add the new column.</strong> <code>ALTER TABLE users ADD COLUMN email_address TEXT;</code> (Fast in PG 11+.)</p>
+</div>
+<div class="step">
+<p><strong>Backfill.</strong> Copy existing email values to email_address. Often via a batch job: <code>UPDATE users SET email_address = email WHERE email_address IS NULL;</code> Watch for vacuum churn.</p>
+</div>
+<div class="step">
+<p><strong>Dual-write in the application.</strong> Application writes both <code>email</code> and <code>email_address</code> going forward. Reads still come from <code>email</code>.</p>
+</div>
+<div class="step">
+<p><strong>Migrate readers.</strong> Application code switches to read <code>email_address</code> instead of <code>email</code>. Deploy.</p>
+</div>
+<div class="step">
+<p><strong>Stop writing the old.</strong> Application stops writing to <code>email</code>. The column is now stale but still present.</p>
+</div>
+<div class="step">
+<p><strong>Drop.</strong> <code>ALTER TABLE users DROP COLUMN email;</code> (Fast — metadata, but the data is still there until VACUUM FULL.)</p>
+</div>
+</div>
+<div class="warning">
+<p><strong>Do not deploy schema changes and code changes in the same deploy</strong> unless you can roll back atomically — and you usually can't, because the schema can't be rolled back as easily as code.</p>
+<p>The pattern: schema change first, code change second. Or schema change as additive only; code change handles both old and new schemas. Then later schema change to remove the old.</p>
+<p><strong>This discipline is what separates teams that ship safely from teams that have weekly schema-related outages.</strong></p>
+</div>
+<h1>Three more ways to think about schema evolution</h1>
+<div class="metaphor">
+<p><strong>Way 1: editing a contract.</strong></p>
+<p>A contract has been signed by both parties. You want to change a clause. You can't just edit it — both parties have copies. You must:</p>
+<ol>
+<li><strong>Add an addendum</strong> with the new clause (additive, both parties can ignore or use it).</li>
+<li>Both parties sign and acknowledge.</li>
+<li>Eventually amend the original to remove the obsolete clause.</li>
+</ol>
+<p>That's expand-then-contract. The "addendum first" phase is the safe one. Skipping it and just editing creates legal disputes.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 2: phone keypads.</strong></p>
+<p>When phone numbers added a digit (e.g., 7→10 digits in many regions), the transition wasn't instant. For years, both formats worked — you could dial 7 digits and the system understood, or 10 and same. Eventually the 7-digit format was deprecated and removed.</p>
+<p>Schema evolution is similar. The producer publishes both the old and new format. Consumers can use either. After enough time, the old format is removed.</p>
+<p><strong>The transition window is when you bear the cost of dual support.</strong> It's never zero, but it's bounded.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 3: linguistic loanwords.</strong></p>
+<p>A language adds a new word from a loan source. Initially, both the new loanword and the old native equivalent coexist. Speakers gradually shift to one or the other. Eventually, one dies out — but only after enough speakers have adopted the change.</p>
+<p>Schema evolution mirrors this. New fields and old fields coexist for a transition period. The "language" (your event format) gradually shifts. The cost of incompatible change is high — speakers can't communicate. So the change is staged.</p>
+</div>
+<h1>Sharpen your pencil</h1>
+<div class="exercise">
+<p><strong>Exercise 1.</strong> A team is publishing <code>OrderCreated</code> events to Kafka with this schema:</p>
+<pre><code class="language-json">{
+  &quot;order_id&quot;: &quot;uuid&quot;,
+  &quot;user_id&quot;: &quot;uuid&quot;,
+  &quot;total_cents&quot;: &quot;integer&quot;,
+  &quot;items&quot;: [{...}]
+}
+</code></pre>
+<p>They want to add a <code>currency</code> field, default "USD" — for orders to support multi-currency in the future. Walk through the deploy plan.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>The straightforward path: add as optional with a default.</strong></p>
+<p><strong>Step 1: Update the schema in the registry.</strong>
+- Add <code>"currency": { "type": "string", "default": "USD" }</code>.
+- Verify FULL_TRANSITIVE compatibility passes.
+- Producer can now write events with or without the field.</p>
+<p><strong>Step 2: Producer code update.</strong>
+- Producer writes <code>currency</code> on every event going forward — for new orders, this is "USD" by default; for orders in non-default currencies, the actual code.
+- For events still in Kafka without the field: consumers must handle missing-field as "USD".</p>
+<p><strong>Step 3: Consumer code updates.</strong>
+- Each consumer that needs <code>currency</code> adds handling: read the field if present, default to "USD" otherwise.
+- Consumers can deploy at their own pace.</p>
+<p><strong>Step 4: Long-term consideration — should <code>currency</code> ever be required?</strong></p>
+<p>Once all old events have aged out of Kafka (typically days to weeks based on retention), you <em>could</em> make <code>currency</code> required. But that's a backward-incompatible change. <strong>The senior reflex: leave it optional permanently if there's no compelling reason to require it.</strong> The cost of optional-with-default is near zero; the cost of required is "old events break."</p>
+<p><strong>Step 5: Verify.</strong>
+- Monitor schema usage in the registry — what schema versions are being read by consumers?
+- Confirm no consumers are stuck on old schemas indefinitely.</p>
+<p>The whole change might be a 1-day deploy if all consumers are well-behaved, or 1-week if consumers are owned by other teams. <strong>Plan for the slow consumers, not the fast ones.</strong></p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2.</strong> Your team has been doing schema changes by editing JSON event structures and deploying. They've had three incidents in two months from breaking schema changes. Architect a fix.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>The diagnosis: <strong>no enforced schema contract.</strong> JSON without a registry means each consumer interprets events at runtime; mismatches surface as crashes. The team is paying for absence of structure.</p>
+<p><strong>The fix: introduce a schema registry.</strong></p>
+<p><strong>Step 1: Choose a format.</strong></p>
+<p>Three options:
+- <strong>Avro + Confluent Schema Registry</strong>: most popular for Kafka. Compact, evolution rules baked in. Requires schema for any interpretation.
+- <strong>Protobuf + Confluent Schema Registry</strong>: similar benefits. More common when also using gRPC for service-to-service calls.
+- <strong>JSON Schema + Confluent Schema Registry</strong>: keeps JSON wire format but adds enforced schemas.</p>
+<p>For most teams, <strong>Avro is the default</strong> for new event-driven systems. Mature tooling, clear evolution semantics.</p>
+<p><strong>Step 2: Roll out gradually.</strong></p>
+<ul>
+<li>Start with one new event type, written and consumed in the new format. Prove the workflow.</li>
+<li>Set compatibility level to FULL_TRANSITIVE in the registry.</li>
+<li>Producers register schemas before deploying; the registry rejects breaking changes.</li>
+<li>Consumers fetch schemas from the registry, cache them, deserialize.</li>
+</ul>
+<p><strong>Step 3: Migrate existing event types.</strong></p>
+<p>For each existing JSON event type:
+- Define an Avro/Protobuf schema mirroring the current shape.
+- Producer dual-writes: emit both JSON and Avro.
+- Consumers gradually switch to Avro.
+- Once all consumers migrate, producer drops JSON.</p>
+<p>This is the <strong>expand-then-contract</strong> pattern applied to format migration.</p>
+<p><strong>Step 4: Discipline.</strong></p>
+<ul>
+<li>Schema changes go through PR review.</li>
+<li>The schema registry's compatibility check runs in CI — schema PRs that would break compatibility <em>fail the build</em>.</li>
+<li>Document conventions: optional new fields, never remove, never rename without expand-then-contract.</li>
+</ul>
+<p><strong>The expected outcome:</strong></p>
+<ul>
+<li>Breaking changes are caught at PR time, not at runtime.</li>
+<li>Consumer teams know what events look like without reading producer code.</li>
+<li>New consumers can be onboarded by reading the schema, not by guesswork.</li>
+<li>The 3-incidents-in-2-months pattern goes to zero.</li>
+</ul>
+<p><strong>The senior framing:</strong> schema registry is <em>infrastructure</em> for safe distributed systems, not a nice-to-have. <strong>Treating it as optional</strong> is the root of recurring schema-related outages.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3.</strong> Explain to non-technical Sam, in two sentences, the difference between forward and backward compatibility.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>Backward compatibility means new code can read old data — like a new version of your phone's photo app being able to open photos from 5 years ago. Forward compatibility is the reverse: old code can read new data — like an older photo app being able to open a newly-saved photo even if it doesn't understand all the new metadata. <strong>Both directions matter</strong> because in distributed systems, the producer of data and the consumer of it might upgrade at different times, and you don't want either side to break the other.</p>
+</div>
+</div>
+<h1>There are no dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p>Q: Why not just use JSON everywhere?</p>
+</div>
+<div class="a">
+<p>A: JSON is fine for human-facing APIs and small-volume event streams. For high-volume event pipelines (millions of events per second), JSON's verbosity costs real money in Kafka storage and bandwidth. Avro/Protobuf are 5-10x smaller. Plus JSON has no enforced schema — every consumer must validate independently, and inconsistencies are common. <strong>For internal event pipelines, Avro/Protobuf is the modern default.</strong></p>
+</div>
+<div class="q">
+<p>Q: Can I use a schema registry without Kafka?</p>
+</div>
+<div class="a">
+<p>A: Yes. Schemas can describe any event format. Confluent Schema Registry is most known with Kafka but works with other systems. Apache Iceberg has its own schema layer. Some teams use Buf for Protobuf-based gRPC schemas. The pattern (centralized schema authority, compatibility enforcement) is broader than any specific tool.</p>
+</div>
+<div class="q">
+<p>Q: What about gRPC's "proto file" approach — is that a schema registry?</p>
+</div>
+<div class="a">
+<p>A: Sort of. The .proto file is the schema. Tools like Buf Schema Registry centralize them, enforce compatibility rules, and provide breaking-change detection in CI. <strong>Buf is essentially "schema registry but for Protobuf and gRPC."</strong> Different tooling, same concept.</p>
+</div>
+<div class="q">
+<p>Q: How do I know which schema version a consumer is on?</p>
+</div>
+<div class="a">
+<p>A: The wire format includes a schema ID. Consumers fetch the schema from the registry. Most registries log which schema IDs each consumer client uses. <strong>You can audit the registry to see "consumer X is reading schema version 5" and confirm migration progress.</strong> This visibility is one of the registry's main operational benefits.</p>
+</div>
+<div class="q">
+<p>Q: What's "schema-on-read" vs "schema-on-write"?</p>
+</div>
+<div class="a">
+<p>A: Two philosophical approaches. <strong>Schema-on-write</strong>: structure is enforced when data is written (relational databases, Avro with registry). <strong>Schema-on-read</strong>: data is written without strict structure; structure is inferred when reading (JSON in document stores, raw S3 files). Schema-on-read is more flexible but harder to maintain — every consumer interprets independently. Lakehouse formats (Iceberg) are schema-on-write, which is part of why they're more rigorous than raw S3 + JSON.</p>
+</div>
+<div class="q">
+<p>Q: How does CDC handle schema changes?</p>
+</div>
+<div class="a">
+<p>A: Mostly captures DDL (ALTER TABLE) and propagates as schema-change events in the stream. Debezium, for instance, emits special "schema change" messages. Consumers must handle these — usually by re-reading the schema. The discipline: announce schema changes in advance to give consumers time to prepare.</p>
+</div>
+<div class="q">
+<p>Q: What if I genuinely need to remove a field?</p>
+</div>
+<div class="a">
+<p>A: Use expand-then-contract. Phase 1: producer continues writing it but documents as deprecated. Phase 2: consumers stop reading it. Phase 3: producer stops writing it. The "stop reading" phase requires verification — every consumer team must confirm. This can take weeks; plan accordingly.</p>
+</div>
+<div class="q">
+<p>Q: Should schema files live in the producer's repo or a shared location?</p>
+</div>
+<div class="a">
+<p>A: Both options have valid reasons. <strong>Producer-owned</strong>: schemas live with producer code; clear ownership. <strong>Centrally-shared</strong>: schemas in a separate repo or registry; multiple producers/consumers can reference. <strong>The modern preference is centralized</strong> — Buf Schema Registry, Confluent Schema Registry, Schema Repository — because schemas are <em>contracts</em>, not implementation details. Treat them as first-class artifacts.</p>
+</div>
+</div>
+<h1>Three myths to dynamite</h1>
+<div class="myth">
+<p><strong>"Adding a field is always safe."</strong></p>
+<p>False. Depends on consumer behavior. Strict deserializers (default in many libraries) reject events with unknown fields. Adding a field that consumers don't expect can break them. <strong>Treat every schema change as risky</strong> until proven otherwise.</p>
+</div>
+<div class="myth">
+<p><strong>"We don't need a schema registry — we use JSON."</strong></p>
+<p>Misleading. JSON without enforced schemas means each consumer interprets independently — which is exactly the recipe for drift, mismatches, and runtime failures. JSON with a schema registry (JSON Schema + Confluent Schema Registry) is fine; raw JSON without one is the source of recurring incidents.</p>
+</div>
+<div class="myth">
+<p><strong>"Schema registry is enterprise overkill."</strong></p>
+<p>False for any system with multiple consumers. The cost of <em>not</em> having one — runtime crashes, hours of triage per incident, fear of touching schemas — is much higher than the cost of operating a registry. For a team of 3 services and 2 events, maybe overkill. For 20 services and 200 event types, <strong>mandatory</strong>.</p>
+</div>
+<h1>Interview gotchas</h1>
+<div class="gotcha">
+<p><strong>Treating schema changes as "just deploy it."</strong> Schema evolution is a multi-phase deployment by nature. Senior engineers think in expand-then-contract and explicitly plan migration phases.</p>
+</div>
+<div class="gotcha">
+<p><strong>Not knowing the difference between backward and forward compatibility.</strong> Mixing them up signals you don't have a clear mental model. Drill until you can answer "is renaming a field forward-compatible?" instantly.</p>
+</div>
+<div class="gotcha">
+<p><strong>Recommending JSON without a schema for production event pipelines.</strong> Modern data platforms use Avro or Protobuf with a schema registry. JSON is fine for human-facing APIs; for internal events at scale, it's wasteful and dangerous.</p>
+</div>
+<div class="gotcha">
+<p><strong>Forgetting Postgres ALTER TABLE lock semantics.</strong> Some operations are fast (metadata-only); others require full table rewrites with exclusive locks. Senior engineers know which is which before running DDL on a hot table.</p>
+</div>
+<div class="gotcha">
+<p><strong>Recommending atomic deploys of schema + code.</strong> Schemas can't be rolled back like code. The discipline: schema change first (additive only), code change second, schema cleanup later. <strong>Never both at once unless you have time-machine deploys.</strong></p>
+</div>
+<h1>Mock interview</h1>
+<div class="mock-interview">
+<div class="turn q">
+<p>We have CDC streaming Postgres changes through Kafka into 10 downstream consumers. The team is afraid to make any schema changes because they always break someone. How would you fix this?</p>
+</div>
+<div class="turn a">
+<p>This is a textbook case for introducing a schema registry. The fear of schema changes is rational — without enforcement, every change is a coin flip. Let me work through it.</p>
+<p><strong>Diagnosis.</strong> The team has 10 consumers each interpreting events independently. Schema changes propagate through CDC, hit consumers without prior notice, and break some of them. Classic distributed-system coordination problem.</p>
+<p><strong>The fix has three parts.</strong></p>
+<p><strong>Part 1 — Introduce a schema registry.</strong>
+- Stand up Confluent Schema Registry (or Buf, depending on whether they're using Avro/Protobuf or want JSON Schema).
+- Set compatibility level to FULL_TRANSITIVE — strictest setting, gives independent producer/consumer evolution.
+- Migrate one event type as proof of concept — define schema, switch producer to write Avro/Protobuf, migrate consumers gradually.</p>
+<p><strong>Part 2 — Establish change discipline.</strong>
+- Schema changes go through PR review with explicit "schema change" labels.
+- CI runs the registry's compatibility check on schema PRs. Breaking changes fail the build.
+- Anything additive and optional sails through. Anything else requires expand-then-contract justification.</p>
+<p><strong>Part 3 — Migrate existing events gradually.</strong>
+- Each event type goes through: define schema → producer dual-writes (JSON + Avro) → consumers migrate → producer drops JSON.
+- Don't try to do all 10 events at once. Pick one. Make it safe. Reuse the pattern.</p>
+<p><strong>The expected timeline.</strong>
+- POC for one event type: 2 weeks.
+- Full team adoption: 2-3 months.
+- All existing event types migrated: 6-9 months.</p>
+<p><strong>The cultural change is the hard part.</strong> Engineers used to "just edit and deploy" must learn that schemas are contracts. PR templates, runbooks, training. The technical setup is straightforward; the discipline takes longer.</p>
+<p><strong>The expected outcome:</strong>
+- Schema-related incidents drop to near zero.
+- Engineers stop fearing schema changes — additive changes are safe and obvious.
+- New consumer teams can onboard by reading schemas instead of guessing from producer code.
+- Eventually: schemas become the <em>source of truth</em> for event contracts; code is implementation.</p>
+<p>The senior framing: <strong>a schema registry isn't optional for any team running 5+ event consumers. It's infrastructure.</strong> Costs a few weeks to set up; pays back in eliminated incidents and faster delivery.</p>
+</div>
+<div class="commentary">
+<p>Three-part plan with timeline. Acknowledges the cultural change is the hard part — senior engineering reality. The "infrastructure not optional" framing is the right level for this scale.</p>
+</div>
+<div class="turn q">
+<p>Walk me through how you'd rename a column in a 100-million-row Postgres table without downtime.</p>
+</div>
+<div class="turn a">
+<p>Standard expand-then-contract pattern, with extra care for the table size. Let me walk through it with concrete commands.</p>
+<p><strong>Phase 1 — Add the new column.</strong></p>
+<pre><code class="language-sql">ALTER TABLE users ADD COLUMN email_address TEXT;
+</code></pre>
+<p>Fast in PG 11+ since no default. Just metadata. The column is nullable.</p>
+<p><strong>Phase 2 — Backfill historical data.</strong>
+This is the tricky part on a 100M-row table. You can't do <code>UPDATE users SET email_address = email</code> in one shot — it would take an exclusive-style lock for too long, generate massive WAL, and bloat the table.</p>
+<p>The senior pattern: batched, paced backfill.</p>
+<pre><code class="language-sql">-- pseudocode for a batched script
+WHILE rows_updated &gt; 0:
+    UPDATE users SET email_address = email
+    WHERE email_address IS NULL
+    AND id IN (SELECT id FROM users WHERE email_address IS NULL LIMIT 5000);
+    SLEEP 1 second;
+END WHILE
+</code></pre>
+<p>5000 rows at a time, with a sleep between batches, lets autovacuum keep up and other queries proceed. Total backfill might take hours; that's fine — it's safe in the background.</p>
+<p>Verify completion: <code>SELECT COUNT(*) FROM users WHERE email_address IS NULL AND email IS NOT NULL;</code> should be zero.</p>
+<p><strong>Phase 3 — Application code: dual-write.</strong>
+Application writes both <code>email</code> and <code>email_address</code> going forward. Reads still come from <code>email</code>.</p>
+<p>This requires backward-compatible code: the application must check both columns when reading, prefer the new one if both exist (handles edge cases during the migration window).</p>
+<p><strong>Phase 4 — Application code: read from new column.</strong>
+Switch reads to <code>email_address</code>. Deploy. Now <code>email</code> is purely for backward compatibility — written but not read.</p>
+<p><strong>Phase 5 — Stop dual-writes.</strong>
+Application stops writing <code>email</code>. Only <code>email_address</code> is touched going forward.</p>
+<p><strong>Phase 6 — Drop the old column.</strong></p>
+<pre><code class="language-sql">ALTER TABLE users DROP COLUMN email;
+</code></pre>
+<p>Fast — metadata only. The space isn't reclaimed until VACUUM (autovacuum will eventually). For large tables, you might run <code>pg_repack</code> to compact more aggressively.</p>
+<p><strong>Total timeline: 2-3 weeks</strong> for a busy production system. Possibly longer if the application code changes need careful review.</p>
+<p><strong>Things I'd verify along the way:</strong>
+- Application logs for any "missing email_address" or "missing email" errors during transition.
+- Replication lag stays bounded throughout the backfill.
+- Disk usage during dual-write phase doesn't spike (you're writing more data temporarily).</p>
+<p><strong>The senior framing:</strong> rename = expand + contract. <strong>Never just "rename it."</strong> Even in databases that support <code>ALTER TABLE RENAME COLUMN</code> instantly (Postgres does), the application code has to handle the old column name during deploy. The dance is unavoidable.</p>
+</div>
+<div class="commentary">
+<p>Concrete SQL with reasoning. The batched backfill is the senior detail most engineers miss. Acknowledges PG 11+ specifics, vacuum implications, and <code>pg_repack</code> as the modern compaction tool.</p>
+</div>
+<div class="turn q">
+<p>A junior engineer proposes: "let's just store everything as JSON. We'll add new fields anytime, no schema headaches." Why not?</p>
+</div>
+<div class="turn a">
+<p>The proposal sounds appealing — "no schema, no schema problems." But the headaches don't disappear; they shift to a different layer. Let me work through the actual costs.</p>
+<p><strong>Cost 1: drift across consumers.</strong>
+Without a defined schema, every consumer interprets the JSON independently. Consumer A reads <code>created_at</code>. Consumer B reads <code>createdAt</code>. Consumer C reads <code>created_time</code>. Now the producer has <em>three</em> contracts, all implicit, none enforced. Adding any field requires checking what every consumer does — often by reading their code, which may not even be in the same repo.</p>
+<p><strong>Cost 2: silent breakage.</strong>
+Without schema enforcement at publish time, breaking changes propagate. Producer changes a field's type from string to integer. Consumers crash at runtime, not at deploy time. The team finds out via paged alerts.</p>
+<p><strong>Cost 3: lost discoverability.</strong>
+A new consumer team wants to subscribe. How do they know what fields the events have? They read the producer code. If the producer is in a different language, they translate. If the producer's behavior differs across versions, they trial-and-error. <strong>Schema registry replaces all this with a definition file.</strong></p>
+<p><strong>Cost 4: storage and bandwidth.</strong>
+JSON is verbose. For high-volume event streams, you're paying real money for {<code>field_name</code>} repetition vs Avro/Protobuf's binary format. At 1B events/day, the difference is meaningful.</p>
+<p><strong>Cost 5: data quality.</strong>
+Without enforced types, "true" and <code>true</code>, "1" and <code>1</code>, "2024-01-15" and <code>1705320000</code> all coexist. Consumers must guess. Bugs from type ambiguity are common.</p>
+<p><strong>The counterproposal:</strong></p>
+<p>If they value the <em>flexibility</em> JSON provides, they can keep JSON wire format with a JSON Schema in a registry. Confluent Schema Registry supports JSON Schema. They get schema enforcement at publish time <em>and</em> JSON's debuggability.</p>
+<p>If they want maximum efficiency: Avro or Protobuf, registered, evolution-tested at PR time.</p>
+<p><strong>The framing for the junior:</strong> "no schema" doesn't mean "no problem." It means "the problem isn't visible until production." We pay for schema definition either upfront (cheap, deliberate) or in production incidents (expensive, embarrassing). Pick which kind of pain you want.</p>
+<p>This is one of those engineering lessons that requires either real-world experience or someone explicit explaining the trade-offs. Worth the conversation.</p>
+</div>
+<div class="commentary">
+<p>Five costs ranked. Concrete examples (<code>created_at</code> vs <code>createdAt</code>). The counterproposal acknowledges the junior's underlying motive (flexibility) and offers the modern compromise. Closes with the "pick which kind of pain" framing — senior reflex.</p>
+</div>
+<div class="turn q">
+<p>Last one. Your team has been using a schema registry for a year. Now there's a proposal to add a new event type that requires breaking changes to an existing one. How would you handle it?</p>
+</div>
+<div class="turn a">
+<p>This is a great test of the discipline. The honest answer: depends on <em>why</em> the breaking change is needed.</p>
+<p><strong>Step 1 — Question whether it's really needed.</strong></p>
+<p>Often "we need to break it" is a misframing of "we want a different shape." Ask:
+- Can we add a new optional field that captures the new requirement?
+- Can we model the new event type as a <em>separate event</em>, parallel to the old one?
+- Can we deprecate the old field gradually rather than break it?</p>
+<p><strong>Step 2 — If breaking is genuinely required, plan the expand-then-contract.</strong></p>
+<p>Two paths depending on the change:</p>
+<p><strong>Path A: New event type that supersedes the old.</strong>
+- Define the new event type with the desired shape.
+- Producer writes both events for a transition period.
+- Consumers switch to new event one at a time.
+- Eventually the old event is deprecated.</p>
+<p><strong>Path B: Backward-incompatible field change in existing event.</strong>
+- This is the harder case.
+- Add the new field as optional (additive, safe).
+- Application logic uses the new field if present, the old field if not.
+- Migrate consumers to use new field.
+- Eventually deprecate the old field — but this may require a multi-quarter window.</p>
+<p><strong>Step 3 — Communicate.</strong></p>
+<p>Schedule a meeting with all consumer teams. Walk them through:
+- Why the change is needed.
+- The proposed migration timeline.
+- What action they need to take and by when.</p>
+<p>The schema registry's audit log shows which teams are still reading the old schema. Track migration progress concretely.</p>
+<p><strong>Step 4 — Set a deprecation date.</strong></p>
+<p>Don't leave the old schema indefinitely. Set a date — typically 1-3 months — by which all consumers must migrate. Send periodic reminders to teams not yet migrated. Have an escalation path for the last holdouts.</p>
+<p><strong>Step 5 — Verify and contract.</strong></p>
+<p>Once all consumers have migrated (verified via registry usage logs), drop the old field/schema. The registry can mark old schema versions as deprecated; eventually they can be deleted entirely.</p>
+<p><strong>The senior framing:</strong> breaking changes are <em>project-level</em> events. They require communication, timeline, and milestone tracking. Treat them like a deprecation project. <strong>The registry shows you the truth — who's on what version — and that visibility is what makes the project trackable.</strong></p>
+<p>What I'd push back on: "we can break it in a future deploy." That's how outages happen. Either it's planned with a migration window, or it's deferred. Don't ship breaking changes hoping consumers handle it gracefully.</p>
+</div>
+<div class="commentary">
+<p>Step 1 questions whether it's really needed — senior reflex of pushing back gracefully. Two paths for two breaking change types. Communication and tracking framed as project management. The "registry shows you the truth" framing is the operational benefit of having one.</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<h3>Schema Evolution &amp; Schema Registry — One Page</h3>
+<h4>The fundamental problem</h4>
+<p>You don't deploy producers and consumers atomically. Schema changes must be safe under partial deployment.</p>
+<h4>Two compatibility directions</h4>
+<ul>
+<li><strong>Backward compatible</strong>: new code reads old data.</li>
+<li><strong>Forward compatible</strong>: old code reads new data.</li>
+<li><strong>Full</strong>: both. The production target.</li>
+</ul>
+<h4>Safe schema changes (FULL compatible)</h4>
+<ul>
+<li>Add optional field with default.</li>
+<li>Add new event type alongside existing.</li>
+<li>Reorder fields (in named-field formats).</li>
+</ul>
+<h4>Unsafe schema changes (require expand-then-contract)</h4>
+<ul>
+<li>Remove field.</li>
+<li>Rename field.</li>
+<li>Change field type incompatibly.</li>
+<li>Make optional → required.</li>
+<li>Remove enum value.</li>
+</ul>
+<h4>Serialization formats</h4>
+<ul>
+<li><strong>JSON</strong> — debuggable, verbose, schema implicit. Use with JSON Schema for enforcement.</li>
+<li><strong>Avro</strong> — Kafka standard, evolution-aware, requires schema for interpretation.</li>
+<li><strong>Protobuf</strong> — gRPC standard, field-number-based, very efficient.</li>
+<li><strong>JSON Schema / OpenAPI</strong> — describes JSON, validation optional.</li>
+</ul>
+<p><strong>Modern data platforms: Avro or Protobuf with a registry.</strong></p>
+<h4>Schema registry</h4>
+<ul>
+<li>Centralized schema storage.</li>
+<li>Compatibility enforcement at publish time.</li>
+<li>Schema IDs in wire format; consumers fetch and cache.</li>
+<li>Tools: Confluent Schema Registry, Buf Schema Registry, AWS Glue Schema Registry.</li>
+</ul>
+<h4>Compatibility levels (Confluent)</h4>
+<ul>
+<li>NONE — never use.</li>
+<li>BACKWARD / FORWARD / FULL — single-version.</li>
+<li>BACKWARD_TRANSITIVE / FORWARD_TRANSITIVE / FULL_TRANSITIVE — against all prior.</li>
+</ul>
+<p><strong>Default: FULL_TRANSITIVE for production event pipelines.</strong></p>
+<h4>Expand-then-contract</h4>
+<p>The pattern for breaking changes:
+1. <strong>Expand</strong>: write both old and new.
+2. <strong>Migrate readers</strong>: switch consumers one at a time.
+3. <strong>Verify</strong>: confirm all consumers migrated (via registry usage).
+4. <strong>Contract</strong>: drop old.</p>
+<p>Required for any rename, type change, or field removal.</p>
+<h4>Postgres DDL safety</h4>
+<ul>
+<li><strong>Fast (metadata-only)</strong>: ADD COLUMN nullable, DROP COLUMN, RENAME COLUMN, ADD CONSTRAINT NOT VALID.</li>
+<li><strong>Fast (PG 11+)</strong>: ADD COLUMN with non-volatile default.</li>
+<li><strong>Slow (full rewrite)</strong>: ALTER COLUMN TYPE, ADD COLUMN with volatile default (PG 10-).</li>
+<li><strong>Slow but online</strong>: CREATE INDEX CONCURRENTLY, VALIDATE CONSTRAINT.</li>
+</ul>
+<p><strong>Always use CONCURRENTLY in production for indexes.</strong></p>
+<h4>Database deploy discipline</h4>
+<ol>
+<li>Schema change first (additive only).</li>
+<li>Application code change second (handles both old and new).</li>
+<li>Schema cleanup later (after migration verified).</li>
+</ol>
+<p><strong>Never both at once.</strong></p>
+<h4>The 30-second verbal answer</h4>
+<p>"Schema evolution is the discipline of changing data structure safely across producers and consumers that may upgrade independently. Backward compatibility means new code reads old data; forward compatibility is the reverse. Full compatibility — both directions — is the production target. Schema registries enforce these rules at publish time, preventing breaking changes from reaching consumers. For breaking changes, use expand-then-contract: write both versions, migrate readers, verify, then drop the old."</p>
+<h4>Always pair with</h4>
+<p>CDC (Module 11), Kafka, Avro/Protobuf, Confluent Schema Registry, Buf, expand-then-contract, dual writes, deprecation.</p>
+</div>
+<h1>What's next</h1>
+<p>You can now articulate the difference between backward and forward compatibility, design schema changes that are safe under partial deployment, and recommend a schema registry as the production discipline. The expand-then-contract pattern is now in your toolkit.</p>
+<p><strong>Module 15 opens the partitioning chapter</strong> — how to split data across nodes when one machine isn't enough. Range vs hash partitioning, consistent hashing, the math that makes shard rebalancing possible.</p>
+<p><strong>Module 16</strong> covers the operational realities — hot partitions, resharding without downtime, why consistent hashing's vnodes solve the "one shard is melting" problem.</p>
+<p>Get water. Schema discipline is in your toolkit. Partitioning extends scale-out to its largest dimension.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="13_distributed_txns_sagas.html" class="prev">&laquo; 13 Dist Txns</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="15_partitioning_consistent_hashing.html" class="next">15 Partitioning &raquo;</a>
+</nav>
+</body>
+</html>

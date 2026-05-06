@@ -1,0 +1,566 @@
+#!/usr/bin/env python3
+"""Module 21: torch.compile — full HF vibe."""
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent))
+from build_module import emit
+
+BODY = r"""
+<div class="module-header">
+  <div class="module-tag">Part VII · Module 21</div>
+  <h1 class="module-title"><code>torch.compile</code>: <em>tracing, fusing, generating</em></h1>
+  <p class="module-sub">— how Dynamo turns your Python into FX graphs, AOTAutograd glues forward and backward together, and Inductor emits Triton kernels that collapse the dispatcher tower</p>
+</div>
+
+<p>You've now seen everything compile competes with: the per-op dispatcher tower from M19, the CUDA stream queue and graph machinery from M20. <code>torch.compile</code> is the system that <em>collapses</em> the per-op overhead into traced, fused, generated kernels — typically 1.3-2× speedup with one line, sometimes 3-5× when the eager version was severely CPU-bound.</p>
+
+<p>The mental model is simple even if the internals are intricate. Compile takes your Python function, <em>traces</em> it once on representative inputs to learn what ops it runs (Dynamo). It composes those ops with their backwards into a single graph (AOTAutograd). Then it generates a fast C++/Triton kernel that runs the whole graph in one shot, skipping the dispatcher (Inductor). For static-shape regions, it can additionally wrap the result in a CUDA Graph (M20) for nearly-zero launch overhead.</p>
+
+<div class="keyidea">
+<code>torch.compile(model)</code> is a four-stage pipeline. <strong>Dynamo</strong> intercepts Python execution and traces ops into an FX graph, hitting "graph breaks" at constructs it can't capture. <strong>AOTAutograd</strong> fuses the forward graph with its backward into a single joint graph. <strong>Inductor</strong> code-generates fused C++/Triton kernels from that graph. Optionally, <strong>CUDA Graphs</strong> (mode="reduce-overhead") wrap the result for static-shape replay. The user-facing rule: write normal Python; if it's clean and shape-stable, compile makes it fast.
+</div>
+
+<h2>One new face</h2>
+
+<div class="character" style="--c: #c1502e;">
+  <div class="avatar" style="background: #c1502e; color: #fff;">D</div>
+  <div>
+    <p class="who">Dynamo</p>
+    <p class="name">"I watch your Python execute, op by op, and capture an FX graph of what you actually did."</p>
+    <p class="says">Unlike older tracers, I don't need you to "make your code traceable." I hook CPython at the bytecode level — when your function runs, I see every op as it's dispatched and record it. If you write a <code>print()</code>, a Python conditional on a tensor's value, or call into a library I can't see through, I hit a <strong>graph break</strong>: I split your function into compiled chunks separated by the unsupported bit. Within each chunk, the rest of the pipeline (AOTAutograd, Inductor) takes over. <em>The fewer graph breaks you have, the more compile can fuse.</em></p>
+  </div>
+</div>
+
+<h2>The minimal API</h2>
+
+<pre><code>model = <span class="fn">build_model</span>()
+model = torch.<span class="fn">compile</span>(model)              <span class="com"># that's it</span>
+
+<span class="kw">for</span> step, batch <span class="kw">in</span> <span class="fn">enumerate</span>(loader):
+    out = <span class="fn">model</span>(batch.x)               <span class="com"># first call: ~5-30 sec compile time</span>
+    loss = <span class="fn">criterion</span>(out, batch.y)
+    loss.<span class="fn">backward</span>()
+    opt.<span class="fn">step</span>(); opt.<span class="fn">zero_grad</span>()</code></pre>
+
+<p>One line. The first forward pass triggers compilation (which takes seconds — sometimes tens of seconds for big models), and subsequent calls are fast. The backward is also compiled, even though you didn't wrap it explicitly: AOTAutograd captures the backward at the same time as the forward.</p>
+
+<p>You can compile a function instead of a model:</p>
+
+<pre><code><span class="kw">@</span>torch.<span class="fn">compile</span>
+<span class="kw">def</span> <span class="fn">fused_attention</span>(q, k, v):
+    scores = q @ k.<span class="fn">transpose</span>(-<span class="num">2</span>, -<span class="num">1</span>) / math.<span class="fn">sqrt</span>(q.size(-<span class="num">1</span>))
+    weights = torch.<span class="fn">softmax</span>(scores, dim=-<span class="num">1</span>)
+    <span class="kw">return</span> weights @ v</code></pre>
+
+<p>Compile traces the function on first call, then caches the compiled version. On subsequent calls with the same input shapes/dtypes, it skips straight to the compiled kernel.</p>
+
+<h2>The four-stage pipeline</h2>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 740 380" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs>
+    <marker id="arrTC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f5f5b"/>
+    </marker>
+  </defs>
+  <text x="370" y="22" font-size="14" font-weight="700" fill="#1a1612" text-anchor="middle">torch.compile pipeline: Python → fast kernel</text>
+
+  <!-- Stage 1: User Python -->
+  <g transform="translate(20, 50)">
+    <rect x="0" y="0" width="140" height="55" fill="#fff8a8" stroke="#1a1612" stroke-width="2"/>
+    <text x="70" y="20" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1612">your Python</text>
+    <text x="70" y="36" text-anchor="middle" font-size="9" fill="#1a1612">def f(x): return</text>
+    <text x="70" y="48" text-anchor="middle" font-size="9" fill="#1a1612">  x.relu().sum()</text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M 165 78 L 195 78" stroke="#1f5f5b" stroke-width="1.5" fill="none" marker-end="url(#arrTC)"/>
+  <text x="180" y="72" text-anchor="middle" font-size="9" fill="#6b5d4f">trace</text>
+
+  <!-- Stage 2: Dynamo / FX graph -->
+  <g transform="translate(200, 50)">
+    <rect x="0" y="0" width="160" height="55" fill="#fcecec" stroke="#c1502e" stroke-width="2"/>
+    <text x="80" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1612">① Dynamo</text>
+    <text x="80" y="33" text-anchor="middle" font-size="9" fill="#1a1612">Python frame eval</text>
+    <text x="80" y="46" text-anchor="middle" font-size="9" fill="#1a1612">→ FX graph</text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M 365 78 L 395 78" stroke="#1f5f5b" stroke-width="1.5" fill="none" marker-end="url(#arrTC)"/>
+  <text x="380" y="72" text-anchor="middle" font-size="9" fill="#6b5d4f">+ backward</text>
+
+  <!-- Stage 3: AOTAutograd / joint graph -->
+  <g transform="translate(400, 50)">
+    <rect x="0" y="0" width="160" height="55" fill="#fff5d8" stroke="#d4a017" stroke-width="2"/>
+    <text x="80" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1612">② AOTAutograd</text>
+    <text x="80" y="33" text-anchor="middle" font-size="9" fill="#1a1612">forward + backward</text>
+    <text x="80" y="46" text-anchor="middle" font-size="9" fill="#1a1612">joint graph</text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M 565 78 L 595 78" stroke="#1f5f5b" stroke-width="1.5" fill="none" marker-end="url(#arrTC)"/>
+  <text x="580" y="72" text-anchor="middle" font-size="9" fill="#6b5d4f">codegen</text>
+
+  <!-- Stage 4: Inductor / generated kernel -->
+  <g transform="translate(600, 50)">
+    <rect x="0" y="0" width="120" height="55" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="2"/>
+    <text x="60" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1612">③ Inductor</text>
+    <text x="60" y="33" text-anchor="middle" font-size="9" fill="#1a1612">→ Triton (GPU)</text>
+    <text x="60" y="46" text-anchor="middle" font-size="9" fill="#1a1612">→ C++ (CPU)</text>
+  </g>
+
+  <!-- Arrow down to optional CUDA Graph -->
+  <path d="M 660 110 L 660 145" stroke="#1f5f5b" stroke-width="1.5" fill="none" marker-end="url(#arrTC)"/>
+  <text x="700" y="130" font-size="9" fill="#6b5d4f">if mode=</text>
+  <text x="700" y="142" font-size="9" fill="#6b5d4f">"reduce-</text>
+  <text x="700" y="154" font-size="9" fill="#6b5d4f">overhead"</text>
+
+  <!-- Stage 5: CUDA Graph wrap -->
+  <g transform="translate(580, 150)">
+    <rect x="0" y="0" width="160" height="40" fill="#d3e9f5" stroke="#133e3b" stroke-width="2"/>
+    <text x="80" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1612">④ CUDA Graph wrap</text>
+    <text x="80" y="32" text-anchor="middle" font-size="9" fill="#1a1612">replay = ~0 launch cost</text>
+  </g>
+
+  <!-- Sample FX graph -->
+  <text x="20" y="160" font-size="11" font-weight="700" fill="#1a1612">FX graph (what Dynamo sees):</text>
+  <g transform="translate(20, 175)">
+    <rect x="0" y="0" width="540" height="60" fill="#ede2cc" stroke="#6b5d4f" stroke-width="1"/>
+    <text x="10" y="18" font-size="10" fill="#1a1612">x = placeholder()</text>
+    <text x="10" y="32" font-size="10" fill="#1a1612">a = call_function(aten.relu, (x,))</text>
+    <text x="10" y="46" font-size="10" fill="#1a1612">b = call_function(aten.sum, (a,))</text>
+    <text x="10" y="56" font-size="9" fill="#6b5d4f" font-style="italic">... a clean DAG of ATen ops, no Python overhead</text>
+  </g>
+
+  <!-- Generated Triton skeleton -->
+  <text x="20" y="265" font-size="11" font-weight="700" fill="#1a1612">Inductor's generated Triton kernel (excerpt):</text>
+  <g transform="translate(20, 280)">
+    <rect x="0" y="0" width="700" height="80" fill="#1a1612" stroke="#6b5d4f" stroke-width="1"/>
+    <text x="10" y="18" font-size="9" fill="#d4ecc8" font-family="monospace">@triton.jit</text>
+    <text x="10" y="32" font-size="9" fill="#fff8a8" font-family="monospace">def fused_relu_sum(in_ptr, out_ptr, n):</text>
+    <text x="10" y="46" font-size="9" fill="#fff" font-family="monospace">    pid = tl.program_id(0)</text>
+    <text x="10" y="60" font-size="9" fill="#fff" font-family="monospace">    x = tl.load(in_ptr + pid*BLOCK + tl.arange(0, BLOCK))</text>
+    <text x="10" y="74" font-size="9" fill="#fff" font-family="monospace">    tl.atomic_add(out_ptr, tl.sum(tl.maximum(x, 0)))   # relu+sum FUSED</text>
+  </g>
+</svg>
+</div>
+
+<p>Three things to internalize:</p>
+
+<ol>
+  <li><strong>Dynamo</strong> hooks Python's frame evaluation. As your function runs, Dynamo records every tensor op into an FX graph — a small DAG of ATen ops. It does this transparently; your code looks the same.</li>
+  <li><strong>AOTAutograd</strong> takes the forward FX graph and runs autograd <em>once</em>, ahead of time, to produce the backward graph. Forward and backward become a single joint graph the optimizer can analyze together — enabling fusions across the forward/backward boundary that eager mode can't see.</li>
+  <li><strong>Inductor</strong> compiles the joint graph to actual code. For CUDA, it generates Triton kernels (M24) that fuse multiple ATen ops into one kernel — what was relu-then-sum (two kernels in eager) becomes a single fused-relu-sum kernel that does both in one pass over memory.</li>
+</ol>
+
+<p>The optional fourth stage: if you pass <code>mode="reduce-overhead"</code>, Inductor's output is wrapped in a CUDA Graph (M20). Per-launch overhead disappears for the captured region.</p>
+
+<h2>What "fusion" means in practice</h2>
+
+<p>Eager mode runs each op as its own kernel:</p>
+
+<pre><code>y = torch.<span class="fn">relu</span>(x)             <span class="com"># kernel 1: read x, write y</span>
+z = y.<span class="fn">sum</span>()                  <span class="com"># kernel 2: read y, write z (scalar)</span></code></pre>
+
+<p>Two trips to memory. <code>x</code> is loaded, relu'd into <code>y</code>; then <code>y</code> is loaded again, summed into <code>z</code>. Memory bandwidth is the bottleneck for most pointwise ops, so a second memory pass means a second wall-clock cost.</p>
+
+<p>Compile fuses them into one kernel that does both in a single pass:</p>
+
+<pre><code><span class="com"># Inductor generates:</span>
+<span class="kw">def</span> <span class="fn">fused_kernel</span>(x_ptr, z_ptr):
+    x = <span class="fn">load</span>(x_ptr)
+    y = <span class="fn">max</span>(x, <span class="num">0</span>)             <span class="com"># relu</span>
+    z = <span class="fn">reduce_sum</span>(y)         <span class="com"># sum, all in registers, no memory write of y</span>
+    <span class="fn">store</span>(z_ptr, z)</code></pre>
+
+<p>One memory pass, no intermediate <code>y</code> in DRAM. That's a 2× speedup right there, and the savings compound when many pointwise ops chain together (which is the common case in transformers — residual + layer norm + linear + activation + dropout, etc.).</p>
+
+<p>This is also why CPU-bound traces benefit so much from compile: not only does the per-op dispatcher overhead disappear, but the kernels themselves are fewer and bigger. <em>Both ends of M13's "GPU has gaps" problem get solved at once.</em></p>
+
+<h2>Graph breaks: when Dynamo gives up locally</h2>
+
+<p>The thing every compile user has to learn: <strong>graph breaks</strong>. Dynamo can trace most PyTorch operations, but there are constructs it can't (or won't) capture:</p>
+
+<ul>
+  <li><strong>Data-dependent Python control flow</strong>: <code>if x.sum() > 0: ...</code> requires syncing the GPU to evaluate the condition, then branches based on the value. Dynamo doesn't know which branch will run at compile time.</li>
+  <li><strong>Calls into untraceable Python</strong>: arbitrary Python libraries, third-party C extensions Dynamo doesn't have integration for, <code>print()</code>, certain <code>numpy</code> operations.</li>
+  <li><strong>Mutating Python data structures</strong>: appending to a list inside the function, modifying a dict that's defined outside.</li>
+  <li><strong>Calling <code>.item()</code></strong>, returning a Python scalar from a tensor.</li>
+</ul>
+
+<p>When Dynamo encounters one, it splits the function: compile the part up to the break, run the unsupported bit in eager mode, compile the part after. Each compiled chunk is fast; each transition has overhead and prevents fusion across the break.</p>
+
+<p>To diagnose graph breaks, set the explain flag:</p>
+
+<pre><code><span class="kw">import</span> torch._dynamo
+
+torch._dynamo.<span class="fn">explain</span>(my_func)(*args)
+<span class="com"># Prints: number of graphs, number of breaks, reason for each break, line numbers</span></code></pre>
+
+<p>Or use <code>fullgraph=True</code> to <em>require</em> a single graph and error on any break:</p>
+
+<pre><code>model = torch.<span class="fn">compile</span>(model, fullgraph=<span class="kw">True</span>)
+<span class="com"># Now any unsupported construct raises an error instead of silently splitting</span></code></pre>
+
+<p>For library code (research projects, training loops), <code>fullgraph=True</code> is a valuable discipline — it forces you to write code that compiles cleanly. For exploratory work, the default (allow breaks) is more forgiving.</p>
+
+<h3>Common graph-break fixes</h3>
+
+<div class="table-wrap">
+<table>
+<caption>Graph-break causes and fixes</caption>
+<thead><tr><th>Cause</th><th>Fix</th></tr></thead>
+<tbody>
+<tr><td><code>print(x)</code> for debugging</td><td>Remove or move outside compiled region. Use <code>torch._dynamo.config.verbose = True</code> for compile-time logging instead.</td></tr>
+<tr><td><code>if x.item() &gt; 0</code>: data-dependent branch</td><td>Use <code>torch.where</code>, masked ops, or accept the break (sometimes inevitable).</td></tr>
+<tr><td><code>x.tolist()</code>, <code>x.numpy()</code>: leaves PyTorch land</td><td>Avoid in hot path. If unavoidable, accept the break.</td></tr>
+<tr><td>Custom <code>nn.Module</code> with Python-side state mutation</td><td>Move state to tensors; mutate via tensor ops.</td></tr>
+<tr><td>Calls into NumPy / SciPy</td><td>Most common cases (basic NumPy) compile fine in 2.4+; some don't. If it breaks, replace with PyTorch equivalents.</td></tr>
+<tr><td>Variable shapes</td><td>Set <code>dynamic=True</code> (see below) instead of accepting recompilation breaks.</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2>Modes and what they do</h2>
+
+<p><code>torch.compile</code> takes a <code>mode</code> argument:</p>
+
+<div class="table-wrap">
+<table>
+<caption>The four compile modes</caption>
+<thead><tr><th>Mode</th><th>What it does</th><th>When to use</th></tr></thead>
+<tbody>
+<tr><td><code>"default"</code></td><td>Standard fusion, no CUDA Graphs, balanced compile time</td><td>Most workloads. The right starting point.</td></tr>
+<tr><td><code>"reduce-overhead"</code></td><td>Standard fusion + CUDA Graphs wrap</td><td>Static-shape inference, small models with launch overhead</td></tr>
+<tr><td><code>"max-autotune"</code></td><td>Aggressive Triton autotuning of every kernel + CUDA Graphs</td><td>Worth the long compile time when you'll run many steps</td></tr>
+<tr><td><code>"max-autotune-no-cudagraphs"</code></td><td>Same autotuning, no CUDA Graphs</td><td>Variable shapes that can't use CUDA Graphs but you still want autotuning</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>The trade-off is compile time vs runtime speed. <code>"default"</code> compiles in seconds and gets ~80% of the available speedup. <code>"max-autotune"</code> can take minutes (and on huge models, tens of minutes) but extracts the last 20%. For long training runs (millions of steps), the autotuning amortizes; for short evaluations, it doesn't.</p>
+
+<h2>Dynamic shapes</h2>
+
+<p>By default, compile generates a kernel specialized for the input shapes it sees. If you call the compiled function with different shapes — say batch size changes — it <em>recompiles</em>. After several recompiles, Dynamo gives up on specialization and starts compiling a more general (slightly slower) kernel that handles a range of shapes.</p>
+
+<p>You can opt into dynamic-shape compilation upfront:</p>
+
+<pre><code>model = torch.<span class="fn">compile</span>(model, dynamic=<span class="kw">True</span>)</code></pre>
+
+<p>This compiles a kernel that accepts a range of shapes from the start, eliminating recompilation. There's a small per-step overhead (the kernel doesn't get to specialize on, e.g., a fixed sequence length), but you avoid the recompile churn.</p>
+
+<p>The right default for production: <strong>start with dynamic=False (or unset), profile, and only switch to dynamic=True if you see frequent recompilation</strong>. Recompilation events show up in <code>torch._dynamo.config.verbose = True</code> output as "recompiling" messages.</p>
+
+<p>For inference with variable-length input (LLM serving), dynamic shapes are nearly always the right choice. For pretraining with fixed batch and seqlen, static is better.</p>
+
+<h2>Compile + autocast + DDP/FSDP: the integrations</h2>
+
+<p>The standard production pattern: compile the model after wrapping it in DDP or FSDP, with autocast inside the model's forward.</p>
+
+<pre><code><span class="com"># DDP + compile</span>
+model = <span class="fn">build_model</span>().<span class="fn">to</span>(device)
+model = <span class="fn">DDP</span>(model, device_ids=[local_rank])
+model = torch.<span class="fn">compile</span>(model)
+
+<span class="com"># FSDP2 + compile (modern)</span>
+model = <span class="fn">build_model</span>().<span class="fn">to</span>(device)
+<span class="kw">for</span> block <span class="kw">in</span> model.transformer.layers:
+    <span class="fn">fully_shard</span>(block)
+<span class="fn">fully_shard</span>(model)
+model = torch.<span class="fn">compile</span>(model)</code></pre>
+
+<p>For DDP: compile is applied <em>after</em> the DDP wrap (the compile target is the wrapped module). DDP's hooks for gradient bucketing still fire correctly inside compiled code. For FSDP1, the integration is rougher — compile inside an FSDP1 model often graph-breaks at the FSDP unit boundaries. For FSDP2, the integration is clean and intended; <code>fully_shard</code> + <code>torch.compile</code> is the recommended path for new code.</p>
+
+<p>Autocast also composes correctly:</p>
+
+<pre><code>model = torch.<span class="fn">compile</span>(model)
+
+<span class="kw">with</span> torch.<span class="fn">autocast</span>(<span class="str">'cuda'</span>, dtype=torch.bfloat16):
+    out = <span class="fn">model</span>(x)
+    loss = <span class="fn">criterion</span>(out, y)
+loss.<span class="fn">backward</span>()</code></pre>
+
+<p>The autocast context manager is captured by Dynamo and Inductor generates kernels at the right precision (bf16 for matmul, fp32 for reductions and softmax — same as eager).</p>
+
+<h2>Common compile failures and how to debug them</h2>
+
+<h3>Failure 1: "Internal compile error"</h3>
+
+<p>Sometimes Inductor's codegen fails — usually for a combination of ops it doesn't yet handle well, or for an op with unusual shapes. The fallback:</p>
+
+<pre><code><span class="com"># Disable Inductor for this region; fall back to standard ATen kernels</span>
+<span class="kw">@</span>torch.<span class="fn">compile</span>(backend=<span class="str">"aot_eager"</span>)
+<span class="kw">def</span> <span class="fn">f</span>(x): ...</code></pre>
+
+<p><code>backend="aot_eager"</code> uses AOTAutograd's joint graph but skips Inductor's codegen — runs each op via the standard dispatcher, just with the graph traced. Slower than full compile but useful when full compile breaks.</p>
+
+<h3>Failure 2: "Recompilation triggered"</h3>
+
+<p>If you see frequent recompiles, your inputs have changing characteristics that compile is specializing on. The verbose output:</p>
+
+<pre><code>torch._dynamo.config.verbose = <span class="kw">True</span>
+<span class="com"># Now compile prints reasons: "recompiling because input 0 has shape (32, 512) but cached shape was (32, 256)"</span></code></pre>
+
+<p>Fixes: use <code>dynamic=True</code>, or pad inputs to a small set of canonical shapes (bucketing).</p>
+
+<h3>Failure 3: silent graph breaks</h3>
+
+<p>Subtle: compile silently breaks at unsupported constructs and you get less-than-expected speedup without realizing. Diagnose with:</p>
+
+<pre><code>torch._dynamo.<span class="fn">explain</span>(model)(*example_inputs)
+<span class="com"># Reports: "1 graphs, 3 breaks, line 47: graph break in foo() ..."</span></code></pre>
+
+<p>Or run with <code>fullgraph=True</code> for a hard error.</p>
+
+<h3>Failure 4: "compile is slower than eager"</h3>
+
+<p>Possible if your model is dominated by a single big kernel (e.g., one giant matmul) where eager already had near-zero dispatcher overhead. Compile's overhead in some cases (the wrapper, the bookkeeping) exceeds the negligible savings. Profile both versions; if eager is genuinely faster, leave compile off for that region.</p>
+
+<p>More commonly: many graph breaks. Check with <code>explain</code>; fix the breaks.</p>
+
+<h2>Eager vs compile: the timeline view</h2>
+
+<p>What does the speedup look like on a profiler trace? Roughly this:</p>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 740 280" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs></defs>
+  <text x="370" y="22" font-size="14" font-weight="700" fill="#1a1612" text-anchor="middle">Same training step: eager vs torch.compile</text>
+
+  <!-- Eager -->
+  <text x="20" y="55" font-size="12" font-weight="700" fill="#c1502e">Eager mode (~1.0× baseline)</text>
+  <g transform="translate(20, 65)">
+    <text x="-5" y="14" font-size="9" fill="#6b5d4f" text-anchor="end">CPU</text>
+    <text x="-5" y="34" font-size="9" fill="#6b5d4f" text-anchor="end">GPU</text>
+    <!-- CPU: many small bursts (one per kernel launch) -->
+    <rect x="0"   y="3" width="700" height="14" fill="#fcecec" stroke="#c1502e" stroke-width="0.5"/>
+    <text x="350" y="13" text-anchor="middle" font-size="10" fill="#c1502e">dispatcher tower per op (5-15 µs each, hundreds of ops)</text>
+    <!-- GPU: small kernels with gaps -->
+    <rect x="0"   y="23" width="40" height="14" fill="#1f5f5b"/>
+    <rect x="55"  y="23" width="35" height="14" fill="#1f5f5b"/>
+    <rect x="105" y="23" width="40" height="14" fill="#1f5f5b"/>
+    <rect x="160" y="23" width="35" height="14" fill="#1f5f5b"/>
+    <rect x="210" y="23" width="40" height="14" fill="#1f5f5b"/>
+    <rect x="265" y="23" width="40" height="14" fill="#1f5f5b"/>
+    <rect x="320" y="23" width="35" height="14" fill="#1f5f5b"/>
+    <rect x="370" y="23" width="40" height="14" fill="#1f5f5b"/>
+    <rect x="425" y="23" width="35" height="14" fill="#1f5f5b"/>
+    <rect x="475" y="23" width="40" height="14" fill="#1f5f5b"/>
+    <rect x="530" y="23" width="40" height="14" fill="#1f5f5b"/>
+    <rect x="585" y="23" width="35" height="14" fill="#1f5f5b"/>
+    <rect x="635" y="23" width="40" height="14" fill="#1f5f5b"/>
+  </g>
+  <text x="370" y="115" font-size="11" font-style="italic" fill="#c1502e" text-anchor="middle">12 small kernels with launch gaps; CPU dominates</text>
+
+  <!-- Compile default -->
+  <text x="20" y="155" font-size="12" font-weight="700" fill="#1f5f5b">torch.compile (default mode, ~1.7× faster)</text>
+  <g transform="translate(20, 165)">
+    <text x="-5" y="14" font-size="9" fill="#6b5d4f" text-anchor="end">CPU</text>
+    <text x="-5" y="34" font-size="9" fill="#6b5d4f" text-anchor="end">GPU</text>
+    <!-- CPU: brief launches at each fused kernel start -->
+    <rect x="0"   y="3" width="20" height="14" fill="#fff8a8" stroke="#1a1612" stroke-width="0.5"/>
+    <rect x="200" y="3" width="20" height="14" fill="#fff8a8" stroke="#1a1612" stroke-width="0.5"/>
+    <rect x="380" y="3" width="20" height="14" fill="#fff8a8" stroke="#1a1612" stroke-width="0.5"/>
+    <text x="500" y="13" font-size="10" fill="#1a1612">few large fused-kernel launches</text>
+    <!-- GPU: 3 long packed kernels -->
+    <rect x="0"   y="23" width="195" height="14" fill="#1f5f5b"/>
+    <text x="97" y="33" text-anchor="middle" font-size="9" fill="#fff">fused kernel 1</text>
+    <rect x="200" y="23" width="175" height="14" fill="#1f5f5b"/>
+    <text x="287" y="33" text-anchor="middle" font-size="9" fill="#fff">fused kernel 2</text>
+    <rect x="380" y="23" width="80"  height="14" fill="#1f5f5b"/>
+    <text x="420" y="33" text-anchor="middle" font-size="9" fill="#fff">fused kernel 3</text>
+  </g>
+  <text x="370" y="220" font-size="11" font-style="italic" fill="#1f5f5b" text-anchor="middle">3 fused kernels, packed end-to-end; CPU lane mostly idle</text>
+
+  <text x="370" y="260" font-family="'Caveat', cursive" font-size="20" fill="#c1502e" text-anchor="middle">same work, fewer kernels, less dispatcher tax → real speedup</text>
+</svg>
+</div>
+
+<p>Two changes visible in the lower panel: (1) the GPU kernels are bigger because Inductor fused multiple ATen ops into one. (2) The CPU lane goes from "constantly busy" (dispatcher) to "occasional brief launches" — most of the per-op overhead is gone. Both effects compound into the speedup.</p>
+
+<div class="ndq">
+<h4>About <code>torch.compile</code></h4>
+
+<p class="q">When does compile help most?</p>
+<p class="a">Three cases. (1) <strong>CPU-bound traces</strong> (M13): compile collapses the dispatcher tower, biggest wins. (2) <strong>Models with many pointwise/fusable ops</strong>: norm + linear + activation + dropout chains in transformers. (3) <strong>Static shapes</strong> with mode="reduce-overhead": CUDA Graphs add another layer of speedup.</p>
+
+<p class="q">When does compile NOT help?</p>
+<p class="a">When you're <em>matmul-bound</em> already (compile can't speed up cuBLAS), when you have lots of graph breaks, or when your kernels are already fused (FlashAttention, etc.). Profile before and after.</p>
+
+<p class="q">My first compile call takes 30 seconds. Is that normal?</p>
+<p class="a">Yes. Compilation = tracing + autograd lowering + graph simplification + Triton kernel generation + autotuning. For a transformer model, 5-30 seconds is normal in <code>"default"</code> mode; <code>"max-autotune"</code> can push it to minutes. Subsequent calls hit a cache. PyTorch caches compiled artifacts in <code>~/.cache/torch/inductor</code> across runs (off by default in most setups; enable with <code>TORCHINDUCTOR_FX_GRAPH_CACHE=1</code> or via <code>torch._inductor.config.fx_graph_cache = True</code>).</p>
+
+<p class="q">Compile broke training — losses are different from eager. What now?</p>
+<p class="a">Rare but real. Most often: a numerical edge case where Inductor's fused kernel computes things in a different order than eager (e.g., a softmax fused with surrounding ops uses different reduction patterns). Try (a) <code>backend="aot_eager"</code> to disable Inductor while keeping the joint graph — narrows whether Inductor or AOTAutograd is the cause. (b) Compare outputs op-by-op with hooks (M5). (c) If Inductor is the issue, file a GitHub issue with a minimal repro — these are bugs and the team fixes them.</p>
+
+<p class="q">What's the "FX graph"?</p>
+<p class="a">FX is PyTorch's intermediate representation: a small DAG with placeholder nodes (inputs), <code>call_function</code> nodes (each ATen op), and output nodes. You can print one with <code>torch.fx.symbolic_trace</code>. Dynamo produces FX graphs as its output; Inductor consumes them. They're human-readable and useful for debugging — running <code>torch._dynamo.explain</code> dumps the FX graph for inspection.</p>
+
+<p class="q">Is compile compatible with custom autograd Functions (M6)?</p>
+<p class="a">Generally yes — Dynamo treats them as opaque ops and includes them in the graph. They won't get fused with surrounding ops, but they don't break compilation. If you want full integration (your custom op being part of fusions), use <code>torch.library.custom_op</code> from M19 instead, which registers as a proper ATen op.</p>
+</div>
+
+<h2>The minimal mental model</h2>
+
+<p>If you only remember three things from this module:</p>
+
+<ol>
+  <li><strong><code>torch.compile(model)</code> traces, fuses, and code-generates</strong>. The result is one or a few large kernels instead of many small ones. Typical speedup: 1.3-2× with one line.</li>
+  <li><strong>Graph breaks are the enemy of fusion</strong>. <code>fullgraph=True</code> or <code>torch._dynamo.explain</code> finds them. Fix or accept.</li>
+  <li><strong>Pick the mode based on your workload</strong>: <code>"default"</code> for most things, <code>"reduce-overhead"</code> for static-shape inference, <code>"max-autotune"</code> for long training runs where compile time is amortized.</li>
+</ol>
+
+<h2>Code Magnets: a clean compile setup</h2>
+
+<p>You're configuring compile for an FSDP-wrapped transformer with autocast, with a discipline of erroring on graph breaks. Three magnets are wrong choices.</p>
+
+<div class="magnets">
+<p>Arrange the magnets into a working setup.</p>
+
+<div class="magnet-pool">
+  <span class="magnet">model = build_model().to(device)</span>
+  <span class="magnet">for block in model.transformer.layers: fully_shard(block)</span>
+  <span class="magnet">fully_shard(model)</span>
+  <span class="magnet">model = torch.compile(model, fullgraph=True)</span>
+  <span class="magnet">model = torch.compile(model, mode="reduce-overhead")</span>
+  <span class="magnet">model = torch.compile(fully_shard(model))</span>
+  <span class="magnet">with torch.autocast('cuda', dtype=torch.bfloat16):</span>
+  <span class="magnet">    out = model(x)</span>
+  <span class="magnet">    loss = criterion(out, y)</span>
+  <span class="magnet">loss.backward()</span>
+  <span class="magnet">opt.step(); opt.zero_grad()</span>
+  <span class="magnet">model = torch.compile(model.cpu())</span>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<pre><code>model = <span class="fn">build_model</span>().<span class="fn">to</span>(device)
+<span class="kw">for</span> block <span class="kw">in</span> model.transformer.layers: <span class="fn">fully_shard</span>(block)
+<span class="fn">fully_shard</span>(model)
+model = torch.<span class="fn">compile</span>(model, fullgraph=<span class="kw">True</span>)
+
+<span class="kw">with</span> torch.<span class="fn">autocast</span>(<span class="str">'cuda'</span>, dtype=torch.bfloat16):
+    out = <span class="fn">model</span>(x)
+    loss = <span class="fn">criterion</span>(out, y)
+loss.<span class="fn">backward</span>()
+opt.<span class="fn">step</span>(); opt.<span class="fn">zero_grad</span>()</code></pre>
+<p>The traps:</p>
+<ul>
+  <li><code>torch.compile(model, mode="reduce-overhead")</code>: would also work, but with FSDP and dynamic-shape activations from variable-length inputs, CUDA Graphs often break. Default mode is safer for distributed training; switch to <code>reduce-overhead</code> only if you've confirmed shapes are static and FSDP integration is clean.</li>
+  <li><code>torch.compile(fully_shard(model))</code>: compile <em>after</em> all fully_shard calls. Wrapping the result of fully_shard inline like this works syntactically but obscures the order — easier to read and reason about as separate steps.</li>
+  <li><code>torch.compile(model.cpu())</code>: compiling on CPU then trying to use on GPU — would re-compile or fail. Compile is device-aware; do it after <code>.to(device)</code>.</li>
+</ul>
+<p>The order: <strong>build → to(device) → fully_shard → compile → train with autocast</strong>. <code>fullgraph=True</code> is a reasonable discipline once you've fixed the graph breaks; start without it for new models.</p>
+</details>
+</div>
+
+<h2>Who does what?</h2>
+
+<div class="matching">
+<p class="intro">Match each compile concept to its real role.</p>
+
+<div class="match-grid">
+  <div class="header">Concept</div>
+  <div class="header">Real role</div>
+
+  <div>Dynamo</div>
+  <div>A. Hooks Python frame eval; captures tensor ops as an FX graph.</div>
+
+  <div>AOTAutograd</div>
+  <div>B. Composes the forward FX graph with backward into a single joint graph.</div>
+
+  <div>Inductor</div>
+  <div>C. Code-generates Triton kernels (CUDA) or fused C++ (CPU) from the joint graph.</div>
+
+  <div>Graph break</div>
+  <div>D. Dynamo splits the function at constructs it can't trace; transitions cost.</div>
+
+  <div>fullgraph=True</div>
+  <div>E. Errors on any graph break instead of silently splitting — discipline mode.</div>
+
+  <div>mode="reduce-overhead"</div>
+  <div>F. Wraps the compiled output in a CUDA Graph for static-shape replay.</div>
+
+  <div>dynamic=True</div>
+  <div>G. Compile a single shape-flexible kernel up front; avoids recompile churn.</div>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<p>
+<strong>Dynamo</strong> → A<br>
+<strong>AOTAutograd</strong> → B<br>
+<strong>Inductor</strong> → C<br>
+<strong>Graph break</strong> → D<br>
+<strong>fullgraph=True</strong> → E<br>
+<strong>mode="reduce-overhead"</strong> → F<br>
+<strong>dynamic=True</strong> → G
+</p>
+<p>The mental shortcut: <em>Dynamo traces, AOTAutograd joints, Inductor codegens, breaks split graphs, fullgraph=True forbids them, reduce-overhead = + CUDA Graphs, dynamic=True = shape-agnostic from start</em>.</p>
+</details>
+</div>
+
+<h2>Exercises</h2>
+
+<div class="exercise">
+<p><strong>1.</strong> A team's small transformer trains in 50 ms/step in eager. They wrap with <code>torch.compile</code> and now it's 20 ms/step. Profile both. What's the most likely shape of the speedup, and what would Exercise 1 from M13 (the CPU-bound case) say about why?</p>
+<details class="answer"><summary>show answer</summary>
+<p>2.5× speedup on a small model is the textbook CPU-bound case from M13 — the eager trace had GPU gaps between many small kernels (dispatcher overhead per op was significant relative to kernel time). After compile: (a) fewer kernels because Inductor fused pointwise sequences, and (b) the dispatcher tower is gone for the compiled region. The GPU lane goes from "many small kernels with gaps" to "few large fused kernels packed end-to-end." The CPU lane goes from "constantly busy" to "occasional launches." This is the canonical compile success case — the smaller the model relative to dispatcher overhead, the bigger the win.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>2.</strong> Why does <code>fullgraph=True</code> sometimes catch bugs that compile silently swallows?</p>
+<details class="answer"><summary>show answer</summary>
+<p>Without <code>fullgraph=True</code>, Dynamo silently breaks at any unsupported construct and continues. You get less-than-expected speedup, but no error. With <code>fullgraph=True</code>, it errors immediately, telling you exactly which construct broke. Common findings: (a) a debug <code>print</code> you forgot to remove, (b) a <code>tensor.tolist()</code> in the hot path, (c) a third-party library call inside forward, (d) Python control flow that secretly depends on tensor values. The discipline is: develop with <code>fullgraph=True</code> until your model compiles cleanly, then optionally relax for production. This is much like running with strict warnings enabled — catches issues that would otherwise compound silently.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>3.</strong> A team's training has slightly different loss numbers (~0.3% relative diff) when compiled vs eager. Should they worry?</p>
+<details class="answer"><summary>show answer</summary>
+<p>Probably not, but verify. Sub-1% loss differences from compile are usually due to (a) different reduction order in fused kernels (e.g., a sum computed in a different order is bit-different but mathematically equivalent), (b) slightly different mixed-precision casting points (compile may cast at slightly different ATen-op boundaries than eager). Both are within the noise floor of stochastic optimization. To verify it's not a real bug: train two models from identical seeds, one compiled and one eager, for many steps. They should track each other within ordinary stochastic variance and converge to the same final quality. If the gap grows over time or final metrics differ meaningfully, that's a real divergence — try <code>backend="aot_eager"</code> to isolate Inductor as the cause.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>4.</strong> When would <code>torch.compile</code> hurt more than help?</p>
+<details class="answer"><summary>show answer</summary>
+<p>Three legitimate cases:</p>
+<ol>
+  <li><strong>Models dominated by one giant op</strong>: a single 16K×16K matmul takes 50ms, dispatcher overhead is 10µs. Compile saves 10µs out of 50ms — invisible. The compile-time cost (seconds) isn't worth it for short runs.</li>
+  <li><strong>Heavy graph-break code</strong>: if your forward has many breaks (Python control flow, library calls, <code>.item()</code>), compile produces many small compiled chunks separated by eager-mode transitions. Sometimes net-slower than pure eager.</li>
+  <li><strong>Variable-shape workloads with rapid recompilation</strong>: if shapes change every step and you didn't set <code>dynamic=True</code>, you'll spend most of your time recompiling. The fix is <code>dynamic=True</code>; if even that has overhead exceeding eager, leave compile off.</li>
+</ol>
+<p>The reflex: profile both. <code>torch.compile</code> is a tool, not a magic incantation. Most of the time it helps; sometimes it doesn't. M13's profiling skills are how you tell.</p>
+</details>
+</div>
+
+<div class="bullet-points">
+<h3>What just happened?</h3>
+<ul>
+  <li><code>torch.compile(model)</code> is a four-stage pipeline: <strong>Dynamo</strong> traces Python into FX graphs, <strong>AOTAutograd</strong> joints forward+backward, <strong>Inductor</strong> code-generates fused C++/Triton kernels, optionally <strong>CUDA Graphs</strong> wrap the result.</li>
+  <li><strong>Fusion</strong> means many ATen ops become one kernel — fewer memory passes, fewer dispatcher entries, fewer launches. Compounds into 1.3-2× speedup on typical models, more on CPU-bound traces.</li>
+  <li><strong>Graph breaks</strong> are the main thing to manage. Dynamo splits the function at unsupported constructs (Python control flow on tensor values, <code>print</code>, <code>.item()</code>, third-party libs). Diagnose with <code>torch._dynamo.explain</code>; require single-graph with <code>fullgraph=True</code>.</li>
+  <li>Modes: <strong>default</strong> (start here), <strong>reduce-overhead</strong> (+ CUDA Graphs, static shapes), <strong>max-autotune</strong> (long compile, fastest runtime), <strong>max-autotune-no-cudagraphs</strong> (autotune without graph wrap).</li>
+  <li><strong>Dynamic shapes</strong>: <code>dynamic=True</code> compiles shape-agnostic kernels up front. Good for variable-length workloads (LLM serving). Without it, varying shapes cause recompilation.</li>
+  <li><strong>Combines with autocast and DDP/FSDP2</strong>. Order: build → to(device) → DDP/fully_shard → compile.</li>
+  <li><strong>FSDP1 + compile</strong> has rough edges; FSDP2 + compile is the recommended modern path.</li>
+  <li><strong>First call is slow</strong> — seconds to tens of seconds for trace + lower + codegen. Subsequent calls hit cache. Persistent disk cache via <code>TORCHINDUCTOR_FX_GRAPH_CACHE=1</code>.</li>
+  <li><strong>Failure modes</strong>: internal codegen errors (fall back to <code>backend="aot_eager"</code>), recompilation churn (use <code>dynamic=True</code>), silent breaks (use <code>fullgraph=True</code>), slight numerical differences (usually fine, occasionally bugs).</li>
+  <li><strong>Cases compile won't help</strong>: matmul-bound models, graph-break-heavy code, variable-shape without <code>dynamic=True</code>.</li>
+  <li>The reflex: try <code>torch.compile(model)</code> early. If speedup is good, keep it. If not, profile, find the breaks or the bottleneck, and decide.</li>
+</ul>
+</div>
+
+<p>Part VII is now complete. You have the dispatcher (M19), the CUDA stream and allocator machinery (M20), and the compile pipeline (this module) — three layers that together explain how every PyTorch op gets from Python to GPU and how to make that fast.</p>
+
+<p>Part VIII is the kernel work. Module 22 starts with the GPU programming model itself: warps, SMs, the memory hierarchy, occupancy. We need this to know what we're <em>writing</em> when we get to CUDA (M23) and Triton (M24). Then M25 — FlashAttention as a case study — pulls it all together. After that, M26 (quantization), M27 (inference/serving), M28 (MoE & frontier capstone).</p>
+
+<div class="module-footer">
+  <span>PyTorch · From Tensor to Kernel</span>
+  <span class="num">21</span>
+  <span>torch.compile: tracing, fusing, generating</span>
+</div>
+"""
+
+emit("21_torch_compile", "Module 21 — torch.compile: tracing, fusing, generating", BODY)

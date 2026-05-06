@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maya and Sam: round 3</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 03</p>
+</div>
+<div class="module-title">
+<p>Row vs Columnar Storage</p>
+</div>
+<div class="subtitle">
+<p>The third axis of storage choice — and why BigQuery runs your aggregation 100x faster than Postgres on identical data</p>
+</div>
+</div>
+<div class="opener">
+<p>You move a 50-column, 10-billion-row table from Postgres to BigQuery. The same <code>SELECT AVG(price) FROM orders WHERE date &gt; '2026-01-01'</code> query goes from 8 minutes to 4 seconds.</p>
+<p>Same data. Same total bytes. <em>Same ANSI SQL.</em> Different physical layout on disk.</p>
+<p>If you can't explain — in detail — why that 100x speedup happened, this module is for you.</p>
+</div>
+<h1>Maya and Sam: round 3</h1>
+<p>Sam shows up with a notebook this time. Trying to take this seriously.</p>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+OK so I was reading job descriptions yesterday and a bunch said "experience with OLAP and OLTP." I sort of know what those mean — analytical vs transactional — but every time someone says "use a column store," I nod like I get it. I don't actually get it.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+That's actually really common. Most engineers learn row-based databases — Postgres, MySQL, Mongo — and never see a column store from the inside. Then one day someone says "we should use BigQuery for this" and you're like <em>sure</em> and you nod.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+Exactly!</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Here's the thing. The choice between row and column storage is the <em>third</em> huge axis of database design. Module 1 was sort-as-you-go vs sort-later. Module 2 was the support cast for both. This module is about something completely different — the <em>physical layout</em> of bytes on disk. Not how you sort them. How you arrange them.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+And that one decision causes a 100x speed difference?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Sometimes more. Once you see it, you'll never confuse OLTP and OLAP requirements again. And you'll know exactly when to suggest a columnar store in an interview — and when <em>not</em> to.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+When <em>not</em> to is just as important?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+More important. Suggesting columnar for OLTP is the kind of mistake that ends an interview early. Don't do that.</p>
+</div>
+</div>
+<div class="keyidea">
+<p>Row stores arrange bytes by <em>entity</em> — one row's data is contiguous on disk. Column stores arrange bytes by <em>attribute</em> — one column's data is contiguous on disk. Same data. Wildly different access patterns.</p>
+</div>
+<div class="pause">
+<p>Read that key idea once more. The whole module is about consequences of that arrangement difference.</p>
+</div>
+<h1>The hook: two queries, two storage shapes</h1>
+<p>Let's make this concrete with a single table and two queries.</p>
+<div class="scenario">
+<p>Imagine an <code>orders</code> table with <strong>50 columns</strong> and <strong>10 billion rows</strong>. Each row is roughly 400 bytes. Total table size: about 4 TB.</p>
+<p>We're going to ask two questions:</p>
+<p><strong>Query A</strong>: <code>SELECT * FROM orders WHERE id = 12345</code>
+→ Fetch one specific order, with all 50 columns.</p>
+<p><strong>Query B</strong>: <code>SELECT SUM(amount) FROM orders WHERE date &gt; '2026-01-01'</code>
+→ Sum a single column across (let's say) 200 million rows.</p>
+<p>Same data. Same query language. Opposite access patterns.</p>
+<p>There is <strong>no single physical layout</strong> that wins both. Pick row, you win A. Pick column, you win B. Pick both at the same scale, you pay for two storage systems.</p>
+</div>
+<div class="pullquote">
+<p>A storage layout optimizes for one access pattern at the expense of others. Always.</p>
+</div>
+<h1>Row-based storage</h1>
+<p>Row stores keep one row's bytes physically contiguous on disk. To read row 5, you read one block of bytes, and <em>everything about that row is right there</em>.</p>
+<div class="diagram">
+<pre><code>                            ROW STORE LAYOUT
+</code></pre>
+<p>┌────────────────────────────────────────────────────────────────────────┐
+  │ Row 1: id=1   name="Alice"   age=30   country="US"  ... 46 more cols  │
+  ├────────────────────────────────────────────────────────────────────────┤
+  │ Row 2: id=2   name="Bob"     age=25   country="UK"  ... 46 more cols  │
+  ├────────────────────────────────────────────────────────────────────────┤
+  │ Row 3: id=3   name="Carol"   age=40   country="DE"  ... 46 more cols  │
+  ├────────────────────────────────────────────────────────────────────────┤
+  │ Row 4: id=4   name="Dan"     age=35   country="US"  ... 46 more cols  │
+  ├────────────────────────────────────────────────────────────────────────┤
+  │ ...                                                                    │
+  └────────────────────────────────────────────────────────────────────────┘</p>
+<p>To read row 3 in full: one disk seek, read one row's worth of bytes.
+                          ALL 50 columns delivered together.</p>
+<p>To sum the "amount" column across all 10B rows: read every row in full,
+                          extract amount, throw away the other 49 columns.
+                          Massive waste.</p>
+</div>
+<p>This layout is <strong>the natural fit for OLTP</strong> workloads — Online Transaction Processing.</p>
+<div class="metaphor">
+<p><strong>The folder cabinet.</strong></p>
+<p>A row store is like a filing cabinet where each customer has their own folder. The folder contains everything about them — name, address, recent orders, notes — all together.</p>
+<p>If a customer calls and asks for their account status: pull their folder, read whatever you need, file it back. Fast.</p>
+<p>If you need to sum all customers' balances: pull every folder, read just the balance, file it back. Tedious. Tens of thousands of file pulls just to get one number per customer.</p>
+<p>Cabinets are built around <em>access by entity</em>. They're great for "tell me about X." They're terrible for "sum this attribute across everything."</p>
+</div>
+<h2>Where row stores shine</h2>
+<table>
+<thead>
+<tr>
+<th>Workload</th>
+<th>Why row wins</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Look up a user's profile</td>
+<td>One disk read, all fields fetched together</td>
+</tr>
+<tr>
+<td>Update an order status</td>
+<td>Locate the row, mutate, write back — minimal I/O</td>
+</tr>
+<tr>
+<td>Insert a new customer</td>
+<td>Append the bytes to a page, done</td>
+</tr>
+<tr>
+<td>Fetch shopping cart items for one user</td>
+<td>Range scan a few rows of <code>cart_items</code></td>
+</tr>
+<tr>
+<td>Show a single product's full details</td>
+<td>One row, all 30 columns at once</td>
+</tr>
+</tbody>
+</table>
+<p>This is the world of <strong>OLTP</strong>: lots of small reads and writes, each touching one or a few full rows. Postgres, MySQL, SQLite, MongoDB (WiredTiger) — all row stores.</p>
+<h2>Where row stores hurt</h2>
+<div class="scenario">
+<p>You're an analyst running a quarterly report on a 4 TB row-stored <code>orders</code> table:</p>
+<pre><code class="language-sql">SELECT
+  region,
+  product_category,
+  SUM(amount) AS revenue
+FROM orders
+WHERE date &gt; '2026-01-01'
+GROUP BY region, product_category;
+</code></pre>
+<p>The query needs three columns — <code>region</code>, <code>product_category</code>, <code>amount</code> — out of 50. The other 47 are irrelevant.</p>
+<p>In a row store, the database can't read just three columns. <strong>It reads every full row</strong> — all 50 columns of every row that matches the WHERE — because rows are stored together.</p>
+<p>Even if your three columns total 30 bytes per row, the database reads 400 bytes per row. <strong>You're throwing away 92% of the I/O.</strong></p>
+<p>For 200 million rows, that's 80 GB of data read, of which 6 GB is what you actually need. On a disk doing 500 MB/sec, that's 160 seconds vs 12 seconds. <strong>13x slower than physically necessary.</strong></p>
+</div>
+<p>This is the workload row stores hate: scanning lots of rows but only needing a few columns.</p>
+<h1>Column-based storage</h1>
+<p>Column stores invert the layout. Instead of storing rows together, they store <strong>all values of one column together</strong>.</p>
+<div class="diagram">
+<pre><code>                          COLUMN STORE LAYOUT
+</code></pre>
+<p>Column "id":
+  ┌─────────────────────────────────────────────────────────┐
+  │ 1, 2, 3, 4, 5, 6, 7, 8, ..., 10,000,000,000           │
+  └─────────────────────────────────────────────────────────┘</p>
+<p>Column "name":
+  ┌─────────────────────────────────────────────────────────┐
+  │ "Alice", "Bob", "Carol", "Dan", ..., 10B values        │
+  └─────────────────────────────────────────────────────────┘</p>
+<p>Column "age":
+  ┌─────────────────────────────────────────────────────────┐
+  │ 30, 25, 40, 35, ..., 10B values                        │
+  └─────────────────────────────────────────────────────────┘</p>
+<p>Column "country":
+  ┌─────────────────────────────────────────────────────────┐
+  │ "US", "UK", "DE", "US", "US", "US", "UK", ...          │
+  └─────────────────────────────────────────────────────────┘</p>
+<p>Column "amount":  ← read JUST this for SUM(amount)
+  ┌─────────────────────────────────────────────────────────┐
+  │ 99.50, 12.00, 47.30, 15.99, 8.50, 200.00, ...          │
+  └─────────────────────────────────────────────────────────┘</p>
+<pre><code>   ↑
+</code></pre>
+<p>To sum the "amount" column: read just this single
+  contiguous block of values. The other 49 columns are
+  not touched at all.</p>
+<p>To reconstruct row 3 in full: seek to position 3 in
+  every column block. 50 separate seeks. Painful.</p>
+</div>
+<div class="metaphor">
+<p><strong>The library card catalog.</strong></p>
+<p>Imagine a library where instead of books, the storage rooms are organized by <em>attribute</em>: one room contains all the titles, another room contains all the authors, another contains all publication years. To find a specific book, you'd have to query each room — annoying. But if you want to count how many books were published before 1900, you only need to walk into the publication-year room. The other rooms don't exist as far as you're concerned.</p>
+<p>Card catalogs work this way. They're terrible for "give me everything about this book" and great for "count books matching this property."</p>
+</div>
+<h2>Where column stores shine</h2>
+<table>
+<thead>
+<tr>
+<th>Workload</th>
+<th>Why column wins</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SUM(amount) FROM orders WHERE date &gt; '...'</code></td>
+<td>Reads only <code>amount</code> and <code>date</code> columns. 96% less I/O.</td>
+</tr>
+<tr>
+<td>Funnel analysis across user events</td>
+<td>Touches few columns; entirely sequential.</td>
+</tr>
+<tr>
+<td>Dashboards aggregating millions of rows</td>
+<td>Aggregations vectorize beautifully.</td>
+</tr>
+<tr>
+<td>Log analytics ("count errors per service per minute")</td>
+<td>Group-by + aggregate over narrow column subset.</td>
+</tr>
+<tr>
+<td>Anything with ML feature extraction</td>
+<td>Loads single feature columns at a time.</td>
+</tr>
+</tbody>
+</table>
+<p>This is the world of <strong>OLAP</strong>: Online Analytical Processing. BigQuery, Snowflake, Redshift, ClickHouse, Druid, Pinot — all column stores.</p>
+<h2>Where column stores hurt</h2>
+<div class="scenario">
+<p>You build a "user profile page" backed by a column-stored <code>users</code> table. The page needs all 50 fields of one user.</p>
+<p>The query: <code>SELECT * FROM users WHERE id = 12345</code>.</p>
+<p>In a column store, this becomes 50 separate reads — one per column file — to assemble one row. Each read seeks into a column block to position 12345. <strong>50 seeks for one logical row.</strong></p>
+<p>A row store would have done this in one seek. <strong>A column store, used this way, can be 50x slower.</strong></p>
+<p>This is why you don't use BigQuery as your user-profile backend.</p>
+</div>
+<div class="warning">
+<p>Column stores are <em>terrible</em> for high-frequency single-row reads and updates. If you tell an interviewer "use BigQuery for our user authentication service," that interview is going downhill quickly.</p>
+</div>
+<h1>The 100x: three multiplicative wins</h1>
+<p>Now the question that started the chapter: <strong>why is the columnar aggregation so much faster?</strong></p>
+<p>Three reasons. They multiply.</p>
+<h2>Win #1: Less I/O</h2>
+<p>You read only the columns the query needs.</p>
+<p>For our <code>SUM(amount)</code> query: out of 400 bytes per row, you read maybe 8 bytes (the amount column). That's <strong>2% of the data volume</strong> for the same logical work.</p>
+<p>Even if everything else were equal — same disk speed, same CPU — you'd already be 50x faster from I/O alone.</p>
+<div class="insider">
+<p>Cloud data warehouses like BigQuery and Snowflake charge by <strong>bytes scanned</strong>, not query time. A row-stored data warehouse would be financially ruinous. The columnar layout is what makes "pay per query" pricing economically viable. The cloud business model literally depends on this layout choice.</p>
+</div>
+<h2>Win #2: Compression</h2>
+<p>Here's where it gets really good. Adjacent values in a row are different types — id, name, age, country — they don't compress together well. Adjacent values in a column are <em>the same type, often the same value</em>. They compress <em>brilliantly</em>.</p>
+<div class="diagram">
+<p>Column "country" (uncompressed):
+  "US", "US", "US", "US", "US", "UK", "UK", "US", "DE", "DE", ...</p>
+<p>Compressed via run-length encoding:
+  [("US", 5), ("UK", 2), ("US", 1), ("DE", 2), ...]</p>
+<p>Or via dictionary encoding:
+  Dictionary: { 0: "US", 1: "UK", 2: "DE", 3: "FR", ... 200 entries }
+  Column data: [0, 0, 0, 0, 0, 1, 1, 0, 2, 2, ...]
+              (single byte per row instead of variable-length string)</p>
+<p>For columns with low cardinality (few distinct values),
+  this is 10-50x compression on top of any byte-level compression.</p>
+</div>
+<div class="scenario">
+<p><strong>Real-world ratio</strong>:</p>
+<p>A typical row-stored Postgres table compresses about 2-3x via TOAST and on-disk compression.</p>
+<p>The same data in Parquet (a columnar format) typically compresses 5-15x.</p>
+<p>Same data. <strong>5-7x more compression</strong> simply because of the layout.</p>
+<p>Less storage cost. Less I/O. The compression directly amplifies the I/O win from #1.</p>
+</div>
+<div class="tip">
+<p>Common columnar compression schemes you should know by name:</p>
+<ul>
+<li><strong>Run-length encoding (RLE)</strong>: store value + count instead of repeating. Great for low-cardinality columns.</li>
+<li><strong>Dictionary encoding</strong>: store distinct values once in a dictionary, replace each row with an index. Great for strings with limited cardinality (<code>country</code>, <code>status</code>, <code>category</code>).</li>
+<li><strong>Delta encoding</strong>: store difference from previous value. Great for sorted timestamps or sequential IDs.</li>
+<li><strong>Bitpacking</strong>: if values fit in 12 bits, don't waste 16 or 32. Pack them tight.</li>
+<li><strong>Zstandard / LZ4</strong>: byte-level final pass on top of all the above. Modern formats apply this last.</li>
+</ul>
+<p>Mention "RLE" or "dictionary encoding" in an interview about columnar formats and you signal real understanding.</p>
+</div>
+<h2>Win #3: Vectorized execution</h2>
+<p>This one is subtle but huge. Now that data of one type is laid out contiguously, the CPU can process it in <strong>batches</strong> using SIMD (Single Instruction Multiple Data) instructions.</p>
+<div class="diagram">
+<p>ROW-AT-A-TIME (traditional row store execution):</p>
+<p>for each row in input:
+    extract amount from row     ← memory access
+    if amount &gt; threshold:      ← branch
+      total += amount           ← arithmetic
+    advance to next row         ← memory access</p>
+<p>Time per row: ~5-10 nanoseconds.
+  100M rows: ~500ms - 1s of CPU time.</p>
+<p>VECTORIZED (column store execution):</p>
+<p>for each batch of 1024 amount values:
+    load batch into SIMD register   ← one cache-aligned load
+    apply threshold mask via SIMD   ← one instruction, 8-16 lanes parallel
+    add unmasked values to running total via SIMD
+    advance to next batch</p>
+<p>Time per row: ~0.5-1 nanosecond.
+  100M rows: ~100ms.</p>
+<p>THIS IS PURELY A CPU EFFICIENCY WIN — not from doing less work,
+  but from doing the same work much faster.</p>
+</div>
+<div class="insider">
+<p>DuckDB, ClickHouse, and Velox (Meta's query engine) push vectorization to its limits — entire query operators are written assuming columnar data and SIMD-able operations. ClickHouse's column processing benchmarks show 1-2 GB/sec per CPU core on simple aggregations. That's bandwidth, not throughput. <strong>The CPU is the bottleneck, not the disk.</strong></p>
+</div>
+<h2>The math</h2>
+<p>Multiply them together:</p>
+<div class="diagram">
+<p>ROW STORE on aggregation:
+    1.0× I/O (reading everything)
+    1.0× compression (poor due to mixed types)
+    1.0× CPU efficiency (one row at a time)
+    -----
+    1.0×  total</p>
+<p>COLUMN STORE on aggregation:
+    20-50×   I/O reduction (read 2-5% of bytes)
+    3-7×     compression bonus (further I/O reduction)
+    5-10×    vectorized CPU
+    -----
+    300-3500× total potential speedup</p>
+<p>Real-world numbers: typically 30-200× faster.
+  100× is a reasonable mid-range.</p>
+</div>
+<p>That's the 100x. Three independent multipliers.</p>
+<div class="brain">
+<p>A subtle point that interviewers sometimes probe: column stores don't <em>create</em> new performance — they <em>avoid wasting</em> it. The disk's bandwidth and the CPU's SIMD lanes were always there. Row stores just used them inefficiently for analytical workloads. Column stores let you actually achieve the hardware's theoretical performance for column-aggregation work.</p>
+</div>
+<h1>Three ways to internalize this</h1>
+<p>Sometimes the same idea clicks differently. Here are three angles.</p>
+<div class="metaphor">
+<p><strong>Way 1: spreadsheets.</strong></p>
+<p>Open a spreadsheet. Column-store thinking says: each column is its own file. Row-store thinking says: the whole spreadsheet is one continuous stream of cells, row by row.</p>
+<p>If you ask "average salary in column F?" — column thinking lets you fetch just F. Row thinking has to read all columns to extract column F.</p>
+<p>The catch: if you ask "show me row 47 in full," column thinking has to gather from every column file. Row thinking just streams row 47.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 2: physical books.</strong></p>
+<p>Imagine a 1000-page book where each page is one row of data. Reading page 47 ("show me row 47") is a single page-flip. Easy.</p>
+<p>Now imagine you want to count how many pages contain the word "sunset." You have to read every page. <strong>Slow.</strong></p>
+<p>Now imagine the same content but reorganized: a separate booklet per "column" where each booklet contains just one column's values down the page. To find the word "sunset," you read just that one booklet. <strong>Fast.</strong></p>
+<p>But to read full page 47, you have to gather position 47 from every booklet — slow.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 3: the warehouse.</strong></p>
+<p>A row-store warehouse organizes inventory by <em>order</em>: each customer's full order on its own pallet. To pick an order: one pallet. To count how many of one product were sold: walk every pallet.</p>
+<p>A column-store warehouse organizes by <em>SKU</em>: all units of product X on one pallet, all of Y on another. To count product X: one pallet. To assemble a customer's order: visit many pallets.</p>
+<p>Both warehouses have the same total goods. The layout decides which queries are fast.</p>
+</div>
+<h1>Hybrid systems and modern reality</h1>
+<p>The world isn't strictly OLTP-or-OLAP anymore. Most systems do something hybrid.</p>
+<h2>In-database hybrids</h2>
+<p>Some databases offer columnar tables alongside row tables in the same engine.</p>
+<table>
+<thead>
+<tr>
+<th>System</th>
+<th>Hybrid mechanism</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SQL Server</strong></td>
+<td>Clustered columnstore indexes (entire table stored columnar)</td>
+</tr>
+<tr>
+<td><strong>Postgres</strong></td>
+<td>Extensions: <code>cstore_fdw</code>, <code>citus columnar</code>, <code>hydra</code></td>
+</tr>
+<tr>
+<td><strong>MySQL</strong></td>
+<td>Limited; usually requires bolt-on tools like ClickHouse Mirror</td>
+</tr>
+<tr>
+<td><strong>Oracle</strong></td>
+<td>In-Memory Column Store (dual representation)</td>
+</tr>
+<tr>
+<td><strong>TiDB / SingleStore / Aurora</strong></td>
+<td>Native HTAP with row + column maintained simultaneously</td>
+</tr>
+</tbody>
+</table>
+<p>These systems pay for it: 2x storage, doubled write amplification, complex consistency between layouts.</p>
+<h2>Lakehouse formats: the modern shift</h2>
+<p>The big architectural change of 2019-2025 has been <strong>separating storage from compute</strong>. Data lives in object storage (S3, GCS) as columnar files (Parquet, ORC). Multiple query engines read it.</p>
+<div class="scenario">
+<p><strong>A modern data platform stack:</strong></p>
+<pre><code>   OLTP databases (Postgres, MySQL — row stores)
+                │
+                ├── CDC stream
+                ▼
+              Kafka
+                │
+                ▼
+   Object storage (S3) with Iceberg / Delta Lake / Hudi tables
+   (Parquet files inside, columnar layout)
+                │
+       ┌────────┼────────┐
+       ▼        ▼        ▼
+    Spark    Trino    DuckDB    ← multiple query engines, same data
+</code></pre>
+<p>OLTP stays in row stores. Analytics happens on columnar files. The same underlying files serve dashboards, ad-hoc analysts, and ML pipelines.</p>
+</div>
+<div class="keyidea">
+<p>The modern answer to "row vs columnar" is increasingly: <strong>both, in different layers</strong>. Row store for the OLTP service of record. Columnar files in object storage for analytics. CDC bridges them.</p>
+</div>
+<h1>Parquet: the file format that ate the world</h1>
+<div class="insider">
+<p><strong>Parquet</strong> is <em>the</em> dominant columnar file format. You will see it in every modern data platform. Some things to know:</p>
+<ul>
+<li>Files contain "row groups" (typically 128 MB each), each internally columnar.</li>
+<li>Each row group has metadata: min/max per column, null counts, distinct counts.</li>
+<li>Query engines use this metadata for <strong>predicate pushdown</strong> — skip entire row groups whose min/max can't match the WHERE clause.</li>
+<li>Compression is per-column-chunk and configurable.</li>
+<li>Schema evolution is built in.</li>
+</ul>
+<p>Parquet plus Iceberg (a table format on top of Parquet) gives you ACID-ish transactions on object storage. The combination is what makes BigQuery's external tables, Snowflake's Iceberg tables, and Databricks' Delta Lake all viable.</p>
+<p>When someone says "lakehouse," they basically mean Parquet + table format + a query engine. Naming Parquet in an interview signals real-world data platform exposure.</p>
+</div>
+<h1>What about wide-column stores?</h1>
+<p>A common confusion. Cassandra and HBase are sometimes called "wide-column" stores. Are they columnar?</p>
+<div class="myth">
+<p><strong>"Cassandra is a columnar database."</strong></p>
+<p>False. Cassandra is a <strong>wide-column row store</strong>. The "wide-column" name comes from the data model: a row can have a flexible, sparse set of columns. But the <em>physical layout</em> is row-oriented — a partition's data is stored together.</p>
+<p>Cassandra is fantastic for OLTP-shaped workloads (event ingestion, time-series). It's <em>not</em> what you reach for to run aggregations on billions of rows. For that, you'd CDC out to a real columnar store.</p>
+<p>Don't confuse the data model name with the storage layout.</p>
+</div>
+<h1>Sharpen your pencil</h1>
+<div class="exercise">
+<p><strong>Exercise 1.</strong> A team is debating: "We have a 200-column events table that's about 50 billion rows. Most queries are conversion funnels — counting events of certain types over date ranges, joined to user attributes. Some queries fetch all 200 columns of a single user's events for support tickets."</p>
+<p>Which storage layout? Justify in 3 sentences. What does the <em>minority</em> use case cost you?</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>Columnar.</strong> The dominant workload is funnel/conversion queries — aggregations and counts over a few columns across many rows — which is the canonical OLAP shape where columnar wins by 30-100x. The 200-column table size makes columnar's compression even more valuable: each column is its own compressible chunk, and most queries touch only 5-10 of the 200.</p>
+<p><strong>The cost of the minority case</strong> (full-row fetch for support tickets): in a column store, this becomes 200 separate column reads to assemble one user's events. Mitigations: (a) keep a small recent-window mirror in a row store like Postgres for the support tool, fed by CDC; (b) accept that support tickets pay 2-5 seconds of latency since they're rare; or (c) use a system like ClickHouse that supports both query patterns reasonably with <code>ORDER BY user_id</code>.</p>
+<p>The senior reflex: <strong>architecture follows the dominant query pattern. The minority case gets a workaround, not a redesign.</strong></p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2.</strong> A startup wants to "use BigQuery for everything." Their app needs user authentication (sub-50ms), shopping cart updates (frequent writes), order history (fetch one user's orders), and end-of-day analytics. What do you tell them?</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>"BigQuery for everything" is a workload mismatch. BigQuery is a columnar analytical engine — designed for scan-heavy aggregations, billed by bytes scanned, with seconds-of-latency queries. Three of the four use cases are OLTP-shaped:</p>
+<p><strong>Authentication, cart updates, order history</strong> are point lookups and small writes. They need sub-50ms latency, frequent updates, and per-user isolation. <strong>Use Postgres or DynamoDB</strong> — a row store / key-value store. BigQuery for these would be slow, expensive, and architecturally inappropriate.</p>
+<p><strong>End-of-day analytics</strong> is OLAP-shaped — aggregations across many rows, batch frequency. <strong>BigQuery is excellent here</strong>, fed by CDC from the OLTP system.</p>
+<p>The right architecture: Postgres for the app, BigQuery for analytics, CDC bridging them. Two storage systems, each doing what it's good at. The senior framing: <strong>stop looking for one tool. Look for the right tool per workload.</strong></p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3.</strong> Explain to Sam, in 3 sentences, why columnar storage compresses better than row storage. No jargon.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>Columnar storage groups all values of the same type together — a million ages are next to each other, a million country codes are next to each other. When data is uniform like that, you can use clever tricks: store "US, US, US, US" as "US × 4," store country names as small numbers via a dictionary, and pack everything tighter. Row storage interleaves different types — an age, a string, a date, a money value, all next to each other — which leaves no patterns for the compressor to exploit.</p>
+</div>
+</div>
+<h1>There are no dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p>Q: Are columnar stores append-only?</p>
+</div>
+<div class="a">
+<p>A: In practice, mostly yes. UPDATEs and DELETEs are usually implemented as "delete vectors" (a bitmap marking row positions as deleted) plus new inserts of the changed data. Periodic rewrites consolidate everything. Iceberg, Delta Lake, and Hudi all use variations of this. True in-place column updates are rare and slow — you'd have to rewrite the affected column block.</p>
+</div>
+<div class="q">
+<p>Q: Why don't row stores just compress better and use SIMD?</p>
+</div>
+<div class="a">
+<p>A: They try, but they can't get the same wins. SIMD on heterogeneous data doesn't work — different bytes are different types. Compression on heterogeneous data has poor ratios. The fundamental bottleneck is the layout: row stores are mathematically forced to read more bytes for column-wise queries. You can't optimize past the layout.</p>
+</div>
+<div class="q">
+<p>Q: Does columnar work for joins?</p>
+</div>
+<div class="a">
+<p>A: Yes, with care. Hash joins (Module 06) work fine — you build a hash table of the smaller table and probe with the larger. The join key column gets read from both sides. Modern columnar engines like DuckDB and ClickHouse do joins very well. The expensive case is many-to-many joins across huge tables — but that's expensive in row stores too.</p>
+</div>
+<div class="q">
+<p>Q: What about real-time data? I thought columnar was for batch.</p>
+</div>
+<div class="a">
+<p>A: Used to be true. Modern columnar stores like ClickHouse, Druid, Pinot, and Rockset support streaming ingestion with sub-second freshness. They use techniques like writing recent data to small "real-time segments" (often row-flavored or hybrid) that get compacted into proper columnar format in the background. The boundary between "OLTP" and "real-time analytics" has blurred a lot.</p>
+</div>
+<div class="q">
+<p>Q: Can I add a column to a columnar table easily?</p>
+</div>
+<div class="a">
+<p>A: Yes — actually easier than in row stores. Adding a column is just creating a new column file. Existing data isn't touched. Old rows have an implicit default for the new column. This is one of the <em>advantages</em> of columnar layouts that doesn't get talked about enough — schema evolution is cheap.</p>
+</div>
+<div class="q">
+<p>Q: What's the deal with "column-family stores" — are they columnar?</p>
+</div>
+<div class="a">
+<p>A: Different concept. Column-family stores (Cassandra, HBase, BigTable) group columns into "families" stored together. A family might contain 5-10 related columns. Within a family, the layout is still row-ish. They're called column-family because of the data model, not the disk layout. Confusing? Yes. Blame 2000s naming conventions.</p>
+</div>
+<div class="q">
+<p>Q: How do columnar stores handle text and JSON?</p>
+</div>
+<div class="a">
+<p>A: Variable-width columns get stored with an offset table — pointers to the start of each value. JSON columns are common but tricky: pure JSON loses much of the columnar benefit, since the structure is inside the value. Modern formats like Parquet have "nested types" that flatten JSON-like structures into multiple inner columns, regaining the benefit. ClickHouse has a <code>JSON</code> type that does this transparently.</p>
+</div>
+<div class="q">
+<p>Q: Is there a use case where row and column are equally good?</p>
+</div>
+<div class="a">
+<p>A: Yes — small tables. If your table fits in RAM and the query hits all of it anyway, layout barely matters. Both can serve a 100K-row dimension table in under 10ms. Layout choice matters when data doesn't fit in cache and access patterns differ.</p>
+</div>
+</div>
+<h1>Three myths to dynamite</h1>
+<div class="myth">
+<p><strong>"Columnar is just better."</strong></p>
+<p>False. Columnar is better <em>for analytical workloads</em>. It's worse for high-frequency single-row reads, worse for frequent updates, worse for low-latency point lookups. <strong>Always anchor to workload before recommending a layout.</strong></p>
+</div>
+<div class="myth">
+<p><strong>"Cassandra is a columnar database."</strong></p>
+<p>False. Cassandra is a wide-column <em>row store</em>. Within a partition, data is stored together — that's row-oriented. The "wide-column" name describes the data model (sparse columns), not the disk layout.</p>
+</div>
+<div class="myth">
+<p><strong>"Use a column store and you don't need indexes."</strong></p>
+<p>Half-true. Column stores rely on a different toolset — predicate pushdown via per-row-group min/max metadata, plus optionally bloom filters per column block, plus partition/cluster ordering. You don't have B-tree indexes per column the way Postgres does. But you absolutely care about how data is physically partitioned and clustered, which is the columnar equivalent.</p>
+</div>
+<h1>Interview gotchas</h1>
+<div class="gotcha">
+<p><strong>Saying "columnar is just better."</strong> Senior interviewers will press: better at what? At what cost? Always anchor your statement to a workload type.</p>
+</div>
+<div class="gotcha">
+<p><strong>Forgetting compression in your explanation.</strong> If you describe columnar advantages without mentioning compression, you've described 30% of the story. Always mention all three: I/O reduction, compression, vectorization.</p>
+</div>
+<div class="gotcha">
+<p><strong>Confusing wide-column with columnar.</strong> Cassandra/HBase = wide-column row stores. Different from Parquet/BigQuery = columnar. Different layouts, different use cases.</p>
+</div>
+<div class="gotcha">
+<p><strong>Suggesting columnar for OLTP.</strong> "We should put our user table in BigQuery for fast queries" is a sign you don't understand layouts. OLTP belongs in row stores; columnar is for analytical workloads.</p>
+</div>
+<div class="gotcha">
+<p><strong>Not knowing Parquet by name.</strong> It's the dominant columnar format. Mentioning Parquet, Iceberg, or Delta Lake when asked about modern data platforms signals real-world experience.</p>
+</div>
+<h1>Mock interview</h1>
+<div class="mock-interview">
+<div class="turn q">
+<p>We're building a real-time dashboard showing per-user spending in the last 24 hours, refreshed every 30 seconds, for 50 million users. Where do you store the data?</p>
+</div>
+<div class="turn a">
+<p>The query shape — aggregation over a time window, fanout across millions of users, sub-second response — is OLAP-shaped, so columnar is the right family. The complication is the <em>real-time</em> part — continuous ingestion at scale plus 30-second freshness.</p>
+<p>I'd consider three options.</p>
+<p><strong>ClickHouse</strong>, columnar with high-throughput streaming ingestion. Excellent for this exact workload — purpose-built for real-time aggregations on event streams. Probably my default. Partitioned by day, ordered by <code>(user_id, timestamp)</code>, queries become fast range scans within a user's data.</p>
+<p><strong>Druid or Pinot</strong>, similar shape, optimized for the multi-tenant dashboarding use case specifically. Mature operationally. Slightly more setup complexity.</p>
+<p><strong>BigQuery or Snowflake</strong> with streaming inserts and materialized views. Higher operational simplicity since they're managed, but the streaming-to-fresh-query window is typically a few seconds — usually fine for 30-second refresh, but worth verifying.</p>
+</div>
+<div class="commentary">
+<p>Names three concrete options ranked by suitability. Mentions specific tuning details (<code>ORDER BY</code> clause for ClickHouse) — signals hands-on experience.</p>
+</div>
+<div class="turn q">
+<p>You said "default to ClickHouse." Why not Postgres with materialized views? It's simpler.</p>
+</div>
+<div class="turn a">
+<p>Postgres is a row store. For 50 million users with continuous ingestion, the spending aggregation query has to scan a lot of bytes per refresh — Postgres reads full rows even when you only want the amount column. At 30-second refresh frequency across many concurrent dashboards, that I/O adds up fast.</p>
+<p>The materialized view fights this — but you have to refresh it. Refreshing a materialized view of "all 50M users' last-24h totals" every 30 seconds is itself a heavy aggregation, and it'll either lag behind or steal capacity from OLTP queries on the same Postgres.</p>
+<p>For toy scale — say a few hundred thousand users — this is fine. At 50M users with continuous ingestion, you're fighting the storage layout. The right tool is one that's columnar, supports streaming, and is designed for the dashboard read pattern. That's ClickHouse-shaped.</p>
+</div>
+<div class="commentary">
+<p>Doesn't reflexively diss Postgres. Acknowledges where it works (small scale), explains where it breaks (this scale). Reasoned, not dogmatic.</p>
+</div>
+<div class="turn q">
+<p>ClickHouse is great. But how does the data actually get in?</p>
+</div>
+<div class="turn a">
+<p>Two clean patterns:</p>
+<p><strong>Pattern 1: Direct streaming via Kafka</strong>. Producers write spending events to Kafka. ClickHouse pulls via the Kafka table engine — built-in consumer that reads from a topic and inserts into a target table. Native, fast, durable.</p>
+<p><strong>Pattern 2: CDC from the OLTP system</strong>. If spending events first land in Postgres (because that's where the actual transaction lives), use Debezium to stream changes to Kafka, then into ClickHouse. The OLTP system stays the source of truth; ClickHouse is the analytical mirror.</p>
+<p>In practice, both patterns coexist. The OLTP system handles "did the payment go through?" — strict consistency, row store. The analytical mirror in ClickHouse handles dashboards. CDC keeps them in sync.</p>
+</div>
+<div class="commentary">
+<p>Brings in CDC unprompted — shows the candidate is thinking architecture, not just storage. The "two patterns" framing is a senior speech pattern: enumerate options, don't just commit prematurely.</p>
+</div>
+<div class="turn q">
+<p>Last one. Suppose tomorrow you're told the dashboard query latency is too high — sometimes 3 seconds at p99. What do you investigate first?</p>
+</div>
+<div class="turn a">
+<p>Three things, in order:</p>
+<p><strong>One: data distribution and ordering</strong>. ClickHouse query speed is dominated by how much data the engine has to scan. If queries always filter by user_id and timestamp, the table should be <code>ORDER BY (user_id, timestamp)</code>. If it isn't, switch — that single change can be a 10x improvement.</p>
+<p><strong>Two: partition strategy</strong>. If queries usually look at "last 24 hours," partition by day. Old partitions can be pruned automatically; recent partitions stay small and fast.</p>
+<p><strong>Three: materialized views for hot patterns</strong>. ClickHouse has incremental materialized views — they update as new data arrives. If a specific aggregation is hot ("total spend per user in last 24h"), maintain a continuously-updated rollup. Queries hit the rollup, not the raw events. Often gets you another order of magnitude.</p>
+<p>If after all that the query is still 3 seconds, it's probably a CPU or memory bound rather than I/O — the engine is doing the right thing but the operation is genuinely heavy. Then you either accept it or move to a more tailored solution like a real-time precomputed inbox per user.</p>
+</div>
+<div class="commentary">
+<p>Investigation order matches reality: cheapest, highest-impact tweaks first. "Probably CPU or memory bound rather than I/O" is the kind of phrase that signals "I've debugged this before."</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<h3>Row vs Columnar Storage — One Page</h3>
+<h4>Row store (OLTP world)</h4>
+<p>Bytes arranged by entity. One row's data contiguous on disk.</p>
+<p><strong>Strong</strong>: point lookups, frequent updates, fetching full rows, write-heavy mixed workloads.
+<strong>Weak</strong>: aggregations on few columns, scan-heavy analytical queries.</p>
+<p><strong>Used by</strong>: Postgres, MySQL InnoDB, SQLite, MongoDB WiredTiger, Cassandra (yes, despite the wide-column name).</p>
+<h4>Column store (OLAP world)</h4>
+<p>Bytes arranged by attribute. One column's data contiguous on disk.</p>
+<p><strong>Strong</strong>: aggregations, scans of few columns, dashboards, analytical workloads.
+<strong>Weak</strong>: full-row fetches, frequent updates, point lookups.</p>
+<p><strong>Used by</strong>: BigQuery, Snowflake, Redshift, ClickHouse, Druid, Pinot, DuckDB, Vertica. Files: Parquet, ORC.</p>
+<h4>Why columnar wins on analytics — three multiplicative wins</h4>
+<ol>
+<li><strong>Less I/O</strong> — read only the columns the query needs (often 2-5% of bytes).</li>
+<li><strong>Better compression</strong> — adjacent values are same type, often same value (RLE, dictionary, delta encoding work well).</li>
+<li><strong>Vectorized execution</strong> — SIMD on contiguous typed data (5-10x CPU efficiency).</li>
+</ol>
+<p>Multiplied: 30-200× faster, sometimes 1000×.</p>
+<h4>Modern reality — the lakehouse</h4>
+<p>Storage and compute separated. Parquet files in object storage (S3, GCS), with a table format (Iceberg / Delta Lake / Hudi) on top. Multiple query engines (Trino, Spark, DuckDB, Snowflake) read the same files.</p>
+<p>The pattern that ate the data warehouse market.</p>
+<h4>Hybrid systems</h4>
+<ul>
+<li>Postgres + cstore_fdw or Citus columnar (columnar tables in row engine).</li>
+<li>SQL Server clustered columnstore.</li>
+<li>TiDB / SingleStore / Aurora (HTAP — both layouts maintained).</li>
+<li>Druid / Rockset / Pinot (real-time + columnar).</li>
+</ul>
+<p>You pay 2x storage and writes for both layouts. Use only when warranted.</p>
+<h4>The 30-second verbal answer</h4>
+<p>"Row stores keep one row's bytes together — fast point reads and updates, slow on column aggregations. Column stores keep one column's bytes together — fast aggregations through I/O reduction, compression, and SIMD vectorization, slow on full-row fetches. Use row for OLTP, column for OLAP. Modern systems combine both via CDC from row-store OLTP into columnar lakehouse formats."</p>
+<h4>Always pair with</h4>
+<p>Compression (RLE, dictionary, delta), vectorization, predicate pushdown, OLTP vs OLAP, HTAP, Parquet, Iceberg, CDC.</p>
+</div>
+<h1>What's next</h1>
+<p>You now know the <em>three</em> axes of storage choice: sort-as-you-go vs sort-later (Module 01), the supporting machinery (Module 02), and row vs columnar layout (this module). That's the foundation.</p>
+<p>Module 04 zooms into a topic that's either everyone's first optimization or everyone's first regret: <strong>indexes</strong>. We'll cover secondary indexes, the leftmost prefix rule that everyone misremembers, covering indexes that turn 100ms queries into 1ms queries, and why a UUID v4 primary key can quietly destroy your write performance.</p>
+<p>After that, Module 05 introduces <strong>denormalization and materialized views</strong> — the spectrum between "model this as the textbook says" and "store it precomputed because reads are hot."</p>
+<p>Get water. Stretch. The operational layer comes next.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="02_bloom_wal_checkpoint.html" class="prev">&laquo; 02 Bloom/WAL</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="04_indexes.html" class="next">04 Indexes &raquo;</a>
+</nav>
+</body>
+</html>

@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam can't find the bottleneck</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 19</p>
+</div>
+<div class="module-title">
+<p>Bottleneck Identification &amp; Observability</p>
+</div>
+<div class="subtitle">
+<p>USE, RED, the four golden signals, p99 reasoning, and why "the database is slow" is never the actual answer</p>
+</div>
+</div>
+<div class="opener">
+<p>The dashboard is red. The CEO is in Slack. Customers are tweeting. Your manager asks: "Where's the bottleneck?"</p>
+<p>Junior engineers point at the slowest dashboard. Senior engineers know that the slowest dashboard is almost always <em>downstream</em> of the actual problem. They have a method — actually, three methods — for finding the truth in under fifteen minutes. This chapter is those methods, the math behind percentiles that everyone gets wrong, and the operational discipline that separates "we got lucky" from "we knew exactly what to do."</p>
+</div>
+<h1>Sam can't find the bottleneck</h1>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+The checkout API is slow. p99 latency went from 200ms to 4 seconds in the last hour. I checked the database — CPU is at 40%. I checked the application servers — CPU is at 30%. I checked Redis — looks fine. Memory is fine everywhere. Where's the bottleneck?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Wrong question. Better question: which layer's <em>latency</em> increased? You're looking at saturation when you should be looking at where time is being spent.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+What's the difference?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+A queue with 30% CPU can still have a four-second wait time if the queue is deep. CPU tells you whether the <em>server</em> is busy. Latency tells you whether the <em>request</em> is waiting. Most production bottlenecks aren't CPU-bound — they're queue-bound, lock-bound, or network-bound. CPU at 40% with a 4-second p99? Classic queueing collapse.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+So how do I find which layer is queueing?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Decompose end-to-end latency into per-layer time. Look at distributed traces, not dashboards. Find the span where time is being burned. Then — and only then — go look at <em>that</em> layer's metrics to understand why.</p>
+</div>
+</div>
+<div class="keyidea">
+<p><strong>The slowest dashboard is rarely the actual bottleneck.</strong> Bottlenecks compound: a slow downstream service backs up the layer above it, which exhausts thread pools, which makes the upstream service look slow, which is what you see first. The senior skill is <em>decomposing</em> the request path and finding where time is <em>actually</em> being spent — not where it's <em>appearing</em> to be spent.</p>
+</div>
+<h1>The three frameworks every senior engineer knows</h1>
+<p>You don't show up to an outage and start guessing. You apply a framework. There are three battle-tested ones, and each one answers a different question. Use all three. Knowing when to switch between them is the senior skill.</p>
+<h2>USE method (Brendan Gregg) — for resources</h2>
+<p>For every system resource, check three things:</p>
+<div class="compare">
+<div class="left">
+<p><strong>U — Utilization</strong>
+The percent of time the resource was busy servicing work. CPU at 80%. Disk at 60%. Network at 40%.</p>
+</div>
+<div class="right">
+<p><strong>S — Saturation</strong>
+The amount of work the resource has <em>queued up</em> that it can't service yet. Run queue length. I/O wait queue depth. TCP accept queue.</p>
+</div>
+</div>
+<div class="compare">
+<div class="left">
+<p><strong>E — Errors</strong>
+Error events. Disk read errors. Network packet drops. TCP retransmits. Page faults.</p>
+</div>
+<div class="right">
+<p><strong>Why all three?</strong>
+A resource at 50% utilization with a queue depth of 100 is <em>broken</em>. A resource at 99% utilization with no queue is <em>fine</em>. You need both signals.</p>
+</div>
+</div>
+<p>USE is for <strong>resources</strong>: CPU, memory, disk, network, file descriptors, threads. It answers "is this hardware/OS-level resource the bottleneck?"</p>
+<div class="scenario">
+<p><strong>Real example.</strong> Your database CPU shows 45% utilization. Your team says "CPU isn't the problem." Then you check saturation — the run queue length averages 12 (on a 4-core machine, anything over 4 means processes are waiting). Now you know: there's a CPU bottleneck even though utilization looks fine. The 45% number is misleading because <em>short bursts</em> are saturating the cores while the <em>average</em> looks calm.</p>
+<p>Lesson: utilization alone lies. Saturation reveals queueing. Errors reveal failures. You need all three.</p>
+</div>
+<h2>RED method (Tom Wilkie) — for services</h2>
+<p>For every service, check three things:</p>
+<div class="compare">
+<div class="left">
+<p><strong>R — Rate</strong>
+Requests per second the service is handling.</p>
+</div>
+<div class="right">
+<p><strong>E — Errors</strong>
+Rate of failed requests (500s, 503s, timeouts).</p>
+</div>
+</div>
+<p>The third metric, "D — Duration," gets its own row because it's the most important and the most misunderstood:</p>
+<div class="keyidea">
+<p><strong>D — Duration: distribution of request latencies, expressed as percentiles</strong> (p50, p95, p99, p99.9). Never as an average. Averages lie. We'll spend a whole section on why.</p>
+</div>
+<p>RED is for <strong>services</strong>: HTTP endpoints, RPC handlers, message consumers. It answers "is this service the bottleneck, and how badly?"</p>
+<div class="scenario">
+<p><strong>Real example.</strong> Checkout service: rate is 2000 RPS (normal), errors are 0.2% (normal), p50 is 80ms (normal), p99 is 4500ms (broken). The first three numbers look fine. The fourth tells you that 1 in 100 customers is having a terrible experience. That's a bottleneck, even though "averages look healthy."</p>
+<p>Lesson: percentile distributions reveal what averages hide.</p>
+</div>
+<h2>The four golden signals (Google SRE) — for user-facing systems</h2>
+<div class="compare">
+<div class="left">
+<p><strong>Latency</strong> — how long requests take. Distinguish <em>successful</em> latency from <em>failed</em> latency. A failure that returns in 10ms can hide a real success-path problem.</p>
+</div>
+<div class="right">
+<p><strong>Traffic</strong> — demand on the system. Requests per second, sessions per minute, transactions per second.</p>
+</div>
+</div>
+<div class="compare">
+<div class="left">
+<p><strong>Errors</strong> — rate of failures, broken down by <em>type</em> (4xx vs 5xx, parse errors vs timeouts vs deps-down).</p>
+</div>
+<div class="right">
+<p><strong>Saturation</strong> — how "full" the system is. Often the <em>leading indicator</em> of impending latency increases. A queue at 80% capacity is fine right up until it isn't.</p>
+</div>
+</div>
+<p>The four golden signals are for <strong>user-facing systems</strong>: a website, an API, an end-to-end product. They answer "is the user happy, and if not, why?"</p>
+<div class="insider">
+<p><strong>Senior interview move.</strong> When asked "what would you monitor?" never just list metrics. Name the <em>framework</em> you're applying. "I'd apply USE for the database resources, RED for each service in the request path, and the four golden signals for the user-facing API. That gives me three orthogonal views of the system: hardware, services, and customer experience." That answer signals you've done this for years.</p>
+</div>
+<div class="pause">
+<p><strong>Pause and think.</strong> You're paged for a slow API. Which framework do you reach for first — USE, RED, or four golden signals?</p>
+<p>Trick question: you reach for <em>all three</em>, but in this order. (1) Four golden signals to confirm there's a real customer-facing problem (latency? errors? saturation?). (2) RED on each service in the path to identify which service is slow. (3) USE on the resources of <em>that service</em> to find the resource bottleneck. The frameworks aren't competitors — they're zoom levels.</p>
+</div>
+<h1>Percentiles: the math everyone gets wrong</h1>
+<p>If you take one thing away from this chapter, take this. Percentiles are not averages. Percentiles do not compose. Averages of percentiles are <em>meaningless</em>. Almost every junior engineer makes these mistakes. Almost every senior interview tests them.</p>
+<h2>What a percentile actually means</h2>
+<div class="keyidea">
+<p><strong>p99 = "99% of requests completed in this time or faster."</strong> It's a <em>threshold</em>. If p99 is 500ms, then 1% of requests took <em>longer than</em> 500ms — possibly much longer. p99 says nothing about <em>how much</em> longer. p99.9 and p99.99 fill that in.</p>
+</div>
+<div class="workout">
+<p><strong>Worked example: why averages lie.</strong></p>
+<p>You have 100 requests with these latencies (sorted):
+- 99 requests at 50ms each
+- 1 request at 5000ms</p>
+<p><strong>Average:</strong> (99 × 50 + 5000) / 100 = <strong>99.5ms</strong>. Looks fine!</p>
+<p><strong>p50 (median):</strong> 50ms. Looks fine!</p>
+<p><strong>p99:</strong> 50ms (the 99th sorted value is at index 98, which is one of the 50ms requests).</p>
+<p><strong>p99.9:</strong> somewhere between 50ms and 5000ms (this single 5000ms request lives in the top 1%, but you'd need 1000+ requests to see p99.9 stably).</p>
+<p>The average is a lie because the outlier <em>barely moves it</em>. The p50 is a lie for the same reason. Only when you go to p99 <em>and beyond</em> does the slow request become visible.</p>
+<p><strong>Lesson:</strong> if you only look at average and p50, you'll miss customer pain that's affecting 1-5% of requests. And 1% of 10M daily requests is 100,000 angry customers per day.</p>
+</div>
+<h2>Why averages of percentiles are nonsense</h2>
+<p>This is the mistake that gets engineers laughed out of senior interviews.</p>
+<div class="warning">
+<p><strong>You cannot average p99s.</strong> If service A has p99=500ms and service B has p99=300ms, the combined p99 is <em>not</em> 400ms. It could be anywhere from 300ms to 500ms+. Percentiles don't compose linearly.</p>
+</div>
+<div class="workout">
+<p><strong>Why averaging percentiles is wrong.</strong></p>
+<p>Service A: 100 requests, mostly fast, one outlier at 5000ms. p99 = 5000ms.
+Service B: 100 requests, all at exactly 100ms. p99 = 100ms.</p>
+<p>Average of p99s: (5000 + 100) / 2 = <strong>2550ms</strong>. </p>
+<p>Real combined p99 (if you concatenate the 200 requests and recompute): the 99th-percentile-by-rank of 200 requests is the request at index 198. That's still in the "100ms from B" range or the "fast from A" range. The true p99 is around <strong>100ms</strong>, not 2550ms.</p>
+<p>The "average of p99s" is wildly wrong because it's not a valid statistical operation. You need the <em>underlying distribution</em> to compute a real percentile. Histograms can be merged; percentiles cannot.</p>
+</div>
+<div class="insider">
+<p><strong>Senior tooling move.</strong> Never store p99 as a pre-aggregated value. Store <em>histograms</em> (HDR Histogram, t-digest, Prometheus histograms with buckets). Histograms are <em>mergeable</em> — you can sum buckets across services and recompute any percentile. That's why Prometheus uses <code>histogram_quantile()</code> over <code>rate(xxx_bucket[5m])</code> rather than a pre-computed p99 metric. The histogram-then-quantile pattern is fundamental.</p>
+</div>
+<h2>How long-tail latencies destroy systems</h2>
+<p>A tail latency that affects 1% of requests sounds small. It isn't — because of <em>fanout</em>.</p>
+<div class="scenario">
+<p><strong>The fanout amplification.</strong> Your homepage makes 50 backend calls in parallel and waits for <em>all</em> of them to render. Each call has a p99 of 100ms — that means 1% of calls are slower than 100ms. So the probability that <em>all 50</em> calls finish in under 100ms is:</p>
+<p>(0.99)^50 = 0.605, or <strong>60.5%</strong>.</p>
+<p>In other words, <strong>39.5% of homepage loads</strong> experience at least one tail-latency call that exceeds the per-call p99. The page is slow nearly 40% of the time despite each individual service being "fast" 99% of the time.</p>
+<p>This is why senior engineers obsess over p99 and p99.9 even when "averages look fine." Fanout amplifies tails. The more downstream services you call, the worse it gets.</p>
+</div>
+<div class="pullquote">
+<p>"In a microservices architecture, your customer-facing latency is dominated by your <em>worst</em> service's tail, not your average service's median. Cut tails, not averages."</p>
+</div>
+<div class="gotcha">
+<p><strong>Gotcha: "we improved our average latency by 30%" doesn't mean customers are happier.</strong> If your improvement removed a bunch of fast requests (e.g., added caching that handled the easy cases), the average drops dramatically — but the slow requests that were causing pain are still slow. Always report p50, p95, p99, p99.9 separately. "Average improved" hides everything.</p>
+</div>
+<h1>The "where does the time go?" debugging discipline</h1>
+<p>When latency spikes, the senior approach is mechanical, not magical. Here's the playbook.</p>
+<h2>Step 1: Confirm the customer experience</h2>
+<div class="workout">
+<p><strong>The first 60 seconds.</strong></p>
+<ol>
+<li>Look at the four golden signals dashboard for the user-facing service. Confirm: is latency actually up? Are errors up? Is traffic up (could be load-driven) or normal (could be infrastructure-driven)?</li>
+<li>Distinguish "regional" from "global." Is it one geographic region or all of them? One AZ? One specific endpoint or all endpoints?</li>
+<li>Check the timeline. When did this start? What changed at that time — a deploy, a config push, a traffic event?</li>
+</ol>
+<p>If you can answer these three before you start looking at deeper metrics, you've already eliminated 80% of possibilities.</p>
+</div>
+<h2>Step 2: Decompose the latency</h2>
+<p>This is the step Sam was missing in the opener. You can't fix a bottleneck by staring at the symptom. You have to decompose the request path.</p>
+<div class="diagram">
+<pre><code>End-to-end latency = 4500ms
+
+  Edge / CDN: 20ms
+  ↓
+  Load balancer: 5ms
+  ↓
+  API gateway: 30ms
+  ↓
+  Application service: 40ms
+  ↓
+  ▶ Database query: 4380ms  ◀  ← here
+  ↓
+  Response serialization: 25ms
+
+The database span owns 97% of the time.
+That's the bottleneck. Now go investigate
+the database — not the gateway, not
+the app server, not the LB.
+</code></pre>
+</div>
+<div class="insider">
+<p><strong>This is what distributed tracing is for.</strong> Jaeger, Zipkin, Tempo, OpenTelemetry, Datadog APM — all of them give you per-span latency. The span that owns the most time is the bottleneck. Don't guess from dashboards; trace the request.</p>
+<p>Senior engineers also know: tracing has <em>sampling overhead</em>. Most production systems sample at 1% or use head-based sampling. So you might need to <em>force-trace</em> a few requests during the incident, or use tail-based sampling to capture only slow requests. If your tracing setup samples at 1% during a 5-second outage with 100 requests, you have <em>one trace</em>. Make sure you're capturing slow requests preferentially.</p>
+</div>
+<h2>Step 3: Apply USE on the bottleneck layer</h2>
+<p>Once you've identified <em>which layer</em> is slow (the database, in our trace), apply USE to its resources:</p>
+<div class="workout">
+<p><strong>Database USE checklist:</strong></p>
+<ol>
+<li><strong>CPU</strong>: utilization (% busy), saturation (run queue length), errors (none usually).</li>
+<li><strong>Memory</strong>: utilization (% allocated), saturation (swap activity, page faults), errors (OOM kills).</li>
+<li><strong>Disk</strong>: utilization (% busy), saturation (I/O wait queue depth, await time), errors (read errors, retries).</li>
+<li><strong>Network</strong>: utilization (Mbps used / Mbps capacity), saturation (TX queue, RX drops), errors (TCP retransmits, packet loss).</li>
+<li><strong>Connections</strong>: utilization (% of pool used), saturation (queued connection requests), errors (connection refused, timeout).</li>
+<li><strong>Locks</strong>: lock waits, lock timeouts, deadlocks, longest-held lock.</li>
+</ol>
+<p>Identify the resource that's saturated. That's where to look next.</p>
+</div>
+<div class="scenario">
+<p><strong>Real database debugging.</strong> Database CPU is 30% (low), memory is 50% (fine), disk I/O wait is 600ms (huge!), connections are 95% used. Combination of disk-bound queries plus connection pool exhaustion. The two are related: each query is slow on disk, holding its connection longer, which exhausts the pool, which causes new requests to queue waiting for connections, which makes upstream services see "slow database."</p>
+<p>Fix: speed up the queries (add an index, fix the plan), and the connection pool exhaustion resolves itself. If you'd just added more connections, you'd have made it <em>worse</em> — more connections doing slow disk I/O means more disk contention.</p>
+</div>
+<h1>Flame graphs and profiling</h1>
+<p>When you've found the bottleneck <em>layer</em> but still don't know <em>which code</em> is slow, you profile. Flame graphs are the visualization.</p>
+<h2>What a flame graph shows</h2>
+<div class="diagram">
+<pre><code>Flame graph (read bottom to top):
+
+│ http.handler.checkout() ──────────────────────────── 100% │
+│ ├─ validate_input()  ─ 5%                                  │
+│ ├─ load_user_cart() ─────────── 35%                        │
+│ │   ├─ db.query(&quot;SELECT...&quot;) ── 30%   ← here              │
+│ │   └─ cache.get() ─ 5%                                    │
+│ ├─ compute_total() ─ 5%                                    │
+│ └─ submit_payment() ─────────────────────── 55%            │
+│     ├─ http.post(stripe) ─────────── 45%   ← here          │
+│     └─ db.insert(&quot;orders&quot;) ─ 10%                           │
+│
+The widest boxes are the time consumers.
+db.query and stripe.post own 75% combined.
+</code></pre>
+</div>
+<div class="keyidea">
+<p><strong>Flame graphs reveal which functions consume the most time</strong> by stacking call frames as horizontal bars proportional to time spent. The widest frame is the bottleneck. Read flame graphs <em>bottom-up</em> — the deeper you go, the more specific the function.</p>
+</div>
+<h2>When to reach for a profiler</h2>
+<div class="compare">
+<div class="left">
+<p><strong>CPU profiler</strong> (perf, py-spy, async-profiler, pprof). Use when: CPU is saturated. Reveals which functions are burning cycles. Captures <em>on-CPU</em> time.</p>
+</div>
+<div class="right">
+<p><strong>Off-CPU profiler</strong> (offcputime, async-profiler in wall-clock mode). Use when: CPU is <em>not</em> saturated but latency is high. Reveals where threads are blocked — locks, I/O, network waits. Captures <em>off-CPU</em> time (waiting time).</p>
+</div>
+</div>
+<div class="warning">
+<p><strong>Don't use a CPU profiler when CPU isn't the bottleneck.</strong> It will tell you which function is using CPU when CPU isn't even the constraint. Off-CPU profiling captures the <em>waiting</em>, which is what's actually slow. Most slow systems are I/O-bound, lock-bound, or network-bound — not CPU-bound — so off-CPU profiling is what you usually want.</p>
+</div>
+<div class="insider">
+<p><strong>Tools by language:</strong>
+- Java: async-profiler (best in class), JFR, YourKit
+- Python: py-spy (zero-overhead), cProfile, scalene
+- Go: pprof (built-in, excellent)
+- Node.js: 0x, clinic.js, --inspect with Chrome DevTools
+- C/C++: perf, gprof, Intel VTune
+- Database engines: most have built-in profilers (Postgres <code>pg_stat_statements</code>, MySQL Performance Schema, Mongo <code>db.profiler</code>)</p>
+<p>Senior interview tip: name a profiler appropriate to the language they're discussing. "I'd flame-graph it with async-profiler" carries more weight than "I'd profile it."</p>
+</div>
+<h1>The metrics that actually matter</h1>
+<p>You can't watch everything. The senior skill is knowing the small set of metrics that <em>matter most</em> — the ones that catch 90% of incidents before they're customer-visible.</p>
+<h2>For databases</h2>
+<div class="workout">
+<p><strong>Database metrics every senior engineer monitors:</strong></p>
+<ol>
+<li><strong>Query latency p50, p95, p99 per query type.</strong> Per-query, not aggregate. Aggregate hides regressions in specific queries.</li>
+<li><strong>Active connections / max connections.</strong> Connection pool exhaustion is silent until it's catastrophic.</li>
+<li><strong>Replication lag.</strong> Seconds behind primary. Bytes behind primary. Both.</li>
+<li><strong>Deadlocks per minute, lock waits per minute, longest-held lock duration.</strong> Lock contention is invisible until it isn't.</li>
+<li><strong>Buffer cache hit ratio.</strong> Below 95% means the working set doesn't fit in memory; you're hitting disk.</li>
+<li><strong>WAL/redo log generation rate.</strong> Sudden increase = unusual write load or runaway transaction.</li>
+<li><strong>Slow query log entries per minute.</strong> Set the threshold (<code>log_min_duration_statement</code> in Postgres) to your p95 latency, not 1 second.</li>
+<li><strong>Vacuum / autovacuum activity (Postgres).</strong> Bloat eats performance silently.</li>
+<li><strong>Disk I/O wait time and queue depth.</strong> The actual bottleneck for most OLTP databases.</li>
+<li><strong>Failed connections per minute.</strong> Anything but 0 is a problem.</li>
+</ol>
+</div>
+<h2>For services</h2>
+<div class="workout">
+<p><strong>Service metrics every senior engineer monitors:</strong></p>
+<ol>
+<li><strong>Rate (RPS) per endpoint.</strong></li>
+<li><strong>Error rate per endpoint, broken down by error type.</strong> A spike in 503s is different from a spike in 401s.</li>
+<li><strong>Latency p50, p95, p99, p99.9 per endpoint.</strong></li>
+<li><strong>Saturation: thread pool utilization, request queue depth, in-flight requests.</strong></li>
+<li><strong>Dependency latency.</strong> How long are calls to <em>downstream</em> services taking? This is where bottlenecks hide.</li>
+<li><strong>Cache hit ratio.</strong> A drop here predicts a database spike 30 seconds later.</li>
+<li><strong>Garbage collection pause times (JVM/Go/Node).</strong> GC pauses cause tail latency.</li>
+<li><strong>Open file descriptors / available file descriptors.</strong> FD exhaustion is a classic silent killer.</li>
+<li><strong>TCP connection count, TIME_WAIT count.</strong> Network stack saturation.</li>
+<li><strong>Custom business metrics</strong>: orders/min, signups/min, checkout success rate. The leading indicators.</li>
+</ol>
+</div>
+<h2>For infrastructure</h2>
+<div class="workout">
+<p><strong>Infrastructure metrics every senior engineer monitors:</strong></p>
+<ol>
+<li><strong>Per-host CPU utilization, run queue length, load average.</strong> Load average over the run queue length plus blocked process count tells you saturation.</li>
+<li><strong>Per-host memory: used, free, swap activity, page faults.</strong> Swap activity &gt; 0 on a production server is usually a problem.</li>
+<li><strong>Per-host disk: utilization, await, IOPS, throughput, queue depth.</strong> Most modern OLTP problems are disk-related.</li>
+<li><strong>Per-host network: bandwidth utilization, packet errors, retransmits, TCP_LISTEN backlog drops.</strong></li>
+<li><strong>Container metrics</strong>: CPU throttling time (cgroup throttle), memory pressure, OOM kills.</li>
+<li><strong>Kubernetes metrics</strong> if applicable: pod restart rate, pending pods, image pull errors.</li>
+</ol>
+</div>
+<div class="tip">
+<p><strong>The 80/20 of monitoring.</strong> If you only have 10 dashboards, make them: (1) four golden signals for top services, (2) database query latency by query type, (3) connection pool utilization for every pool, (4) cache hit ratio for every cache, (5) replication lag, (6) GC pause times, (7) error rates by type, (8) saturation across resources, (9) dependency latency from each service, (10) business KPIs (orders, signups, success rates). These ten dashboards catch 90% of incidents.</p>
+</div>
+<h1>SLI, SLO, SLA — and error budgets</h1>
+<p>The Google SRE concept that every senior interviewer expects you to know.</p>
+<div class="compare">
+<div class="left">
+<p><strong>SLI — Service Level Indicator</strong>
+A <em>measurable metric</em> that reflects user experience. "Percentage of requests served in under 300ms." "Percentage of requests that returned 200 OK." It's a <em>number you compute</em>.</p>
+</div>
+<div class="right">
+<p><strong>SLO — Service Level Objective</strong>
+The <em>target</em> for an SLI. "99.9% of requests complete in under 300ms over a rolling 30-day window." It's an <em>internal goal</em> you commit to.</p>
+</div>
+</div>
+<div class="keyidea">
+<p><strong>SLA — Service Level Agreement</strong>
+The <em>contractual</em> commitment to customers, with consequences. "If we miss 99.9% availability over a calendar month, we credit you 10% of your monthly bill." Always <em>more lenient</em> than the SLO — your SLA might be 99.9%, your SLO 99.95%, giving you internal buffer before contractual penalties hit.</p>
+</div>
+<h2>The error budget</h2>
+<p>If your SLO is 99.9% over 30 days, you can have <strong>0.1% downtime</strong> — that's about 43 minutes per month. That 43 minutes is your <em>error budget</em>. You spend it on:</p>
+<ul>
+<li>Planned downtime (rare but happens)</li>
+<li>Failed deploys</li>
+<li>Capacity-related incidents</li>
+<li>Genuine outages</li>
+</ul>
+<div class="scenario">
+<p><strong>The error budget conversation.</strong> Your SLO is 99.9% (43 minutes of downtime/month). Halfway through the month, you've already burned 35 minutes on a failed deploy. Engineering wants to ship a risky change. The error budget says: you have 8 minutes left. The senior call: freeze risky deploys until next month, or accept that one more bad deploy means missing your SLO.</p>
+<p>This is what error budgets are <em>for</em> — they convert "should we ship this?" from a political debate into a math question. If you have budget, ship. If you don't, freeze.</p>
+</div>
+<div class="insider">
+<p><strong>Senior interview move.</strong> When asked "how do you balance reliability vs feature velocity?" — name error budgets. "We measure SLO attainment monthly. When we have budget remaining, we ship aggressively. When we've burned the budget, we freeze risky changes and focus on reliability work. It removes the politics from the decision." That's the SRE-influenced senior answer.</p>
+</div>
+<h2>Choosing good SLIs</h2>
+<div class="warning">
+<p><strong>Bad SLIs:</strong>
+- "Average latency" (averages lie about tails)
+- "CPU utilization" (a <em>resource</em> metric, not a <em>user experience</em> metric)
+- "Number of errors" (without a denominator — 100 errors out of 100M is fine, 100 errors out of 1000 is catastrophic)
+- "Memory usage" (irrelevant to user experience)</p>
+</div>
+<div class="tip">
+<p><strong>Good SLIs:</strong>
+- "Percentage of requests with latency &lt; 300ms"
+- "Percentage of successful requests" (success = HTTP 200/201/202/204, business-success when applicable)
+- "Percentage of writes that propagate to read replicas within 5 seconds"
+- "Percentage of jobs completing within their SLA"</p>
+<p>Good SLIs are <em>ratios</em>: numerator (good events) / denominator (total events), measured over a window.</p>
+</div>
+<h1>Three exercises</h1>
+<div class="exercise">
+<p><strong>Exercise 1: The mysterious slowdown.</strong></p>
+<p>p99 latency on <code>/checkout</code> jumped from 200ms to 2000ms over 30 minutes. CPU on app servers is 35%. CPU on database is 40%. Memory is fine everywhere. Network is fine. No deploys in the last 4 hours. Traffic is normal. Where do you look next, and in what order?</p>
+<div class="answer-box">
+<p>Apply the framework. Distinguish <em>symptom</em> from <em>cause</em>. CPU and memory are <em>resource</em> metrics — they tell you about the host, not the request.</p>
+</div>
+<div class="solution">
+<p><strong>Senior approach:</strong></p>
+<ol>
+<li><strong>Distributed tracing first.</strong> Pull 5–10 slow request traces. Find which span owns the time. Don't look at dashboards yet.</li>
+<li>If the slow span is the <strong>database</strong>, check: query plans (did a plan flip?), index health, lock waits, connection pool utilization, slow query log.</li>
+<li>If the slow span is a <strong>downstream service</strong>, recurse: look at <em>its</em> RED metrics, then trace into it.</li>
+<li>If the slow span is <strong>inside the app</strong> (not in a downstream call), look at: GC pauses, thread pool saturation, locks in code, synchronous I/O on the hot path.</li>
+<li>Specifically check the <strong>non-obvious resources</strong>: connection pool utilization (could be 100% even when DB CPU is 40%), thread pool utilization (could be queueing even when host CPU is fine), file descriptor count, GC pause times.</li>
+<li>Check <strong>deployments to dependencies</strong> — your team didn't deploy, but did the auth service team? Did the payment provider change something? Did the cloud provider have an incident in the AZ?</li>
+</ol>
+<p>The bottleneck is almost certainly <em>queueing</em> somewhere — connection pool, thread pool, downstream dependency, or GC. CPU at 35% with a 10x latency increase is the classic queue-collapse signature.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2: The histogram bucket trap.</strong></p>
+<p>Your Prometheus histogram for API latency has buckets at: 10ms, 50ms, 100ms, 500ms, 1s, 5s, 10s, +Inf. Your p99 from <code>histogram_quantile(0.99, ...)</code> reads 5s exactly. Your boss wants you to optimize the system to get p99 under 1s. You make a change you believe is a major improvement. The dashboard still reads p99 = 5s. Why?</p>
+<div class="answer-box">
+<p>Bucket boundaries determine percentile resolution. The percentile function interpolates <em>within</em> a bucket.</p>
+</div>
+<div class="solution">
+<p><strong>Senior answer:</strong></p>
+<p><code>histogram_quantile()</code> interpolates linearly between bucket boundaries. If your p99 of requests falls between the 1s bucket and the 5s bucket, the function reports a value somewhere in [1s, 5s]. The exact value depends on bucket <em>counts</em>, not on actual request distribution within the bucket.</p>
+<p>Possible reasons your p99 still reads 5s:</p>
+<ol>
+<li><strong>Insufficient bucket resolution between 1s and 5s.</strong> You need buckets at 1.5s, 2s, 3s — otherwise <em>any</em> request that's between 1s and 5s gets reported as ~5s by the interpolation.</li>
+<li><strong>Your improvement moved requests from 4s → 2s, but both still fall in the [1s, 5s] bucket</strong> — so the histogram count for that bucket didn't change, and <code>histogram_quantile()</code> still reports 5s.</li>
+<li><strong>Stale data in the dashboard time range.</strong> Make sure you're looking at the post-change window.</li>
+</ol>
+<p><strong>The fix:</strong> add buckets between 1s and 5s. Better yet, use <em>exponential</em> buckets (Prometheus has <code>histogram_quantile()</code> with native histograms in newer versions, or use <code>t-digest</code> / HDR for true percentile fidelity). The lesson: bucket choice <em>is</em> the precision of your p99. If you didn't choose buckets correctly, your dashboard is reporting <em>bucket boundaries</em>, not real percentiles.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3: The error budget decision.</strong></p>
+<p>Your SLO is 99.95% successful requests over 30 days. With 7 days left in the month, you've already used 95% of your error budget. Your team wants to ship a major feature that touches the checkout flow. The change is well-tested, but checkout is your highest-traffic path. What's your senior recommendation?</p>
+<div class="answer-box">
+<p>Error budgets convert reliability vs velocity from a political question to a math one.</p>
+</div>
+<div class="solution">
+<p><strong>Senior answer:</strong></p>
+<p>The error budget framework gives a clear answer. With 5% of budget remaining and 23% of the time period remaining, you're <em>burning faster than your budget allows</em>. Shipping a checkout-flow change carries non-zero risk — even a 0.05% error rate during rollout would consume your remaining budget.</p>
+<p><strong>Recommendation:</strong>
+1. <strong>Postpone the deploy</strong> to the start of the next month, when the error budget resets. State this is the SRE-recommended action: when budget is exhausted, freeze risky changes.
+2. If business pressure demands shipping: <strong>gate it behind a feature flag</strong> at 1% of traffic. The math: 1% rollout × 0.05% error rate = 0.0005% impact, which is within budget tolerance even with current burn.
+3. <strong>Use this incident as a forcing function</strong> for a reliability review. Why was 95% of the budget burned? Were the incidents preventable? What runbooks need updating?</p>
+<p><strong>The signal you give your interviewer:</strong> you treat error budgets as <em>real constraints</em>, not theater. You separate "we can ship this" from "we should ship this." You have a graduated rollout plan, not a binary go/no-go.</p>
+<p>The non-senior answer is "ship it anyway, it's well-tested." The senior answer respects the math: probabilities compound, and a well-tested change has a non-zero error rate at production scale.</p>
+</div>
+</div>
+<h1>No dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p><strong>Q: Should I use OpenTelemetry, or stick with my vendor's APM agent?</strong></p>
+</div>
+<div class="a">
+<p>OpenTelemetry is the open standard, and most modern APMs (Datadog, New Relic, Honeycomb, Tempo) accept OTel data. Senior recommendation: instrument with OpenTelemetry SDK in your code, and choose a backend separately. This avoids vendor lock-in. Vendor agents are easier to start with but harder to migrate from later.</p>
+</div>
+<div class="q">
+<p><strong>Q: How long should I retain metrics? Logs? Traces?</strong></p>
+</div>
+<div class="a">
+<p><strong>Metrics:</strong> raw at 15s resolution for 14 days, downsampled to 5min for 1 year. <strong>Logs:</strong> 7-30 days hot, 90 days warm, longer in cheap archival. <strong>Traces:</strong> 1-7 days at full sampling, longer if you sample only slow ones. Storage costs dominate observability budgets at scale — be intentional about retention.</p>
+</div>
+<div class="q">
+<p><strong>Q: We have alerts that fire constantly. Should we just disable the noisy ones?</strong></p>
+</div>
+<div class="a">
+<p>No — that's how you miss real incidents. The senior approach: every alert should be <em>actionable</em>. If an alert can't be acted on by a human, delete it. If an alert fires and resolves on its own, raise the threshold or add hysteresis (e.g., "fire only if condition holds for 5 minutes"). Alert fatigue kills on-call.</p>
+</div>
+<div class="q">
+<p><strong>Q: What's a "symptom-based" vs "cause-based" alert?</strong></p>
+</div>
+<div class="a">
+<p>Symptom-based alerts on user impact ("checkout p99 &gt; 1s"). Cause-based alerts on potential causes ("CPU &gt; 90%"). Senior teams alert on <em>symptoms</em> and use <em>causes</em> as diagnostic dashboards. Cause-based alerts often fire when nothing's wrong (CPU spike with no impact) and miss real incidents (no resource saturation but customer pain).</p>
+</div>
+<div class="q">
+<p><strong>Q: Should I trace every request, or sample?</strong></p>
+</div>
+<div class="a">
+<p>Sample, unless you're in early development. Full tracing has 5-15% performance overhead and storage costs scale linearly. Common patterns: 1% head sampling (decide at trace start), tail sampling (decide at trace end — sample slow or errored traces preferentially), or "always trace by user" for VIP customers. Honeycomb-style dynamic sampling is the senior pattern.</p>
+</div>
+<div class="q">
+<p><strong>Q: What's the difference between "structured logging" and regular logging?</strong></p>
+</div>
+<div class="a">
+<p>Structured logs are JSON or key-value pairs. Regular logs are unstructured strings. The senior pattern: log structured (<code>{"event":"checkout_completed","user_id":123,"amount":42.50,"latency_ms":85}</code>) so you can query, filter, and aggregate. Logging "Checkout completed for user 123 in 85ms" forces grep regex pain forever after.</p>
+</div>
+<div class="q">
+<p><strong>Q: How do I monitor third-party APIs I depend on?</strong></p>
+</div>
+<div class="a">
+<p>Two layers: (1) instrument your client calls (latency, error rate, retries). This shows <em>your view</em> of the dependency. (2) subscribe to the vendor's status page or use synthetic checks (probes that exercise their API on a schedule). Real outages often show up in <em>your</em> metrics before <em>their</em> status page updates.</p>
+</div>
+<div class="q">
+<p><strong>Q: I'm seeing latency spikes that don't correlate with anything. What's happening?</strong></p>
+</div>
+<div class="a">
+<p>Likely candidates: (a) GC pauses (check GC log times against latency spikes), (b) noisy-neighbor on shared infrastructure (cloud VMs with bursty co-tenants), (c) network microbursts (check TCP retransmits), (d) cron jobs / scheduled work (check the calendar of all your services), (e) DNS lookups (most clients cache poorly). The "uncorrelated spike" usually has a hidden correlation you haven't measured yet.</p>
+</div>
+</div>
+<h1>Three myths</h1>
+<div class="myth">
+<p><strong>MYTH: "If the dashboard is green, everything is fine."</strong></p>
+<p>Dashboards show what you <em>measured</em>. They don't show what you <em>forgot to measure</em>. Real incidents often happen in dimensions you don't have a metric for: a specific customer, a specific endpoint, a specific time-of-day pattern, a specific data shape. Senior engineers add new dashboards in <em>response to incidents</em> — every incident teaches you something you weren't measuring.</p>
+</div>
+<div class="myth">
+<p><strong>MYTH: "More monitoring is better."</strong></p>
+<p>More monitoring is <em>worse</em> if it produces alert fatigue, blows up storage costs, and slows down the system. Every metric has cost: collection, transmission, storage, query. The senior approach is <em>fewer, more meaningful</em> metrics, not exhaustive coverage of every counter.</p>
+</div>
+<div class="myth">
+<p><strong>MYTH: "Distributed tracing replaces logs and metrics."</strong></p>
+<p>Distributed tracing complements them. Traces excel at "where did the time go for <em>this</em> request." Metrics excel at "how is the system behaving in <em>aggregate</em>." Logs excel at "what was happening at <em>this exact moment</em>." The three are orthogonal — you need all three. Tracing without metrics means you can't tell normal from abnormal. Metrics without tracing means you can't drill into a specific slow request.</p>
+</div>
+<h1>Five gotchas</h1>
+<div class="gotcha">
+<p><strong>GOTCHA 1: Your timeseries database is a single point of failure.</strong></p>
+<p>If Prometheus / Datadog / your metrics backend goes down during an outage, you're flying blind. Run <em>redundant</em> metrics paths: a local agent that writes to disk if the network is down, dual-writes to two regions, or a backup metrics store. The worst time to lose observability is during an incident.</p>
+</div>
+<div class="gotcha">
+<p><strong>GOTCHA 2: Cardinality explosions kill metrics systems.</strong></p>
+<p>Tagging metrics with <code>user_id</code>, <code>request_id</code>, or any high-cardinality dimension can produce millions of unique time series, OOM-ing your metrics server. Rule: tag with low-cardinality labels (service, endpoint, region, status_code). High-cardinality data goes in <em>logs</em> or <em>traces</em>, not metrics. Datadog and Prometheus both bill on cardinality — this can become a five-figure-monthly mistake.</p>
+</div>
+<div class="gotcha">
+<p><strong>GOTCHA 3: Clock skew breaks tracing.</strong></p>
+<p>Distributed traces depend on accurate timestamps across hosts. If your hosts have 50ms clock skew, span timings are off by 50ms — sometimes appearing as <em>negative</em> durations. Run NTP on every host. Modern cloud providers handle this, on-prem deployments often don't. When you see "span ended before it started" in your trace viewer, that's clock skew.</p>
+</div>
+<div class="gotcha">
+<p><strong>GOTCHA 4: Sampling-based percentiles can lie at low traffic.</strong></p>
+<p>If your endpoint gets 100 requests/hour and you sample 1% of traces, you have <em>one</em> trace per hour. Your p99 from that sample is meaningless — you have no statistical signal. For low-traffic endpoints, sample at 100% or use specialized low-traffic instrumentation. The math: you need at least ~1000 samples to estimate p99 stably.</p>
+</div>
+<div class="gotcha">
+<p><strong>GOTCHA 5: Pre-aggregated percentiles can't be re-aggregated.</strong></p>
+<p>If your CDN reports per-minute p99 to your metrics store, you cannot compute hourly p99 by averaging the minute values. You'd need raw histograms. Many vendors hide this behind "percentile" widgets that <em>do</em> average percentiles silently, producing nonsense values. Always verify: am I aggregating histograms (correct) or aggregating percentiles (wrong)?</p>
+</div>
+<h1>Mock interview</h1>
+<div class="mock-interview">
+<div class="turn q">
+<p><strong>Interviewer:</strong> "Your service's p99 latency just spiked from 200ms to 3 seconds. Walk me through how you'd debug it in production, in real time."</p>
+</div>
+<div class="turn a">
+<p><strong>You:</strong> "I'd run three frameworks in parallel — they answer different questions.</p>
+<p>First, four golden signals on the affected service: confirm latency is up, check whether errors are also up (which would suggest a different failure mode), and confirm whether traffic spiked (load-driven) or stayed flat (infrastructure-driven). I'd also check the timeline — did this start at a specific moment? A deploy, config push, traffic event?</p>
+<p>Second, distributed tracing. Pull 5-10 slow request traces. The bottleneck layer is whichever span owns the most time. I'm not guessing from dashboards — I'm reading the actual request paths. If 90% of the time is in the database span, that's where to focus. If 90% is in a downstream service, recurse into that service.</p>
+<p>Third, USE on the bottleneck layer. Once I know it's the database, I check CPU utilization and saturation (run queue depth), memory and swap, disk I/O wait time and queue depth, network errors, connection pool utilization, and lock waits. The bottleneck is the resource that's saturated <em>or</em> that has high error rates.</p>
+<p>While I'm doing this, I'm checking my hypothesis against the timeline. If a deploy went out 5 minutes before the spike started, the deploy is the prime suspect — roll it back first, debug after."</p>
+</div>
+<div class="commentary">
+<p><strong>What makes this senior:</strong> named three specific frameworks, distinguished resource metrics from request metrics, mentioned "I'm not guessing from dashboards," called out the deploy timeline as a primary correlation. Connected debugging to mitigation (roll back, then debug).</p>
+</div>
+<div class="turn q">
+<p><strong>Interviewer:</strong> "You're seeing CPU at 40% utilization but p99 latency is 4 seconds. The team says 'CPU isn't the bottleneck because it's only at 40%.' What do you tell them?"</p>
+</div>
+<div class="turn a">
+<p><strong>You:</strong> "CPU utilization at 40% can absolutely coexist with a CPU bottleneck — it's a classic queueing collapse signature.</p>
+<p>Utilization is the <em>average over a time window</em>. If the window is 1 minute and you have bursty workloads, you can have 100% utilization for 24 seconds and 0% for 36 seconds, which averages to 40% but means requests are queueing for half the window.</p>
+<p>I'd ask the team to look at <em>saturation</em>, not utilization. Specifically: run queue length (processes waiting for CPU). On a 4-core machine, anything above 4 means processes are queueing. If they're seeing run queue length of 10-15 with 40% utilization, that's the smoking gun — CPU is bursting to saturation in microsecond windows.</p>
+<p>Other classic culprits with 'low' CPU: disk I/O wait queue depth, connection pool exhaustion (apps blocked waiting for a free connection), thread pool saturation in the application server, GC pauses on the JVM. All of these produce 'CPU looks fine but latency is awful.'</p>
+<p>The senior framing: utilization tells you whether the <em>server</em> is busy. Latency tells you whether <em>requests</em> are waiting. They are different things. Always look at both."</p>
+</div>
+<div class="commentary">
+<p><strong>What makes this senior:</strong> explained the math behind why averaged utilization lies, named specific saturation metrics, listed the 4-5 common causes of "low CPU + high latency", and gave a memorable framing ("server busy" vs "requests waiting"). The interviewer is hearing pattern recognition from real incidents.</p>
+</div>
+<div class="turn q">
+<p><strong>Interviewer:</strong> "Walk me through how you'd design SLOs for a new payment processing service."</p>
+</div>
+<div class="turn a">
+<p><strong>You:</strong> "Three SLIs, then I'd derive the SLOs from business requirements.</p>
+<p>SLI 1 — Availability: percentage of payment requests that return a final answer (success or business-rejection) rather than a system error or timeout. Numerator: requests with a 200 or business-decision 4xx response. Denominator: total requests minus client-side bad-request errors (400s for malformed input, since those aren't our fault).</p>
+<p>SLI 2 — Latency: percentage of payment authorization requests completing within 3 seconds. The 3-second number isn't arbitrary — it's the typical card-network timeout, and customers abandon at higher latencies. Histogram-based, computed over rolling 30-day windows.</p>
+<p>SLI 3 — Settlement timeliness: percentage of authorized payments that settle within 24 hours. This is a <em>business</em> SLI, not a technical one — it captures the end-to-end value chain.</p>
+<p>For SLOs, I'd start tight and loosen if business allows: 99.95% availability, 99.9% latency under 3s, 99.99% settlement within 24h. The settlement is highest because regulatory and customer-trust impact is high.</p>
+<p>For SLA, I'd set the <em>contractual</em> number lower than the SLO — 99.9% availability with credit-back terms — so we have buffer between internal goals and contractual commitments.</p>
+<p>Then I'd implement error budget tracking, monthly. When budget is depleted, we freeze non-critical changes. When budget is healthy, we ship aggressively. That's the real value of the framework — it converts political velocity-vs-reliability debates into math."</p>
+</div>
+<div class="commentary">
+<p><strong>What makes this senior:</strong> distinguished SLI from SLO from SLA cleanly, included a <em>business</em> SLI alongside technical ones, gave specific reasoning for the latency threshold (card network timeout), and tied error budgets to deploy decisions. Interviewer is hearing someone who's run on-call rotations.</p>
+</div>
+<div class="turn q">
+<p><strong>Interviewer:</strong> "A junior engineer reports that they 'reduced the average latency by 40%' on the checkout endpoint. How do you respond?"</p>
+</div>
+<div class="turn a">
+<p><strong>You:</strong> "First, I'd celebrate the work — improvements deserve recognition. Then I'd ask three questions, in order.</p>
+<p>One: 'How did p50, p95, p99, and p99.9 change?' Average improvements often come from removing fast requests (e.g., adding a cache that handles the easy cases) without touching the slow ones. The customers in pain are in the tail. If the tail didn't move, the customers didn't get happier — even if the average looks great.</p>
+<p>Two: 'How did you measure?' If they computed average from pre-aggregated minute-level p99s, the math is wrong (you can't average percentiles). I'd want to see the histogram-based methodology and the actual buckets used.</p>
+<p>Three: 'How did downstream metrics change?' If checkout calls a payment service and we sped up checkout by reducing payment timeouts, we may have <em>transferred</em> the latency to higher error rates downstream. Improvements can be illusions if they shift cost rather than eliminate it.</p>
+<p>The senior framing: 'average latency' is rarely the right SLI. Tail percentiles capture customer pain, especially in fanout architectures where p99 of individual services aggregates badly into homepage p50s. I'd thank the engineer for the work, and ask them to redo the analysis with full percentile distribution and the downstream impact."</p>
+</div>
+<div class="commentary">
+<p><strong>What makes this senior:</strong> validated the engineer's effort first (good leadership), then gave three pointed questions that would surface common mistakes (fast-case bias, percentile arithmetic errors, latency-shifting). Mentioned fanout amplification of tails. The reply is technically rigorous <em>and</em> respectful — that combination is what separates senior from staff.</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<p><strong>THE FRAMEWORKS</strong>
+- <strong>USE</strong> (resources): Utilization, Saturation, Errors. For CPU, memory, disk, network.
+- <strong>RED</strong> (services): Rate, Errors, Duration (as percentiles, not averages).
+- <strong>Four golden signals</strong> (user-facing): Latency, Traffic, Errors, Saturation.</p>
+<p><strong>DEBUGGING ORDER</strong>
+1. Confirm customer impact via golden signals.
+2. Decompose latency via distributed traces — find which span owns the time.
+3. Apply USE on the bottleneck layer's resources.
+4. Profile if needed: CPU profiler when CPU saturated, off-CPU profiler otherwise.</p>
+<p><strong>PERCENTILES</strong>
+- Average lies; medians lie about tails; p99 catches 1% pain.
+- Percentiles do NOT compose: average of p99s is meaningless.
+- Use histograms (mergeable) not pre-aggregated percentiles.
+- Fanout amplifies tails: 50 calls each at p99=100ms means 40% of homepages exceed 100ms.</p>
+<p><strong>SLO/SLI/SLA</strong>
+- SLI: a measurable user-experience metric (number).
+- SLO: an internal target for SLIs.
+- SLA: contractual commitment to customers (looser than SLO).
+- Error budget: 100% − SLO. Spend on planned and unplanned changes.</p>
+<p><strong>TOP 10 METRICS</strong>
+1. Per-endpoint latency p50/p95/p99/p99.9
+2. Per-endpoint error rate by type
+3. Database query latency by query type
+4. Connection pool utilization (every pool)
+5. Cache hit ratio (every cache)
+6. Replication lag
+7. GC pause times
+8. Saturation across resources
+9. Dependency latency from each service
+10. Business KPIs (orders/min, signups/min)</p>
+<p><strong>ALERT DISCIPLINE</strong>
+- Symptom-based, not cause-based.
+- Every alert must be actionable.
+- Alert fatigue → missed incidents. Tune ruthlessly.</p>
+<p><strong>GOTCHAS</strong>
+- Cardinality explosions kill metrics systems.
+- Pre-aggregated percentiles can't be re-aggregated.
+- Sampling-based percentiles need ~1000 samples to be stable.
+- Clock skew breaks distributed traces.
+- Vendor "average percentile" widgets often produce nonsense.</p>
+<p><strong>TOOLS</strong>
+- Tracing: OpenTelemetry, Jaeger, Tempo, Honeycomb, Datadog APM
+- Metrics: Prometheus + Grafana, Datadog, New Relic
+- Logging: Elastic/OpenSearch, Loki, Datadog Logs
+- Profiling: async-profiler (Java), py-spy (Python), pprof (Go), 0x (Node)</p>
+</div>
+<div class="pullquote">
+<p>"Junior engineers point at the slowest dashboard. Senior engineers decompose the request path. Staff engineers anticipate which path will be slow next quarter and instrument it before it breaks."</p>
+</div>
+<h1>What's next</h1>
+<p>You can now find a bottleneck. The next two modules build on this:</p>
+<p><strong>Module 20 — Capacity Planning &amp; When to Scale.</strong> How to predict when the system will hit its limits, headroom thresholds, growth modeling, load testing, and the engineering-leadership conversations about scaling investments.</p>
+<p><strong>Module 21 — Multi-Region Architecture.</strong> A dedicated treatment of geo-distribution: latency budgets per region, edge POPs, anycast routing, regional data residency, and the patterns for active-active across continents.</p>
+<p>Together, observability + capacity + geo are the operational triad of senior systems engineering. Find bottlenecks. Predict them before they bite. Keep them from cascading across regions. That's the job.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="18_rate_limiting.html" class="prev">&laquo; 18 Rate Limit</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="20_capacity_planning.html" class="next">20 Capacity &raquo;</a>
+</nav>
+</body>
+</html>

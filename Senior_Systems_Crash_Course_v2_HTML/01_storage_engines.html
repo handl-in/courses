@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meet the cast</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 01</p>
+</div>
+<div class="module-title">
+<p>Storage Engines</p>
+</div>
+<div class="subtitle">
+<p>B-trees, LSM trees, and the most important fork in the road of database design</p>
+</div>
+</div>
+<div class="opener">
+<p>You're at a whiteboard. The interviewer leans back, arms crossed, and says: <em>"Why does Postgres use B-trees and Cassandra use LSM trees? Pick one. Tell me what would break if we swapped them."</em></p>
+<p>Five seconds to start talking. What's the first sentence out of your mouth?</p>
+<p>If you said <em>"Well, it depends..."</em> — that's the answer that gets you marked junior. By the end of this module, you'll have a much better one.</p>
+</div>
+<h1>Meet the cast</h1>
+<p>Throughout this book you'll bump into two people. They'll argue. They'll be wrong sometimes. They'll teach you more by getting things wrong than by reciting definitions.</p>
+<div class="cast">
+<div class="character maya">
+<h4>Maya</h4>
+<div class="role">
+<p>Senior staff engineer</p>
+</div>
+<div class="bio">
+<p>12 years building OLTP systems at scale. Has seen Postgres clusters fall over in seventeen distinct ways. Drinks coffee black. Believes "it depends" is the laziest answer in distributed systems.</p>
+</div>
+</div>
+<div class="character sam">
+<h4>Sam</h4>
+<div class="role">
+<p>Mid-level engineer prepping for senior interviews</p>
+</div>
+<div class="bio">
+<p>6 years of CRUD apps. Knows Postgres well enough to be dangerous. Just got reading list of "things you should already know" and is panicking. Sam asks the questions you wish you could ask without judgment.</p>
+</div>
+</div>
+</div>
+<p>Sam is interviewing in three weeks. Maya has agreed to coach. They sat down with coffee. Here's how it begins.</p>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+OK so I keep reading "B-tree vs LSM tree" everywhere. I get the words. But honestly? If you put me on a whiteboard right now, I'd draw a tree and say "it has nodes." Then I'd look at you with hopeful eyes.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+That's exactly what most candidates do. And it's why most candidates don't pass. Storage engines aren't trivia. They're the most concrete <em>tradeoff</em> in databases. Every other concept — replication, indexes, consistency — sits on top of the choice the database made down here.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+Down where?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Down at the disk. The actual bytes. Where do they go when you write them? In what order do they sit? And — this is the question that decides everything — <em>when do you do the work of sorting them?</em></p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+Sorting? Why does sorting matter?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Because reads are fast on sorted data and slow on unsorted data. Period. That's the whole game. Now: do you sort <em>now</em> (every time you write) or <em>later</em> (in a background batch)? Pick one. It changes everything.</p>
+</div>
+</div>
+<div class="pause">
+<p>Stop. Read that last paragraph again. That's the entire chapter in one sentence.</p>
+</div>
+<h1>The fork in the road</h1>
+<p>There are two answers to "when do you do the sorting?" Just two. They define the entire history of database storage engines.</p>
+<div class="keyidea">
+<p><strong>Sort on write</strong> = B-trees. Pay the cost up front, every time. Fast reads, slower writes.</p>
+<p><strong>Sort later</strong> = LSM trees. Pay the cost in the background. Fast writes, more complicated reads.</p>
+</div>
+<p>That's it. That's the dichotomy. Everything else in this chapter is consequences.</p>
+<p>But "consequences" matter. Consequences are what gets asked about in interviews. Consequences are what bites you at 3 AM. Let's earn the consequences.</p>
+<h1>A tale of two writes</h1>
+<p>Let's make this concrete with two systems doing the exact same thing.</p>
+<div class="scenario">
+<p><strong>The setup:</strong> identical hardware. NVMe SSD. 32 GB RAM. One CPU. Two databases:</p>
+<ul>
+<li><strong>System A</strong>: PostgreSQL (B-tree storage engine for tables and indexes).</li>
+<li><strong>System B</strong>: Cassandra (LSM tree storage engine).</li>
+</ul>
+<p>Same schema. We'll write 10 million rows in a tight loop and then query a single row.</p>
+<p>What happens?</p>
+</div>
+<div class="expectation">
+<div class="left">
+<p>You'd probably guess that the more "modern" system (Cassandra) is faster at everything. Or that they're roughly comparable because — hey — same hardware.</p>
+</div>
+<div class="right">
+<p>Cassandra ingests writes about <strong>5-10x faster</strong> than Postgres. Postgres reads the resulting data about <strong>2-3x faster</strong> for point lookups. They're not "comparable." They're optimized for opposite things.</p>
+</div>
+</div>
+<p>How can the same hardware produce wildly different results? Because the hardware loves <em>some</em> I/O patterns and hates others. The two engines play to different strengths.</p>
+<h1>Why the disk has feelings</h1>
+<p>Before we go further, you need to internalize one fact about every storage device that has ever existed.</p>
+<div class="keyidea">
+<p>Sequential I/O is wildly faster than random I/O. On HDDs, ~100x. On SATA SSDs, ~10x. On NVMe SSDs, still ~3-5x. <strong>Even on RAM, sequential reads beat random reads</strong> because of CPU caching.</p>
+</div>
+<div class="metaphor">
+<p>Imagine a librarian. She works in a library where every book is on a shelf in alphabetical order.</p>
+<p><strong>"Bring me ten books in a row from the same shelf."</strong> Easy. She walks to the shelf, grabs them, walks back. Done in 30 seconds.</p>
+<p><strong>"Bring me ten random books from anywhere in the library."</strong> She walks to one shelf. Grabs it. Walks across the building. Grabs another. Walks to a third floor. And so on. 10 minutes.</p>
+<p>Same ten books. Same librarian. <strong>30 seconds vs 10 minutes.</strong> That's sequential vs random I/O.</p>
+<p>The disk isn't fundamentally different from this librarian. It hates random work, even with SSDs. SSDs <em>moderate</em> the pain compared to spinning disks, but they don't eliminate it.</p>
+</div>
+<p>This is why sorting matters. <strong>Sorted data on disk = sequential reads = fast.</strong> Unsorted data = random reads = slow.</p>
+<p>So now the question becomes: how do you keep data sorted <em>despite</em> the fact that real workloads insert keys in random order?</p>
+<p>The two engines give different answers.</p>
+<h1>B-trees: sort as you go</h1>
+<p>A B-tree is exactly what it sounds like: a tree, but with fat nodes. Each node holds many keys (often hundreds). It's also <em>balanced</em> — every leaf is the same depth from the root.</p>
+<div class="diagram">
+<pre><code>                        ┌─────────────────────┐
+                        │  [50, 100, 200]      │   ← root (in memory)
+                        └──┬──────┬──────┬─────┘
+                           │      │      │
+          ┌────────────────┘      │      └────────────────┐
+          ▼                       ▼                       ▼
+    ┌──────────┐           ┌──────────┐           ┌──────────┐
+    │ [10, 30] │           │ [60, 80] │           │ [120,150]│   ← internal
+    └──┬───┬───┘           └──┬───┬───┘           └──┬───┬───┘
+       │   │                  │   │                  │   │
+       ▼   ▼                  ▼   ▼                  ▼   ▼
+    leaves with actual rows of data
+</code></pre>
+</div>
+<div class="diagram-caption">
+<p>A B-tree of branching factor 3. Real ones have branching factors of 100-300.</p>
+</div>
+<p>To find a key, you walk from the root to a leaf. Compare the key against the root's separators, pick a child, recurse. Done in 3-4 steps even for huge databases.</p>
+<div class="workout">
+<p><strong>To find row with key=125 in the tree above:</strong></p>
+<div class="step">
+<p>Load root: <code>[50, 100, 200]</code>. 125 is between 100 and 200, so go to the rightmost child.</p>
+</div>
+<div class="step">
+<p>Load that child: <code>[120, 150]</code>. 125 is between 120 and 150, so go to the middle child.</p>
+</div>
+<div class="step">
+<p>Load the leaf. The row is there. Return it.</p>
+</div>
+<p>Three page reads. <strong>No matter how big the database.</strong> A 10 GB B-tree and a 10 TB B-tree both take ~4 reads, because adding data just adds depth to the tree, and depth grows logarithmically.</p>
+</div>
+<p>So far so good for <em>reads</em>. Now let's see what happens on a <em>write</em>.</p>
+<h2>What a B-tree does on every single write</h2>
+<div class="workout">
+<p><strong>Inserting a new row with key=42 into a B-tree:</strong></p>
+<div class="step">
+<p>Walk the tree to find which leaf page should contain key 42. (~3-4 page reads. Mostly cached, but always at least one.)</p>
+</div>
+<div class="step">
+<p>Load that leaf page from disk into memory.</p>
+</div>
+<div class="step">
+<p>Insert the new key in the right sorted position within the page. This may require shifting other keys around inside the page.</p>
+</div>
+<div class="step">
+<p><strong>Write the entire page back to disk.</strong> Yes — even if you only changed one byte, the disk write is for the whole 8 KB page.</p>
+</div>
+<div class="step">
+<p>Did the leaf overflow? Then <em>split it into two pages</em>, update the parent. Did the parent now overflow? Split it too. In the worst case, splits cascade up to the root.</p>
+</div>
+</div>
+<p>Note step 4. <strong>Every write is a random page write.</strong> You picked some leaf out of millions; the next write picks a different one. The disk hates this, remember?</p>
+<div class="margin-note">
+<p>This is where most "Postgres write performance" complaints come from — random page writes plus the WAL fsync (next module).</p>
+</div>
+<p>Postgres mitigates this with the <strong>buffer pool</strong> (a giant in-memory cache of pages) and <strong>lazy flushing</strong> (write to disk during checkpoints, not immediately). But fundamentally: B-tree writes are random page writes.</p>
+<h1>LSM trees: sort later, much later</h1>
+<p>The LSM tree (Log-Structured Merge tree) takes a radically different approach: <strong>never touch the existing data on disk</strong>. Just keep appending.</p>
+<p>That sounds insane. But once you see it, you'll understand why every modern write-heavy database uses some flavor of LSM.</p>
+<div class="diagram">
+<p>Write path:</p>
+<p>write request
+        │
+        ▼
+   ┌──────────────────┐         ┌────────────────────┐
+   │  in-memory       │         │  commit log        │
+   │  sorted memtable │ ──and── │  append-only file  │  ← protects durability
+   │  (skip list)     │         │  on disk           │
+   └──────────────────┘         └────────────────────┘
+        │
+   memtable fills up...
+        │
+        ▼
+   ┌──────────────────┐
+   │  flushed to disk │
+   │  as immutable    │  SSTable_1
+   │  SSTable file    │
+   └──────────────────┘</p>
+<p>Many writes later...</p>
+<p>┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+   │  SSTable_1   │ │  SSTable_2   │ │  SSTable_3   │
+   └──────┬───────┘ └──────┬───────┘ └──────┬───────┘
+          │                 │                 │
+          └─────────┬───────┴────────────────┘
+                    ▼
+             COMPACTION (background)
+                    ▼
+            ┌──────────────────┐
+            │  SSTable_merged  │   single sorted file
+            └──────────────────┘</p>
+</div>
+<p>Let's walk through one write to see the magic.</p>
+<div class="workout">
+<p><strong>Inserting a new row with key=42 into an LSM tree:</strong></p>
+<div class="step">
+<p>Append the change to a commit log on disk. (Sequential write — fast.)</p>
+</div>
+<div class="step">
+<p>Insert the row into an in-memory sorted structure called a <strong>memtable</strong>. (Pure RAM operation — extremely fast.)</p>
+</div>
+<div class="step">
+<p>Acknowledge the write. The client thinks it's done. <strong>It is done, in any meaningful sense.</strong></p>
+</div>
+<div class="step">
+<p>Eventually, when the memtable gets big (say, 64 MB), the database flushes it to disk as a brand-new file called an <strong>SSTable</strong> ("Sorted String Table"). Sequential write. Once written, the SSTable is <em>never modified.</em></p>
+</div>
+<div class="step">
+<p>Over time, you accumulate many SSTables — all sorted internally, but separate from each other. A background process called <strong>compaction</strong> merges them into bigger sorted files.</p>
+</div>
+</div>
+<p>Notice what's missing. There's no random page rewrite. No tree mutation. No splits. Every disk operation is sequential. The disk is happy.</p>
+<div class="pause">
+<p>Read step 3 again. The database acked the write <em>with the data only in RAM and a commit log</em>. Why is that safe? Because the commit log is on disk. If the server crashes, on restart, it replays the commit log and rebuilds the memtable. <strong>No data lost.</strong></p>
+<p>This is <em>exactly</em> the same trick a B-tree uses with its WAL — we'll cover that in Module 02. The LSM just leans on it harder.</p>
+</div>
+<h1>Same insight, three different ways</h1>
+<p>Sometimes the same idea clicks differently for different people. Here's the LSM tree explained in three ways. Find the one that sticks.</p>
+<h2>Way 1: a desk metaphor</h2>
+<div class="metaphor">
+<p>You're an analyst. People bring you papers all day. You're supposed to keep them sorted by name.</p>
+<p><strong>Strategy A (B-tree):</strong> Every time someone hands you a paper, you walk to the filing cabinet, find the right alphabetical position, and slot it in. If a folder gets too thick, you split it into two folders. You're always sorting.</p>
+<p><strong>Strategy B (LSM):</strong> People keep handing you papers. You toss each one into the <em>inbox tray on your desk</em>. The tray stays sorted (you keep it that way as you toss — easy with a small tray). When the tray overflows, you grab the whole stack, walk to the cabinet, and stuff it into a new folder labeled "today's batch." You don't merge it with existing folders. You just add a new folder.</p>
+<p>At the end of each week, you take all the daily folders and merge them into one big "this week" folder, throwing away duplicates. That's compaction.</p>
+<p><strong>Reading is harder under strategy B.</strong> When someone asks "do we have a paper for Alice?" you have to check the inbox tray, then today's folder, then yesterday's, then last week's. That's why LSM trees get fancy with Bloom filters (next module).</p>
+</div>
+<h2>Way 2: a money metaphor</h2>
+<div class="metaphor">
+<p>B-trees are like paying off your credit card every day. Small, steady, predictable. You never accumulate debt, but you also can't spend in bursts.</p>
+<p>LSM trees are like deferring your bills until the end of the month. Cheap moment-to-moment, big bill at the end. You can spend in bursts.</p>
+<p>The "bills" here are I/O operations. Compaction is the bill arriving.</p>
+</div>
+<h2>Way 3: ascii animation</h2>
+<p>Watch a sequence of writes to the same LSM tree.</p>
+<div class="diagram">
+<p>TIME 0:
+  memtable: [empty]
+  disk: (no SSTables yet)</p>
+<p>TIME 1: write key=50, key=20, key=80
+  memtable: [20, 50, 80]
+  disk: (no SSTables yet)</p>
+<p>TIME 2: memtable fills up
+  memtable: [empty]
+  disk: SSTable_001 = [20, 50, 80]</p>
+<p>TIME 3: write key=30, key=70
+  memtable: [30, 70]
+  disk: SSTable_001 = [20, 50, 80]</p>
+<p>TIME 4: memtable fills again
+  memtable: [empty]
+  disk: SSTable_001 = [20, 50, 80]
+        SSTable_002 = [30, 70]</p>
+<p>TIME 5: write UPDATE key=50 → new value
+  memtable: [50']    ← the prime mark means "newer version"
+  disk: SSTable_001 = [20, 50, 80]
+        SSTable_002 = [30, 70]</p>
+<pre><code>       ↑
+</code></pre>
+<p>THE BIG INSIGHT: SSTable_001 still contains the OLD value
+   for key=50. The LSM tree never touches it. The memtable
+   has the new value. On read, you find the new value first.
+   The old one becomes obsolete and will be cleaned up
+   during compaction.</p>
+<p>TIME 6: compaction merges SSTable_001 and SSTable_002
+  memtable: [50']
+  disk: SSTable_merged = [20, 30, 70, 80]
+                          ↑
+   Note: key=50 is gone! Why? Because the merger saw
+   that key=50 in memtable was newer than key=50 in
+   SSTable_001, and 50 wasn't in SSTable_002. So the
+   merger dropped the obsolete one.</p>
+</div>
+<p>Once you see how the layers work, the rest of the LSM design follows.</p>
+<h1>The brutal tradeoff</h1>
+<p>Now let's put them side by side and <em>really</em> compare.</p>
+<div class="compare">
+<div class="vs-left">
+<h4>B-tree</h4>
+<ul>
+<li><b>Random writes</b> — every insert/update touches a leaf somewhere in the tree.</li>
+<li><b>Read-modify-write per page</b> on every change. Even one byte = whole 8KB page.</li>
+<li><b>One place per key</b> — no duplicates on disk.</li>
+<li><b>Fast point reads</b> — log(N) page traversals, all cached after warmup.</li>
+<li><b>Range scans excellent</b> — leaves often linked, just walk them.</li>
+<li><b>Write amplification: ~1-2x</b>. Page rewrites cost you maybe double the data volume in actual disk writes.</li>
+<li><b>Updates: cheap.</b> Just mutate in place.</li>
+<li><b>Deletes: cheap.</b> Mark the slot free.</li>
+</ul>
+<p><b>Cost paid: at write time.</b></p>
+</div>
+<div class="vs-right">
+<h4>LSM tree</h4>
+<ul>
+<li><b>Sequential writes only</b> — append to memtable in RAM, flush to new SSTable on disk.</li>
+<li><b>Append-only on disk</b> — files never modified once written.</li>
+<li><b>Same key may exist in many SSTables</b> with different versions.</li>
+<li><b>Slower point reads</b> — must check memtable + multiple SSTables.</li>
+<li><b>Range scans need merge</b> across SSTables.</li>
+<li><b>Write amplification: 10-30x</b>. Every byte gets rewritten multiple times during compaction.</li>
+<li><b>Updates: implemented as new write</b>; old version dies during compaction.</li>
+<li><b>Deletes: write a "tombstone"</b> marker; cleanup during compaction.</li>
+</ul>
+<p><b>Cost paid: at compaction time.</b></p>
+</div>
+</div>
+<div class="brain">
+<p>Hold on. The LSM tree writes <em>more</em> data total — sometimes 30x more — and yet it's faster on writes? That's not a typo?</p>
+<p>(Think about this for 30 seconds before reading the answer.)</p>
+<p>...</p>
+<p>The answer is in two words: <strong>sequential</strong> and <strong>batched</strong>.</p>
+<p>Sequential writes are 5-100x faster than random writes (depending on storage type). So even if the LSM writes 10x more total bytes, it does so sequentially — and that's still faster than the B-tree's random page rewrites.</p>
+<p>Plus, compaction runs in the background, asynchronously. The user-facing write path doesn't pay that cost in latency. The disk pays in <em>bandwidth</em>, but you have lots of bandwidth — you don't have lots of latency.</p>
+</div>
+<h1>Read paths compared in detail</h1>
+<p>This is where most candidates trip up. The read paths are <em>different</em>, and the difference is the source of every interesting LSM optimization.</p>
+<h2>B-tree read path</h2>
+<div class="workout">
+<p><strong>Reading user_id=12345 from a Postgres B-tree:</strong></p>
+<div class="step">
+<p>Load the root page (almost certainly in the buffer pool — it's the most-accessed page).</p>
+</div>
+<div class="step">
+<p>Binary search the root to find the right child pointer.</p>
+</div>
+<div class="step">
+<p>Load the child page. Likely cached if it's a hot tree.</p>
+</div>
+<div class="step">
+<p>Binary search again. Find the right child.</p>
+</div>
+<div class="step">
+<p>Load the leaf. Cached or not depending on workload.</p>
+</div>
+<div class="step">
+<p>Find the row. If it's a clustered index (MySQL InnoDB), the row data IS the leaf. If it's a secondary index (Postgres), follow the pointer to the heap to fetch the actual row.</p>
+</div>
+<p><strong>Total</strong>: 3-4 page reads, plus possibly one heap fetch. ~10-50 microseconds for a hit.</p>
+</div>
+<h2>LSM tree read path</h2>
+<div class="workout">
+<p><strong>Reading user_id=12345 from a Cassandra LSM tree:</strong></p>
+<div class="step">
+<p>Check the memtable. If the key is there with a recent version, return it. (Pure RAM, &lt; 1 microsecond.)</p>
+</div>
+<div class="step">
+<p>If not in memtable, check the <em>most recent</em> SSTable. Each SSTable has a Bloom filter (Module 02!) that tells you "this key is <em>definitely not</em> in this SSTable" without doing any disk I/O. If the Bloom filter says "no," skip this SSTable.</p>
+</div>
+<div class="step">
+<p>For each SSTable whose Bloom filter says "maybe," seek into the SSTable's index, then into its data section. (Disk I/O — slow.)</p>
+</div>
+<div class="step">
+<p>If you find the key, return the most-recent version. (You might find older versions in older SSTables, but the first one wins because SSTables are checked newest-first.)</p>
+</div>
+<p><strong>Total</strong>: depends entirely on how many SSTables you accumulated and your Bloom filter false positive rate. A well-tuned LSM with leveled compaction: ~1-2 disk reads. A poorly-tuned LSM under write storm: 10+ disk reads.</p>
+</div>
+<div class="insider">
+<p>A <em>senior</em> candidate, when describing LSM reads, mentions Bloom filters in the same breath. It signals you understand the engineering tradeoff, not just the data structure. Practice this: never say "LSM reads are slower" without immediately following with "...but Bloom filters mitigate this."</p>
+</div>
+<h1>Compaction: where the dragons live</h1>
+<p>Compaction is the LSM tree's secret heart and its most common operational pain.</p>
+<div class="keyidea">
+<p>Compaction merges multiple SSTables into fewer, larger ones — removing duplicates, applying tombstones, and reducing read amplification.</p>
+</div>
+<p>It runs in the background. It eats:</p>
+<ul>
+<li><strong>Disk I/O</strong> (rewriting SSTables takes a lot of bandwidth).</li>
+<li><strong>CPU</strong> (merge logic, decompression/compression).</li>
+<li><strong>SSD endurance</strong> (extra writes shorten the SSD's life).</li>
+</ul>
+<p>When compaction can't keep up with writes, you get <strong>read amplification</strong>: more SSTables to check per query. Reads slow down. Latency spikes. The cluster wobbles.</p>
+<div class="reallyworld">
+<p><strong>The "Cassandra fell over under write storm" pattern.</strong></p>
+<p>A team I know was running Cassandra for time-series data. Things were fine for months. Then a new feature shipped and write volume tripled.</p>
+<p>For about an hour, things were <em>better</em> than fine — Cassandra absorbed the writes effortlessly. Memtables filled, flushed, new SSTables piled up.</p>
+<p>Then around 90 minutes in, p99 read latency suddenly went from 5ms to 800ms. The dashboards lit up red.</p>
+<p>What happened? Compaction couldn't keep up. The number of SSTables per partition went from ~5 (steady state) to ~80. Every read was now checking 80 Bloom filters and (because their Bloom filter sizing was too aggressive — too many false positives) actually doing 5-10 disk seeks per read.</p>
+<p>The fix wasn't more capacity. It was tuning the <strong>compaction strategy</strong> — switching from <code>SizeTieredCompactionStrategy</code> to <code>LeveledCompactionStrategy</code>, which keeps the number of SSTables per query bounded.</p>
+<p>The lesson: <strong>understanding compaction is understanding LSM operations</strong>.</p>
+</div>
+<p>There are two main compaction strategies you should know by name.</p>
+<h2>Size-tiered compaction (STCS)</h2>
+<p>When you have N SSTables of similar size, merge them. The result is a bigger SSTable. Wait for N more similarly-sized to accumulate. Repeat.</p>
+<p><strong>Wins</strong>: cheap to maintain. Low write amplification.</p>
+<p><strong>Loses</strong>: number of SSTables per partition is unbounded. Reads can hit many SSTables.</p>
+<p><strong>Use when</strong>: write-heavy, append-mostly, query patterns can tolerate higher read amplification.</p>
+<h2>Leveled compaction (LCS)</h2>
+<p>SSTables are organized into levels. Level 0 has small recent SSTables. Level 1 is bigger and <em>fully sorted across the level</em> (no overlap between SSTables). Level 2 is bigger again. And so on.</p>
+<p>Reads check at most one SSTable per level (because levels are non-overlapping). With ~7 levels, that's 7 SSTables max — bounded.</p>
+<p><strong>Wins</strong>: low read amplification (bounded SSTable checks).</p>
+<p><strong>Loses</strong>: high write amplification (each level rewrite costs a lot).</p>
+<p><strong>Use when</strong>: read-heavy, latency-sensitive workloads. Want predictable read performance.</p>
+<div class="pullquote">
+<p>Leveled is for reads. Size-tiered is for writes. Pick by what hurts more in your workload.</p>
+</div>
+<h1>Sam tries to convince Maya</h1>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+OK wait. If LSM is this great for writes, why doesn't <em>everyone</em> use it? Why is Postgres still the default for new projects?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Because Postgres is optimized for the <em>most common</em> workload, which is mixed reads and writes with frequent updates to existing rows. Think a SaaS app. Users update profiles. Orders update statuses. Counters increment. That's a B-tree's home turf.</p>
+<p>LSM trees handle UPDATE poorly. They don't update — they write a new version. The old one sits around taking up disk until compaction. If you're updating the same rows over and over, your LSM tree gets fat and slow.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+But Cassandra updates rows...</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Yes. Painfully. That's why Cassandra is famously <em>not</em> a good fit for "let's update this row a lot" workloads. It shines for <em>append-mostly</em> — events, logs, time-series, immutable history. Workloads where rows are written once and rarely updated.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+What about deletes?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Same problem, worse. To delete, the LSM writes a <em>tombstone</em> — a marker that says "this key is deleted." The tombstone has to propagate through every SSTable that contains the key, which only happens during compaction. Until then, reads have to keep checking those SSTables and saying "oh, that's deleted." If you delete a lot, you accumulate tombstones, and your reads get slower.</p>
+<p>Cassandra deployments at scale routinely have to deal with the "tombstone problem." There's even a metric for it.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+So picking LSM over B-tree is basically saying "my workload is append-only or close to it"?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+That's a good summary. Append-mostly. Write-heavy. Tolerant of read-side complexity. Wants horizontal scale at low write cost. That's where LSM shines.</p>
+</div>
+</div>
+<h1>Three concrete decision scenarios</h1>
+<p>Now let's take the framework and apply it. Here are three workloads. For each, I'll give you the right answer <em>and the reasoning</em> — because the answer is less important than how you arrive at it.</p>
+<div class="scenario">
+<p><strong>Workload 1: A SaaS billing system.</strong></p>
+<ul>
+<li>10K users, growing slowly.</li>
+<li>Each user has a profile, subscriptions, invoices.</li>
+<li>Reads vastly outnumber writes (~50:1).</li>
+<li>Writes are mostly updates to existing rows (subscription changes, invoice statuses).</li>
+<li>Latency must be sub-100ms even at p99.</li>
+</ul>
+<p><strong>Choose: B-tree (Postgres or MySQL).</strong></p>
+<p>Why: low write volume, lots of updates to existing rows, latency-sensitive. The B-tree's "pay on write, fast on read" profile is exactly the profile of this workload. LSM would be working hard to absorb writes you don't have, while paying with read complexity you can't tolerate.</p>
+</div>
+<div class="scenario">
+<p><strong>Workload 2: An IoT metrics ingestion service.</strong></p>
+<ul>
+<li>1 million sensors writing one reading every 30 seconds.</li>
+<li>That's ~33K writes/sec, sustained.</li>
+<li>Queries are mostly "give me the last hour for sensor X" or "give me averages for sensor group Y in the last day."</li>
+<li>Storage cost matters — historical data must be cheap.</li>
+</ul>
+<p><strong>Choose: LSM tree (Cassandra, ScyllaDB, or InfluxDB-style).</strong></p>
+<p>Why: write-dominant. Append-only data (no updates to old readings). Range queries on recent data work great with time-windowed compaction (TWCS in Cassandra) — recent SSTables are small and few, so reads are cheap. The B-tree would melt under 33K random writes/sec; the LSM absorbs them with sequential I/O.</p>
+</div>
+<div class="scenario">
+<p><strong>Workload 3: An online multiplayer game's player state.</strong></p>
+<ul>
+<li>5 million daily active players.</li>
+<li>Each player has a session state that updates several times per second.</li>
+<li>Strict latency requirements (sub-50ms reads and writes).</li>
+<li>Write rate: ~200K writes/sec at peak.</li>
+</ul>
+<p><strong>This one's a trap.</strong> Write rate is high (LSM territory), but the access pattern is <em>update the same key constantly</em> (B-tree territory). Pure LSM accumulates obsolete versions; pure B-tree can't keep up with random page writes at that rate.</p>
+<p><strong>Choose: a key-value store with hybrid characteristics, or partition the workload.</strong></p>
+<p>Real systems use Redis or Memcached as a hot in-memory cache (so most writes don't hit disk synchronously), with periodic checkpointing to durable storage. Some engines like RocksDB tune compaction to handle update-heavy workloads better.</p>
+<p>The point: don't dogmatically pick one engine. <strong>Match the engine to the access pattern, not just the volume.</strong></p>
+</div>
+<h1>Sharpen your pencil</h1>
+<p>Time to actually do something. Don't skip these.</p>
+<div class="exercise">
+<p><strong>Exercise 1.</strong> A startup's logging service writes 50K events/sec. Each event is 200 bytes. Events are read by humans investigating bugs — usually "give me all events for trace_id X in the last hour."</p>
+<p>You have to recommend a storage engine. Give your answer in 3 sentences: which engine, why, and what risk you're taking.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>LSM tree</strong> (e.g., Cassandra with TWCS, or Elasticsearch's underlying Lucene which is LSM-shaped). Reasoning: 50K writes/sec is well into the territory where B-tree random I/O hurts, and events are append-only — never updated, rarely deleted. The risk: query patterns are "fetch by trace_id," which means partitioning by trace_id (so all related events live together) is critical; if I partition by timestamp, queries fan out across partitions and read amp explodes. I'd verify the access pattern before committing.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2.</strong> Your team is debating whether to migrate a Postgres database to Cassandra. The reason given: "we need to scale." The current Postgres is at 30% CPU and 40% disk usage on a single node.</p>
+<p>Should you migrate? Yes or no, plus your three follow-up questions before deciding.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>No</strong> — at least not yet, and probably not ever for that workload. Three questions:</p>
+<ol>
+<li>
+<p><strong>What's the actual bottleneck?</strong> 30% CPU and 40% disk on a single node is <em>nowhere near</em> the limit. If reads are slow, the issue is missing indexes or query patterns, not storage engine. If writes are slow, why? Is it lock contention, WAL saturation, or actual write throughput?</p>
+</li>
+<li>
+<p><strong>What's the workload shape?</strong> If it's update-heavy SaaS data, Cassandra is the wrong tool <em>period</em>. If it's append-mostly events that have grown beyond a single Postgres can hold, then yes — but you'd partition Postgres before reaching for Cassandra.</p>
+</li>
+<li>
+<p><strong>Has anyone profiled the slow queries?</strong> Most "we need to scale" conversations are actually "we have one slow query that's locking up everything." Migrating engines doesn't fix that — it just gives the same query a new way to be slow on a less-familiar system.</p>
+</li>
+</ol>
+<p>The senior reflex: "scaling" is a symptom, not a diagnosis. Diagnose first.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3.</strong> Explain in your own words, to a hypothetical Sam who doesn't know anything yet, why "LSM trees turn random writes into sequential writes" is a big deal. Two sentences.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>Random writes hammer the disk because each write is a separate seek-and-write to a different location, and disks/SSDs are <em>much</em> slower at random I/O than sequential I/O. LSM trees absorb writes into a sorted in-memory structure first, then flush them to disk in big sequential chunks — so even though the database might write the same data multiple times during compaction, every actual disk operation is fast and sequential.</p>
+</div>
+</div>
+<h1>There are no dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p>Q: Why does Postgres still use B-trees in 2026 if LSMs are "better" at scale?</p>
+</div>
+<div class="a">
+<p>A: Because "better at scale" is half the picture. Postgres is optimized for the most common database workload — OLTP with mixed reads/writes, frequent updates to existing rows. B-trees handle UPDATE and DELETE elegantly. There's one place to mutate. LSMs handle them via tombstones, which create cleanup work and can hurt read performance. For analytical or write-heavy or time-series workloads, the calculus flips. Tools should match workloads.</p>
+</div>
+<div class="q">
+<p>Q: Are there hybrid engines?</p>
+</div>
+<div class="a">
+<p>A: Yes — and they're getting more common. SQL Server has "in-memory OLTP" with hybrid structures. MyRocks is RocksDB-on-MySQL (LSM under MySQL's wire protocol). Postgres has experimental zheap and various extensions like cstore_fdw for columnar tables. Modern engines blur the line. Tikv, the storage layer of TiDB and CockroachDB, is LSM-based but used for transactional workloads with careful tuning.</p>
+</div>
+<div class="q">
+<p>Q: What's a "B+ tree" — different from a B-tree?</p>
+</div>
+<div class="a">
+<p>A: Yes, slightly. A B+ tree is a B-tree where the leaves are linked together in a sorted list. This makes range scans much faster — once you find the start of a range, you just follow the leaf links. <em>Almost every "B-tree" you'll encounter in a real database is actually a B+ tree</em>. People say "B-tree" colloquially. In an interview, "B-tree" is fine; if pressed, mention you mean B+ tree.</p>
+</div>
+<div class="q">
+<p>Q: Why does the LSM tree need <em>both</em> a memtable and a commit log?</p>
+</div>
+<div class="a">
+<p>A: The memtable is in RAM — fast for reads and writes, but volatile. If the server crashes, the memtable is gone. The commit log is on disk — durable, but only useful for recovery, not for serving reads (you'd have to scan the whole log to find a key). They're two parts of the same design: commit log for durability, memtable for speed. On crash recovery, the database replays the commit log to rebuild the memtable.</p>
+</div>
+<div class="q">
+<p>Q: Is "LSM" the same as "log-structured filesystem"?</p>
+</div>
+<div class="a">
+<p>A: They share the same idea (sequential writes, occasional compaction) but are different things. Log-structured filesystems (LFS, F2FS) apply the principle to whole filesystem. LSM trees apply it to a key-value index. The original LSM paper is from 1996 and built on filesystem ideas.</p>
+</div>
+<div class="q">
+<p>Q: Can compaction run too aggressively?</p>
+</div>
+<div class="a">
+<p>A: Yes. If compaction runs too hot, it competes with foreground reads/writes for I/O and CPU. Cassandra has knobs to throttle compaction (<code>compaction_throughput_mb_per_sec</code>) — and tuning them is an art. Too low: SSTables pile up, reads slow down. Too high: foreground latency spikes from I/O contention. A senior operator monitors the SSTable count <em>and</em> the compaction lag and tunes accordingly.</p>
+</div>
+<div class="q">
+<p>Q: What about "fractal trees" — I saw that mentioned somewhere?</p>
+</div>
+<div class="a">
+<p>A: That's TokuDB's storage engine — a B-tree variant that <em>buffers writes inside the internal nodes</em> before propagating them down. It's effectively a B-tree/LSM hybrid: the buffering gives some of the LSM's write performance while keeping B-tree-style structure. Cool idea but TokuDB itself didn't dominate the market. The technique survives in research and in some specialized engines.</p>
+</div>
+<div class="q">
+<p>Q: How do I tell which engine my database uses?</p>
+</div>
+<div class="a">
+<p>A: For most major databases, just know it: Postgres = B-tree, MySQL InnoDB = B-tree, Mongo (WiredTiger) = B-tree by default, Cassandra = LSM, Scylla = LSM, RocksDB = LSM, LevelDB = LSM, HBase = LSM, BigTable = LSM, DynamoDB = LSM-flavored. SQL Server is B-tree (with columnstore as a separate option). Oracle is B-tree.</p>
+</div>
+</div>
+<h1>Three myths to dynamite before your interview</h1>
+<div class="myth">
+<p><strong>"LSM trees are always faster than B-trees."</strong></p>
+<p>False. LSM trees are faster <em>on writes</em>, especially under high write throughput, <em>if</em> the workload is append-mostly. For mixed read/write workloads with updates to existing rows, B-trees often beat LSMs on overall throughput and especially on tail latency.</p>
+</div>
+<div class="myth">
+<p><strong>"Bloom filters never give wrong answers."</strong></p>
+<p>False. Bloom filters give <em>false positives</em>. They never give false negatives. The whole point of the data structure is that asymmetry — "definitely not present" is reliable, "probably present" is a guess.</p>
+</div>
+<div class="myth">
+<p><strong>"WAL is slow because it's a log."</strong></p>
+<p>False. WAL is <em>fast</em> because it's append-only sequential I/O. What's slow is <code>fsync()</code> — the syscall that forces data to physically reach the disk. The performance question is "how often do we fsync?" not "do we use a WAL?" We'll cover this fully in Module 02.</p>
+</div>
+<h1>Interview gotchas</h1>
+<p>These are the specific traps senior interviewers love. Memorize them.</p>
+<div class="gotcha">
+<p><strong>The "everything is a tradeoff" trap.</strong> If the interviewer asks "B-tree or LSM?" and you answer "it depends," they will press. <em>Always</em> commit to a choice based on the workload they describe. "It depends" without follow-up signals junior. The senior version: "It depends on workload — for the workload you described (read-heavy, mixed updates), I'd pick B-tree, and here's why..."</p>
+</div>
+<div class="gotcha">
+<p><strong>Confusing LSM with append-only logs.</strong> LSMs are not just write-ahead logs or Kafka segments. They have sorted in-memory structures, multiple sorted files on disk, and compaction. A pure append-only log has no compaction-into-sorted-runs and no point-lookup capability without a separate index.</p>
+</div>
+<div class="gotcha">
+<p><strong>Forgetting Bloom filters when describing LSM read paths.</strong> Whenever you mention LSM reads, mention Bloom filters in the same breath. It signals depth.</p>
+</div>
+<div class="gotcha">
+<p><strong>Saying "the WAL is for replication."</strong> WAL is for <em>durability</em> (local crash recovery). It overlaps with replication in some systems (Postgres physical replication ships the WAL to replicas), but conceptually it's a different abstraction. Replication uses the WAL; the WAL exists for recovery.</p>
+</div>
+<div class="gotcha">
+<p><strong>Not knowing that Postgres has heap files separate from indexes.</strong> In Postgres, an index is a B-tree of (key, heap_pointer). The actual row lives in the heap file. So an index lookup costs B-tree traversal <em>plus</em> a heap fetch. This is why <strong>covering indexes</strong> (Module 04) matter so much. In MySQL InnoDB, the primary key index <em>is</em> the data — leaves contain the rows directly. Different model.</p>
+</div>
+<h1>Mock interview — the full transcript</h1>
+<p>Here's a real-feel interview Q&amp;A. Watch how a senior candidate moves.</p>
+<div class="mock-interview">
+<div class="turn q">
+<p>Walk me through what happens, end to end, when I write a single row to a Cassandra table.</p>
+</div>
+<div class="turn a">
+<p>Sure. Let me set the scene first — Cassandra is an LSM-based, leaderless distributed database, so a "write" actually involves both a coordinator-replica protocol and the local LSM machinery.</p>
+</div>
+<div class="commentary">
+<p>Sets context immediately. Doesn't dive into the data structure without framing.</p>
+</div>
+<div class="turn a">
+<p>At the cluster level: the client sends the write to any node, which becomes the <em>coordinator</em> for this write. The coordinator looks at the partition key and uses consistent hashing to figure out which replicas own this data — typically 3 replicas, configurable via replication factor.</p>
+<p>The coordinator forwards the write to each of those replicas. On each replica, the write goes into two places in parallel: the <em>commit log</em> (an append-only WAL on disk for durability) and the <em>memtable</em> (an in-memory sorted structure).</p>
+<p>Each replica acks back to the coordinator. The coordinator waits until enough replicas have acknowledged to satisfy the <em>consistency level</em> — for example, QUORUM with replication factor 3 means waiting for 2 acks. Once that threshold is met, the coordinator acks the client. So at the moment the client sees success, the data is durable on disk in at least 2 nodes' commit logs.</p>
+</div>
+<div class="commentary">
+<p>Distinguishes cluster-level from local. Mentions consistency level — shows awareness of the configuration surface.</p>
+</div>
+<div class="turn a">
+<p>On the local LSM side: the memtable accumulates writes in memory. When it fills up — by default ~64 MB or after a time threshold — it's flushed to disk as an immutable SSTable. From that point, reads can find the data either in the still-active memtable or in any of the SSTables.</p>
+<p>Over time, SSTables accumulate. A background process called compaction merges them — combining smaller SSTables into bigger ones, applying tombstones, and removing obsolete versions. The compaction strategy is important: SizeTiered for write-heavy, Leveled for read-heavy, TimeWindow for time-series. Cassandra defaults to SizeTiered which is fine for most cases but produces high read amplification under heavy load.</p>
+</div>
+<div class="commentary">
+<p>Names compaction strategies. Hints at operational reality. Senior signal.</p>
+</div>
+<div class="turn a">
+<p>The thing I'd flag for a senior conversation: at scale, the operational pain points are tombstone accumulation under heavy delete patterns, repair windows for hinted handoff and read repair, and compaction lag during write storms. Those are the things that wake people up at night, not the basic write path.</p>
+</div>
+<div class="commentary">
+<p>Drops in operational concerns proactively. Shows experience, not just knowledge.</p>
+</div>
+<div class="turn q">
+<p>What's the failure mode if the coordinator dies after acking the client but before the write is fully replicated?</p>
+</div>
+<div class="turn a">
+<p>Good question. Cassandra has a few mechanisms for this. First, the consistency level itself protects you — at QUORUM, the data was already on a majority of replicas before the ack. So even if the coordinator dies, the write survives.</p>
+<p>If the consistency level was ONE — ack on one replica — and that replica also dies before gossip propagates to others, you can lose the write. That's the durability tradeoff of low consistency levels.</p>
+<p>For replicas that <em>should</em> have received the write but didn't (because they were down or the network blipped), Cassandra uses <em>hinted handoff</em>: the coordinator stores a hint and replays it to the missing replica when it comes back. There's a hint window — by default 3 hours — after which hints expire, and you'd need a <em>repair</em> to restore consistency.</p>
+</div>
+<div class="commentary">
+<p>Anticipates the next layer. Knows the named mechanisms (hinted handoff, repair) and the time bounds. This is the difference between someone who memorized concepts and someone who's debugged Cassandra.</p>
+</div>
+<div class="turn q">
+<p>Last question: if you had to design a logging system from scratch and had to choose between Cassandra and Postgres, which would you pick and why?</p>
+</div>
+<div class="turn a">
+<p>For pure append-only log ingestion at high volume — Cassandra. The write profile matches the LSM strengths exactly. Time-windowed compaction handles the time-series shape well, and partitioning by service or trace_id distributes load.</p>
+<p>But — and this matters — for <em>most</em> logging use cases at most companies, I'd actually pick a purpose-built tool: Elasticsearch or Loki for search-friendly logs, or a managed service. Cassandra is great when you genuinely need TBs/sec of writes and full control. Below that scale, the operational overhead of running Cassandra outweighs the benefit.</p>
+<p>Postgres for logs is fine up to maybe a few thousand writes per second on a beefy node. Past that, you're fighting against the storage engine.</p>
+</div>
+<div class="commentary">
+<p>Doesn't just answer the question — broadens it to "what's the right tool for the actual scale?" Mentions managed services. Signals that the candidate thinks about TCO, not just throughput.</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<h3>Storage Engines — One Page</h3>
+<h4>B-tree (Postgres, MySQL InnoDB, SQLite, Mongo WiredTiger)</h4>
+<ul>
+<li>Sorted, balanced, in-place mutation.</li>
+<li>Random I/O on writes; cached for reads.</li>
+<li>Excellent for: read-heavy, mixed reads/writes, frequent updates, range scans, latency-sensitive.</li>
+<li>Pain point: random write throughput ceiling.</li>
+</ul>
+<h4>LSM tree (Cassandra, RocksDB, ScyllaDB, LevelDB, HBase, BigTable, DynamoDB-style)</h4>
+<ul>
+<li>Memtable + commit log + immutable SSTables + compaction.</li>
+<li>Sequential I/O on writes; multi-file lookups on reads.</li>
+<li>Excellent for: write-heavy, append-mostly, time-series, very large datasets.</li>
+<li>Pain points: tombstone accumulation under heavy deletes, compaction lag under sustained write storms, read amplification when SSTable count grows.</li>
+</ul>
+<h4>The 30-second verbal answer</h4>
+<p>"B-trees write in place — they pay for sorting on every write, which makes reads simple but caps random write throughput. LSMs append to immutable sorted files in batch and merge them in the background, which makes writes fast but reads more complex. Pick by workload: read-heavy with updates → B-tree. Write-heavy and append-mostly → LSM."</p>
+<h4>Always pair these together when speaking</h4>
+<ul>
+<li>LSM tree → memtable, commit log, SSTable, compaction, Bloom filter, write amplification.</li>
+<li>B-tree → buffer pool, page split, fill factor, WAL, fsync.</li>
+<li>Both → sequential vs random I/O, read amplification, write amplification.</li>
+</ul>
+<h4>Compaction strategies (LSM only)</h4>
+<ul>
+<li><strong>Size-tiered (STCS)</strong>: low write amp, high read amp. Default in Cassandra. Good for write-heavy.</li>
+<li><strong>Leveled (LCS)</strong>: low read amp, higher write amp. Best for read-latency-sensitive workloads.</li>
+<li><strong>Time-windowed (TWCS)</strong>: best for time-series; per-window SSTables let old data compact away cleanly.</li>
+</ul>
+<h4>What to mention if asked about real-world LSM operations</h4>
+<ul>
+<li>Tombstone problem under delete-heavy patterns.</li>
+<li>Compaction throughput tuning.</li>
+<li>Bloom filter false positive rate trade-off (size vs CPU).</li>
+<li>Repair, hinted handoff (for distributed LSMs like Cassandra).</li>
+</ul>
+</div>
+<div class="pullquote">
+<p>Pick by workload, not by hype. The right answer depends on what you're writing, how often, and how it's read.</p>
+</div>
+<h1>What's next</h1>
+<p>You've now got the foundational layer. Module 02 picks up the three supporting cast: <strong>Bloom filters</strong> (you've already seen them mentioned three times — now we'll dive in), <strong>WAL</strong> (the durability layer that lets both engines crash safely), and <strong>checkpointing</strong> (how databases bound their crash recovery time).</p>
+<p>After that, Module 03 covers <strong>row vs columnar storage</strong> — the <em>third</em> major storage axis, which decides whether your database is good at OLTP or OLAP.</p>
+<p>Take a break. Come back. The next module builds on what you just learned.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="#" class="prev disabled">&laquo; Prev</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="02_bloom_wal_checkpoint.html" class="next">02 Bloom/WAL &raquo;</a>
+</nav>
+</body>
+</html>

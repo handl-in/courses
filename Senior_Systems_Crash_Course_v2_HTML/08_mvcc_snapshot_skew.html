@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam meets the dark art</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 08</p>
+</div>
+<div class="module-title">
+<p>MVCC, Snapshot Isolation &amp; Skew</p>
+</div>
+<div class="subtitle">
+<p>The mechanism that makes Postgres readers not block writers — and the operational pain that comes free with it</p>
+</div>
+</div>
+<div class="opener">
+<p>You COMMIT a write at 10:00:00.001. Another transaction reads at 10:00:00.000 — one millisecond <em>before</em> your commit. Does it see your write?</p>
+<p>The answer is "no, because of MVCC." The interesting answer is <em>why</em> MVCC works that way, what it costs, and why understanding it is the difference between debugging Postgres and being mystified by it.</p>
+</div>
+<h1>Sam meets the dark art</h1>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+OK so last module you mentioned MVCC like five times. I nodded. Let me confess: I have no idea what it actually is. I've heard "Postgres uses MVCC" approximately one thousand times. Never read what that means.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+You're not alone. Most engineers know MVCC as "magic that makes Postgres fast." It is magic. It also has a bill that comes due — and the bill is called VACUUM.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+I've heard about VACUUM too. Something about cleaning up?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Yes — and when VACUUM falls behind, your tables bloat, your queries slow down, and you can't figure out why. Senior Postgres engineers spend a non-trivial amount of their lives tuning VACUUM. Knowing <em>why</em> explains both the magic and the bill.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+What's the magic?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+<strong>Readers never block writers. Writers never block readers.</strong> Two transactions can do whatever they want with the same row, and neither has to wait for the other. That's the whole point. The cost: every UPDATE creates a new version of the row, and the old version sits there until cleanup decides nobody needs it anymore.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+And this is how snapshot isolation works?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Exactly. MVCC is the <em>mechanism</em>. Snapshot isolation is the <em>guarantee</em> it provides. Same idea, two names depending on whether you're talking implementation or behavior. By the end of this module you'll be able to switch between the two vocabularies fluently — and explain why VACUUM is the operational pain you can't escape.</p>
+</div>
+</div>
+<div class="keyidea">
+<p><strong>MVCC</strong> = Multi-Version Concurrency Control. Every write creates a new row version with metadata about which transactions can see it. Every read sees a consistent point-in-time snapshot. <strong>Readers never block writers. Writers never block readers.</strong> (But writers still block writers.)</p>
+<p>The price: dead row versions accumulate. VACUUM cleans them up. When VACUUM falls behind, you suffer.</p>
+</div>
+<h1>Why MVCC exists</h1>
+<p>To appreciate what MVCC gives us, we need to remember what came before.</p>
+<div class="scenario">
+<p><strong>The pre-MVCC world: 2-phase locking (2PL).</strong></p>
+<p>Old-school databases handled concurrency with locks. To read a row, you took a <em>shared lock</em>. To write, you took an <em>exclusive lock</em>. They conflicted:</p>
+<ul>
+<li>Long readers blocked writers.</li>
+<li>Long writers blocked readers.</li>
+<li>Reports running for an hour froze the OLTP system.</li>
+</ul>
+<p>Everyone was unhappy. Reports got moved to nighttime batch windows. "Don't run queries during business hours" was the engineering culture.</p>
+</div>
+<p>MVCC was the breakthrough. The insight: <strong>what if reads and writes didn't need to share data?</strong> What if every transaction got its own version of the truth?</p>
+<div class="metaphor">
+<p><strong>The Wikipedia analogy.</strong></p>
+<p>Wikipedia keeps every revision of every article. When you read an article right now, you see the current version. But you can ask for "the version as of January 15, 2024" — and the system can show you exactly that, because the old version is preserved.</p>
+<p>If two editors are simultaneously editing the same article, they don't block each other. Both see their starting version. Both make changes. The system reconciles them — possibly with a merge conflict, possibly automatically.</p>
+<p>That's MVCC. <strong>Every write creates a new version. Every read sees the version that existed at its start time.</strong> No locking required for reads. No locking required for the read paths of writers.</p>
+<p>The cost: storing all those versions. Wikipedia's database is much bigger than the "current articles" would be. Same with MVCC databases.</p>
+</div>
+<div class="pullquote">
+<p>MVCC turned databases from "lock-and-wait" into "snapshot-and-go" — the breakthrough that made high-concurrency OLTP possible.</p>
+</div>
+<h1>How MVCC actually works (Postgres-style)</h1>
+<p>This is the part most engineers never see. Let's open it up.</p>
+<p>Every row in a Postgres table has hidden columns:</p>
+<table>
+<thead>
+<tr>
+<th>Hidden column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>xmin</strong></td>
+<td>The transaction ID (XID) that created this row version</td>
+</tr>
+<tr>
+<td><strong>xmax</strong></td>
+<td>The XID that deleted/superseded this row version (or NULL if still live)</td>
+</tr>
+<tr>
+<td><strong>ctid</strong></td>
+<td>The physical tuple ID — where on disk this version lives</td>
+</tr>
+</tbody>
+</table>
+<div class="diagram">
+<pre><code>                               PHYSICAL ROW VERSIONS
+</code></pre>
+<p>Initial state — Alice's account is created by transaction 42:</p>
+<p>┌─────────────────────────────────────────────────────────────────────┐
+  │ id=1, name='Alice', balance=100   xmin=42  xmax=NULL  ctid=(0,1)    │
+  └─────────────────────────────────────────────────────────────────────┘</p>
+<p>Transaction 70 updates the balance to 200:</p>
+<p>┌─────────────────────────────────────────────────────────────────────┐
+  │ id=1, name='Alice', balance=100   xmin=42  xmax=70    ctid=(0,1)    │  ← OLD
+  ├─────────────────────────────────────────────────────────────────────┤
+  │ id=1, name='Alice', balance=200   xmin=70  xmax=NULL  ctid=(0,2)    │  ← NEW
+  └─────────────────────────────────────────────────────────────────────┘</p>
+<p>Notice: BOTH versions exist on disk. The old one is marked as "deleted
+  by xmax=70" but it's still physically there. Other transactions running
+  with snapshots from before XID 70 can still see the old version.</p>
+<p>Some time later, no transaction needs the old version anymore. VACUUM
+  reclaims the space:</p>
+<p>┌─────────────────────────────────────────────────────────────────────┐
+  │ (empty slot — reclaimable)                                           │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │ id=1, name='Alice', balance=200   xmin=70  xmax=NULL  ctid=(0,2)    │
+  └─────────────────────────────────────────────────────────────────────┘</p>
+</div>
+<div class="workout">
+<p><strong>The visibility check — what makes MVCC work:</strong></p>
+<p>When transaction 88 reads Alice's account, for each version of the row, the engine asks:</p>
+<div class="step">
+<p>Is <code>xmin</code> (creator) <strong>committed</strong> AND <code>xmin ≤ 88</code> (or = 88)?
+If no → version is invisible. Move on.</p>
+</div>
+<div class="step">
+<p>Is <code>xmax</code> (deleter) <strong>NULL</strong> OR <strong>uncommitted</strong> OR <code>xmax &gt; 88</code>?
+If no → the version was deleted before our snapshot. Invisible. Move on.</p>
+</div>
+<div class="step">
+<p>If both checks pass → this is the version we should see.</p>
+</div>
+</div>
+<p>By following this rule consistently, <strong>every transaction gets a consistent point-in-time snapshot</strong> without any locks on rows. The snapshot is determined by which XIDs are visible to it.</p>
+<div class="scenario">
+<p><strong>Walking through a concurrent example:</strong></p>
+<p>T1 starts at XID=100. Reads Alice's balance: $50.</p>
+<p>T2 starts at XID=101. Updates Alice's balance to $200. Commits at XID=101.</p>
+<p>T1 reads Alice's balance again. <strong>Still sees $50.</strong> Why?</p>
+<p>When T1 looks at the row, it sees two versions:
+- Version 1: <code>xmin=42, xmax=101, balance=$50</code>
+- Version 2: <code>xmin=101, xmax=NULL, balance=$200</code></p>
+<p>For Version 2: <code>xmin=101</code> is greater than T1's snapshot horizon (100). T1 ignores it.
+For Version 1: <code>xmax=101</code> is greater than T1's snapshot horizon. T1 ignores the deletion. Sees $50.</p>
+<p>T1's view of the world is <strong>frozen at its start time.</strong> Other transactions can do whatever; T1 sees its own consistent reality.</p>
+</div>
+<div class="insider">
+<p>A subtle naming convention: when a senior engineer says "Postgres uses snapshot isolation," they mean MVCC plus a snapshot taken at transaction start. <strong>MVCC is the mechanism; snapshot isolation is the guarantee.</strong> Same idea, different vocabulary depending on the audience. Use the right vocabulary for the conversation.</p>
+</div>
+<h1>Snapshot isolation, formally</h1>
+<p>Now we can define the isolation level rigorously.</p>
+<div class="keyidea">
+<p><strong>Snapshot Isolation (SI)</strong> is an isolation level where:
+- Each transaction reads from a consistent snapshot taken at its start.
+- Writes are visible only to that transaction until it commits.
+- Conflicts: if two concurrent transactions write the same row, the second to commit aborts (first-committer-wins).</p>
+</div>
+<p>Postgres calls SI by the name "Repeatable Read" (it's actually stronger than the SQL standard's RR — see Module 07). Oracle's "Serializable" is also actually SI. The naming is a mess across vendors.</p>
+<h2>What SI prevents</h2>
+<table>
+<thead>
+<tr>
+<th>Anomaly</th>
+<th>Prevented by SI?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dirty read</td>
+<td>✅ Yes — uncommitted versions are invisible</td>
+</tr>
+<tr>
+<td>Non-repeatable read</td>
+<td>✅ Yes — your snapshot is frozen</td>
+</tr>
+<tr>
+<td>Phantom read</td>
+<td>✅ Yes — new INSERTs after snapshot are invisible</td>
+</tr>
+<tr>
+<td>Lost update</td>
+<td>✅ Yes — first-committer-wins on conflicting writes</td>
+</tr>
+<tr>
+<td><strong>Write skew</strong></td>
+<td>❌ <strong>NO</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="warning">
+<p><strong>Snapshot isolation is NOT serializable.</strong> It prevents dirty reads, non-repeatable reads, phantom reads, and lost updates. But it allows <strong>write skew</strong> — a class of bugs that violate invariants spanning multiple rows.</p>
+<p>This is why Postgres has a separate Serializable level (SSI — covered later in this module). And why Oracle's "Serializable" can have write skew bugs.</p>
+</div>
+<h1>Read skew vs write skew — the distinction</h1>
+<p>These two anomalies sound similar. They're different. Senior engineers know exactly which is which.</p>
+<h2>Read skew (prevented by SI)</h2>
+<div class="scenario">
+<p><strong>The bank balance read skew.</strong></p>
+<p>T1 wants to display Alice and Bob's combined balance.</p>
+<p>T1 reads Alice's balance: $500.
+Concurrent T2 transfers $400 from Alice to Bob. Commits.
+T1 reads Bob's balance: $1000 (post-transfer).</p>
+<p>T1 reports total: $1500.</p>
+<p>But Alice was $500 and Bob was $600 <em>at one moment in time</em>, totaling $1100. After the transfer, Alice is $100 and Bob is $1000, also totaling $1100.</p>
+<p><strong>T1 saw a combination that never existed.</strong> Money apparently appeared from nowhere.</p>
+</div>
+<p>This is <strong>read skew</strong> — observing values from different points in time within the same transaction. <strong>Snapshot isolation prevents it.</strong> T1 would consistently see Alice=$500 and Bob=$600 (its snapshot's view) regardless of T2's commit timing.</p>
+<h2>Write skew (NOT prevented by SI)</h2>
+<p>We covered the doctor on-call example in Module 07. Here it is again, with the MVCC perspective.</p>
+<div class="scenario">
+<p><strong>The doctor on-call write skew, MVCC view.</strong></p>
+<p>Hospital invariant: at least one doctor must be on call.</p>
+<p>State at start: Alice and Bob both on call (2 doctors, satisfies invariant).</p>
+<p>T1 (Alice goes off-call) starts at XID=100. Snapshot includes both Alice and Bob with on_call=true.
+T2 (Bob goes off-call) starts at XID=101. Snapshot also includes both Alice and Bob with on_call=true.</p>
+<p>T1: reads "2 doctors on call, OK to go off." UPDATE Alice. COMMIT.
+T2: reads from its snapshot — still sees "2 doctors on call." UPDATE Bob. COMMIT.</p>
+<p><strong>MVCC's first-committer-wins doesn't catch this</strong> because the writes target <em>different rows</em> — T1 writes Alice, T2 writes Bob. No row-level conflict. No abort.</p>
+<p>The invariant ("at least 1 on call") is logical, spanning rows. MVCC can't see it.</p>
+</div>
+<div class="brain">
+<p>Why doesn't MVCC catch write skew?</p>
+<p>MVCC's conflict detection is <strong>row-level</strong>. Two transactions are in conflict if they both write the <em>same row</em>. The first commits; the second aborts (or has its writes ignored, depending on implementation).</p>
+<p>But write skew involves transactions writing <em>different rows</em> whose changes together violate an invariant. MVCC has no concept of "invariant." It only knows about row versions.</p>
+<p>To catch write skew, the database needs to detect a more general pattern: <strong>read-write dependencies</strong> between transactions. T1 read what T2 was about to write. T2 read what T1 was about to write. Those reads fed the decisions that became the writes. If both commit, the result depends on data that <em>would have changed</em> if either had run alone.</p>
+<p>Detecting this is the job of <strong>Serializable Snapshot Isolation (SSI)</strong> — covered later in this module.</p>
+</div>
+<div class="keyidea">
+<ul>
+<li><strong>Read skew</strong>: observing inconsistent combinations of values from different times. Prevented by SI.</li>
+<li><strong>Write skew</strong>: making decisions based on a snapshot, then writing in ways that together violate an invariant. <strong>Not prevented by SI</strong>. Requires Serializable.</li>
+</ul>
+</div>
+<h1>The cost: dead tuples and VACUUM</h1>
+<p>Here's the bill that comes due.</p>
+<p>Every UPDATE creates a new version. The old version isn't deleted immediately — other transactions may still need it. So Postgres accumulates <strong>dead tuples</strong> — old row versions that no transaction needs anymore.</p>
+<p>Without cleanup, the table grows forever. Even if your data stays the same logical size, the physical table balloons.</p>
+<p>A background process called <strong>VACUUM</strong> reclaims dead tuples.</p>
+<div class="workout">
+<p><strong>What VACUUM does:</strong></p>
+<div class="step">
+<p>Scans the table looking for dead tuples (versions with <code>xmax &lt; oldest_active_xid</code>).</p>
+</div>
+<div class="step">
+<p>Marks the slots they occupied as reusable.</p>
+</div>
+<div class="step">
+<p>Updates table-level statistics about the live row count, free space, etc.</p>
+</div>
+<div class="step">
+<p>For VACUUM FULL specifically: rewrites the table compactly, freeing space back to the OS. (Locks the table — rare in production.)</p>
+</div>
+</div>
+<p>Regular VACUUM is non-blocking. It runs alongside normal operations. Postgres has <strong>autovacuum</strong> that runs automatically based on a per-table threshold (default: 20% of rows changed since last vacuum).</p>
+<h2>When VACUUM falls behind: bloat</h2>
+<div class="scenario">
+<p><strong>A real-shaped scenario.</strong></p>
+<p>A team's <code>users</code> table has 10M rows. Each row is ~500 bytes. The table should be ~5 GB on disk.</p>
+<p>Their application updates every user row about 100 times per day (last_seen timestamp, login counts, profile tweaks). That's a billion UPDATEs/day.</p>
+<p>Each UPDATE creates a new row version. If autovacuum isn't keeping up, dead tuples pile up. After a week, the table is 50 GB on disk — <strong>10x its actual data size</strong>.</p>
+<p>Reads now scan 10x more pages. Index lookups follow more pointers. Every query slows down. The buffer pool can't hold the working set anymore. <strong>Performance crater.</strong></p>
+<p>The team's first instinct: "we need more RAM." Wrong — the <em>data</em> is still 5 GB. They need VACUUM tuning, not bigger hardware.</p>
+</div>
+<div class="warning">
+<p><strong>Bloat is the operational pain of MVCC.</strong> Specifically of Postgres MVCC, because Postgres keeps dead tuples in the heap. Other MVCC databases (Oracle, SQL Server) handle the cleanup differently — Oracle uses undo segments, for instance — but everyone with MVCC has <em>some</em> equivalent of the bloat problem.</p>
+</div>
+<h2>Tuning autovacuum</h2>
+<div class="insider">
+<p>The autovacuum settings most senior Postgres engineers tune:</p>
+<ul>
+<li>
+<p><strong><code>autovacuum_vacuum_scale_factor</code></strong> (default 0.2) — vacuum when 20% of rows changed. <strong>Lower this for large tables</strong> (e.g., 0.05 for tables over 100M rows). 20% of a billion rows is 200M dead tuples — way too many to clean up at once.</p>
+</li>
+<li>
+<p><strong><code>autovacuum_naptime</code></strong> (default 1 minute) — how often the autovacuum launcher checks for work. Lower for high-churn workloads.</p>
+</li>
+<li>
+<p><strong><code>autovacuum_max_workers</code></strong> (default 3) — how many tables can be vacuumed in parallel. Raise if you have many large tables.</p>
+</li>
+<li>
+<p><strong><code>autovacuum_vacuum_cost_limit</code></strong> (default 200) — controls how aggressive vacuum is. Higher = vacuums faster but with more I/O contention.</p>
+</li>
+</ul>
+<p>A senior reflex: <strong>the default autovacuum settings are fine for small databases and terrible for large ones.</strong> Tune them per-table for hot tables. <code>ALTER TABLE big_table SET (autovacuum_vacuum_scale_factor = 0.02);</code></p>
+</div>
+<h2>VACUUM FULL — the nuclear option</h2>
+<div class="warning">
+<p><strong>VACUUM FULL</strong> rewrites the table compactly, releasing space back to the OS. Sounds great. But:</p>
+<ul>
+<li><strong>It takes an exclusive lock on the table.</strong> No reads, no writes during the operation.</li>
+<li>For large tables, can take hours.</li>
+<li>In production, it's almost always the wrong answer.</li>
+</ul>
+<p>Modern alternatives:
+- <strong><code>pg_repack</code></strong> extension: rewrites the table without long locks. Online operation. The standard tool for production bloat removal.
+- <strong>Partitioning + drop old partitions</strong>: if your data is naturally time-partitioned, this avoids needing to repack.</p>
+<p>Mention <code>pg_repack</code> in an interview about Postgres operations and you sound like someone who's actually managed bloat in production.</p>
+</div>
+<h1>Long-running transactions: the silent killer</h1>
+<div class="scenario">
+<p><strong>A senior pain point.</strong></p>
+<p>A nightly reporting job runs at 2 AM. It does <code>BEGIN ISOLATION LEVEL REPEATABLE READ</code>, scans many tables, and runs for two hours.</p>
+<p>During those two hours, <strong>its snapshot is locked open.</strong> Postgres cannot remove any row versions that <em>might</em> be visible to that transaction — because if it did, the transaction's reads would see inconsistent state.</p>
+<p>So for two hours, dead tuples accumulate without being reclaimable. Tables bloat. Other transactions' UPDATEs add new dead versions, and <em>none</em> can be cleaned up.</p>
+<p>When the report finishes at 4 AM, autovacuum can finally clean up the backlog. But by then, the bloat damage is done — tables are oversized, indexes need maintenance, queries that were fast at midnight are slow at 5 AM.</p>
+</div>
+<div class="warning">
+<p><strong>Long-running transactions are MVCC's worst enemy.</strong> Every Postgres operations team eventually learns this:</p>
+<ul>
+<li>Avoid <code>BEGIN</code> ... long work ... <code>COMMIT</code> patterns where the long work is reading/computing, not transacting.</li>
+<li>For analytical queries, consider running them with a small <code>statement_timeout</code> to bound damage.</li>
+<li>Monitor the oldest open transaction (<code>pg_stat_activity.xact_start</code>) — if it's been open more than a few minutes on a write-heavy database, you have a problem.</li>
+</ul>
+<p>The senior detection trick: monitor <code>txid_current() - txid_snapshot_xmin(txid_current_snapshot())</code>. If that gap grows unbounded, you have an old transaction holding back vacuum.</p>
+</div>
+<h1>Same idea, three more ways</h1>
+<div class="metaphor">
+<p><strong>Way 1: the office whiteboard.</strong></p>
+<p>A whiteboard tracks the day's projects. Instead of erasing each project's status when it changes, the office uses sticky notes — when status updates, a new sticky goes on top of the old one.</p>
+<p>Anyone walking in mid-day sees the most recent sticky for each project. But anyone who took a photo of the board at 9:00 AM still has a record of <em>that</em> state — they can answer questions as of 9:00 AM, even if the board has changed since.</p>
+<p>Once nobody needs the 9:00 photo anymore, the office takes down the old stickies underneath. That's vacuum.</p>
+<p>If too many photos are still active, the board fills up with stickies. Same with MVCC bloat.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 2: the time-traveler's library.</strong></p>
+<p>Imagine a library where books are versioned. When an author releases a new edition, the old edition isn't thrown out — both sit on the shelf, with version numbers.</p>
+<p>Researchers can ask for "the 1995 edition" and get exactly that, even though the 2024 edition is also available. The library <em>never</em> destroys editions while researchers might need them.</p>
+<p>Periodically, the librarian checks: are any researchers still consulting the 1995 editions? If no, they go to the basement archive. That's vacuum.</p>
+<p>If a researcher has been consulting the 1995 edition for a year straight, the library can't archive it. Everyone else's "old editions" pile up too. The shelves get crowded. Bloat.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 3: the email thread.</strong></p>
+<p>A long email thread accumulates replies. The full history is preserved. When you open the thread, you see the latest message at the top, but you can scroll back to see any prior message.</p>
+<p>If five people are reading the thread simultaneously, one might be at the latest message; another might be reading replies from yesterday. They don't conflict — each sees what they're looking at, frozen as of when they opened.</p>
+<p>The thread can grow until it's pruned (auto-archive after a year, manual cleanup, etc.). Without pruning, the inbox fills.</p>
+</div>
+<h1>Postgres SSI — the Serializable upgrade</h1>
+<p>We finished Module 07 with: "Serializable prevents write skew." Time to see how Postgres makes that work.</p>
+<p><strong>Serializable Snapshot Isolation (SSI)</strong> is Postgres's implementation. Built on top of MVCC. The trick: track which transactions read what other transactions are writing.</p>
+<div class="workout">
+<p><strong>How SSI catches write skew:</strong></p>
+<div class="step">
+<p>T1 reads rows X and Y at its snapshot. Decides to write Z.</p>
+</div>
+<div class="step">
+<p>T2 reads rows Y and X at its snapshot. Decides to write W.</p>
+</div>
+<div class="step">
+<p>SSI tracks: T1 read what T2 might write (Y). T2 read what T1 might write (X). This is an <strong>rw-antidependency</strong> in both directions — a <em>cycle</em>.</p>
+</div>
+<div class="step">
+<p>At commit time, SSI checks for cycles. If detected → abort one of the transactions with a serialization failure.</p>
+</div>
+<div class="step">
+<p>Application catches the error, retries.</p>
+</div>
+</div>
+<div class="insider">
+<p>SSI is <em>optimistic</em> — it doesn't take locks on reads. It just <em>records</em> which reads happened. Other isolation implementations (strict 2PL) take read locks proactively and slow everyone down.</p>
+<p>The trade-off: SSI has lower steady-state cost but requires retry logic in the application. Under low contention, SSI is fast. Under high contention, retries dominate.</p>
+<p>Mention "Postgres SSI" or "rw-antidependency tracking" in an interview about Serializable, and you sound like someone who's read the actual Postgres documentation.</p>
+</div>
+<div class="warning">
+<p><strong>SSI's hidden cost: predicate tracking.</strong></p>
+<p>To detect rw-antidependencies, SSI has to track every read's <em>predicate</em> (what range of rows it touched), not just specific rows. This means SSI can have higher memory overhead than RR, and very wide range scans can have more conflicts than narrow ones.</p>
+<p>In practice, this is rarely the dominant cost — but it's worth knowing about for high-throughput workloads.</p>
+</div>
+<h1>How databases stack up on MVCC</h1>
+<table>
+<thead>
+<tr>
+<th>System</th>
+<th>Snapshot mechanism</th>
+<th>Cleanup</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Postgres</strong></td>
+<td>xmin/xmax in heap tuples</td>
+<td>Autovacuum / pg_repack</td>
+<td>Bloat is the operational pain</td>
+</tr>
+<tr>
+<td><strong>MySQL InnoDB</strong></td>
+<td>Undo log</td>
+<td>Purge thread</td>
+<td>Less bloat-prone but undo log can fill</td>
+</tr>
+<tr>
+<td><strong>Oracle</strong></td>
+<td>Undo segments + read-consistent blocks</td>
+<td>Automatic</td>
+<td>Undo retention controllable</td>
+</tr>
+<tr>
+<td><strong>SQL Server</strong></td>
+<td>Version store in tempdb (RCSI mode)</td>
+<td>Automatic</td>
+<td>Tempdb growth is the watch-out</td>
+</tr>
+<tr>
+<td><strong>CockroachDB</strong></td>
+<td>MVCC in RocksDB</td>
+<td>Compaction-driven</td>
+<td>Distributed MVCC</td>
+</tr>
+<tr>
+<td><strong>Spanner</strong></td>
+<td>TrueTime-based versioning</td>
+<td>Automatic</td>
+<td>Globally consistent timestamps</td>
+</tr>
+</tbody>
+</table>
+<div class="insider">
+<p><strong>Postgres puts versions in the heap</strong> — old and new tuples coexist in the same table file. This is unique among major databases. Other engines (MySQL InnoDB, Oracle) put old versions in a <em>separate</em> undo log/segment area, keeping the main table compact.</p>
+<p>Postgres's choice has trade-offs:
+- <strong>Pro</strong>: simpler architecture; no separate undo machinery.
+- <strong>Pro</strong>: row updates are local — no separate undo write.
+- <strong>Con</strong>: bloat lives in the table; must be vacuumed.
+- <strong>Con</strong>: index entries point to old tuple locations until vacuumed.</p>
+<p>This is why "Postgres bloat" is a thing while "MySQL bloat" usually means something else (the undo log or temp tables).</p>
+</div>
+<h1>Sharpen your pencil</h1>
+<div class="exercise">
+<p><strong>Exercise 1.</strong> A team reports their Postgres database is 8x larger on disk than the actual data should be. Tables are heavily updated throughout the day. Diagnose, then propose three fixes ordered by complexity.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>Diagnosis: bloat.</strong> Frequent updates create dead tuples. If autovacuum isn't keeping up, the heap accumulates obsolete row versions. Verify with <code>pg_stat_user_tables</code> (look at <code>n_dead_tup</code> vs <code>n_live_tup</code>) or the <code>pgstattuple</code> extension.</p>
+<p><strong>Three fixes ordered:</strong></p>
+<p><strong>Fix 1 (lightest): tune autovacuum per-table.</strong>
+For high-churn tables, lower <code>autovacuum_vacuum_scale_factor</code> from default 0.2 to something like 0.05. The default is too lenient for big, hot tables.</p>
+<pre><code class="language-sql">ALTER TABLE hot_table SET (autovacuum_vacuum_scale_factor = 0.05);
+</code></pre>
+<p>Increase autovacuum cost limits if I/O budget allows. Add more autovacuum workers for parallelism if you have many tables.</p>
+<p><strong>Fix 2 (medium): pg_repack to reclaim existing bloat.</strong>
+Tuning prevents <em>future</em> bloat. Existing bloat needs reclaim. <code>pg_repack</code> rewrites tables online without long locks. Schedule during a quieter window.</p>
+<p><strong>Fix 3 (architectural): identify long-running transactions.</strong>
+Check <code>pg_stat_activity</code> for old <code>xact_start</code> times. If reports or batch jobs hold long snapshots, they're preventing vacuum from cleaning anything during their run. Either bound their runtime, run them on read replicas, or use shorter transactions.</p>
+<p>The senior reflex: <strong>bloat is a symptom of either too-loose vacuum settings or long transactions blocking it.</strong> Fix the cause before reaching for VACUUM FULL.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2.</strong> You're running at default Postgres isolation (Read Committed). A coworker says: "I switched our entire app to Repeatable Read for safety." What concerns would you raise?</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>Three concerns:</p>
+<p><strong>Concern 1: VACUUM impact.</strong>
+Repeatable Read holds snapshots open for the duration of each transaction. In Postgres specifically, this prevents vacuum from cleaning up dead tuples that those snapshots might still reference. If your app has any longer-running transactions (analytical queries, complex business logic), bloat will accumulate faster. Need to monitor and tune.</p>
+<p><strong>Concern 2: Doesn't actually fix all bugs.</strong>
+RR prevents dirty reads, non-repeatable reads, and phantoms (in Postgres). It does NOT prevent write skew. If the app has invariants that span multiple rows (limits, counts, "at least one X"), RR is insufficient. The team might think they're "safer" but still have invariant-violation bugs.</p>
+<p><strong>Concern 3: Conflict semantics change.</strong>
+Under RR, conflicting writes can produce serialization errors that the app must handle. If the app wasn't built with retry logic, these errors will surface as user-facing failures. Switching isolation levels without adding retry handling causes incidents.</p>
+<p><strong>The right framing</strong>: choose isolation per-transaction based on what specific anomalies need preventing. Don't make global isolation changes for vague "safety" reasons.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3.</strong> Explain to non-technical Sam, in two sentences, why MVCC is fast but eventually requires "vacuum."</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>MVCC keeps every old version of changed data so that concurrent readers never have to wait for writers — they just read the version that was current when their query started. The catch is those old versions don't disappear automatically; eventually you need a cleanup process (called "vacuum") to free up the space, and if cleanup falls behind, your tables grow much larger than the data warrants and queries slow down.</p>
+</div>
+</div>
+<h1>There are no dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p>Q: Does MVCC mean "no locks at all"?</p>
+</div>
+<div class="a">
+<p>A: No. MVCC eliminates <em>read-write</em> locks. Reads don't block writes; writes don't block reads. <strong>Write-write locks still exist</strong> — two transactions trying to update the same row will serialize. MVCC is not a magic pony. Senior engineers say "MVCC eliminates reader-writer contention" to be precise.</p>
+</div>
+<div class="q">
+<p>Q: Can MVCC databases handle deletes?</p>
+</div>
+<div class="a">
+<p>A: Yes. A delete is implemented by setting <code>xmax</code> on the existing row version (no new version created). Once no transaction can see the deleted row anymore, vacuum reclaims it.</p>
+</div>
+<div class="q">
+<p>Q: What happens to indexes during MVCC updates?</p>
+</div>
+<div class="a">
+<p>A: Until Postgres 8.3, every UPDATE created new index entries for <em>every</em> index on the table — even if the indexed column didn't change. <strong>HOT (Heap-Only Tuple) updates</strong> improved this: if no indexed column changed, the new tuple version chains off the old one within the same page, and index entries still point correctly. Massive performance improvement for update-heavy tables. Senior detail to mention.</p>
+</div>
+<div class="q">
+<p>Q: Why does Postgres have separate VACUUM and ANALYZE?</p>
+</div>
+<div class="a">
+<p>A: They do different things. VACUUM reclaims space from dead tuples. ANALYZE updates statistics for the planner (Module 06). Autovacuum runs both, on different schedules. You can run them separately for surgical needs: <code>VACUUM ANALYZE table_name;</code> does both.</p>
+</div>
+<div class="q">
+<p>Q: What's "transaction wraparound" and why does it sound scary?</p>
+</div>
+<div class="a">
+<p>A: Postgres transaction IDs are 32-bit. After ~2 billion transactions, they wrap around to zero. Without intervention, this would make old data appear <em>newer</em> than it is, breaking visibility checks. Postgres avoids this with <strong>freezing</strong> during vacuum — marking very old tuples with a special "always visible" flag. If autovacuum can't keep up with the wraparound rate, Postgres will eventually shut down the database to prevent corruption. <strong>Real production incidents have happened from this.</strong> Senior operators monitor <code>age(datfrozenxid)</code>.</p>
+</div>
+<div class="q">
+<p>Q: How do I see the actual MVCC versions in Postgres?</p>
+</div>
+<div class="a">
+<p>A: The <code>pg_visibility</code> extension exposes per-page visibility info. The <code>xmin</code>/<code>xmax</code> columns are accessible as <code>xmin</code>, <code>xmax</code> system columns: <code>SELECT xmin, xmax, * FROM users WHERE id = 1;</code>. For seeing physical versions, use <code>pageinspect</code> extension. Mostly used for debugging weird MVCC issues.</p>
+</div>
+<div class="q">
+<p>Q: How does MySQL InnoDB do MVCC differently?</p>
+</div>
+<div class="a">
+<p>A: InnoDB stores the <em>current</em> row in the table and pushes old versions to an <strong>undo log</strong> (a separate area). To read an older version, the engine walks the undo chain. Pros: the table stays compact (no bloat in the heap). Cons: long-running transactions can fill the undo log; reads on old data are slower because they walk the chain. Different design, similar end result.</p>
+</div>
+<div class="q">
+<p>Q: Does MVCC work for distributed databases?</p>
+</div>
+<div class="a">
+<p>A: Yes — but the snapshot mechanism gets harder. Spanner uses TrueTime (atomic clock-backed timestamps) to give every transaction a globally meaningful snapshot point. CockroachDB uses HLC (Hybrid Logical Clocks). FoundationDB uses a centralized commit timestamp service. The principle is the same as single-node MVCC; the implementation handles clock skew across nodes.</p>
+</div>
+</div>
+<h1>Three myths to dynamite</h1>
+<div class="myth">
+<p><strong>"MVCC means no locks at all."</strong></p>
+<p>False. MVCC eliminates <em>reader-writer</em> locks. <strong>Writers still block writers</strong> — two transactions writing the same row serialize. MVCC removes the most common contention pattern (long readers blocking writers), not all contention.</p>
+</div>
+<div class="myth">
+<p><strong>"VACUUM is just a maintenance chore — set it and forget it."</strong></p>
+<p>False. The default autovacuum settings are tuned for small databases. On large hot tables, defaults are too lenient and bloat accumulates. <strong>Tune autovacuum per-table for hot tables.</strong> Monitor bloat. Watch for long transactions blocking cleanup.</p>
+</div>
+<div class="myth">
+<p><strong>"Snapshot Isolation is the same as Serializable."</strong></p>
+<p>False. SI prevents most anomalies but allows write skew. Serializable prevents all anomalies. The naming confusion: Postgres calls SI "Repeatable Read" and has a separate "Serializable" (SSI). Oracle calls SI "Serializable" — confusingly, this is <em>not</em> true serializable. <strong>Always verify what the database actually does, not what it's labeled.</strong></p>
+</div>
+<h1>Interview gotchas</h1>
+<div class="gotcha">
+<p><strong>Saying "MVCC eliminates locks."</strong> Eliminates <em>reader-writer</em> locks. Not all locks. Senior engineers are precise about which contention MVCC removes.</p>
+</div>
+<div class="gotcha">
+<p><strong>Forgetting VACUUM.</strong> MVCC's cost is dead tuples. If you describe MVCC without mentioning the cleanup step, you're missing 30% of the operational reality. Always mention VACUUM, autovacuum, or bloat in MVCC discussions.</p>
+</div>
+<div class="gotcha">
+<p><strong>Conflating "Repeatable Read" with "Snapshot Isolation."</strong> They're related but distinct in academic terms. Postgres's RR is SI in implementation. MySQL's RR uses gap locks. Oracle calls SI "Serializable." Naming is a vendor mess; mention this awareness.</p>
+</div>
+<div class="gotcha">
+<p><strong>Not knowing about transaction wraparound.</strong> Postgres-specific, but real. 32-bit XIDs wrap around after ~2 billion transactions. If autovacuum can't keep up, the database shuts down. Operators monitor for this. Mentioning wraparound in an interview signals deep Postgres operational experience.</p>
+</div>
+<div class="gotcha">
+<p><strong>Recommending VACUUM FULL casually.</strong> It locks the table. Almost always the wrong answer in production. The senior answer is <code>pg_repack</code> or proper autovacuum tuning.</p>
+</div>
+<h1>Mock interview</h1>
+<div class="mock-interview">
+<div class="turn q">
+<p>A team is migrating from MySQL to Postgres. They report that "transactions behave differently" — specifically a previously-correct stored procedure now hits race conditions. What do you tell them?</p>
+</div>
+<div class="turn a">
+<p>Several likely culprits, drawing on MVCC differences:</p>
+<p><strong>One — default isolation differs.</strong> MySQL InnoDB defaults to Repeatable Read. Postgres defaults to Read Committed. The procedure may have been relying on RR's stable snapshot — under Postgres RC, repeated reads can see different values mid-transaction. The fix: <code>BEGIN ISOLATION LEVEL REPEATABLE READ</code> or set the session default.</p>
+<p><strong>Two — undo vs heap-stored versions.</strong> MySQL stores old row versions in an undo log; Postgres stores them in the heap. This means MySQL's "consistent read" walks the undo chain to reconstruct old versions; Postgres reads directly. Subtle differences in performance and memory profiles, especially for long-running reads on heavily-updated rows.</p>
+<p><strong>Three — gap locks vs predicate locks.</strong> MySQL InnoDB at RR uses gap locks to prevent phantoms — locks ranges, not just rows. Postgres at RR uses MVCC snapshots — no locks needed for phantom prevention. If the procedure relied on MySQL's gap-locking semantics ("range locked, others can't insert into it"), Postgres won't behave the same way. The fix: explicit <code>SELECT FOR UPDATE</code> over the relevant range, or upgrade to Serializable for SSI conflict detection.</p>
+<p><strong>Four — autocommit and isolation defaults at the connection pool.</strong> Some connection pools set non-standard isolation per connection. Verify <code>SHOW transaction_isolation</code> matches what the app expects.</p>
+<p>The senior reflex: <strong>don't assume "ACID is ACID."</strong> The semantics of <em>concurrent</em> transactions are vendor-specific even when the syntax matches. Test the procedure under realistic concurrent load on both systems before declaring the migration done.</p>
+</div>
+<div class="commentary">
+<p>Names specific MVCC differences (undo vs heap, gap locks vs predicate locks). Connects each difference to a likely failure mode. The closing principle is the senior framing.</p>
+</div>
+<div class="turn q">
+<p>Two weeks after migration, your team says Postgres is "slower over time" — queries that were fast at launch are now sluggish. They blame Postgres. What's likely happening?</p>
+</div>
+<div class="turn a">
+<p>This sounds like classic bloat from MVCC. Let me work through the diagnosis:</p>
+<p><strong>Step one: confirm bloat.</strong> Check <code>pg_stat_user_tables.n_dead_tup</code> vs <code>n_live_tup</code> on the slow tables. If dead tuples are 50-90% of live tuples, you have heavy bloat. Use <code>pgstattuple</code> extension for more accurate measurement.</p>
+<p><strong>Step two: identify the cause.</strong> Why isn't autovacuum keeping up? A few common reasons:</p>
+<ul>
+<li>
+<p><strong>Long-running transactions blocking vacuum.</strong> Check <code>pg_stat_activity</code> for old <code>xact_start</code> times. Reports, batch jobs, or even forgotten developer sessions can pin vacuum back. Even a single transaction open for hours prevents cleanup of any tuple that became dead during that transaction's lifetime.</p>
+</li>
+<li>
+<p><strong>Default autovacuum is too lenient.</strong> The default <code>autovacuum_vacuum_scale_factor = 0.2</code> means "wait until 20% of rows are dead." On a 100M-row table that's 20M dead tuples accumulated before vacuum even starts. By the time it runs, the workload has produced more, and vacuum is permanently behind.</p>
+</li>
+<li>
+<p><strong>Insufficient autovacuum workers.</strong> Default 3. If you have many large tables churning concurrently, vacuum can't reach them all in time.</p>
+</li>
+</ul>
+<p><strong>Step three: fix.</strong></p>
+<ul>
+<li>Tune autovacuum per hot table: <code>ALTER TABLE hot_users SET (autovacuum_vacuum_scale_factor = 0.05);</code></li>
+<li>Investigate and bound long-running transactions. Set <code>statement_timeout</code> for analytical queries. Move reports to read replicas.</li>
+<li>Use <code>pg_repack</code> to reclaim existing bloat without locking the table.</li>
+<li>Monitor going forward: dashboard <code>n_dead_tup</code>, oldest transaction age, autovacuum activity.</li>
+</ul>
+<p><strong>Step four: education.</strong></p>
+<p>The team blames "Postgres" but the issue is operational tuning. MySQL doesn't have this exact failure mode because of its undo log architecture, but it has its own (undo log can fill, temp tables under pressure). <strong>Every MVCC database has an operational tax. Postgres's tax is named VACUUM.</strong></p>
+</div>
+<div class="commentary">
+<p>Specific tools and queries. Connects symptom to mechanism (MVCC → dead tuples → vacuum). Closes with the right framing — every MVCC database has a tax, just different ones. Educates the team without being condescending.</p>
+</div>
+<div class="turn q">
+<p>Walk me through how Postgres's Serializable isolation level actually works under the hood. I want to know why it can catch write skew when Repeatable Read can't.</p>
+</div>
+<div class="turn a">
+<p>Postgres's Serializable is <strong>SSI — Serializable Snapshot Isolation</strong>. It's an extension of MVCC, not a replacement.</p>
+<p>The mechanism, step by step:</p>
+<p><strong>One — every transaction still gets a snapshot at start.</strong> Same as RR. Reads see a consistent point-in-time view. This part is unchanged.</p>
+<p><strong>Two — SSI tracks rw-antidependencies.</strong> When a transaction reads a row, SSI records that it read what <em>might be modified</em> by other transactions. When it writes, SSI records what it wrote. The engine builds a graph of reads-that-might-conflict-with-writes across active transactions.</p>
+<p><strong>Three — at commit time, SSI checks for dangerous patterns.</strong> Specifically: cycles in the dependency graph that would mean the result <em>can't</em> be equivalent to any serial order. The classic dangerous pattern is two transactions that read what each other wrote — write skew is exactly this shape.</p>
+<p><strong>Four — if a dangerous pattern is detected, one transaction aborts.</strong> Returns a serialization failure (SQLSTATE 40001). The application must retry.</p>
+<p><strong>The contrast with Repeatable Read:</strong></p>
+<p>RR doesn't track read-write dependencies. It only checks for write-write conflicts on the same row. The doctor on-call write skew has <em>no</em> row-level conflict — T1 writes Alice, T2 writes Bob — so RR sees no problem and lets both commit. SSI's dependency tracking catches it because both transactions read what the other was about to invalidate.</p>
+<p><strong>The cost:</strong> SSI maintains the dependency graph in memory. Predicate-style reads (range scans) generate predicate-level dependencies. Under high concurrency and complex queries, the bookkeeping can be non-trivial. For most workloads, the overhead is small — but it's not zero.</p>
+<p><strong>What it gives you:</strong> if your transactions are correct <em>in isolation</em>, SSI guarantees they're correct <em>concurrently</em>. You don't have to think about every concurrent interaction. The trade-off is retry overhead, which the application must handle.</p>
+<p>This is why Postgres added SSI in version 9.1 — it's the only way to get true Serializable on a snapshot-isolation foundation without going to strict 2PL.</p>
+</div>
+<div class="commentary">
+<p>Names the academic concept (SSI), explains the mechanism crisply, contrasts with RR explicitly, and acknowledges the cost. The "if your transactions are correct in isolation, they're correct concurrently" framing is the value prop of Serializable, stated cleanly.</p>
+</div>
+<div class="turn q">
+<p>Last one. We're seeing transient <code>40001</code> errors in our application logs since enabling Serializable. The team wants to switch back. How do you handle this?</p>
+</div>
+<div class="turn a">
+<p>Slow down. Transient <code>40001</code>s are <em>expected behavior</em> at Serializable — they're the engine telling you it caught a write skew or other dependency cycle. The fix is to handle them properly, not to retreat.</p>
+<p>The conversation I'd have with the team:</p>
+<p><strong>Acknowledge the pain.</strong> Errors in logs are noisy and stressful. The instinct to "make them go away" is real. But making them go away by lowering isolation means the <em>bug</em> the error was preventing now silently corrupts data. That's worse, just less visible.</p>
+<p><strong>Diagnose the rate.</strong> What's the actual error rate? 1-in-10,000 transactions hitting <code>40001</code> is fine. 1-in-10 is excessive contention that needs investigating. The number tells you whether the error rate is "normal SSI working as designed" or "a real contention problem."</p>
+<p><strong>Implement retry logic if it's not already there.</strong> The pattern:
+- Catch SQLSTATE 40001 in the data layer.
+- Retry the transaction with exponential backoff.
+- Cap retries (5 attempts, then surface to user).
+- The transaction body must be safe to retry (idempotent at the business-logic level).</p>
+<p><strong>Investigate persistent conflict patterns.</strong> If the same query keeps hitting <code>40001</code>, examine why. Common causes:
+- Hot row contention (counter, last-modified row). Apply counter sharding.
+- Long-running transactions with broad reads. Split into shorter transactions.
+- Queries that read way more than they need (turning narrow queries into broad ones increases conflict surface).</p>
+<p><strong>Rollback as last resort.</strong> If after investigation the contention truly is unmanageable and the cost of write skew bugs is acceptable, you can selectively use RR for the worst cases. But "we got serialization errors" is not by itself a reason to abandon Serializable — it's a reason to engineer the application properly.</p>
+<p><strong>The framing</strong>: Serializable shifted the cost from "wrong results" to "retries." Retries are <em>visible</em>, debuggable, fixable. Wrong results are <em>invisible</em> until they cause a customer incident. The visible cost is preferable.</p>
+</div>
+<div class="commentary">
+<p>Empathetic but firm. Distinguishes "expected behavior" from "real problem." Provides the diagnostic framework. Closes with the strongest possible framing for why Serializable is worth the operational cost.</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<h3>MVCC, Snapshot Isolation &amp; Skew — One Page</h3>
+<h4>MVCC</h4>
+<p>Multi-Version Concurrency Control. Every row carries hidden <code>xmin</code> (creator XID) and <code>xmax</code> (deleter XID). Readers see versions visible to their snapshot. <strong>Readers don't block writers; writers don't block readers.</strong> Writers still block writers on same row.</p>
+<h4>Snapshot Isolation (SI)</h4>
+<p>Each transaction reads from a snapshot taken at start. Conflicting writes: first-committer-wins. Postgres "Repeatable Read" = SI. Oracle "Serializable" = SI. MySQL InnoDB RR ≈ SI plus gap locks.</p>
+<p><strong>Prevents:</strong> dirty read, non-repeatable read, phantom (in PG/MySQL), lost update.
+<strong>Does NOT prevent:</strong> write skew.</p>
+<h4>Read skew vs Write skew</h4>
+<ul>
+<li><strong>Read skew</strong>: see inconsistent values across time (Alice old, Bob new). <strong>Prevented by SI.</strong></li>
+<li><strong>Write skew</strong>: each txn reads &amp; decides correctly per-snapshot, both write disjoint rows, together violate invariant. <strong>NOT prevented by SI.</strong> Requires Serializable.</li>
+</ul>
+<h4>Postgres SSI (Serializable)</h4>
+<p>Built on MVCC. Tracks rw-antidependencies between transactions. At commit, detects cycles → aborts one txn (SQLSTATE 40001). App must retry. Optimistic — no read locks.</p>
+<h4>VACUUM (the bill)</h4>
+<p>Old row versions accumulate as dead tuples. Autovacuum reclaims them when no transaction can see them anymore. <strong>Bloat</strong> = dead tuples accumulating faster than vacuum cleans up.</p>
+<p><strong>Causes of bloat:</strong>
+- Default autovacuum settings too lenient for big hot tables.
+- Long-running transactions holding snapshots open (block vacuum).
+- Insufficient autovacuum workers.</p>
+<p><strong>Fixes:</strong>
+- Tune <code>autovacuum_vacuum_scale_factor</code> per-table.
+- Bound long transactions (<code>statement_timeout</code>, run on replicas).
+- <code>pg_repack</code> to reclaim existing bloat without locking.
+- Avoid VACUUM FULL in production.</p>
+<h4>Transaction wraparound (Postgres-specific)</h4>
+<p>32-bit XIDs wrap after ~2B transactions. Vacuum freezes old tuples to mark them "always visible." Failure to keep up causes database shutdown. Monitor <code>age(datfrozenxid)</code>.</p>
+<h4>MVCC across databases</h4>
+<ul>
+<li><strong>Postgres</strong>: versions in heap (bloat in tables).</li>
+<li><strong>MySQL InnoDB</strong>: undo log (compact tables, undo log can fill).</li>
+<li><strong>Oracle</strong>: undo segments.</li>
+<li><strong>SQL Server</strong>: tempdb version store (RCSI mode).</li>
+<li><strong>CockroachDB</strong>: distributed MVCC over RocksDB.</li>
+</ul>
+<h4>The 30-second verbal answer</h4>
+<p>"MVCC means every write creates a new version with metadata about which transactions can see it. Readers never block writers. Snapshot isolation is the guarantee MVCC provides — each transaction sees a consistent point-in-time view. SI prevents most anomalies but allows write skew, which Postgres SSI catches via rw-antidependency tracking. The cost: dead row versions accumulate, requiring VACUUM. Bloat from poor vacuum tuning is the most common Postgres operational pain."</p>
+<h4>Always pair with</h4>
+<p>ACID isolation levels (Module 07), locking (Module 09), VACUUM/autovacuum, pg_repack, transaction retry logic, snapshot horizon, predicate locks, undo log.</p>
+</div>
+<h1>What's next</h1>
+<p>You now know how MVCC actually works under the hood, what snapshot isolation guarantees and doesn't, why Postgres has bloat as its operational tax, and how SSI catches write skew. The MVCC vocabulary should now feel concrete rather than mysterious.</p>
+<p><strong>Module 09 dives into locking</strong> — pessimistic vs optimistic, the deadlock detector, <code>SELECT FOR UPDATE SKIP LOCKED</code> for queue patterns, advisory locks, and the lock escalation drama in SQL Server. We'll also cover when MVCC isn't enough and you need explicit locks anyway.</p>
+<p><strong>Module 10</strong> then opens the distributed core — replication, failover, the GitHub 2018 incident as a study in what goes wrong, multi-leader and conflict resolution.</p>
+<p>Get water. Concurrency intuition is built. The next module makes it explicit.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="07_acid_base_isolation.html" class="prev">&laquo; 07 ACID/BASE</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="09_locking.html" class="next">09 Locking &raquo;</a>
+</nav>
+</body>
+</html>

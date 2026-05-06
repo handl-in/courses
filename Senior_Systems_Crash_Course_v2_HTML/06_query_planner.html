@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam meets EXPLAIN</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 06</p>
+</div>
+<div class="module-title">
+<p>Query Planners &amp; Cost-Based Optimizers</p>
+</div>
+<div class="subtitle">
+<p>The black box that decides whether your beautiful index actually gets used — demystified</p>
+</div>
+</div>
+<div class="opener">
+<p>Same query, same data, same indexes. Yesterday it ran in 50ms. Today it takes 8 seconds. You haven't changed anything.</p>
+<p>What changed? <strong>The planner changed its mind.</strong> And until you understand why a planner changes its mind, you'll spend your career debugging "this should be fast" mysteries.</p>
+</div>
+<h1>Sam meets EXPLAIN</h1>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+OK confession. I've used <code>EXPLAIN</code> like four times in my career. I sort of look at the output, see "Index Scan" or "Seq Scan," confirm an index is being used, and call it a day. I never really <em>read</em> the rest.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+That's most engineers. And it's also why most engineers can't debug a query that suddenly got slow. The planner's output isn't just "did I use the index" — it's a <em>transcript of the database's reasoning</em>. Once you can read that transcript, debugging becomes obvious.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+The planner <em>reasons</em>?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Yes, in a very specific way. Every modern database has a <em>cost-based optimizer</em> — it considers many possible plans for your query, estimates the cost of each, and picks the cheapest. The estimate is based on statistics about your data. The cheapest plan is what runs.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+So when a query is slow, the planner picked badly?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Often, yes. And there are exactly three reasons it picks badly. Stale stats. Correlated columns. Bad cost model. Master those three and you're already 80% of the way to debugging any "this query suddenly got slow" production incident.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+That's it? Three reasons?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Three reasons that account for the vast majority of cases. The rest are weird edge cases — version mismatches, exotic queries, planner bugs. Junior engineers panic at planner output because it looks like magic. Senior engineers know it's just probability arithmetic with three known failure modes. We're going to make you the second kind today.</p>
+</div>
+</div>
+<div class="keyidea">
+<p>The planner doesn't <em>know</em> how to execute your query. It <em>guesses</em>, using statistics and a cost model, picks the plan with the lowest predicted cost, and runs that. When stats are wrong, the plan is wrong. <strong>Three failure modes account for almost all bad plans: stale stats, correlated columns, mismatched cost model.</strong></p>
+</div>
+<h1>The hook: three plans, one query</h1>
+<p>Let's see exactly what "the planner has choices" means.</p>
+<div class="scenario">
+<p>You write this query:</p>
+<pre><code class="language-sql">SELECT u.name, p.title
+FROM users u
+JOIN posts p ON p.user_id = u.id
+WHERE u.country = 'NZ';
+</code></pre>
+<p>The planner can execute this <em>at least three different ways</em>:</p>
+<p><strong>Plan A — Nested Loop Join.</strong>
+Scan users, filter to country=NZ. For each NZ user, look up their posts via index on <code>posts.user_id</code>.</p>
+<p><strong>Plan B — Hash Join.</strong>
+Scan all of <code>posts</code>, build a hash table keyed by user_id. Scan users filtered to NZ, probe the hash table.</p>
+<p><strong>Plan C — Merge Join.</strong>
+Sort both tables on the join key. Walk both in tandem, matching as you go.</p>
+<p>Same query. Same answer at the end. Wildly different execution costs.</p>
+<p>Which is best? Depends on:
+- How many users are in NZ. (Probably few.)
+- How many total posts exist. (Probably millions.)
+- Whether <code>posts.user_id</code> is indexed.
+- How much memory is available for hash tables.
+- Whether the planner <em>knows</em> any of the above accurately.</p>
+<p>The planner picks. <strong>You hope it picks right.</strong></p>
+</div>
+<div class="pause">
+<p>That's the whole game. The planner enumerates plans, estimates costs from statistics, picks the cheapest. Every other concept in this module is a refinement of that core process.</p>
+</div>
+<h1>How the planner thinks</h1>
+<p>Most modern databases use a <strong>cost-based optimizer</strong> (CBO). The process:</p>
+<div class="workout">
+<p><strong>The planner's pipeline:</strong></p>
+<div class="step">
+<p><strong>Parse</strong> the SQL into a logical query tree — what operations need to happen, in what semantic order.</p>
+</div>
+<div class="step">
+<p><strong>Rewrite</strong> the tree into equivalent forms — push down predicates, eliminate subqueries, flatten unions.</p>
+</div>
+<div class="step">
+<p><strong>Enumerate</strong> physical plans — different join algorithms, different access methods, different join orders.</p>
+</div>
+<div class="step">
+<p><strong>Estimate cost</strong> for each plan, using statistics + a cost model (CPU cost, I/O cost, memory cost).</p>
+</div>
+<div class="step">
+<p><strong>Choose</strong> the plan with the lowest predicted cost.</p>
+</div>
+<div class="step">
+<p><strong>Execute</strong> the chosen plan. Return results.</p>
+</div>
+</div>
+<div class="diagram">
+<pre><code>                        THE PLANNER'S PIPELINE
+
+  SQL query
+      │
+      ▼
+</code></pre>
+<p>┌──────────────┐
+   │   Parser     │     Tokens → tree.
+   └──────────────┘
+          │
+          ▼
+   ┌──────────────┐     Logical tree.
+   │  Logical plan │     "What needs to happen."
+   │  (rewritten) │     Equivalent transformations applied.
+   └──────────────┘
+          │
+          ▼
+   ┌──────────────────────────┐
+   │  Physical plan candidates │   Concrete algorithms.
+   │   - nested loop          │   "How might we do it?"
+   │   - hash join            │   Costs estimated using stats
+   │   - merge join           │   + cost model.
+   │   - index vs seq scan    │
+   │   - sort order           │
+   │   - join order           │
+   └──────────────────────────┘
+          │
+          ▼
+   ┌──────────────┐
+   │  Best plan    │    Cheapest predicted cost wins.
+   └──────────────┘
+          │
+          ▼
+   Execute → return rows</p>
+</div>
+<div class="insider">
+<p>The cost numbers themselves are in arbitrary units. What matters is the <em>ratio</em> — Plan A's cost vs Plan B's cost. If A is "10" and B is "1000," the planner picks A. The absolute scale is database-specific and doesn't translate to milliseconds directly. <strong>Don't try to reason about the unit; reason about the comparison.</strong></p>
+</div>
+<h1>Statistics: the planner's eyes</h1>
+<p>Every cost-based optimizer depends on statistics about your data. Without them, the planner is guessing blindly.</p>
+<p>The basic stats every database tracks:</p>
+<table>
+<thead>
+<tr>
+<th>Statistic</th>
+<th>What it tells the planner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Row count per table</strong></td>
+<td>How big is the table?</td>
+</tr>
+<tr>
+<td><strong>Distinct value count per column</strong></td>
+<td>How selective is an equality predicate on this column?</td>
+</tr>
+<tr>
+<td><strong>Histogram of column values</strong></td>
+<td>What values are common? Are there hot values?</td>
+</tr>
+<tr>
+<td><strong>Most common values + frequencies</strong></td>
+<td>Specifically, which values dominate?</td>
+</tr>
+<tr>
+<td><strong>Null fraction</strong></td>
+<td>How many rows have NULL in this column?</td>
+</tr>
+<tr>
+<td><strong>Correlation between column and physical order</strong></td>
+<td>Are sequential reads efficient for this column?</td>
+</tr>
+<tr>
+<td><strong>Index sizes</strong></td>
+<td>How expensive is an index scan?</td>
+</tr>
+</tbody>
+</table>
+<div class="scenario">
+<p><strong>Without statistics, the planner is flying blind.</strong></p>
+<p>Imagine querying <code>WHERE country = 'NZ'</code> with no statistics. The planner has no idea: 1 row? 1 million rows? 50% of the table? It defaults to a heuristic — usually "assume 30% selectivity" — and picks plans based on that.</p>
+<p>If reality is 0.01% of the table, the planner thinks the result is huge and picks a sequential scan. <strong>Plan is catastrophic; the right answer was an index scan.</strong></p>
+<p>This is why running <code>ANALYZE</code> after bulk loads is non-negotiable. Without it, every query for the next hour is a coin flip.</p>
+</div>
+<div class="tip">
+<p>Postgres updates statistics via <code>ANALYZE</code>. SQL Server has auto-update with thresholds. Oracle has <code>gather_stats</code>. They all work the same way — sample some rows, compute distributions, write to a system table the planner reads.</p>
+<p><strong>The cost of ANALYZE is small. The cost of stale stats is enormous. Tune your auto-vacuum settings to keep them fresh.</strong></p>
+</div>
+<div class="warning">
+<p>The planner doesn't read your raw data when choosing a plan. <strong>It reads statistics about your data.</strong> If those statistics are wrong, the plan is wrong. This single fact explains 70% of "why is the planner doing X" mysteries.</p>
+</div>
+<h2>Sample size matters</h2>
+<div class="insider">
+<p>Postgres samples a fixed number of rows for histogram statistics — by default, 30,000 rows total, with 100 buckets per column.</p>
+<p>For a 100-million-row table, that's 0.03% of the data. Most of the time, that's enough — common values get represented well.</p>
+<p>But if your queries target <em>rare</em> values that don't appear in the sample, the planner thinks they appear at the typical rate (e.g., 1/100 ≈ 1%) when actually they're 1 in 10 million. The planner expects to retrieve millions of rows; reality is one. The plan is wrong.</p>
+<p>The fix in Postgres: bump up the per-column statistics target.</p>
+<pre><code class="language-sql">ALTER TABLE events ALTER COLUMN tag SET STATISTICS 1000;
+ANALYZE events;
+</code></pre>
+<p>Now the histogram has 1000 buckets for that column, capturing more rare values. The planner sees reality more clearly.</p>
+<p>This kind of detail is rare to know. Mention it in an interview about debugging slow queries and you signal real production experience.</p>
+</div>
+<h1>Why join order matters so much</h1>
+<p>Three-table join: <code>A ⋈ B ⋈ C</code>. The planner has to decide what order to do the joins.</p>
+<div class="diagram">
+<p>Possible join orders for A ⋈ B ⋈ C:</p>
+<p>(A ⋈ B) ⋈ C       Join A and B first, then join the result with C.
+  (A ⋈ C) ⋈ B       Join A and C first, then with B.
+  (B ⋈ C) ⋈ A
+  A ⋈ (B ⋈ C)
+  B ⋈ (A ⋈ C)
+  C ⋈ (A ⋈ B)
+  ... etc</p>
+<p>With 4 tables, ~120 possible orders.
+  With 5 tables, ~1680.
+  With 10 tables, billions.</p>
+</div>
+<div class="scenario">
+<p><strong>Why order matters: an extreme example.</strong></p>
+<p>Three tables, sized:
+- A: 10K rows
+- B: 100M rows
+- C: 10K rows</p>
+<p>Joining A ⋈ B ⋈ C:</p>
+<p><strong>Option 1: (A ⋈ B) first.</strong> Joining 10K with 100M produces an intermediate result up to 100M rows. Then join with C. <strong>Massive intermediate result.</strong></p>
+<p><strong>Option 2: (A ⋈ C) first.</strong> Joining 10K with 10K produces an intermediate up to 100M rows in the worst case, but realistically much smaller (joins narrow). Then join with B — and now the small intermediate is the smaller side, so the join with B is efficient.</p>
+<p><strong>The right order is dramatically faster.</strong> And the planner has to figure this out from scratch every time, using only statistics about row counts and selectivities.</p>
+</div>
+<div class="insider">
+<p>With 10 tables in a join, there are billions of orders. The planner can't try all of them. Postgres uses <strong>dynamic programming</strong> up to about 12 tables, then switches to a <strong>genetic algorithm</strong> (<code>geqo</code>) for huge join trees. SQL Server has timeout-based plan search. Oracle has cost-bounded enumeration.</p>
+<p>The planner is essentially <strong>doing AI search under a time budget</strong>. Sometimes it gives up and picks an OK plan because it ran out of time. This is why ridiculously complex queries (15+ tables) can have unstable plans.</p>
+</div>
+<h1>The join algorithms — by name</h1>
+<p>You'll see these in <code>EXPLAIN</code> output. Know them.</p>
+<div class="compare">
+<div class="vs-left">
+<h4>Nested Loop Join</h4>
+<p><b>How:</b> For each row in the outer table, look up matches in the inner table.</p>
+<p><b>Best when:</b></p>
+<ul>
+<li>Outer table is small (few rows to iterate)</li>
+<li>Inner table has a good index on the join key</li>
+<li>You only need a few rows total</li>
+</ul>
+<p><b>Killer:</b> if the outer is large, you do many inner lookups. Quadratic-ish costs.</p>
+</div>
+<div class="vs-right">
+<h4>Hash Join</h4>
+<p><b>How:</b> Build a hash table on the smaller side. Probe with the larger side.</p>
+<p><b>Best when:</b></p>
+<ul>
+<li>Both tables are sized (hundreds of thousands of rows)</li>
+<li>Equality join on the key</li>
+<li>Memory is available for the hash table</li>
+</ul>
+<p><b>Killer:</b> if hash table doesn't fit in memory, it spills to disk and gets slow.</p>
+</div>
+</div>
+<div class="compare">
+<div class="vs-left">
+<h4>Merge Join</h4>
+<p><b>How:</b> Sort both inputs on the join key. Walk both in tandem, matching as you go.</p>
+<p><b>Best when:</b></p>
+<ul>
+<li>Both inputs are already sorted (e.g., from index scans)</li>
+<li>Joins on equality and range</li>
+<li>Output also needs to be sorted</li>
+</ul>
+<p><b>Killer:</b> if inputs aren't sorted, sorting them is expensive.</p>
+</div>
+<div class="vs-right">
+<h4>Index Nested Loop</h4>
+<p><b>How:</b> Special case of nested loop where the inner-table lookup uses a B-tree index.</p>
+<p><b>Best when:</b></p>
+<ul>
+<li>Outer is small</li>
+<li>Inner has indexed join key</li>
+<li>Each lookup is cheap (~1ms)</li>
+</ul>
+<p><b>Most common</b> in OLTP — small queries hitting indexed FKs.</p>
+</div>
+</div>
+<div class="tip">
+<p>You'll never have to <em>implement</em> these. You <strong>will</strong> be asked to recognize them in <code>EXPLAIN</code> output and explain why the planner chose one over another. <strong>Drill that.</strong></p>
+</div>
+<h1>Reading EXPLAIN — the actual skill</h1>
+<p>This is the core practical skill of this module. Let's read real Postgres <code>EXPLAIN ANALYZE</code> output and understand what every part means.</p>
+<pre><code class="language-sql">EXPLAIN ANALYZE
+SELECT u.name, p.title
+FROM users u
+JOIN posts p ON p.user_id = u.id
+WHERE u.country = 'NZ';
+</code></pre>
+<p>Output:</p>
+<pre><code>Nested Loop  (cost=0.43..15.78 rows=1 width=42) (actual time=0.05..0.12 rows=2 loops=1)
+  -&gt; Index Scan using idx_country on users  (cost=0.43..8.45 rows=1 width=18)
+                                            (actual time=0.02..0.04 rows=2 loops=1)
+       Index Cond: (country = 'NZ')
+  -&gt; Index Scan using idx_user_id on posts  (cost=0.43..7.32 rows=1 width=24)
+                                            (actual time=0.02..0.03 rows=4 loops=2)
+       Index Cond: (user_id = users.id)
+Planning time: 0.234 ms
+Execution time: 0.156 ms
+</code></pre>
+<p>Looks intimidating. It's not. Let me decode every piece.</p>
+<div class="workout">
+<p><strong>Step-by-step decoding of EXPLAIN ANALYZE:</strong></p>
+<div class="step">
+<p><strong>Tree structure.</strong> Read the plan as a tree. The outermost operator is at the top — here, <code>Nested Loop</code>. Operations are nested by indentation; arrows (<code>-&gt;</code>) show child operators. The <code>Nested Loop</code> has two children: an <code>Index Scan on users</code> and an <code>Index Scan on posts</code>.</p>
+</div>
+<div class="step">
+<p><strong><code>cost=0.43..15.78</code></strong>. Two numbers. Startup cost (0.43) — work to do <em>before</em> the first row can be returned. Total cost (15.78) — work to return all rows. Both in arbitrary planner units. <strong>What matters is the comparison across plans.</strong></p>
+</div>
+<div class="step">
+<p><strong><code>rows=1</code></strong> (planner estimate). The planner <em>expects</em> this operator to produce 1 row. Compare with <code>actual rows=2</code> later — the planner was off by a factor of 2 here, which is fine.</p>
+</div>
+<div class="step">
+<p><strong><code>width=42</code></strong>. Average bytes per output row. Used by the planner to estimate memory cost of intermediate results.</p>
+</div>
+<div class="step">
+<p><strong><code>actual time=0.05..0.12</code></strong>. The real measured times — from EXPLAIN ANALYZE actually running the query. Startup time and total time, in milliseconds.</p>
+</div>
+<div class="step">
+<p><strong><code>actual rows=2</code></strong>. The actual number of rows produced. <em>This is the gold.</em> Compare with the planner's <code>rows</code> estimate.</p>
+</div>
+<div class="step">
+<p><strong><code>loops=1</code></strong>. How many times this operator executed. For a nested-loop's inner side, <code>loops</code> equals the number of rows from the outer side. So <code>loops=2</code> on the posts scan means the posts index was probed twice — once per matching user.</p>
+</div>
+<div class="step">
+<p><strong><code>Index Cond</code> and similar lines.</strong> Predicates that were pushed down into the operator. <code>Index Cond: (country = 'NZ')</code> means the index was used to narrow by country, not just scanned wholesale.</p>
+</div>
+<div class="step">
+<p><strong><code>Planning time</code> and <code>Execution time</code></strong> at the bottom. Planning time is what the planner spent figuring out the plan. Execution time is what running the plan took. Sometimes a complex query has long planning time — usually 1-10ms, but can be much longer for queries with many joins.</p>
+</div>
+</div>
+<h2>What to actually look for</h2>
+<div class="keyidea">
+<p><strong>The single most important diagnostic: compare planner-estimated rows with actual rows.</strong> A 10x or 100x mismatch means the stats are misleading the planner. That's almost always the root cause of bad plans.</p>
+</div>
+<div class="gotcha">
+<p><strong>Estimated rows ≠ actual rows by 100x?</strong> Stats are wrong. Run ANALYZE. If it persists, the column has correlated relationships with another column and Postgres doesn't know — consider extended statistics.</p>
+<p>In Postgres, you'll see this look like:</p>
+<pre><code>Nested Loop  (cost=0.43..15.78 rows=1) (actual ... rows=8000000)
+                                  ^^^                  ^^^^^^^
+                            estimate=1               actual=8M
+</code></pre>
+<p>A 8 million-fold estimation error. The planner picked nested loop because for 1 row that's fine; for 8M it's catastrophic. Each "loop" of the nested loop does an inner-table probe — you're doing 8M lookups when you should have done a hash join.</p>
+</div>
+<h2>A worked debugging example</h2>
+<div class="scenario">
+<p><strong>A real production debug.</strong></p>
+<p>A query that used to run in 100ms now takes 30 seconds. EXPLAIN ANALYZE shows:</p>
+<pre><code>Nested Loop  (cost=0.43..1.50 rows=1) (actual time=0.05..29800 rows=8000000 loops=1)
+  -&gt; Seq Scan on events  (cost=0.00..0.50 rows=1 width=...)
+                         (actual time=0.01..3000 rows=8000000 loops=1)
+        Filter: (event_type = 'click')
+        Rows Removed by Filter: 2000000
+  -&gt; Index Scan using idx_user on users (cost=0.43..1.00 rows=1 width=...)
+                                        (actual time=0.001..0.003 rows=1 loops=8000000)
+        Index Cond: (id = events.user_id)
+</code></pre>
+<p>What do you see?</p>
+<p><strong>Estimate of 1 row from the events scan; actual 8 million.</strong> Massive estimation error.</p>
+<p><strong>The planner chose nested loop</strong>, expecting to do 1 inner index probe. Reality: 8 million inner probes. Each probe costs ~3 microseconds — fast individually, but 8M × 3μs = 24 seconds. <strong>That's where the time went.</strong></p>
+<p><strong>Why was the estimate so wrong?</strong> The events table has been growing fast. Last ANALYZE was a week ago, when the table was 1/100 the current size. Stats say "table is small, this filter returns ~1 row." Reality: table grew, filter returns 8M rows.</p>
+<p><strong>The fix</strong>: <code>ANALYZE events</code>. Then re-run. The planner now sees 8M rows, picks a hash join instead, completes in 200ms.</p>
+<p><strong>The lesson</strong>: bad estimates → bad plans → bad performance. The fix is upstream of the SQL, in the statistics layer.</p>
+</div>
+<h1>The planner's three failure modes</h1>
+<p>Now we name them explicitly. These are the three reasons the planner picks badly.</p>
+<h2>Failure mode 1: stale statistics</h2>
+<p>Already covered above. The most common reason for a query that "suddenly got slow." Run ANALYZE and verify.</p>
+<div class="tip">
+<p>Postgres has auto-vacuum, which auto-analyzes tables when they accumulate a certain percentage of changes. Default threshold: 10% of rows changed. For very large tables, this means ANALYZE may not run after smaller bulk loads. <strong>Manual ANALYZE after big imports is good practice.</strong></p>
+</div>
+<h2>Failure mode 2: correlated columns</h2>
+<div class="brain">
+<p>The CBO assumes columns are <em>independent</em>. Multiple predicates' selectivities multiply.</p>
+<p><code>WHERE country = 'US' AND state = 'California'</code></p>
+<p>If 30% of users are in US, and 5% are in CA, the planner estimates:
+0.30 × 0.05 = 0.015 = 1.5% of users.</p>
+<p>Reality: ~5% of users (because almost all CA users are in US — country and state are correlated).</p>
+<p>The planner is off by 3x. For nested loops vs hash joins, that 3x can flip the choice in the wrong direction.</p>
+<p>This is <strong>correlation blindness</strong>, and it's everywhere in real data:
+- <code>country</code> ↔ <code>state</code> (CA implies US)
+- <code>birthdate</code> ↔ <code>age</code> (perfectly correlated!)
+- <code>product_category</code> ↔ <code>manufacturer</code> (Apple ↔ Electronics)
+- <code>start_time</code> ↔ <code>end_time</code> (later starts have later ends)
+- <code>latitude</code> ↔ <code>longitude</code> (geographic clusters)</p>
+</div>
+<div class="insider">
+<p><strong>Postgres has extended statistics</strong> for exactly this. Since version 10, you can declare:</p>
+<pre><code class="language-sql">CREATE STATISTICS stats_geo (dependencies, ndistinct)
+  ON country, state FROM users;
+ANALYZE users;
+</code></pre>
+<p>Now the planner knows:
+- Functional dependencies (state determines country)
+- Joint distinct value counts (how many country-state combos actually exist)</p>
+<p>Estimates improve dramatically. Plans flip back to correct.</p>
+<p>Most engineers don't know about extended statistics. Mention it in an interview when discussing planner failures, and you signal real expertise.</p>
+</div>
+<h2>Failure mode 3: mismatched cost model</h2>
+<p>The planner has a cost model that converts I/O and CPU into the same arbitrary unit. The model has constants — <em>parameters</em> — that you can tune.</p>
+<table>
+<thead>
+<tr>
+<th>Postgres parameter</th>
+<th>Default</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>seq_page_cost</code></td>
+<td>1.0</td>
+<td>Cost of one sequential page read</td>
+</tr>
+<tr>
+<td><code>random_page_cost</code></td>
+<td>4.0</td>
+<td>Cost of one random page read (vs sequential)</td>
+</tr>
+<tr>
+<td><code>cpu_tuple_cost</code></td>
+<td>0.01</td>
+<td>Per-row CPU cost</td>
+</tr>
+<tr>
+<td><code>cpu_index_tuple_cost</code></td>
+<td>0.005</td>
+<td>Per-index-tuple cost</td>
+</tr>
+<tr>
+<td><code>cpu_operator_cost</code></td>
+<td>0.0025</td>
+<td>Per-operator-call cost</td>
+</tr>
+<tr>
+<td><code>effective_cache_size</code></td>
+<td>4 GB</td>
+<td>How much cache the planner <em>thinks</em> it has</td>
+</tr>
+</tbody>
+</table>
+<div class="scenario">
+<p><strong>The most common cost-model mismatch: NVMe SSDs.</strong></p>
+<p>The default <code>random_page_cost = 4.0</code> was set when spinning disks dominated. On HDDs, random reads are roughly 4x more expensive than sequential.</p>
+<p>On NVMe SSDs, random and sequential reads are nearly equivalent — <code>random_page_cost</code> should be more like 1.1 or 1.5.</p>
+<p>If you leave the default on NVMe hardware, the planner <em>over-penalizes index scans</em> (which involve random I/O for heap fetches). It picks sequential scans more aggressively than reality warrants. <strong>Slow queries from a planner that thinks your hardware is from 2010.</strong></p>
+<p>The fix: tune <code>random_page_cost</code> to match your storage. On modern cloud SSDs, <code>1.1</code> is a common value. <strong>Check this on every Postgres deployment.</strong></p>
+</div>
+<div class="warning">
+<p>A senior reflex: when reviewing a Postgres deployment, look at <code>random_page_cost</code> and <code>effective_cache_size</code>. If they're at defaults on modern hardware, the planner is making decisions for hardware that hasn't existed in production for a decade. Tune them.</p>
+</div>
+<h1>Three more ways to think about planners</h1>
+<div class="metaphor">
+<p><strong>Way 1: a navigation app.</strong></p>
+<p>Your phone's navigation app gets a destination request. It enumerates routes — highway, surface streets, scenic. For each, it estimates travel time using current traffic data.</p>
+<p>If the traffic data is stale (rush hour 30 min ago), it picks a route that's now jammed. The "actual" time vastly exceeds the estimate.</p>
+<p>If two streets are correlated (closing one floods the other), but the model treats them independently, it routes through both — and you sit in two consecutive jams.</p>
+<p>If the cost model is wrong (assumes 30 mph average; you're in NYC stuck at 5 mph), every route's predicted time is wrong, but the <em>relative</em> ordering may still hold — so you might still get the right route, just with a bad ETA.</p>
+<p>That's a planner.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 2: a chess engine choosing a move.</strong></p>
+<p>A chess engine evaluates many possible moves. For each, it estimates a "score" — how good the resulting position is.</p>
+<p>It doesn't actually know the right move; it predicts. If its evaluation function is wrong (bad model), it picks bad moves with high confidence.</p>
+<p>If it has limited time, it explores a smaller search tree and might miss the best move (similar to the planner's join-order time budget).</p>
+<p>A great move is sometimes obvious, but often the engine is making a probabilistic bet under uncertainty. Same as the planner.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 3: a contractor estimating jobs.</strong></p>
+<p>A contractor bids on three jobs. For each, they estimate hours and materials. They commit to the cheapest one.</p>
+<p>If their estimates are based on outdated material prices (stale stats), they pick the wrong job.</p>
+<p>If two cost categories are correlated (labor and equipment rentals both go up together), and they treat them independently, they underestimate combined risk.</p>
+<p>If their cost model is wrong (haven't updated rates in a year), they bid too low and lose money.</p>
+<p>Same three failure modes. Different domain.</p>
+</div>
+<h1>Plan stability and plan caching</h1>
+<p>Here's a subtle aspect that bites teams in production.</p>
+<div class="warning">
+<p><strong>The planner can pick different plans for the same query as data changes.</strong></p>
+<p>Stats refresh, table sizes shift, distributions change. What was a hash join yesterday is a nested loop today. Sometimes that's correct (the data really did change). Sometimes it's wrong (stats are misleading the planner).</p>
+<p>This is <strong>plan instability</strong>, and it's the source of most "this query was fine yesterday, now it's slow" production incidents.</p>
+</div>
+<h2>How databases mitigate plan instability</h2>
+<table>
+<thead>
+<tr>
+<th>Database</th>
+<th>Mechanism</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Oracle</strong></td>
+<td>Plan baselines, plan stability, hints</td>
+</tr>
+<tr>
+<td><strong>MySQL</strong></td>
+<td>Optimizer hints (<code>/*+ ... */</code> syntax)</td>
+</tr>
+<tr>
+<td><strong>SQL Server</strong></td>
+<td>Query Store with plan forcing</td>
+</tr>
+<tr>
+<td><strong>Postgres</strong></td>
+<td><strong>No native plan hints.</strong> <code>pg_hint_plan</code> extension exists.</td>
+</tr>
+<tr>
+<td><strong>MongoDB</strong></td>
+<td>Plan cache with hint API</td>
+</tr>
+</tbody>
+</table>
+<div class="insider">
+<p><strong>Postgres famously refuses to support plan hints in core.</strong> The Postgres community's argument: if the planner is wrong, fix the planner — hints are a workaround that papers over real problems and fossilizes incorrect plans.</p>
+<p>The pragmatic argument the other way: in production, you sometimes need to <em>force</em> a plan and figure out the root cause later. Postgres users either install <code>pg_hint_plan</code> or rewrite queries to nudge the planner.</p>
+<p>Common rewriting tricks for Postgres:
+- <strong><code>OFFSET 0</code></strong> in a subquery — prevents inlining, forces materialization.
+- <strong>CTEs with <code>MATERIALIZED</code></strong> — explicit barrier (since Postgres 12).
+- <strong>Column tweaks</strong> in WHERE clauses to influence selectivity estimates.</p>
+<p>These are workarounds. The real fix is usually statistics or query rewriting.</p>
+</div>
+<h1>Sharpen your pencil</h1>
+<div class="exercise">
+<p><strong>Exercise 1.</strong> Read this Postgres EXPLAIN ANALYZE output and diagnose the problem:</p>
+<pre><code>Nested Loop  (cost=0.85..2.30 rows=1) (actual time=0.05..45000 rows=1500000 loops=1)
+  -&gt; Seq Scan on orders  (cost=0.00..1.00 rows=1) (actual time=0.01..120 rows=1500000 loops=1)
+        Filter: (status = 'pending')
+        Rows Removed by Filter: 50000
+  -&gt; Index Scan using idx_user on users (cost=0.43..1.30 rows=1) (actual ... loops=1500000)
+        Index Cond: (id = orders.user_id)
+</code></pre>
+<p>What's wrong, and what would you do?</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>The diagnosis:</p>
+<p><strong>Estimate vs actual mismatch.</strong> The planner estimated 1 row from the orders scan; actual is 1.5M rows. <strong>1.5 million × estimation error.</strong></p>
+<p><strong>The plan choice.</strong> With "1 row" expected, nested loop is reasonable — one user lookup. With 1.5M rows, nested loop is catastrophic — 1.5M user lookups, ~30μs each, totaling ~45 seconds. Matches the observed time.</p>
+<p><strong>Why was the estimate wrong?</strong> Either:
+- Stats are stale and the orders table has grown. Run <code>ANALYZE orders</code>.
+- The 'pending' value is not represented in the histogram. Check <code>pg_stats</code> for the orders.status column. If 'pending' isn't in the most_common_vals, it might be rare-but-actually-common (a recent surge). Bump up <code>SET STATISTICS</code> on the column.</p>
+<p><strong>The fix path:</strong>
+1. Run <code>ANALYZE orders</code>. Re-run EXPLAIN ANALYZE.
+2. If the estimate is now accurate (~1.5M), the planner should pick hash join. Verify.
+3. If still wrong, raise statistics target on <code>orders.status</code>: <code>ALTER TABLE orders ALTER COLUMN status SET STATISTICS 1000; ANALYZE orders;</code>.
+4. As a last resort, force the plan via query rewrite or <code>pg_hint_plan</code>.</p>
+<p>The senior reflex: <strong>start with stats. Don't reach for hints first.</strong></p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2.</strong> A query is fast on staging (200ms) and slow on production (8s). Same schema, similar data volume. What are three diagnostic checks you'd run, in order?</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>Check 1: EXPLAIN ANALYZE on both environments.</strong> Are the plans the same? If different, that's the root cause — figure out <em>why</em> the planner picked differently.</p>
+<p><strong>Check 2: Are statistics in sync?</strong> Run <code>ANALYZE</code> on both. Compare <code>pg_stats</code> for the relevant tables. Production might have very different distributions even with similar volumes — for instance, if production has more skew in certain columns.</p>
+<p><strong>Check 3: Configuration differences.</strong> Compare <code>random_page_cost</code>, <code>effective_cache_size</code>, <code>work_mem</code>, <code>shared_buffers</code>. Production might be on different hardware with different defaults — e.g., older spinning disks vs SSDs leading to different cost-model accuracy. Cache state also differs: staging has the working set hot in cache; production's buffer pool is churned by other queries.</p>
+<p><strong>The senior insight</strong>: staging and prod should produce identical plans on identical data. If they don't, find out why before changing anything. Don't just "tune until prod is fast" — that papers over real differences that will bite again.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3.</strong> Explain to non-technical Sam, in three sentences, why a query can suddenly slow down without anyone changing the code.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>The database picks how to run a query based on statistics about your data — like "table A has 1 million rows, this filter usually returns 5%." If the data grows or its distribution shifts and the statistics aren't refreshed, the database can pick a strategy that <em>was</em> fast for last week's data but is terrible for this week's. The fix is usually to refresh the statistics (<code>ANALYZE</code>), but the lesson is: the database's "intelligence" depends on a model of your data, and stale models lead to bad decisions.</p>
+</div>
+</div>
+<h1>There are no dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p>Q: What's the difference between EXPLAIN and EXPLAIN ANALYZE?</p>
+</div>
+<div class="a">
+<p>A: <code>EXPLAIN</code> shows the plan and the planner's <em>estimates</em> without running the query. <code>EXPLAIN ANALYZE</code> actually executes the query and shows both estimates and <em>actual</em> measurements. Use ANALYZE in production debugging — but be aware: if the query is a heavy DELETE or UPDATE, <code>EXPLAIN ANALYZE</code> actually runs it. Wrap in a transaction with rollback.</p>
+</div>
+<div class="q">
+<p>Q: Why doesn't the planner just try every plan and pick the fastest?</p>
+</div>
+<div class="a">
+<p>A: With many tables and many possible orders, "every plan" is billions of options. The planner has milliseconds to decide. It uses heuristics and estimation to enumerate a manageable subset. The cost model is fast; actual execution is slow. <strong>The planner is doing AI search under a time budget.</strong></p>
+</div>
+<div class="q">
+<p>Q: What's a "rule-based optimizer" — different from CBO?</p>
+</div>
+<div class="a">
+<p>A: Older databases (and a few specialty systems) used fixed rules: "always use index for equality predicates," "always do nested loops for small tables." No statistics required, but no adaptability either. CBO is dominant since the 1990s. Knowing both exist is enough for interviews; CBO is what you'll actually use.</p>
+</div>
+<div class="q">
+<p>Q: Can the planner be wrong even with perfect statistics?</p>
+</div>
+<div class="a">
+<p>A: Yes. Stats can be perfect for <em>aggregate</em> characteristics but miss <em>specific</em> hot values or temporal patterns. The cost model itself can be miscalibrated. And join-order search can hit time limits before exploring all plans. <strong>Statistics are necessary but not sufficient</strong> for perfect plans.</p>
+</div>
+<div class="q">
+<p>Q: How do I see what plans were considered but not picked?</p>
+</div>
+<div class="a">
+<p>A: Mostly you can't, in mainstream databases. Postgres exposes only the chosen plan. Oracle has more visibility via 10053 trace events. SQL Server has Query Store. <strong>For Postgres debugging, you reason about why the chosen plan was picked, not what was discarded.</strong></p>
+</div>
+<div class="q">
+<p>Q: What is "plan caching" and when does it bite?</p>
+</div>
+<div class="a">
+<p>A: Some databases cache plans for parameterized queries — re-using the same plan across executions even when parameters change. This is fast but can use a stale plan when the parameter values have very different selectivities. Oracle has this with bind variable peeking; SQL Server has parameter sniffing problems; Postgres prepares statements but eventually replans. The general principle: <strong>caching plans is a tradeoff between planning time and plan quality.</strong></p>
+</div>
+<div class="q">
+<p>Q: Why does Postgres not support plan hints natively?</p>
+</div>
+<div class="a">
+<p>A: Philosophical opposition. The Postgres community argues that if the planner is wrong, that's a bug to fix or a stat to update — not something to override. In practice, advanced users install <code>pg_hint_plan</code> to force plans when the planner can't be convinced. Other databases (Oracle, MySQL) embrace hints. Reasonable people disagree.</p>
+</div>
+<div class="q">
+<p>Q: What does "predicate pushdown" mean?</p>
+</div>
+<div class="a">
+<p>A: Pushing a WHERE clause as deep into the plan as possible. Instead of joining two tables and <em>then</em> filtering, filter each table first and join the smaller results. The planner does this automatically as part of the rewrite phase. You'll see it in EXPLAIN as <code>Filter</code> lines deep in the tree, before joins.</p>
+</div>
+</div>
+<h1>Three myths to dynamite</h1>
+<div class="myth">
+<p><strong>"The database optimizes this for you."</strong></p>
+<p>Half-true. The planner <em>tries</em> to optimize, but it's not perfect. It has well-known failure modes. A senior engineer knows when to trust the planner and when to investigate.</p>
+</div>
+<div class="myth">
+<p><strong>"Plan hints are just bad practice."</strong></p>
+<p>Mixed. Hints are the right tool when the planner has a known bug, when statistics can't be made accurate (rare correlations, dynamic data), or when you need an emergency fix in production. They become <em>bad practice</em> when they're used as the first response to every problem instead of investigating root causes. Like any powerful tool — useful when used carefully, dangerous when overused.</p>
+</div>
+<div class="myth">
+<p><strong>"Modern hardware makes the planner irrelevant."</strong></p>
+<p>False. Modern hardware makes individual operations faster, but the wrong plan is still wrong. A nested loop with 100M iterations is still a nested loop with 100M iterations — even on NVMe. The planner's choice of <em>algorithm</em> matters far more than hardware.</p>
+</div>
+<h1>Interview gotchas</h1>
+<div class="gotcha">
+<p><strong>Saying "the planner just figures it out."</strong> This is the junior answer. The senior answer names the failure modes and explains how to debug them.</p>
+</div>
+<div class="gotcha">
+<p><strong>Confusing rule-based and cost-based optimization.</strong> CBO is dominant; rule-based exists in legacy and specialty systems. Knowing the difference is enough.</p>
+</div>
+<div class="gotcha">
+<p><strong>Forgetting that EXPLAIN doesn't run the query, EXPLAIN ANALYZE does.</strong> A subtle but important distinction in production debugging.</p>
+</div>
+<div class="gotcha">
+<p><strong>Not naming the three failure modes.</strong> Stale stats, correlated columns, mismatched cost model. Be ready to name and explain all three.</p>
+</div>
+<div class="gotcha">
+<p><strong>Reading EXPLAIN output as a flat thing instead of as a tree.</strong> EXPLAIN output is a tree. Understanding the tree structure — operations nested inside operations — is core to reading it.</p>
+</div>
+<h1>Mock interview</h1>
+<div class="mock-interview">
+<div class="turn q">
+<p>You're scaling a Postgres database. The same query is fast on staging and slow on production. Same schema, similar data volume. What's likely going on?</p>
+</div>
+<div class="turn a">
+<p>A handful of usual suspects, in order of likelihood:</p>
+<p><strong>One — stats are different.</strong> Production has different ANALYZE history. Run ANALYZE on prod tables and compare <code>pg_stats</code>. If stats look reasonable but plans are still wrong, suspect correlated columns or skew that the histograms don't capture.</p>
+<p><strong>Two — cache state is different.</strong> Staging may have the working set entirely in buffer pool because of low traffic. Production's buffer pool is churned by other queries. The query that was hot in cache on staging is now doing real disk I/O. Same plan, vastly different execution time.</p>
+<p><strong>Three — concurrency.</strong> On staging the query has the database to itself. On prod it's competing for locks, IOPS, CPU. Look at <code>pg_stat_activity</code>, wait events, lock contention.</p>
+<p><strong>Four — plan choice.</strong> Stats can vary just enough to flip the planner's choice from a hash join to a nested loop, or vice versa. Run EXPLAIN ANALYZE on both environments and compare <em>plans</em>, not just timings.</p>
+<p><strong>Five — configuration.</strong> <code>work_mem</code>, <code>effective_cache_size</code>, <code>random_page_cost</code> may differ. These directly influence plan choice. Production might be on hardware with different optimal settings.</p>
+<p>The senior move is to <strong>always compare EXPLAIN ANALYZE side by side</strong>, then look at the divergence. Staging and prod should produce identical plans on identical data — if they don't, find out why before changing anything.</p>
+</div>
+<div class="commentary">
+<p>Five hypotheses, ordered by probability. Mentions specific Postgres internals (<code>pg_stat_activity</code>, wait events). The closing principle — "find out why before changing anything" — is the senior reflex.</p>
+</div>
+<div class="turn q">
+<p>Suppose plans are the same, stats are similar, but production is still slow. EXPLAIN ANALYZE shows the same plan in both. What now?</p>
+</div>
+<div class="turn a">
+<p>If plans are identical and stats are similar, you're past the planner. The slowness is in execution, not plan choice. Three places to look:</p>
+<p><strong>One — I/O patterns.</strong> Production is doing real disk I/O; staging is hitting cache. Check <code>EXPLAIN (ANALYZE, BUFFERS)</code> — Postgres shows you <code>shared hit</code> (cache) vs <code>shared read</code> (disk) per operator. If production has lots of disk reads where staging has hits, the working set doesn't fit in production's buffer pool.</p>
+<p><strong>Two — concurrent contention.</strong> Other queries on production might be holding locks, saturating IOPS, or burning CPU. <code>pg_stat_activity</code> and <code>pg_locks</code> show what's contending. Sometimes the slow query is a victim, not a cause.</p>
+<p><strong>Three — write-vs-read mix.</strong> If production is heavy on writes, autovacuum may be running and stealing I/O capacity. Or WAL fsync is contending for the disk. These don't show up in EXPLAIN — they're system-level.</p>
+<p>The diagnostic: run the slow query on production at low-traffic time. If it's still slow, the issue is data/IO. If it speeds up, the issue is concurrent load.</p>
+</div>
+<div class="commentary">
+<p>Specific tools by name (<code>EXPLAIN BUFFERS</code>, <code>pg_stat_activity</code>, <code>pg_locks</code>). The "run at low-traffic time" is a real-world debugging trick — separates load issues from query issues.</p>
+</div>
+<div class="turn q">
+<p>The query has a 4-table join. Sometimes the planner picks a great plan, sometimes a terrible one. The data hasn't changed, just the parameters in the WHERE clause. What's happening, and what do you do?</p>
+</div>
+<div class="turn a">
+<p>This sounds like <strong>parameter-dependent plan selection</strong> — the planner picks plans based on the specific parameter value, and different values map to wildly different selectivities.</p>
+<p>For example, <code>WHERE country = $1</code>. With <code>country = 'US'</code> (50% of users), seq scan is right. With <code>country = 'NZ'</code> (0.1%), index scan is right. The planner uses statistics about the specific value to choose. Different parameters → different optimal plans.</p>
+<p>But if the application uses <strong>prepared statements with cached plans</strong>, the first execution's parameter biases the cached plan. Subsequent executions with different parameters use the (possibly wrong) cached plan.</p>
+<p>The fix paths:
+<strong>One — verify it's plan caching.</strong> EXPLAIN with the actual parameter values, see if plans differ. If yes, plan caching is the issue.</p>
+<p><strong>Two — disable plan caching for this query.</strong> In Postgres, <code>plan_cache_mode = force_custom_plan</code> re-plans every execution. Trades planning time for plan accuracy.</p>
+<p><strong>Three — restructure the query.</strong> Sometimes splitting into two queries (one for selective parameters, one for non-selective) is cleaner.</p>
+<p><strong>Four — use EXPLAIN-driven hints (via pg_hint_plan) for the worst cases.</strong> Last resort.</p>
+<p>This is a known pain in Postgres, MySQL, SQL Server (where it's called "parameter sniffing"), Oracle (bind variable peeking). All databases struggle with it.</p>
+</div>
+<div class="commentary">
+<p>Names the phenomenon (parameter sniffing / parameter-dependent plans) and recognizes it across vendors. Solutions ranked by simplicity. The "this is a known pain in [database list]" framing shows breadth.</p>
+</div>
+<div class="turn q">
+<p>Last one. A junior engineer on your team adds <code>pg_hint_plan</code> and starts forcing plans for every slow query. What do you tell them?</p>
+</div>
+<div class="turn a">
+<p>I'd respect that they're trying to solve a real problem — slow queries are slow, and forcing a plan does fix it locally. But I'd want to redirect their effort.</p>
+<p><strong>The pitch I'd make:</strong></p>
+<p>Forcing a plan is a workaround that <em>fossilizes</em> a decision. Today's plan might be right; tomorrow's might not be. Hardware changes, data grows, distributions shift. A forced plan ages. In six months you've got 50 forced plans across the codebase, each from a different incident, and nobody remembers why they were forced.</p>
+<p>The senior pattern is:
+1. <strong>Investigate root cause first.</strong> Stale stats? Correlated columns? Cost-model mismatch? Each has a fix that's <em>durable</em> — the planner gets <em>better</em> at this query class, not just at this one query.
+2. <strong>Document hints when you do use them.</strong> If you must force a plan, leave a comment in the code explaining: the symptom, the root cause investigation, why the hint is needed, and what condition would let the hint be removed.
+3. <strong>Audit hints periodically.</strong> Every quarter, revisit forced plans. If the underlying cause is fixed, remove the hint.</p>
+<p><strong>The framing I'd use with the junior:</strong> "you're treating the symptom. Treating the cause is harder, but it generalizes. Let's find one of these slow queries and dig into the root cause together. Once you've done that twice, you'll understand why hints are a last resort, not a first response."</p>
+<p>Mentoring through the actual debug, not just by edict. They learn the tools, you build trust.</p>
+</div>
+<div class="commentary">
+<p>Empathetic but firm. The "fossilizes a decision" framing is sharp. Practical mitigation: document hints, audit periodically. Closing with mentorship strategy shows tech-leadership thinking.</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<h3>Query Planner &amp; Cost-Based Optimizer — One Page</h3>
+<h4>What the planner does</h4>
+<p>Parses SQL, rewrites, enumerates plans, estimates cost, picks the cheapest, executes. Uses statistics + a cost model.</p>
+<h4>Three failure modes (memorize these)</h4>
+<ol>
+<li><strong>Stale statistics</strong> — the planner sees old data distribution.</li>
+<li><strong>Correlated columns</strong> — the planner assumes independence; reality is otherwise.</li>
+<li><strong>Mismatched cost model</strong> — the model's parameters don't match your hardware.</li>
+</ol>
+<h4>Statistics — the planner's eyes</h4>
+<p>Row counts, distinct values, histograms, most-common-values, correlation with physical order. Updated by <code>ANALYZE</code> (Postgres), auto-update (SQL Server), <code>gather_stats</code> (Oracle). <strong>Stale stats are the #1 cause of "this query suddenly got slow."</strong></p>
+<h4>Join algorithms (recognize in EXPLAIN)</h4>
+<ul>
+<li><strong>Nested Loop</strong> — small outer, indexed inner. Killer when outer is large.</li>
+<li><strong>Hash Join</strong> — sized tables, equality, memory available.</li>
+<li><strong>Merge Join</strong> — both inputs sorted on join key.</li>
+<li><strong>Index Nested Loop</strong> — most common in OLTP.</li>
+</ul>
+<h4>Read EXPLAIN ANALYZE</h4>
+<ul>
+<li>Tree structure (outer/inner via indentation, <code>-&gt;</code> arrows).</li>
+<li><code>cost=startup..total</code> — planner units.</li>
+<li><code>rows=N</code> — planner estimate.</li>
+<li><code>actual time / actual rows</code> — real measurements.</li>
+<li><code>loops=N</code> — how many times this operator ran.</li>
+<li><code>Index Cond</code> — predicates pushed into operator.</li>
+</ul>
+<p><strong>Most important diagnostic:</strong> estimated rows vs actual rows. Big mismatch = stats problem.</p>
+<h4>Plan instability</h4>
+<p>Same query, same data, different plan over time. Mitigations:
+- Hints (Oracle, MySQL). Postgres only via <code>pg_hint_plan</code>.
+- Plan baselines / Query Store (Oracle, SQL Server).
+- Stats freezes — rare.
+- Query rewrites to nudge the planner.</p>
+<h4>Postgres knobs to tune</h4>
+<ul>
+<li><code>random_page_cost</code> — should be ~1.1 on NVMe, default 4.0 is for spinning disks.</li>
+<li><code>effective_cache_size</code> — how much cache the planner thinks it has.</li>
+<li><code>work_mem</code> — memory for sort/hash operations per operator.</li>
+<li><code>STATISTICS</code> per column — sample size for histograms.</li>
+<li><code>CREATE STATISTICS</code> — extended stats for correlated columns.</li>
+</ul>
+<h4>The 30-second verbal answer</h4>
+<p>"The planner enumerates plans, estimates costs from stats, picks the cheapest. Three failure modes: stale stats, correlated columns, mismatched cost model. Read EXPLAIN ANALYZE by comparing estimated vs actual rows — big mismatches mean the planner was misled. Fix upstream in the statistics or cost model, not by forcing plans."</p>
+<h4>Always pair with</h4>
+<p>ANALYZE, indexes, selectivity, cardinality, hash join vs nested loop, work_mem, parameter sniffing, pg_hint_plan.</p>
+</div>
+<h1>What's next</h1>
+<p>You've now finished the <strong>read side</strong> of the database — storage, indexes, denormalization, and how the planner makes decisions.</p>
+<p>Module 07 starts the <strong>transactions</strong> chapter — ACID, isolation levels, and the surprisingly subtle bugs that hide in concurrent access. We'll cover the four canonical anomalies (dirty read, non-repeatable read, phantom, write skew), the four isolation levels, and why "Serializable" means different things in different databases.</p>
+<p>After that, Module 08 dives into <strong>MVCC</strong> — the mechanism that makes Postgres readers not block writers, and the source of "VACUUM bloat" pain in production.</p>
+<p>Get water. The query side is done. Concurrency is next, and it's where databases get really interesting.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="05_materialized_views_denorm.html" class="prev">&laquo; 05 Mat Views</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="07_acid_base_isolation.html" class="next">07 ACID/BASE &raquo;</a>
+</nav>
+</body>
+</html>

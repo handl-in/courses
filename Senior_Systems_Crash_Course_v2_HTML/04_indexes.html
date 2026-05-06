@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam thinks he knows indexes</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 04</p>
+</div>
+<div class="module-title">
+<p>Indexes</p>
+</div>
+<div class="subtitle">
+<p>Secondary, composite, covering — and why your "obvious" index is sometimes useless</p>
+</div>
+</div>
+<div class="opener">
+<p>Every database engineer "knows" indexes. Almost none can explain why <code>INDEX(country, city, created_at)</code> and <code>INDEX(city, country, created_at)</code> are completely different beasts. Almost none can explain why a UUID v4 primary key on a write-heavy table can quietly destroy your performance.</p>
+<p>By the end of this module, you'll be the rare engineer who can.</p>
+</div>
+<h1>Sam thinks he knows indexes</h1>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+OK indexes I actually feel okay about. Add an index, query gets faster. Don't add too many because they slow writes. I've used <code>EXPLAIN</code> a few times. I'm probably solid here, right?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Quick test. You have a query: <code>WHERE country = 'US' AND city = 'Austin' AND created_at &gt; '2026-01-01'</code>. You add <code>INDEX(city, country, created_at)</code>. The query is still slow. Why?</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+Uh... bad cardinality? Stale stats?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Wrong column order. Your index leads with <code>city</code>, but <code>city</code> has thousands of distinct values and isn't even the most selective filter for what you're looking for. The planner might use it, but it's nowhere near optimal. Now: why specifically?</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+...because... B-trees are sorted? So the order of columns matters?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Yes — and that's the whole reason composite indexes have what's called the <em>leftmost prefix rule</em>. Most engineers can recite it. Almost none can derive it from first principles. By the end of this module, you'll be in the second group. Then we'll do covering indexes — which is where the <em>real</em> magic lives. The kind that turns 100ms queries into 1ms queries.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+That's a thing?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+That's <em>the</em> thing. Most production databases have one or two queries that run a thousand times a second. If you can take any one of those from 100ms to 1ms with a covering index, you just freed up 99% of that query's database load. It's the highest-leverage optimization that exists.</p>
+</div>
+</div>
+<div class="keyidea">
+<p>Indexes are sorted secondary structures. Every property follows from that — column order matters, sort direction matters, query shape determines what works. Get the sorted-structure intuition right, and the rest is just consequences.</p>
+</div>
+<h1>What an index actually is</h1>
+<p>Before we tackle the fancy stuff, let's be sure on the basics. An index is <strong>a separate B-tree</strong> (Module 01) that holds (key, pointer) pairs, sorted by key.</p>
+<div class="diagram">
+<pre><code>   TABLE                                  INDEX on email
+   (heap, unsorted)                       (B-tree, sorted by email)
+</code></pre>
+<p>┌──────────────────────────┐          ┌─────────────────────────┐
+  │ Row 42: id=7              │          │ alice@x.com   → ptr_42  │
+  │   email=alice@x.com       │ ◄────────│ bob@y.com     → ptr_19  │
+  │   ...                     │          │ carol@z.com   → ptr_88  │
+  ├──────────────────────────┤          │ dan@example   → ptr_31  │
+  │ Row 19: id=12             │          │ eve@test.com  → ptr_55  │
+  │   email=bob@y.com         │ ◄────────│ ...                      │
+  │   ...                     │          └─────────────────────────┘
+  ├──────────────────────────┤
+  │ Row 88: id=3              │          The index is sorted by email.
+  │   email=carol@z.com       │ ◄──┐     Each leaf holds (email, pointer).
+  │   ...                     │    │
+  ├──────────────────────────┤    │     The pointer goes back to a row
+  │ ...                       │    │     in the heap, which is unsorted.
+  └──────────────────────────┘    │
+                                   │
+                                   └─── two-step lookup:
+                                        1. Walk index by email
+                                        2. Follow pointer to heap</p>
+</div>
+<p>The lookup is two steps:</p>
+<div class="workout">
+<p><strong>Looking up <code>alice@x.com</code>:</strong></p>
+<div class="step">
+<p>Walk the email index B-tree. 3-4 page reads (Module 01).</p>
+</div>
+<div class="step">
+<p>Find the leaf entry: <code>("alice@x.com", ptr_42)</code>.</p>
+</div>
+<div class="step">
+<p>Follow the pointer to the heap. <strong>One more disk read.</strong></p>
+</div>
+<div class="step">
+<p>Return the row.</p>
+</div>
+</div>
+<div class="insider">
+<p>That extra hop in step 3 — index says "the row is at position 42" and the database goes fetch position 42 from the heap — is called a <strong>heap fetch</strong> in Postgres. It's the source of a lot of "but I added an index, why is it still slow?" pain. Covering indexes (later in this module) are the cure.</p>
+</div>
+<h2>Different engines store this differently</h2>
+<table>
+<thead>
+<tr>
+<th>Engine</th>
+<th>Index style</th>
+<th>The implication</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Postgres</strong></td>
+<td>Heap-organized — index has pointer to heap row</td>
+<td>Every secondary index lookup costs an extra heap fetch</td>
+</tr>
+<tr>
+<td><strong>MySQL InnoDB</strong></td>
+<td>Clustered primary key — leaves <em>are</em> the rows</td>
+<td>Primary key lookup = no heap fetch. But secondary indexes store the PK, so it's PK-lookup + secondary-PK indirection</td>
+</tr>
+<tr>
+<td><strong>SQL Server</strong></td>
+<td>Either — clustered index optional</td>
+<td>Hybrid; depends on schema</td>
+</tr>
+</tbody>
+</table>
+<div class="scenario">
+<p><strong>Concrete consequence</strong>: in Postgres, a query that touches an indexed column plus heap data does (index walk) + (heap fetch per matching row). In MySQL InnoDB on a primary-key lookup, it's just (B-tree walk to leaf, leaf has the row data). MySQL is slightly faster on PK lookups; Postgres is slightly faster on table-wide stuff because the heap can be optimized separately.</p>
+<p><strong>Mention this distinction in an interview</strong> and you signal you've seen both ecosystems in production. Most engineers don't know.</p>
+</div>
+<h1>Secondary indexes</h1>
+<p>A <strong>secondary index</strong> is any index that isn't the primary key. Every B-tree index you create with <code>CREATE INDEX</code> is one.</p>
+<pre><code class="language-sql">CREATE INDEX idx_email ON users(email);
+CREATE INDEX idx_status ON orders(status);
+CREATE INDEX idx_created ON events(created_at);
+</code></pre>
+<p>These are the workhorses. They speed up <code>WHERE</code> clauses on the indexed column.</p>
+<h2>The cost no one wants to discuss</h2>
+<div class="warning">
+<p>Every secondary index costs writes. <strong>Every. Single. One.</strong></p>
+<p>When you INSERT a row, every index on that table gets updated too. With 5 indexes, one INSERT becomes 6 B-tree mutations. With 20 indexes, one UPDATE can trigger an I/O storm.</p>
+<p>This is the silent killer of write-heavy tables. Junior engineers add indexes liberally to fix slow queries. Their writes get slower. They add more indexes to fix the slow writes (somehow). Now the table has 30 indexes and is fundamentally crippled.</p>
+</div>
+<div class="scenario">
+<p><strong>A real-world example</strong>:</p>
+<p>A team's <code>users</code> table had grown to 19 indexes over three years. Each one was added for a specific use case — a feature flag, a filter, a report. None were removed when the use case went away.</p>
+<p>Insert latency on the table was 80ms per row. They couldn't onboard new users fast enough during marketing campaigns.</p>
+<p>The fix wasn't more capacity. They audited the indexes, found 12 of them were unused (Postgres has <code>pg_stat_user_indexes</code> for this), and dropped them. Insert latency went to 8ms. <strong>10x improvement, no code change, just delete.</strong></p>
+<p>The senior reflex: <strong>indexes accumulate. Audit them periodically. Unused indexes are pure write tax.</strong></p>
+</div>
+<div class="tip">
+<p>Postgres command for finding unused indexes:</p>
+<pre><code class="language-sql">SELECT
+  schemaname, relname, indexrelname,
+  idx_scan,
+  pg_size_pretty(pg_relation_size(indexrelid)) AS size
+FROM pg_stat_user_indexes
+WHERE idx_scan = 0
+ORDER BY pg_relation_size(indexrelid) DESC;
+</code></pre>
+<p>Run it once a quarter. You'll find indexes nobody remembers adding.</p>
+</div>
+<h1>Composite (multi-column) indexes</h1>
+<p>This is where most candidates trip up. Let's nail it.</p>
+<p>A composite index sorts rows by <strong>multiple columns in order</strong>.</p>
+<pre><code class="language-sql">CREATE INDEX idx_geo ON users(country, city, created_at);
+</code></pre>
+<p>This index sorts:
+1. First by <code>country</code>.
+2. Then within each country, by <code>city</code>.
+3. Then within each city, by <code>created_at</code>.</p>
+<div class="diagram">
+<p>Composite index sorted by (country, city, created_at):</p>
+<p>(country=DE, city=Berlin, created_at=2024-01-01)  →  ptr_881
+  (country=DE, city=Berlin, created_at=2024-02-15)  →  ptr_241
+  (country=DE, city=Berlin, created_at=2024-03-10)  →  ptr_512
+  (country=DE, city=Munich, created_at=2024-01-10)  →  ptr_117
+  (country=DE, city=Munich, created_at=2024-04-22)  →  ptr_338
+  (country=US, city=Austin, created_at=2024-03-01)  →  ptr_092
+  (country=US, city=Austin, created_at=2024-03-22)  →  ptr_733
+  (country=US, city=Austin, created_at=2024-05-05)  →  ptr_465
+  (country=US, city=Boston, created_at=2024-02-28)  →  ptr_628
+  (country=US, city=Boston, created_at=2024-06-15)  →  ptr_910
+  ...</p>
+<p>Notice: All Berlin entries come before all Munich entries (within DE).
+          All US entries come after all DE entries.
+          Within Austin, time-ordered.</p>
+<p>The B-tree leaf is one continuous sorted list. The hierarchy
+  is in the order of the keys, not in any tree structure.</p>
+</div>
+<h2>The leftmost prefix rule, derived</h2>
+<div class="brain">
+<p>Why does the leftmost prefix rule exist? Let's derive it instead of memorize it.</p>
+<p>The B-tree is sorted by <code>(country, city, created_at)</code> — country first, ties broken by city, ties broken by created_at.</p>
+<p>Now ask: where in the index are all rows where <code>city = 'Austin'</code> (regardless of country)?</p>
+<p>Look at the leaf list above. <strong>They're scattered.</strong> Austin in US is far from any Austin in TX. They're not contiguous in the index.</p>
+<p>To answer <code>WHERE city = 'Austin'</code>, the database would have to walk the <em>entire</em> index, picking out matches as it goes — exactly as expensive as scanning the whole table. The index is useless for this query.</p>
+<p>Now ask: where are all rows where <code>country = 'US'</code> (regardless of city or time)?</p>
+<p><strong>They're contiguous.</strong> All US entries are between the last DE entry and the first FR entry.</p>
+<p>The B-tree can find the start of <code>US</code> with one tree walk and read forward sequentially. <strong>Excellent.</strong></p>
+<p>This is the leftmost prefix rule, falling out of the layout: <strong>you can use any prefix of the index columns starting from the left, but you can't skip the leading column.</strong></p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Query filters on</th>
+<th>Index <code>(A, B, C)</code> helps?</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>✅ Excellent</td>
+<td>Top-level prefix</td>
+</tr>
+<tr>
+<td>A, B</td>
+<td>✅ Excellent</td>
+<td>Two-level prefix</td>
+</tr>
+<tr>
+<td>A, B, C</td>
+<td>✅ Excellent</td>
+<td>Full key</td>
+</tr>
+<tr>
+<td>A, C (skipping B)</td>
+<td>⚠️ Partial</td>
+<td>A narrows; C requires scanning all matching A's</td>
+</tr>
+<tr>
+<td>B alone</td>
+<td>❌ Useless</td>
+<td>B values scattered through index</td>
+</tr>
+<tr>
+<td>B, C</td>
+<td>❌ Useless</td>
+<td>Same — B is not the leading column</td>
+</tr>
+<tr>
+<td>C alone</td>
+<td>❌ Useless</td>
+<td>C values scattered</td>
+</tr>
+</tbody>
+</table>
+<div class="keyidea">
+<p>A composite index <code>(A, B, C)</code> works left-to-right. Any prefix is usable. You cannot skip the leading column.</p>
+</div>
+<h2>Three queries, one index, three different fates</h2>
+<div class="scenario">
+<p>You have <code>INDEX(country, city, created_at)</code>. Three queries hit your service:</p>
+<pre><code class="language-sql">-- Query 1
+WHERE country = 'US' AND city = 'Austin'
+</code></pre>
+<p>✅ <strong>Uses idx_geo.</strong> Two-column prefix. Index narrows to rows where country=US AND city=Austin — typically thousands of matches, quickly retrieved.</p>
+<pre><code class="language-sql">-- Query 2
+WHERE country = 'US' AND created_at &gt; '2024-01-01'
+</code></pre>
+<p>✅ <strong>Uses idx_geo, partially.</strong> Index narrows by country=US. Then <em>within US rows</em>, the database scans for created_at &gt; date — but the rows aren't ordered by date within country (they're ordered by city first, <em>then</em> date within city). So it's a partial scan within the US slice.</p>
+<pre><code class="language-sql">-- Query 3
+WHERE city = 'Austin'
+</code></pre>
+<p>❌ <strong>Does NOT use idx_geo.</strong> No country filter, so no leading-column pin. The planner falls back to a sequential scan or a different index — hopefully one that exists.</p>
+</div>
+<div class="gotcha">
+<p>A frequent gotcha: candidates remember "leftmost prefix" as a slogan but can't apply it. In the interview, the trap is "I have INDEX(A, B, C). What about a query filtering on B and C?" The answer is <em>useless</em> — the index is wasted bytes for that query. You'd need either a separate index leading with B, or to rethink your indexing strategy entirely.</p>
+</div>
+<h2>Column order: the selectivity question</h2>
+<p>If you have a choice of column orders, what's the right one?</p>
+<div class="keyidea">
+<p><strong>Most selective column first</strong> — the column that filters out the most rows quickest.</p>
+<p>If <code>country</code> has 200 distinct values and <code>email</code> has 10 million distinct values, an index on <code>(country, email)</code> is wasteful — <code>country</code> barely narrows down anything. An index on <code>(email)</code> alone is dramatically more selective.</p>
+</div>
+<p>But this rule has nuance. Selectivity isn't the whole story.</p>
+<div class="insider">
+<p><strong>Selectivity vs query patterns</strong>: pick the column that matches your <em>most common query shape</em>, not just the most selective.</p>
+<p>If 90% of your queries are <code>WHERE country = ? AND email = ?</code>, then <code>(country, email)</code> is fine — the country filter is fast even if low-cardinality, and the index supports the common pattern.</p>
+<p>If 90% of queries are just <code>WHERE email = ?</code>, then <code>(email)</code> alone or <code>(email, country)</code> makes sense.</p>
+<p>The senior move: profile your actual queries, then design indexes for the patterns. Don't optimize for selectivity in the abstract.</p>
+</div>
+<h2>A worked example</h2>
+<div class="workout">
+<p><strong>You're designing for a SaaS app's <code>events</code> table:</strong></p>
+<div class="step">
+<p>Common queries: <code>WHERE user_id = ?</code> (very common), <code>WHERE user_id = ? AND event_type = ?</code> (common), <code>WHERE event_type = ?</code> (rare reporting).</p>
+</div>
+<div class="step">
+<p>Cardinalities: <code>user_id</code> ~10M distinct, <code>event_type</code> ~50 distinct.</p>
+</div>
+<div class="step">
+<p>Choose: <code>INDEX(user_id, event_type)</code> — supports the first two query shapes via leftmost prefix. The rare <code>event_type</code>-alone query falls back to seq scan, which is acceptable for rare queries.</p>
+</div>
+<div class="step">
+<p>Resist the urge to add <code>INDEX(event_type)</code> "just in case." The rare query doesn't justify the write cost on a hot table. If it becomes common, <em>then</em> add it.</p>
+</div>
+</div>
+<h1>Sort order: the ASC/DESC trap</h1>
+<p>This one bites senior candidates too. Indexes are sorted in <strong>a direction</strong>.</p>
+<pre><code class="language-sql">CREATE INDEX idx_recent ON events(user_id, created_at);
+</code></pre>
+<p>That index is sorted by <code>created_at</code> <strong>ascending</strong> (default).</p>
+<p>Now consider this query:</p>
+<pre><code class="language-sql">SELECT *
+FROM events
+WHERE user_id = 42
+ORDER BY created_at DESC
+LIMIT 50;
+</code></pre>
+<div class="brain">
+<p>Will the index help with the <code>ORDER BY ... DESC LIMIT 50</code> part?</p>
+<p>It depends. Most databases can scan a B-tree in either direction — Postgres and MySQL both support backward scans with comparable speed. So the ASC index <em>can</em> satisfy a DESC query.</p>
+<p><strong>But not always efficiently.</strong> Specifically, when combined with other constraints (multi-column sort, mixed directions), backward scans get expensive or get rejected by the planner.</p>
+<p>Senior practice: <strong>match the sort direction to the query.</strong> If you almost always want most-recent-first, define the index DESC:</p>
+<pre><code class="language-sql">CREATE INDEX idx_recent ON events(user_id, created_at DESC);
+</code></pre>
+<p>Now the LIMIT 50 of "most recent" is reading the <em>front</em> of the index, which is the cheapest possible read.</p>
+</div>
+<div class="gotcha">
+<p><strong>The mixed-direction trap.</strong> This:</p>
+<pre><code class="language-sql">ORDER BY priority ASC, created_at DESC
+</code></pre>
+<p>Cannot use <code>INDEX(priority, created_at)</code> for the sort, because that index sorts both ascending. You'd need <code>INDEX(priority ASC, created_at DESC)</code>. Postgres supports this. Some older databases didn't, and the candidates who knew this distinction stood out.</p>
+</div>
+<h1>Covering indexes — the magic</h1>
+<p>Now we get to the trick that turns 100ms queries into 1ms queries.</p>
+<p>Recall: a normal index lookup is two steps: walk the index, then heap fetch. The heap fetch is one extra disk read per matching row.</p>
+<div class="scenario">
+<p><strong>The 100,000-row heap fetch problem.</strong></p>
+<p>A query has good selectivity — <code>WHERE user_id = 42 AND event_type = 'click'</code>. The index narrows it down to 100,000 matching rows. Index walks are fast — under 5ms total.</p>
+<p>But each of those 100,000 rows requires a heap fetch — 1ms each, since they're scattered randomly through the heap. <strong>100 seconds of total disk I/O.</strong></p>
+<p>The query is slow not because of the index lookup, but because of the <em>follow-up</em> fetches.</p>
+</div>
+<p>A <strong>covering index</strong> includes <em>all the columns the query needs</em> — so the database never visits the heap.</p>
+<pre><code class="language-sql">-- Original query:
+SELECT email, name FROM users WHERE country = 'US';
+
+-- Non-covering: index on country only.
+-- Database walks index, then fetches each matching row from heap.
+CREATE INDEX idx_country ON users(country);
+
+-- Covering: index includes all needed columns.
+-- Database walks index, returns email and name directly. No heap fetch.
+CREATE INDEX idx_country_covering ON users(country) INCLUDE (email, name);
+</code></pre>
+<div class="diagram">
+<p>WITHOUT COVERING INDEX:
+  ┌─────────────────────────────────┐
+  │ INDEX walk: country = 'US'      │   1 ms
+  │   → 100,000 matching rows        │
+  └─────────────────────────────────┘
+                  │
+                  ▼
+  ┌─────────────────────────────────┐
+  │ HEAP FETCH × 100,000             │   100,000 ms
+  │   (one per row, random I/O)      │
+  └─────────────────────────────────┘
+  Total: ~100 seconds.</p>
+<p>WITH COVERING INDEX:
+  ┌─────────────────────────────────┐
+  │ INDEX walk: country = 'US'      │   1 ms
+  │   → 100,000 (email, name) pairs  │
+  │   directly from index leaves     │
+  └─────────────────────────────────┘
+  Total: ~1 ms.</p>
+<pre><code>   ↑
+</code></pre>
+<p>The same logical query. 100,000× faster.</p>
+</div>
+<div class="keyidea">
+<p>A covering index is one that contains every column referenced by a query — so the database can answer the query <em>entirely from the index</em>, never touching the heap. For hot queries, this is often the highest-leverage optimization that exists.</p>
+</div>
+<h2>How databases write covering indexes</h2>
+<p>Slightly different syntax across engines:</p>
+<table>
+<thead>
+<tr>
+<th>Engine</th>
+<th>Syntax</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Postgres</strong></td>
+<td><code>CREATE INDEX ... ON table(key_cols) INCLUDE (extra_cols)</code></td>
+</tr>
+<tr>
+<td><strong>SQL Server</strong></td>
+<td><code>CREATE INDEX ... ON table(key_cols) INCLUDE (extra_cols)</code> (same)</td>
+</tr>
+<tr>
+<td><strong>MySQL</strong></td>
+<td>No <code>INCLUDE</code> clause; use <code>INDEX(key_cols, extra_cols)</code> — they're all key columns, sorted on all of them</td>
+</tr>
+</tbody>
+</table>
+<p>In Postgres, <code>INCLUDE</code> columns aren't part of the sort key — they're just additional payload at the leaf level. This keeps the index tree shallower than packing them into the key.</p>
+<div class="insider">
+<p><strong>Postgres <code>INCLUDE</code> is the cleaner pattern</strong>: the index sorts only on the columns you'll filter by, but stores additional values at the leaves. The sort tree stays compact, while the leaves carry just enough extra data to satisfy common queries without heap access. MySQL achieves the same goal by adding columns to the key; the result is similar but the tree is fatter.</p>
+<p>When asked about covering indexes in an interview, mention <code>INCLUDE</code> if you're talking Postgres or SQL Server. It signals you know the modern syntax.</p>
+</div>
+<h2>When NOT to use a covering index</h2>
+<div class="warning">
+<p><strong>Covering indexes have a cost: they get bigger, and they have to be updated whenever any of their included columns change.</strong></p>
+<p>If you <code>INCLUDE (email, name)</code> and somebody updates a user's name, the index has to be updated too. For tables where included columns change often, the write tax can outweigh the read benefit.</p>
+<p>Also: a covering index is bigger than a non-covering one — it stores those extra columns. Bigger indexes mean less of the index fits in cache. For large tables, this matters.</p>
+<p><strong>Use covering indexes surgically</strong>, on specific hot queries — not as a default.</p>
+</div>
+<h2>A worked covering index decision</h2>
+<div class="workout">
+<p><strong>Hot query: dashboards run this 10,000 times per minute:</strong></p>
+<pre><code class="language-sql">SELECT user_id, total_spent
+FROM users
+WHERE country = 'US' AND status = 'active'
+ORDER BY total_spent DESC
+LIMIT 100;
+</code></pre>
+<div class="step">
+<p>Without an index: full table scan. ~5 seconds. Catastrophic at this query rate.</p>
+</div>
+<div class="step">
+<p>Add <code>INDEX(country, status, total_spent DESC)</code>: helps with filtering and partial sort. Each query: ~10ms (1ms index, 9ms heap fetch for 100 rows). Manageable.</p>
+</div>
+<div class="step">
+<p>Add <code>INDEX(country, status, total_spent DESC) INCLUDE (user_id)</code>: now the index can answer the query without ever visiting the heap. Each query: ~1ms.</p>
+</div>
+<div class="step">
+<p>Trade-off accepted: index is ~30% bigger because it now carries <code>user_id</code>. Updates to <code>total_spent</code> trigger index updates. But the dashboard load just dropped 10x. <strong>Worth it for a hot query.</strong></p>
+</div>
+</div>
+<h1>Specialized index types</h1>
+<p>B-trees are the default but not the only game in town. Knowing these by name signals breadth.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Best for</th>
+<th>Common in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>B-tree</strong></td>
+<td>Equality, range, sort. Default.</td>
+<td>Everything</td>
+</tr>
+<tr>
+<td><strong>Hash</strong></td>
+<td>Equality only, no range queries</td>
+<td>Postgres (limited use), Redis</td>
+</tr>
+<tr>
+<td><strong>GIN (Generalized Inverted)</strong></td>
+<td>Many-to-many: array elements, JSON keys, full-text</td>
+<td>Postgres</td>
+</tr>
+<tr>
+<td><strong>GiST (Generalized Search)</strong></td>
+<td>Geospatial, custom data types</td>
+<td>Postgres, PostGIS</td>
+</tr>
+<tr>
+<td><strong>BRIN (Block Range)</strong></td>
+<td>Very large append-only tables</td>
+<td>Postgres</td>
+</tr>
+<tr>
+<td><strong>Bitmap</strong></td>
+<td>Low-cardinality columns on read-heavy systems</td>
+<td>Oracle, columnar engines</td>
+</tr>
+<tr>
+<td><strong>Inverted index</strong></td>
+<td>Full-text search</td>
+<td>Elasticsearch, Lucene, Solr</td>
+</tr>
+</tbody>
+</table>
+<h2>BRIN: the underrated gem</h2>
+<div class="insider">
+<p><strong>BRIN (Block Range INdex)</strong> is one of Postgres's hidden gems. Most engineers don't know it exists.</p>
+<p>Instead of indexing every row, BRIN stores the <strong>min and max value per block</strong> (typically 128 contiguous pages). For naturally-ordered data — like a <code>created_at</code> column where new data is appended in order — BRIN can skip huge chunks of blocks that can't possibly contain matching rows.</p>
+<p>The result: an index on a 1B-row time-series table that's 100x smaller than a B-tree, with comparable performance for time-range queries on the natural insertion order.</p>
+<p><strong>Mention BRIN in an interview about time-series data</strong>, and the senior interviewer's eyebrows go up. Most candidates don't know it's there.</p>
+</div>
+<h2>GIN: indexing inside JSON and arrays</h2>
+<div class="scenario">
+<p>You have a Postgres table with a <code>tags TEXT[]</code> column. You want to query "find all rows where tags contains 'urgent'."</p>
+<p>A B-tree on <code>tags</code> is useless — it'd index the entire array as one value.</p>
+<p><code>CREATE INDEX idx_tags ON items USING GIN (tags);</code></p>
+<p>Now Postgres maintains an inverted index — for each tag value, a list of rows that contain it. The query <code>WHERE tags @&gt; ARRAY['urgent']</code> becomes fast.</p>
+<p>Same trick works on <code>JSONB</code> columns: <code>CREATE INDEX ... USING GIN (data_column jsonb_path_ops)</code> lets you index by JSON keys and values.</p>
+</div>
+<h1>The UUID v4 problem</h1>
+<div class="warning">
+<p>Random UUIDs as primary keys cause real performance pain on write-heavy tables. This is a senior-level interview topic.</p>
+</div>
+<p>Here's why.</p>
+<div class="brain">
+<p>A B-tree primary key index lays rows out in key order. Insert a row with a sequential ID: it lands in the rightmost leaf. The page is hot, in cache, easy to update.</p>
+<p>Insert a row with a random UUID: it lands somewhere arbitrary in the index. Probably a cold page. The database has to fault that page in, modify it, and write it back. <strong>Each insert hits a different page.</strong></p>
+<p>Across millions of inserts:
+- Sequential keys: ~1 hot page constantly written. Cache-friendly. Fast.
+- Random UUIDs: every insert touches a different page. Cache thrashing. Slow.</p>
+<p>The performance gap can be 5-10x on insert-heavy workloads.</p>
+</div>
+<div class="insider">
+<p><strong>Use UUID v7 instead.</strong></p>
+<p>UUID v7 is a newer variant where the leading bits are a timestamp. The result: UUIDs are <strong>almost-sortable</strong> — newly generated ones land near each other in the index, restoring the cache-friendly pattern.</p>
+<p>UUID v7 is supported by most modern UUID libraries. If you need globally-unique IDs but want B-tree-friendly insert performance, this is the answer.</p>
+<p>A senior candidate who says "we use UUID v7 because UUID v4 fragments the B-tree" sounds like someone who has actually shipped high-write-rate Postgres.</p>
+</div>
+<h1>Three ways to think about indexes</h1>
+<div class="metaphor">
+<p><strong>Way 1: the back-of-the-book index.</strong></p>
+<p>Open any technical book. The index at the back is sorted alphabetically. To find "snapshot isolation," you flip to S, find the term, and the index says "see page 247."</p>
+<p>That's a B-tree index in physical form. Sorted. Has pointers to the actual content. Lets you skip reading the entire book to answer one question.</p>
+<p>A composite index is like an index that lists "topics by chapter, then within chapter alphabetically." If you only know "alphabetically," it doesn't help — the chapter is the leading axis.</p>
+<p>A covering index is like the table of contents that has the <em>summary</em> next to each entry — so you don't even have to flip to the page to know what's there.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 2: the warehouse aisles.</strong></p>
+<p>A warehouse stores products in unsorted bins (the heap). A picking list of "where is each product" is the index — sorted by SKU, with bin numbers.</p>
+<p>To pick one item: read the picking list, find the SKU, walk to the bin. Two steps.</p>
+<p>A covering picking list also tells you <em>the price</em>, <em>the description</em>, <em>the quantity in stock</em> right next to the SKU. For most queries you don't even need to walk to the bin. That's a covering index.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 3: the photo album.</strong></p>
+<p>Your phone has 50,000 photos. You want to find one taken last March in Paris.</p>
+<p>Without indexes, you scroll through every photo (sequential scan).</p>
+<p>The phone keeps a date index (sorted by date) and a location index (geotagged by city). With those, finding "March + Paris" is two index lookups, intersected.</p>
+<p>A composite (date, location) index is one sorted structure on both. A covering index also stores the thumbnail next to the date entry — so you don't even have to load the full photo to preview it.</p>
+</div>
+<h1>Sharpen your pencil</h1>
+<div class="exercise">
+<p><strong>Exercise 1.</strong> A 500M row <code>events</code> table. Schema: <code>(user_id, event_type, created_at, payload, region)</code>.</p>
+<p>The slowest production query is:</p>
+<pre><code class="language-sql">SELECT *
+FROM events
+WHERE user_id = ? AND event_type = ?
+ORDER BY created_at DESC
+LIMIT 50;
+</code></pre>
+<p>Design the optimal index. Justify the column order, the sort direction, and any covering decision.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong><code>CREATE INDEX idx_events ON events(user_id, event_type, created_at DESC)</code></strong></p>
+<p>Column order:
+- <code>user_id</code> first — most selective (millions of distinct users).
+- <code>event_type</code> second — narrows further within a user.
+- <code>created_at</code> third — used for the LIMIT clause.</p>
+<p>Sort direction: <code>created_at DESC</code>. The query asks for "most recent 50" — with a DESC index, the engine reads the <em>front</em> of the matching range, satisfying the LIMIT immediately. With ASC, the engine has to find all matching rows then sort them.</p>
+<p>Covering: depends on <code>payload</code> size. If <code>payload</code> is small (under ~200 bytes typical) and the query is hot enough to justify, add <code>INCLUDE (payload, region)</code> so the entire query is satisfied from the index. If <code>payload</code> is large (megabytes of JSON), don't — index would balloon. Profile first.</p>
+<p>The senior reflex: design for the dominant query pattern. Verify with <code>EXPLAIN ANALYZE</code>. Iterate.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2.</strong> A team's write-heavy <code>orders</code> table has 19 indexes. Insert latency is 80ms per row. Where do you start?</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>Step 1: identify unused indexes.</strong> Postgres's <code>pg_stat_user_indexes.idx_scan</code> will show you which indexes haven't been used since last stats reset. Anything with <code>idx_scan = 0</code> over a representative time period is a candidate for removal.</p>
+<p><strong>Step 2: identify redundant indexes.</strong> Look for index pairs where one is a prefix of another. <code>INDEX(a)</code> is redundant if <code>INDEX(a, b)</code> exists — the latter handles all the queries the former does (well, mostly — it's slightly bigger). Drop the prefix.</p>
+<p><strong>Step 3: identify index pairs covering the same query patterns.</strong> Two indexes that solve the same problem are usually one too many.</p>
+<p><strong>Step 4: examine remaining indexes against actual query patterns.</strong> <code>pg_stat_statements</code> shows your top queries. Each remaining index should be justified by at least one common query.</p>
+<p>Realistic outcome: 19 indexes drops to 7-10. Insert latency improves proportionally. <strong>The fix isn't more capacity — it's less write tax.</strong></p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3.</strong> Explain to non-technical Sam, in three sentences, why <code>WHERE LOWER(email) = ?</code> doesn't use an index on <code>email</code>.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>The index on <code>email</code> is a sorted list of email values exactly as stored — like "Alice@Test.com" with capitals preserved. When the query asks <code>WHERE LOWER(email) = ?</code>, the database has to compute <code>LOWER()</code> on every row's email to compare — and there's no shortcut to "lowercased emails" in the index. The fix is either to store emails already lowercased, or create a <em>functional index</em> on <code>LOWER(email)</code> that's sorted by the lowercased values.</p>
+</div>
+</div>
+<h1>There are no dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p>Q: Should I just index every column?</p>
+</div>
+<div class="a">
+<p>A: No. Each index slows writes, consumes disk, and bloats the buffer pool. The rule of thumb: index columns used in WHERE, JOIN, ORDER BY, or GROUP BY clauses that are <em>actually slow</em>. Profile first; index second. Adding an index is a tax on every future write to that table.</p>
+</div>
+<div class="q">
+<p>Q: Do indexes help on small tables?</p>
+</div>
+<div class="a">
+<p>A: Often no. A sequential scan of 1,000 rows is faster than walking an index B-tree plus heap fetches. The query planner usually figures this out and skips the index. If you find your tiny table is using an index when it shouldn't, you may have stale stats.</p>
+</div>
+<div class="q">
+<p>Q: What's a "clustered" index?</p>
+</div>
+<div class="a">
+<p>A: An index where the leaves <em>are</em> the data — the table's physical order matches the index. MySQL InnoDB primary keys are clustered (rows live in the PK B-tree leaves). Postgres has no clustered indexes (heap-organized). The implication: in InnoDB, every secondary index lookup does B-tree-walk + secondary-tree-walk-by-PK rather than B-tree-walk + heap-fetch. Different shape, similar cost.</p>
+</div>
+<div class="q">
+<p>Q: Can indexes get fragmented?</p>
+</div>
+<div class="a">
+<p>A: Yes — especially under heavy UPDATE/DELETE traffic. B-tree pages get partial deletes, leaves get sparse, the tree balloons relative to its actual data. Postgres has <code>REINDEX CONCURRENTLY</code> (modern), MySQL has <code>OPTIMIZE TABLE</code>. Periodic maintenance on hot tables is part of the operational reality.</p>
+</div>
+<div class="q">
+<p>Q: Why do <code>OR</code> clauses kill indexes?</p>
+</div>
+<div class="a">
+<p>A: <code>WHERE A = ? OR B = ?</code> typically forces the planner to either do a full scan or do <em>two index scans + union</em>. Neither is fast. The fix is often to rewrite as <code>UNION ALL</code> of two queries, each using its own index. Modern planners are getting better at this, but it's still a known anti-pattern.</p>
+</div>
+<div class="q">
+<p>Q: What about indexes on nullable columns?</p>
+</div>
+<div class="a">
+<p>A: They work, but <code>WHERE col IS NULL</code> and <code>WHERE col IS NOT NULL</code> have nuances. In Postgres, B-tree indexes by default include NULLs at one end of the tree, so <code>IS NULL</code> queries can use the index. Older databases varied. The senior move: test it with <code>EXPLAIN</code>.</p>
+</div>
+<div class="q">
+<p>Q: Should I worry about index bloat in production?</p>
+</div>
+<div class="a">
+<p>A: On UPDATE-heavy tables, yes. Postgres has <code>pgstattuple</code> extension that tells you the bloat ratio. If indexes are 2-3x larger than they should be, <code>REINDEX CONCURRENTLY</code> can help. Newer Postgres versions handle bloat better via deduplication and bottom-up index deletion.</p>
+</div>
+<div class="q">
+<p>Q: How do I know if an index is "doing its job"?</p>
+</div>
+<div class="a">
+<p>A: <code>EXPLAIN ANALYZE</code> your hot queries — if you see <code>Index Scan</code> or <code>Index Only Scan</code> (the latter = covering index!), the index is being used. If you see <code>Seq Scan</code>, the planner skipped the index, possibly due to low selectivity, missing stats, or the query being too cheap to bother. Combined with <code>pg_stat_user_indexes</code>, you can confirm an index is earning its keep.</p>
+</div>
+</div>
+<h1>Three myths to dynamite</h1>
+<div class="myth">
+<p><strong>"More indexes = faster database."</strong></p>
+<p>False. Indexes speed up reads they cover, <em>and</em> slow down writes that touch them. Past about 5-10 indexes on a hot table, the write tax often exceeds the read benefit. Senior engineers audit indexes regularly and remove unused ones.</p>
+</div>
+<div class="myth">
+<p><strong>"Indexes always help."</strong></p>
+<p>False. On small tables, the planner often skips indexes because seq scans are faster. On certain query shapes (LIKE '%foo%', large IN lists, OR clauses), indexes don't help. Indexes also don't help when stats are stale and the planner picks the wrong plan. <strong>An index helps when (a) the query is selective enough, (b) the planner knows it, and (c) the data fits the index's strengths.</strong></p>
+</div>
+<div class="myth">
+<p><strong>"You should always use UUIDs as primary keys for security."</strong></p>
+<p>False. UUID v4 fragments B-trees and hurts write performance. Sequential IDs are vastly more cache-friendly and faster to insert. If you need globally-unique IDs, <strong>use UUID v7</strong> — it's almost-sortable and gets you both unguessability and B-tree friendliness. Or use a Snowflake-style ID. UUID v4 is the worst of both worlds for primary keys.</p>
+</div>
+<h1>Interview gotchas</h1>
+<div class="gotcha">
+<p><strong>Forgetting <code>ORDER BY DESC</code> in the index.</strong> If your query is <code>ORDER BY created_at DESC LIMIT N</code> and your index is sorted ASC, the engine has to read all matching rows then sort. Always match the sort direction.</p>
+</div>
+<div class="gotcha">
+<p><strong><code>OR</code> clauses kill indexes.</strong> <code>WHERE A = ? OR B = ?</code> typically forces the planner to do a full scan. Rewrite as <code>UNION ALL</code> of two queries when performance matters.</p>
+</div>
+<div class="gotcha">
+<p><strong>Functions on indexed columns.</strong> <code>WHERE LOWER(email) = ?</code> cannot use an index on <code>email</code>. You need a <em>functional index</em> on <code>LOWER(email)</code>, or to store the column already-lowercased.</p>
+</div>
+<div class="gotcha">
+<p><strong>Composite index column order matters AND sort direction matters.</strong> Both. Most candidates remember one. The senior detail is both.</p>
+</div>
+<div class="gotcha">
+<p><strong>Skipping the leftmost column kills the index.</strong> <code>INDEX(A, B, C)</code> queried on just <code>(B, C)</code> is wasted bytes. Make sure your common query patterns lead with one of your indexed columns.</p>
+</div>
+<h1>Mock interview</h1>
+<div class="mock-interview">
+<div class="turn q">
+<p>A query that used to run in 50ms now takes 8 seconds in production. The query and the data haven't changed in the last week. What do you check first?</p>
+</div>
+<div class="turn a">
+<p>Three things, in order of likelihood:</p>
+<p><strong>One — stale stats.</strong> The query planner uses table statistics to choose between index scan and seq scan. If a write-heavy table hasn't been ANALYZEd in a while, the planner might be choosing seq scan thinking the table is small. Run <code>ANALYZE table_name</code> and re-run the query.</p>
+<p><strong>Two — index bloat or fragmentation.</strong> Especially on Postgres with frequent UPDATEs, the B-tree can grow much larger than the data warrants. Check <code>pg_stat_user_indexes</code> for size; consider <code>REINDEX CONCURRENTLY</code> if the bloat is significant.</p>
+<p><strong>Three — cache eviction.</strong> The hot pages of the index/table fit in the buffer pool when traffic is light. Under load — or after a deploy that flushed the cache — the buffer pool gets churned and what used to be a memory access becomes a disk read. The fix may be more RAM, a smaller working set, or partitioning.</p>
+<p>If none of those: I'd <code>EXPLAIN ANALYZE</code> and look at the plan. Did the optimizer pick a different plan than before? That points to stats. Did it pick the same plan but spend much more time? That points to I/O — cache or bloat.</p>
+</div>
+<div class="commentary">
+<p>Triage list, ordered by probability. "I'd EXPLAIN ANALYZE" is the senior reflex — investigate, don't guess.</p>
+</div>
+<div class="turn q">
+<p>EXPLAIN ANALYZE shows the plan changed. Yesterday it was an Index Scan. Today it's a Seq Scan. The table has 50M rows. Why would the planner pick seq scan?</p>
+</div>
+<div class="turn a">
+<p>A few possibilities, all related to how the planner estimates cost:</p>
+<p><strong>Stats are stale and now wrong.</strong> The planner thinks the table is smaller than it is, or thinks the WHERE clause is less selective than it is. With wrong selectivity estimates, the cost calculation flips between index scan and seq scan. Run <code>ANALYZE</code> and check.</p>
+<p><strong>The query is genuinely returning a lot of rows.</strong> If yesterday the query hit 1% of the table (acceptable index scan target) and today it hits 30%, the planner correctly switches to seq scan — index scan with 15M heap fetches would actually be slower than reading the whole table sequentially. Check the cardinality of the WHERE values today vs yesterday.</p>
+<p><strong>A recent <code>random_page_cost</code> config change.</strong> Postgres's planner has a setting that estimates the cost ratio of random vs sequential I/O. On NVMe SSDs, the default of 4.0 is conservative — random I/O is much closer to sequential than the default assumes. If someone tuned it (or didn't), it can flip plan choices.</p>
+<p><strong>Stats sample didn't catch a hot value.</strong> Postgres's stats by default sample 30,000 rows for histograms. If your filter targets a high-cardinality but rare value, the sample might not represent it well. <code>ALTER TABLE ... ALTER COLUMN ... SET STATISTICS 1000</code> raises the sample size for that column.</p>
+</div>
+<div class="commentary">
+<p>Multiple specific hypotheses, each with a concrete check. Mentioning <code>random_page_cost</code> and <code>SET STATISTICS</code> shows operational depth.</p>
+</div>
+<div class="turn q">
+<p>ANALYZE didn't help. The plan still picks seq scan. The query is genuinely returning 1% of the table — about 500K rows. What's going on?</p>
+</div>
+<div class="turn a">
+<p>At 1% selectivity, on a 50M row table, the planner has a real choice: 500K index lookups + 500K heap fetches, or one full seq scan. The crossover point in Postgres is usually around 5-10% of the table — below that, index scan wins; above, seq scan wins. <strong>1% should be solidly in index-scan territory.</strong></p>
+<p>If it's still picking seq scan, the most likely remaining cause is <strong>correlated columns</strong>. The planner assumes columns are independent. If your WHERE has two predicates and both are individually 30% selective, the planner estimates 9% combined. But if the columns are correlated (say, <code>country = US</code> and <code>state = California</code> — almost all CA users are in US), the actual selectivity is closer to 30%, and the planner is now expecting too few rows.</p>
+<p>The fix in Postgres: <strong>extended statistics</strong>. <code>CREATE STATISTICS ON (col_a, col_b) FROM table_name; ANALYZE table_name;</code>. Now the planner has real correlation data and stops over-narrowing the estimate.</p>
+<p>If extended stats don't help: investigate whether the query needs a <em>covering index</em>. If the predicate is selective and the heap fetch is what's blowing the cost budget, adding INCLUDE columns might tip the planner back toward index scan.</p>
+<p>If none of that helps, you can force an index scan with <code>SET enable_seqscan = off</code> for that one query as a temporary measure, while you investigate further. But forcing plans is a workaround, not a fix.</p>
+</div>
+<div class="commentary">
+<p>Knows the actual crossover threshold (~5-10%). Mentions extended statistics — a Postgres 10+ feature most candidates haven't used. Acknowledges the temporary workaround without defaulting to it.</p>
+</div>
+<div class="turn q">
+<p>Last one. Walk me through your decision process for adding a new index in production.</p>
+</div>
+<div class="turn a">
+<p>A checklist I'd actually run through:</p>
+<p><strong>One — is there a real query problem?</strong> Profile first. <code>pg_stat_statements</code> for top slow queries. If the query isn't actually slow or isn't actually run often, no index is needed. Most "should we add an index?" conversations should end here.</p>
+<p><strong>Two — is the query selective enough?</strong> If the WHERE narrows to under ~5% of the table, an index is potentially worthwhile. If it returns 50%, an index won't help — the planner will skip it.</p>
+<p><strong>Three — does an existing index already cover this?</strong> Check if a leftmost-prefix of an existing composite index works. Adding redundant indexes is the most common form of index bloat.</p>
+<p><strong>Four — does column order match query patterns?</strong> If the query is <code>WHERE A = ? AND B = ?</code>, design <code>INDEX(A, B)</code> or <code>INDEX(B, A)</code> based on which is most selective AND most commonly queried alone. Don't pick blindly.</p>
+<p><strong>Five — would a covering index make sense?</strong> If the query is hot and returns a small set of columns, INCLUDE-ing those columns can transform the latency. Trade-off: bigger index, more write tax.</p>
+<p><strong>Six — what's the write impact?</strong> Run a quick estimate of how many writes per second hit this table. Each new index multiplies that work. For very hot tables, even a single new index can shift the write latency budget noticeably.</p>
+<p><strong>Seven — deploy with <code>CREATE INDEX CONCURRENTLY</code>.</strong> Plain <code>CREATE INDEX</code> locks the table. Concurrent version doesn't, but takes longer and has its own failure modes. For production, always concurrent.</p>
+<p><strong>Eight — verify after.</strong> After deploy, check that the planner is actually using the new index (<code>EXPLAIN ANALYZE</code>). And monitor <code>pg_stat_user_indexes</code> over the next week. If <code>idx_scan</code> stays at zero, the index isn't earning its keep — drop it.</p>
+<p>Indexes are like committing a piece of code to a critical path. Same level of care.</p>
+</div>
+<div class="commentary">
+<p>Eight-step checklist. Mentions <code>CREATE INDEX CONCURRENTLY</code> — a deployment detail most candidates miss. The closing line — "indexes are like committing a piece of code" — is the kind of senior framing that lands well.</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<h3>Indexes — One Page</h3>
+<h4>Secondary indexes</h4>
+<p>Any index besides the PK. Costs writes (every index updated on INSERT/UPDATE), helps reads. <strong>Audit and drop unused indexes regularly</strong> — they're pure write tax.</p>
+<h4>Composite indexes</h4>
+<p>Multi-column. Sorted left-to-right. <strong>Leftmost prefix rule</strong>: any prefix usable, can't skip leading column. Column order = most-selective-and-most-queried first. Sort direction matters too — match <code>ORDER BY ... DESC</code> with a DESC index column.</p>
+<h4>Covering indexes</h4>
+<p>Include all columns the query needs, so no heap fetch. Postgres/SQL Server: <code>INCLUDE (...)</code>. Often the highest-leverage optimization for hot queries — 100ms → 1ms is realistic.</p>
+<h4>Specialized index types</h4>
+<ul>
+<li><strong>B-tree</strong> — default, equality + range + sort.</li>
+<li><strong>Hash</strong> — equality only.</li>
+<li><strong>GIN</strong> — JSON, arrays, full-text.</li>
+<li><strong>GiST</strong> — geospatial, custom types.</li>
+<li><strong>BRIN</strong> — huge naturally-ordered tables. Hidden gem for time-series.</li>
+<li><strong>Bitmap</strong> — low-cardinality, columnar/OLAP.</li>
+</ul>
+<h4>Killer rules to memorize</h4>
+<ul>
+<li>ASC/DESC matters in the index definition.</li>
+<li>Functions on columns disable indexes (use functional indexes instead).</li>
+<li><code>OR</code> clauses kill indexes — rewrite as <code>UNION ALL</code>.</li>
+<li>UUID v4 fragments B-trees on insert — use UUID v7 or sequential IDs.</li>
+<li>ANALYZE regularly so the planner has fresh stats.</li>
+<li>Use <code>CREATE INDEX CONCURRENTLY</code> in production (Postgres).</li>
+</ul>
+<h4>Production checklist before adding an index</h4>
+<ol>
+<li>Profile to confirm a real query problem.</li>
+<li>Verify selectivity (under 5% of rows is the sweet spot).</li>
+<li>Check no existing composite index already covers it.</li>
+<li>Match column order to query patterns.</li>
+<li>Consider covering with <code>INCLUDE</code>.</li>
+<li>Estimate write impact.</li>
+<li>Deploy with CONCURRENTLY.</li>
+<li>Verify use after deploy; drop if unused after a week.</li>
+</ol>
+<h4>The 30-second verbal answer</h4>
+<p>"An index is a sorted secondary structure. Composite index column order follows leftmost-prefix and selectivity. Covering indexes include extra columns to skip the heap fetch — often the biggest single optimization for hot queries. Each index is a tax on every write to the table, so audit and drop unused ones."</p>
+<h4>Always pair with</h4>
+<p>Query planner, cost-based optimizer, selectivity, cardinality, EXPLAIN ANALYZE, B-tree page layout, write amplification, MVCC.</p>
+</div>
+<h1>What's next</h1>
+<p>You can now talk about indexes the way a senior engineer does — derived from sorted-structure first principles, not memorized rules. You know about the leftmost prefix rule, sort directions, covering indexes, and the UUID v4 trap. The hardest part of index design is now demystified.</p>
+<p>Module 05 takes the next step: <strong>materialized views and denormalization</strong>. The spectrum between "store data normalized as the textbook says" and "store it precomputed because reads are hot." This is where storage decisions meet query patterns at scale, and where most "should we cache this?" conversations actually live.</p>
+<p>Then Module 06 dives into the <strong>query planner</strong> — the black box that decides whether your beautiful index actually gets used. We'll demystify it and show you how to read EXPLAIN ANALYZE output the way an experienced engineer does.</p>
+<p>Get water. The query side of databases is starting to come together.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="03_row_vs_columnar.html" class="prev">&laquo; 03 Row vs Col</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="05_materialized_views_denorm.html" class="next">05 Mat Views &raquo;</a>
+</nav>
+</body>
+</html>

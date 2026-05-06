@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PyTorch: From Tensor to Kernel</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800;9..144,900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@400;500;600;700&family=Patrick+Hand&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+  :root {
+    --paper: #f6efe1; --paper-deep: #ede2cc;
+    --ink: #1a1612; --ink-soft: #3a322a; --ink-muted: #6b5d4f;
+    --terracotta: #c1502e; --terracotta-deep: #8c3a20;
+    --teal: #1f5f5b; --teal-deep: #133e3b;
+    --mustard: #d4a017; --rose: #b85a6c;
+    --pytorch: #ee4c2c;
+    --code-bg: #2a2520; --code-bg-light: #f0e8d4;
+    --rule: #c8b89a;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; padding: 0 0 60px 0; background: var(--paper);
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(193,80,46,0.04) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(31,95,91,0.04) 0%, transparent 40%);
+    color: var(--ink);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px; line-height: 1.7;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 60px 40px 120px; }
+  .module-header { border-bottom: 3px double var(--ink); padding-bottom: 32px; margin-bottom: 48px; position: relative; }
+  .module-tag {
+    display: inline-block; font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--terracotta-deep); background: var(--paper-deep);
+    padding: 6px 14px; border: 1.5px solid var(--terracotta-deep);
+    border-radius: 2px; margin-bottom: 20px;
+  }
+  .module-title {
+    font-family: 'Fraunces', serif; font-weight: 900; font-size: 56px;
+    line-height: 1.05; margin: 0 0 14px; color: var(--ink); letter-spacing: -0.02em;
+  }
+  .module-title em { font-style: italic; font-weight: 400; color: var(--terracotta); }
+  .module-sub { font-family: 'Caveat', cursive; font-size: 26px; color: var(--ink-soft); margin: 0; }
+  h2 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 32px; margin: 56px 0 18px; color: var(--ink); line-height: 1.15; letter-spacing: -0.01em; }
+  h2::before { content: "§ "; color: var(--terracotta); font-weight: 600; }
+  h3 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px; margin: 36px 0 12px; color: var(--teal-deep); letter-spacing: -0.005em; }
+  h4 { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; margin: 28px 0 10px; color: var(--ink-soft); }
+  p { margin: 0 0 18px; }
+  p strong { color: var(--terracotta-deep); font-weight: 600; }
+  p em { color: var(--teal-deep); }
+  blockquote { border-left: 4px solid var(--terracotta); padding: 4px 0 4px 22px; margin: 24px 0; font-style: italic; color: var(--ink-soft); font-size: 18px; }
+  a { color: var(--teal-deep); text-decoration: underline wavy var(--mustard); text-underline-offset: 4px; }
+  code { font-family: 'IBM Plex Mono', monospace; font-size: 0.88em; background: var(--code-bg-light); padding: 1px 6px; border-radius: 3px; color: var(--terracotta-deep); border: 1px solid rgba(0,0,0,0.06); }
+  pre { background: var(--code-bg); color: #e8d9b8; font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; line-height: 1.55; padding: 22px 26px; border-radius: 4px; overflow-x: auto; margin: 24px 0; border-left: 4px solid var(--pytorch); box-shadow: 4px 4px 0 var(--ink); position: relative; }
+  pre::before { content: ">_"; position: absolute; top: 8px; right: 14px; font-size: 11px; color: var(--pytorch); opacity: 0.7; letter-spacing: 0.1em; }
+  pre code { background: transparent; color: inherit; padding: 0; border: none; font-size: inherit; }
+  pre .kw { color: #ff8a65; }
+  pre .str { color: #a5d6a7; }
+  pre .num { color: #ffcc80; }
+  pre .com { color: #8d7d65; font-style: italic; }
+  pre .fn { color: #82b1ff; }
+  pre .ty { color: #ce93d8; }
+  .sticky { background: #fff8a8; background-image: linear-gradient(180deg, #fff8a8 0%, #ffeb7a 100%); padding: 22px 26px; margin: 28px 0; box-shadow: 3px 4px 12px rgba(0,0,0,0.18), inset 0 -8px 14px rgba(0,0,0,0.04); transform: rotate(-0.4deg); font-family: 'Patrick Hand', cursive; font-size: 19px; line-height: 1.5; color: var(--ink); position: relative; }
+  .sticky::before { content: ""; position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 80px; height: 22px; background: rgba(193,80,46,0.5); border-radius: 1px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+  .sticky.pink { background-image: linear-gradient(180deg, #ffd5dc 0%, #ffb8c4 100%); transform: rotate(0.5deg); }
+  .sticky.blue { background-image: linear-gradient(180deg, #d3e9f5 0%, #aed4ec 100%); transform: rotate(-0.6deg); }
+  .sticky.green { background-image: linear-gradient(180deg, #d4ecc8 0%, #b3d99e 100%); transform: rotate(0.3deg); }
+  .sticky strong { color: var(--terracotta-deep); }
+  .brainpower { border: 2.5px solid var(--ink); background: var(--paper-deep); padding: 24px 28px 26px; margin: 32px 0; border-radius: 2px; position: relative; box-shadow: 5px 5px 0 var(--terracotta); }
+  .brainpower::before { content: "BRAIN POWER"; position: absolute; top: -13px; left: 22px; background: var(--terracotta); color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; padding: 4px 12px; letter-spacing: 0.18em; }
+  .brainpower p { margin: 8px 0; font-size: 16px; }
+  .brainpower p:first-child { margin-top: 6px; }
+  .ndq { background: linear-gradient(180deg, #fdf6e3 0%, #f5ead0 100%); border: 1.5px dashed var(--ink-soft); border-radius: 8px; padding: 28px 30px; margin: 36px 0; }
+  .ndq h4 { font-family: 'Fraunces', serif; font-size: 22px; text-transform: none; letter-spacing: 0; color: var(--terracotta-deep); margin: 0 0 18px; border-bottom: 1.5px solid var(--rule); padding-bottom: 8px; }
+  .ndq h4::before { content: "Q&A — "; color: var(--ink-muted); font-style: italic; }
+  .ndq .q { font-family: 'Caveat', cursive; font-size: 22px; color: var(--teal-deep); margin: 14px 0 4px; line-height: 1.3; }
+  .ndq .q::before { content: "Q: "; font-weight: 700; color: var(--terracotta); }
+  .ndq .a { margin: 0 0 16px 14px; padding-left: 14px; border-left: 3px solid var(--mustard); color: var(--ink-soft); font-size: 16px; }
+  .ndq .a::before { content: "A: "; font-weight: 700; color: var(--ink); font-family: 'Fraunces', serif; }
+  .table-wrap { margin: 28px 0; overflow-x: auto; border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--teal); background: #fff; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; font-family: 'Lora', serif; }
+  table caption { font-family: 'Caveat', cursive; font-size: 22px; color: var(--terracotta-deep); padding: 12px 0; text-align: left; caption-side: top; }
+  th { background: var(--ink); color: #fff; text-align: left; padding: 12px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+  td { padding: 12px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--paper-deep); }
+  tr:last-child td { border-bottom: none; }
+  td strong { color: var(--terracotta-deep); }
+  td code { font-size: 12.5px; }
+  .decision { background: #fff; border: 2px solid var(--ink); border-radius: 2px; padding: 24px 28px; margin: 32px 0; box-shadow: 5px 5px 0 var(--mustard); font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.8; white-space: pre; overflow-x: auto; color: var(--ink); }
+  .warn { background: #fcecec; border-left: 6px solid var(--terracotta); padding: 18px 22px; margin: 28px 0; border-radius: 0 4px 4px 0; position: relative; }
+  .warn::before { content: "⚠"; position: absolute; top: 14px; right: 18px; font-size: 24px; color: var(--terracotta); }
+  .warn strong { color: var(--terracotta-deep); }
+  .keyidea { background: var(--teal); color: #f6efe1; padding: 26px 30px; margin: 32px 0; border-radius: 2px; font-family: 'Fraunces', serif; font-size: 19px; font-weight: 500; line-height: 1.5; position: relative; box-shadow: 4px 4px 0 var(--ink); }
+  .keyidea::before { content: "★ KEY IDEA"; position: absolute; top: -11px; left: 22px; background: var(--mustard); color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700; padding: 4px 10px; letter-spacing: 0.18em; }
+  .keyidea strong { color: var(--mustard); }
+  .exercise { border: 2px dashed var(--teal-deep); padding: 24px 28px; margin: 36px 0; background: rgba(255,255,255,0.5); border-radius: 2px; }
+  .exercise::before { content: "✎ SHARPEN YOUR PENCIL"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px dotted var(--teal); }
+  .exercise .answer { margin-top: 14px; padding: 14px 18px; background: var(--paper-deep); border-radius: 4px; font-size: 15px; }
+  .exercise .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+  ul, ol { margin: 16px 0; padding-left: 28px; }
+  li { margin: 8px 0; }
+  ul li::marker { color: var(--terracotta); }
+  ol li::marker { color: var(--teal-deep); font-weight: 600; }
+  .dialogue { margin: 28px 0; padding: 20px 24px; background: var(--paper-deep); border-radius: 4px; border-left: 4px solid var(--rose); }
+  .dialogue .speaker { font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--rose); font-weight: 700; display: block; margin-top: 10px; }
+  .dialogue .speaker:first-child { margin-top: 0; }
+  .dialogue .speaker.b { color: var(--teal-deep); }
+  .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin: 28px 0; }
+  .twocol > div { padding: 20px 22px; border-radius: 2px; background: #fff; border: 1.5px solid var(--rule); }
+  .twocol > div h4 { margin-top: 0; }
+  .twocol .good { border-color: var(--teal); border-left: 5px solid var(--teal); }
+  .twocol .bad { border-color: var(--terracotta); border-left: 5px solid var(--terracotta); }
+  .ascii { background: var(--paper-deep); padding: 22px 26px; margin: 28px 0; border: 1.5px solid var(--rule); border-radius: 2px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.5; white-space: pre; overflow-x: auto; color: var(--ink); }
+  .module-footer { margin-top: 80px; padding-top: 28px; border-top: 3px double var(--ink); display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-muted); }
+  .module-footer .num { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 800; color: var(--terracotta); line-height: 1; }
+  .toc { background: #fff; border: 2px solid var(--ink); padding: 30px 40px; margin: 40px 0; box-shadow: 6px 6px 0 var(--teal); }
+  .toc h3 { font-family: 'Fraunces', serif; font-size: 26px; margin: 0 0 20px; color: var(--ink); }
+  .toc ol { columns: 2; column-gap: 40px; padding-left: 24px; }
+  .toc li { font-size: 15px; break-inside: avoid; margin: 4px 0; }
+  .toc li strong { color: var(--terracotta-deep); }
+  .toc .part { font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--teal-deep); margin: 16px 0 6px; column-span: all; border-bottom: 1px dashed var(--rule); padding-bottom: 4px; }
+  @media (max-width: 720px) {
+    .wrap { padding: 40px 22px 80px; }
+    .module-title { font-size: 40px; }
+    .twocol { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+  }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+<div class="module-header">
+  <div class="module-tag">A CRASH COURSE • 28 MODULES</div>
+  <h1 class="module-title">PyTorch, <em>From Tensor to Kernel</em></h1>
+  <p class="module-sub">— a Head-First-style climb from "what's a tensor?" to "I just wrote a fused attention kernel"</p>
+</div>
+
+<p>This course is not a documentation reskin. PyTorch's official docs are excellent reference material and bad pedagogy. Reference material assumes you already know what you're looking for. Pedagogy walks you up the hill in the right order, points out the cliffs, and tells you why anyone bothered to climb in the first place.</p>
+
+<p>The hill we're climbing is steep. The bottom is <em>"a tensor is a multi-dimensional array."</em> The top is <em>"here is a fused FlashAttention-style kernel I wrote in Triton, and here's why my hand-tuned version beats the cuBLAS path on this shape."</em> Most people who reach the top did it through a mixture of pain, blog posts, reading PyTorch source code, and one very patient senior engineer. This course is a synthesis of all of that.</p>
+
+<div class="keyidea">
+This is a <strong>climbing course</strong>, not a reference manual. Each module assumes the previous one. If you skip Part II (autograd) and jump to Part VIII (kernels), you will be very confused about why your custom backward pass produces NaNs. Trust the order.
+</div>
+
+<h2>How each module is built</h2>
+
+<p>Every module follows the same Head First rhythm. You will see, in some order:</p>
+
+<ul>
+  <li><strong>Conversational explanation</strong> — concepts introduced through dialogue, analogy, and worked examples. We talk to you, not at you.</li>
+  <li><strong>Code that runs</strong> — every snippet is real PyTorch you can paste into a notebook. No pseudocode pretending to be code.</li>
+  <li><strong>Tradeoff tables</strong> — when there are two ways to do something (and there always are), we put them side by side with the verdict.</li>
+  <li><strong>"No dumb questions"</strong> — the questions you'd be embarrassed to ask in a meeting, answered without judgment.</li>
+  <li><strong>Brain Power boxes</strong> — pause and think before reading the answer. The exercises matter.</li>
+  <li><strong>Sticky notes</strong> — the kind of thing a senior engineer would scribble on a whiteboard and tell you to remember forever.</li>
+  <li><strong>Failure modes</strong> — the exact ways things break in production, and how to spot them.</li>
+</ul>
+
+<div class="sticky">
+<strong>Read this part:</strong> the modules are dense. Resist the urge to skim. If a section has a <span style="background: #ffd5dc; padding: 2px 6px;">Brain Power</span> box, actually pause. The whole point of Head First style is that your brain remembers what it <em>worked for</em>, not what it skimmed.
+</div>
+
+<h2>Course map</h2>
+
+<div class="toc">
+  <h3>Eight parts. Twenty-eight modules. One mountain.</h3>
+
+  <div class="part">PART I — Tensor Foundations</div>
+  <ol start="1">
+    <li><strong>Tensors from scratch</strong> — storage, stride, shape, dtype, device. Why <code>.contiguous()</code> exists.</li>
+    <li><strong>Indexing, broadcasting & shape gymnastics</strong> — view vs reshape vs permute, advanced indexing, einsum, gather/scatter.</li>
+    <li><strong>Devices, dtypes & numerics</strong> — fp32/fp16/bf16/fp8, pinned memory, async transfer, numerical-stability primitives.</li>
+  </ol>
+
+  <div class="part">PART II — Autograd, Deeply</div>
+  <ol start="4">
+    <li><strong>What <code>.backward()</code> actually does</strong> — the dynamic graph, leaf vs non-leaf, reverse-mode walked by hand.</li>
+    <li><strong>Autograd in practice</strong> — <code>requires_grad</code>, <code>detach</code>, <code>no_grad</code>, hooks, <code>torch.func</code>.</li>
+    <li><strong>Custom autograd: <code>torch.autograd.Function</code></strong> — writing your own forward/backward, gradcheck, when it earns its keep.</li>
+  </ol>
+
+  <div class="part">PART III — Building Models</div>
+  <ol start="7">
+    <li><strong>nn.Module deeply</strong> — parameters vs buffers, hooks, state_dict, weight tying, the registration gotcha, parametrize.</li>
+    <li><strong>Initialization, layers & norms</strong> — Xavier vs Kaiming vs GPT-style init; Dropout, BatchNorm, LayerNorm, RMSNorm, GroupNorm.</li>
+    <li><strong>Losses, optimizers & schedulers</strong> — CE/BCE/focal, SGD/Adam/AdamW/Lion/Muon math, cosine + warmup, gradient clipping.</li>
+  </ol>
+
+  <div class="part">PART IV — Data & Training Loops</div>
+  <ol start="10">
+    <li><strong>Datasets & DataLoaders done right</strong> — map vs iterable, samplers, num_workers, prefetch, collate, pinned memory.</li>
+    <li><strong>Training loops you can trust</strong> — overfit-a-batch, checkpoint/resume, accumulation, EMA, deterministic vs fast.</li>
+  </ol>
+
+  <div class="part">PART V — Performance & Debugging</div>
+  <ol start="12">
+    <li><strong>Memory: where does it all go?</strong> — params + grads + optimizer + activations, the transformer memory formula, checkpointing.</li>
+    <li><strong>Profiling & finding bottlenecks</strong> — torch.profiler, Nsight, the async kernel model, the "GPU is idle" diagnosis tree.</li>
+    <li><strong>Mixed precision & numerics</strong> — autocast, GradScaler, fp16 vs bf16, NaN-hunting.</li>
+  </ol>
+
+  <div class="part">PART VI — Distributed Training</div>
+  <ol start="15">
+    <li><strong>Communication primitives</strong> — all-reduce, all-gather, reduce-scatter, ring vs tree, NCCL basics.</li>
+    <li><strong>DDP from first principles</strong> — gradient buckets, overlap with backward, find_unused_parameters, scaling rules.</li>
+    <li><strong>Sharding: ZeRO and FSDP</strong> — ZeRO-1/2/3, wrapping policies, mixed precision, CPU offload, activation memory.</li>
+    <li><strong>Tensor & pipeline parallelism</strong> — Megatron-style TP, 1F1B and interleaved PP, sequence parallelism, 3D parallelism.</li>
+  </ol>
+
+  <div class="part">PART VII — Compilation & Internals</div>
+  <ol start="19">
+    <li><strong>PyTorch internals: dispatcher, ATen, storage</strong> — how <code>a + b</code> actually executes, dispatch keys, views and aliasing.</li>
+    <li><strong>CUDA semantics & the caching allocator</strong> — streams, events, async kernels, the memory pool, fragmentation, CUDA graphs.</li>
+    <li><strong>torch.compile deep dive</strong> — TorchDynamo, AOTAutograd, Inductor, graph breaks, debugging compile errors.</li>
+  </ol>
+
+  <div class="part">PART VIII — Kernel Writing & Frontiers</div>
+  <ol start="22">
+    <li><strong>The GPU programming model</strong> — SMs, warps, threads, shared memory, coalescing, occupancy, why this matters.</li>
+    <li><strong>Custom C++ / CUDA extensions</strong> — writing a fused-op kernel, pybind11, integrating with autograd.</li>
+    <li><strong>Triton: kernels in Python</strong> — block-based programming, softmax / matmul / layernorm kernels, autotuning.</li>
+    <li><strong>FlashAttention as a case study</strong> — IO-aware design, online softmax, tiling for SRAM, recomputation, building one in Triton.</li>
+    <li><strong>Quantization: PTQ, GPTQ, AWQ</strong> — int8/int4 math, calibration, QAT, the dequant fusion trick, KV-cache quantization.</li>
+    <li><strong>Inference & serving</strong> — KV cache layout, paged attention, continuous batching, speculative decoding, CUDA graphs.</li>
+    <li><strong>MoE & frontier patterns</strong> — top-k routing, expert parallelism, dropless MoE, capstone: a tiny MoE with FSDP + custom kernel.</li>
+  </ol>
+</div>
+
+<h2>Who this is for</h2>
+
+<div class="twocol">
+  <div class="good">
+    <h4>This works for you if…</h4>
+    <ul>
+      <li>You can read Python and have written some PyTorch (even if you copy-pasted half of it).</li>
+      <li>You're comfortable with linear algebra (matrices, vectors, dot products) and basic calculus (chain rule).</li>
+      <li>You want to <em>understand</em> PyTorch, not just use it.</li>
+      <li>You have access to a GPU (Colab works for the early modules; you'll want a real one by Part V).</li>
+    </ul>
+  </div>
+  <div class="bad">
+    <h4>This is the wrong book if…</h4>
+    <ul>
+      <li>You've never written Python.</li>
+      <li>You want a "build a chatbot in 3 lines" tutorial. You'll be miserable here.</li>
+      <li>You only need to <em>use</em> a model, not understand the framework. Hugging Face Transformers' docs are better for that.</li>
+      <li>You hate code. We are about to read a <em>lot</em> of code.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>How to use the course</h2>
+
+<p>Three modes work, depending on where you're starting:</p>
+
+<div class="ndq">
+<h4>Reading paths</h4>
+
+<p class="q">I'm new to PyTorch. Where do I start?</p>
+<p class="a">Module 1, in order, no skipping. The first six modules build the foundation everything else stands on. Many "advanced" bugs are actually misunderstandings of Module 4 (autograd) or Module 12 (memory). Build the base.</p>
+
+<p class="q">I've trained models for years. Can I jump ahead?</p>
+<p class="a">Skim Parts I–IV to fill gaps (most engineers have at least one — usually around custom autograd or DataLoader internals). Read Parts V–VI properly. Parts VII–VIII are where most experienced engineers find new things.</p>
+
+<p class="q">I just want to write kernels.</p>
+<p class="a">You can't, yet. Or rather, you can write a kernel — but you can't write one that's <em>correctly integrated with PyTorch's autograd, doesn't break under torch.compile, and beats the existing kernel on memory-bound shapes</em>. That's what Part VIII is for. You'll need at least Modules 4, 6, 12, 19, and 20 first. Sorry. The shortcut isn't a shortcut.</p>
+
+<p class="q">How long should this take?</p>
+<p class="a">If you read one module a day and do the exercises, about a month. If you skim, a week — but you won't remember it. The whole structure of Head First is built around your brain's tendency to drop anything it didn't <em>work</em> for.</p>
+</div>
+
+<h2>A note on PyTorch versions</h2>
+
+<p>PyTorch is a fast-moving target. This course targets PyTorch 2.x (2.0+, ideally 2.3+). If you're on 1.x, much of Parts I–IV still applies, but anything mentioning <code>torch.compile</code>, FSDP-2, or modern Triton integration will be different or absent. Upgrade.</p>
+
+<p>API names occasionally shift. We'll flag the ones likely to change. The <em>concepts</em> — autograd, the dispatcher, the GPU programming model, IO-aware kernel design — do not change.</p>
+
+<div class="sticky pink">
+<strong>One last thing.</strong> Reading this course will not make you good at PyTorch. <em>Doing the exercises and shipping projects</em> will. Build something at the end of every part. Train something. Profile something. Break something. The book is scaffolding; you do the climbing.
+</div>
+
+<div class="module-footer">
+  <span>PyTorch · From Tensor to Kernel</span>
+  <span class="num">★</span>
+  <span>Cover</span>
+</div>
+
+</div>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="#" class="prev disabled">&laquo; Prev</a>
+  <a href="../../index.html" class="home">Home</a>
+  <a href="01_tensors_from_scratch.html" class="next">01 Tensors &raquo;</a>
+</nav>
+</body>
+</html>

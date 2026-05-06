@@ -1,0 +1,531 @@
+#!/usr/bin/env python3
+"""Module 26: Quantization — full HF vibe."""
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent))
+from build_module import emit
+
+BODY = r"""
+<div class="module-header">
+  <div class="module-tag">Part VIII · Module 26</div>
+  <h1 class="module-title"><em>Quantization:</em> int8, int4, GPTQ, AWQ &amp; fp8</h1>
+  <p class="module-sub">— how to run a 70B model in 35 GB instead of 140 GB, why int4 matmul kernels are hand-written, and the calibration recipes that make low-bit weights actually work</p>
+</div>
+
+<p>Quantization is two things at once. <em>Mathematically</em>, it's the most boring optimization in deep learning: round each fp16 weight to one of 16 values (int4), pay a tiny accuracy cost, ship the model. <em>Practically</em>, it's the optimization that decides whether a 70B model runs on consumer hardware or doesn't. A 70B-param model in bf16 is 140 GB of weights — won't fit on any single GPU. Quantized to int4: 35 GB. Fits on a single H100, runs at high throughput. Without quantization, the entire LLM-on-laptop / cheap-inference / open-weight-models story doesn't happen.</p>
+
+<p>This module sits in Part VIII because <em>efficient int4/int8 matmul is hand-written kernel territory</em>. cuBLAS doesn't ship an int4-weight × bf16-activation matmul (because nothing standard does). The kernels live in <code>torchao</code>, <code>bitsandbytes</code>, <code>marlin</code>, <code>vllm</code>, and they're written in CUDA or Triton using everything from M22-M25.</p>
+
+<div class="keyidea">
+Quantization stores weights in fewer bits than they were trained in: <strong>int8</strong> (8 bits, 2× compression), <strong>int4</strong> (4 bits, 4× compression), with finer granularities for some schemes. <em>Memory-bound</em> inference (which is most LLM serving) gets near-linear speedup from this — fewer bytes per param means faster HBM reads. The challenge: low-bit representations lose precision, and naively rounding kills quality. <strong>GPTQ</strong> and <strong>AWQ</strong> are calibration algorithms that minimize the quality cost. <strong>fp8</strong> is a different game — it preserves dynamic range but reduces precision; used for training on H100+. Pick the scheme based on whether you're doing training (fp8), inference (int8/int4), or both (mixed).
+</div>
+
+<h2>One new face</h2>
+
+<div class="character" style="--c: #d4a017;">
+  <div class="avatar" style="background: #d4a017; color: #fff;">Qb</div>
+  <div>
+    <p class="who">Quantizer</p>
+    <p class="name">"I shrink your weights from 16 bits to 4 by rounding to one of 16 values per group, with a scale that re-expands them back."</p>
+    <p class="says">Each group of 64 or 128 weights gets a single fp16 <em>scale</em>. To dequantize: <code>w_real = scale * (q − zero_point)</code>. To quantize: <code>q = round(w_real / scale + zero_point)</code>. The art is picking the scale to minimize information loss — and that's what GPTQ and AWQ are about. <em>I'm cheap to apply but expensive to apply well.</em></p>
+  </div>
+</div>
+
+<h2>The math: scale, zero-point, granularity</h2>
+
+<p>The basic affine quantization formula:</p>
+
+<pre><code>q = round(w / s + z)               <span class="com"># quantize: real → integer</span>
+w_hat = s * (q − z)                <span class="com"># dequantize: integer → real (with rounding error)</span></code></pre>
+
+<p>Where <code>s</code> is the <em>scale</em> (a positive fp16 number) and <code>z</code> is the <em>zero-point</em> (an integer in the quantized range). For symmetric quantization (no zero-point shift), <code>z = 0</code>; for asymmetric, <code>z</code> is chosen to map the real-valued zero exactly to an integer.</p>
+
+<p>The bit-width sets the integer range:</p>
+
+<div class="table-wrap">
+<table>
+<caption>Common quantization bit widths and ranges</caption>
+<thead><tr><th>Bits</th><th>Symmetric range</th><th>Asymmetric range</th><th>Compression vs fp16</th></tr></thead>
+<tbody>
+<tr><td>int8</td><td>[−127, 127]</td><td>[0, 255]</td><td>2×</td></tr>
+<tr><td>int4</td><td>[−7, 7]</td><td>[0, 15]</td><td>4×</td></tr>
+<tr><td>int3</td><td>[−3, 3]</td><td>[0, 7]</td><td>~5.3×</td></tr>
+<tr><td>int2</td><td>[−1, 1]</td><td>[0, 3]</td><td>8×</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Sub-int4 (int3, int2, int1.58 / ternary) is mostly research territory — quality drops fast below 4 bits. <strong>int4 weight-only is the sweet spot for inference</strong> in 2024-2026: 4× memory savings, near-lossless quality with good calibration.</p>
+
+<h3>Granularity: where the scales live</h3>
+
+<p>The single biggest design choice in quantization. How much of the weight tensor shares one scale?</p>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 740 360" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs></defs>
+  <text x="370" y="22" font-size="14" font-weight="700" fill="#1a1612" text-anchor="middle">Quantization granularity: how much of the tensor shares a scale?</text>
+
+  <!-- Per-tensor: one scale for the whole matrix -->
+  <text x="20" y="55" font-size="12" font-weight="700" fill="#c1502e">① Per-tensor — 1 scale per weight matrix (cheapest, lowest quality)</text>
+  <g transform="translate(20, 65)">
+    <rect x="0" y="0" width="400" height="60" fill="#fcecec" stroke="#c1502e" stroke-width="1.5"/>
+    <text x="200" y="35" text-anchor="middle" font-size="13" fill="#1a1612">one scale s for all 4096 × 4096 weights</text>
+    <rect x="430" y="20" width="50" height="20" fill="#fff5d8" stroke="#d4a017" stroke-width="1.5"/>
+    <text x="455" y="34" text-anchor="middle" font-size="10" fill="#1a1612">s</text>
+    <text x="500" y="34" font-size="10" fill="#1a1612">←  one fp16 number</text>
+  </g>
+  <text x="20" y="138" font-size="10" fill="#1a1612" font-style="italic">  Storage overhead: ~0%. Quality: poor for outlier-heavy distributions (most LLMs).</text>
+
+  <!-- Per-channel -->
+  <text x="20" y="170" font-size="12" font-weight="700" fill="#1f5f5b">② Per-channel — 1 scale per output channel (per row)</text>
+  <g transform="translate(20, 180)">
+    <rect x="0"   y="0" width="400" height="10" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+    <rect x="0"   y="10" width="400" height="10" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+    <rect x="0"   y="20" width="400" height="10" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+    <rect x="0"   y="30" width="400" height="10" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+    <rect x="0"   y="40" width="400" height="10" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+    <rect x="0"   y="50" width="400" height="10" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+    <rect x="430" y="0"  width="50"  height="10" fill="#fff5d8" stroke="#d4a017" stroke-width="0.5"/>
+    <rect x="430" y="10" width="50"  height="10" fill="#fff5d8" stroke="#d4a017" stroke-width="0.5"/>
+    <rect x="430" y="20" width="50"  height="10" fill="#fff5d8" stroke="#d4a017" stroke-width="0.5"/>
+    <rect x="430" y="30" width="50"  height="10" fill="#fff5d8" stroke="#d4a017" stroke-width="0.5"/>
+    <rect x="430" y="40" width="50"  height="10" fill="#fff5d8" stroke="#d4a017" stroke-width="0.5"/>
+    <rect x="430" y="50" width="50"  height="10" fill="#fff5d8" stroke="#d4a017" stroke-width="0.5"/>
+    <text x="200" y="35" text-anchor="middle" font-size="13" fill="#1a1612">4096 channels × one scale each</text>
+    <text x="500" y="34" font-size="10" fill="#1a1612">← 4096 fp16 scales</text>
+  </g>
+  <text x="20" y="253" font-size="10" fill="#1a1612" font-style="italic">  Storage overhead: ~0.05%. Quality: much better — scales adapt to per-channel range.</text>
+
+  <!-- Per-group -->
+  <text x="20" y="285" font-size="12" font-weight="700" fill="#d4a017">③ Per-group (group_size=128) — 1 scale per 128 weights along input dim</text>
+  <g transform="translate(20, 295)">
+    <!-- show row of small chunks each with own scale -->
+    <rect x="0"   y="0" width="50" height="20" fill="#fff8a8" stroke="#1a1612" stroke-width="0.5"/>
+    <rect x="55"  y="0" width="50" height="20" fill="#fff8a8" stroke="#1a1612" stroke-width="0.5"/>
+    <rect x="110" y="0" width="50" height="20" fill="#fff8a8" stroke="#1a1612" stroke-width="0.5"/>
+    <rect x="165" y="0" width="50" height="20" fill="#fff8a8" stroke="#1a1612" stroke-width="0.5"/>
+    <rect x="220" y="0" width="50" height="20" fill="#fff8a8" stroke="#1a1612" stroke-width="0.5"/>
+    <rect x="275" y="0" width="50" height="20" fill="#fff8a8" stroke="#1a1612" stroke-width="0.5"/>
+    <rect x="330" y="0" width="50" height="20" fill="#fff8a8" stroke="#1a1612" stroke-width="0.5"/>
+    <rect x="385" y="0" width="50" height="20" fill="#fff8a8" stroke="#1a1612" stroke-width="0.5"/>
+    <text x="500" y="14" font-size="10" fill="#1a1612">8 scales for 1 row of 1024 weights</text>
+    <text x="500" y="28" font-size="10" fill="#1a1612">(in our int4 quant scheme)</text>
+  </g>
+  <text x="20" y="345" font-size="10" fill="#1a1612" font-style="italic">  Storage overhead: ~0.4% (1 fp16 per 128 int4 = ~10% of int4 storage). Quality: best.</text>
+</svg>
+</div>
+
+<p>Three things to internalize:</p>
+
+<ol>
+  <li><strong>Per-tensor</strong>: one scale for the whole matrix. Cheapest in storage, easiest to implement, but quality is poor when weights have outliers (which they do in modern LLMs — see AWQ below).</li>
+  <li><strong>Per-channel</strong>: one scale per row (output channel). Much better quality at trivial storage cost. <em>The default for int8 weight-only.</em></li>
+  <li><strong>Per-group</strong> with group size 64 or 128: one scale per group of 128 weights along the input dim. Best quality, used in GPTQ/AWQ int4. The overhead is 1 fp16 per 128 int4 weights — about 6% of total storage but huge quality gain.</li>
+</ol>
+
+<p>The scheme you'll see most for int4 weight-only inference: <strong>group-size 128, asymmetric, per-group scale + zero-point</strong>. Storage per param: 4 bits + (16 + 4) / 128 ≈ 4.16 bits effective.</p>
+
+<h2>The PTQ algorithms: how to pick the scales well</h2>
+
+<p>The math above tells you <em>how to apply</em> a scale. Picking <em>which</em> scale gives the best quality is the algorithm question. Three approaches, in order of sophistication:</p>
+
+<h3>1. MinMax / max-abs (the naive baseline)</h3>
+
+<p>For each group, compute <code>s = max(|w|) / 7</code> (for int4 symmetric). Done. Round all weights to the nearest int4 value. Easy to implement, 30 seconds to apply to a 7B model.</p>
+
+<p>Why it's bad: a single outlier weight blows up the scale, and now the other 127 weights in the group lose precision. LLMs have long-tailed weight distributions — outliers are common.</p>
+
+<p>Quality: usable for int8 (the bit budget is forgiving). Awful for int4 — typical perplexity rise of 50%+ vs fp16 baseline.</p>
+
+<h3>2. GPTQ (Hessian-aware reconstruction)</h3>
+
+<p>The insight: when you quantize a weight matrix W to W_q, the matrix-multiply output changes by ΔY = X(W − W_q). What you actually care about isn't <code>||W − W_q||</code> but <code>||X(W − W_q)||</code> — the layer's output error. GPTQ minimizes the latter.</p>
+
+<p>Concretely: for each layer, GPTQ computes H = X.T @ X (the input Gram matrix, also called the Hessian of the squared-error objective). Then it quantizes weights one column at a time, in an order chosen to minimize the cumulative output error, propagating the rounding error from each quantized column to the still-unquantized columns via a closed-form update derived from H.</p>
+
+<pre><code><span class="com"># Simplified GPTQ pseudocode for one layer (W: weight matrix, X: calibration activations)</span>
+H = X.T @ X                        <span class="com"># input Gram matrix — captures which weights matter how much</span>
+H = H + dampening * I              <span class="com"># numerical stability (Hessian damping)</span>
+H_inv = cholesky_inverse(H)        <span class="com"># invert once</span>
+
+<span class="kw">for</span> col <span class="kw">in</span> chosen_order(H_inv):    <span class="com"># typically diagonal-ascending</span>
+    w_col = W[:, col]
+    w_q = quantize_to_int4(w_col)  <span class="com"># the rounding step</span>
+    error = w_col − w_q
+    <span class="com"># Propagate the error to remaining columns via H_inv</span>
+    W[:, remaining] −= error * H_inv[col, remaining] / H_inv[col, col]
+    W[:, col] = w_q</code></pre>
+
+<p>The key term is the error-propagation update. Quantizing column k introduces error; GPTQ adjusts the remaining columns to compensate, minimizing the cumulative impact on layer output. This is essentially OBQ (optimal brain quantization) applied per layer with calibration data.</p>
+
+<p>Cost: ~100-300 calibration sequences (a few thousand tokens), one Cholesky per layer. Total: minutes to an hour for a 7B model. Quality: typically 1-3% perplexity rise vs fp16 at int4. <strong>The standard for int4 quantization since 2022.</strong></p>
+
+<h3>3. AWQ (Activation-aware weight quantization)</h3>
+
+<p>The complementary insight: not all weights matter equally. Some output columns of a weight matrix carry "salient" features — large activations flow through them. Quantizing those columns more carefully (or not at all) preserves quality.</p>
+
+<p>AWQ's algorithm:</p>
+
+<ol>
+  <li>Run calibration data through the model. For each layer, observe the per-channel activation magnitudes <code>a = max|X[:, i]|</code>.</li>
+  <li>For each output channel, compute a per-channel scaling factor <code>α</code> proportional to <code>a^β</code> for some β (typically ≈ 0.5).</li>
+  <li>Apply <code>W = W / α</code> and <code>X = X * α</code> — the multiplication output is unchanged, but the weights to be quantized are now smaller in their salient dimensions, so quantization rounds them more precisely.</li>
+  <li>Quantize the rescaled W with standard group-wise int4.</li>
+</ol>
+
+<p>The trick: <em>at inference time</em>, the α scaling is folded back so the kernel doesn't see it. The runtime kernel is plain int4-weight × bf16-activation matmul — no overhead from AWQ's calibration step.</p>
+
+<p>Cost: similar to GPTQ — calibration data, an optimization step (search for best β). Quality: typically matches or slightly beats GPTQ at int4. <strong>The other major int4 PTQ algorithm — try both for your model and pick the winner.</strong></p>
+
+<h3>Comparison</h3>
+
+<div class="table-wrap">
+<table>
+<caption>The three PTQ algorithms — when to use which</caption>
+<thead><tr><th>Algorithm</th><th>Calibration data needed</th><th>Calibration time</th><th>Quality (int4)</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>MinMax / max-abs</td><td>None</td><td>Seconds</td><td>Poor</td><td>Use for int8 only; for int4 the quality is unacceptable</td></tr>
+<tr><td>GPTQ</td><td>~128 sequences</td><td>Minutes-hours</td><td>Good</td><td>Hessian-aware; the long-standing standard</td></tr>
+<tr><td>AWQ</td><td>~128 sequences</td><td>Minutes-hours</td><td>Good (often best)</td><td>Activation-aware; preserves salient channels</td></tr>
+<tr><td>SmoothQuant (W8A8)</td><td>~512 sequences</td><td>Minutes</td><td>—</td><td>Different goal: int8 weights + int8 activations</td></tr>
+<tr><td>QAT (Quantization-Aware Training)</td><td>Full training set</td><td>Days-weeks</td><td>Best possible</td><td>Train with simulated quantization; expensive but optimal</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Practical recipe for inference-time quantization: <strong>start with GPTQ-int4 or AWQ-int4. Try both, evaluate on a representative eval set, pick the winner.</strong> Both are well-supported in PyTorch (<code>torchao</code>) and external libraries (<code>autoawq</code>, <code>auto-gptq</code>).</p>
+
+<h2>The kernel: int4 weight-only matmul</h2>
+
+<p>Now the kernel. This is why M26 is in Part VIII. Standard cuBLAS doesn't have an int4-weight × bf16-activation matmul kernel — it's a niche pattern that only matters for inference with quantized models. The kernel has to be written by hand.</p>
+
+<p>The pattern: <strong>weights are int4 in HBM, activations are bf16, output is bf16. Inside the kernel, weights get dequantized to bf16 in registers right before the matmul.</strong></p>
+
+<pre><code><span class="kw">@</span>triton.<span class="fn">jit</span>
+<span class="kw">def</span> <span class="fn">int4_weight_only_matmul_kernel</span>(
+    a_ptr,            <span class="com"># bf16 activations [M, K]</span>
+    b_q_ptr,          <span class="com"># int4 weights packed [K // 8, N]  (8 int4s per int32)</span>
+    scales_ptr,       <span class="com"># fp16 scales       [K // group_size, N]</span>
+    zeros_ptr,        <span class="com"># int4 zero-points  [K // group_size, N // 8]</span>
+    c_ptr,            <span class="com"># bf16 output       [M, N]</span>
+    M, N, K,
+    GROUP_SIZE: tl.constexpr,
+    BLOCK_M: tl.constexpr, BLOCK_N: tl.constexpr, BLOCK_K: tl.constexpr,
+):
+    pid_m = tl.<span class="fn">program_id</span>(<span class="num">0</span>)
+    pid_n = tl.<span class="fn">program_id</span>(<span class="num">1</span>)
+
+    offs_m = pid_m * BLOCK_M + tl.<span class="fn">arange</span>(<span class="num">0</span>, BLOCK_M)
+    offs_n = pid_n * BLOCK_N + tl.<span class="fn">arange</span>(<span class="num">0</span>, BLOCK_N)
+    offs_k = tl.<span class="fn">arange</span>(<span class="num">0</span>, BLOCK_K)
+
+    acc = tl.<span class="fn">zeros</span>([BLOCK_M, BLOCK_N], dtype=tl.float32)
+
+    <span class="kw">for</span> k <span class="kw">in</span> <span class="fn">range</span>(<span class="num">0</span>, K, BLOCK_K):
+        <span class="com"># 1. Load activations (bf16, normal pattern)</span>
+        a = tl.<span class="fn">load</span>(a_ptr + offs_m[:, <span class="kw">None</span>] * K + (offs_k[<span class="kw">None</span>, :] + k))
+
+        <span class="com"># 2. Load packed int4 weights — each int32 holds 8 int4 values</span>
+        <span class="com">#    Decode: extract 4-bit nibbles, mask, sign-extend or zero-extend.</span>
+        b_packed = tl.<span class="fn">load</span>(b_q_ptr + ((offs_k[<span class="kw">None</span>, :] + k) // <span class="num">8</span>) * N + offs_n[<span class="kw">None</span>, :])
+        <span class="com">#  Shift by (offs_k % 8) * 4 bits, mask 4 bits, subtract zero-point</span>
+        shift = ((offs_k[<span class="kw">None</span>, :] + k) % <span class="num">8</span>) * <span class="num">4</span>
+        b_int4 = (b_packed &gt;&gt; shift) &amp; <span class="num">0xF</span>          <span class="com"># [BLOCK_K, BLOCK_N]</span>
+
+        <span class="com"># 3. Load the per-group scale and zero-point for this K block</span>
+        group_idx = (offs_k[<span class="kw">None</span>, :] + k) // GROUP_SIZE
+        scale = tl.<span class="fn">load</span>(scales_ptr + group_idx * N + offs_n[<span class="kw">None</span>, :])
+        zero  = tl.<span class="fn">load</span>(zeros_ptr  + group_idx * N + offs_n[<span class="kw">None</span>, :])
+
+        <span class="com"># 4. Dequantize: w = scale * (q - zero), entirely in registers</span>
+        b = (b_int4.<span class="fn">to</span>(tl.float32) - zero.<span class="fn">to</span>(tl.float32)) * scale.<span class="fn">to</span>(tl.float32)
+
+        <span class="com"># 5. The actual matmul — tensor cores, bf16 inputs (cast b on the fly)</span>
+        acc += tl.<span class="fn">dot</span>(a, b.<span class="fn">to</span>(tl.bfloat16))
+
+    <span class="com"># Store output in bf16</span>
+    tl.<span class="fn">store</span>(c_ptr + offs_m[:, <span class="kw">None</span>] * N + offs_n[<span class="kw">None</span>, :], acc.<span class="fn">to</span>(tl.bfloat16))</code></pre>
+
+<p>The kernel is structurally identical to a regular matmul (the M24 pattern) <em>plus a dequant step</em>. Steps 2-4 are the new bit:</p>
+
+<ol>
+  <li><strong>Pack/unpack int4 from int32</strong>. Eight int4 values fit in one int32. The kernel does bit-shifts and masking to extract the 4-bit nibble for each weight.</li>
+  <li><strong>Load the per-group scale and zero-point</strong>. These are small — one fp16 + one int4 per 128 weights — and the per-group lookup is fast.</li>
+  <li><strong>Dequantize in registers</strong>. <code>w = scale * (q - zero)</code> is an elementwise op that runs entirely in fast on-chip memory. The dequantized bf16 weights live in registers just long enough to feed <code>tl.dot</code>.</li>
+  <li><strong>Standard tensor-core matmul</strong>. Once the weights are in bf16 in registers, this is the same <code>tl.dot</code> from M24's matmul.</li>
+</ol>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 740 320" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs>
+    <marker id="arrQ" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f5f5b"/>
+    </marker>
+  </defs>
+  <text x="370" y="22" font-size="14" font-weight="700" fill="#1a1612" text-anchor="middle">int4-weight × bf16-activation matmul: dequant in registers, never in HBM</text>
+
+  <!-- HBM row -->
+  <text x="20" y="55" font-size="12" font-weight="700" fill="#1a1612">HBM (slow, 3 TB/s):</text>
+  <g transform="translate(20, 65)">
+    <rect x="0" y="0" width="160" height="50" fill="#fcecec" stroke="#c1502e" stroke-width="2"/>
+    <text x="80" y="22" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1612">int4 weights</text>
+    <text x="80" y="38" text-anchor="middle" font-size="9" fill="#1a1612">4 bits / param</text>
+    <text x="80" y="48" text-anchor="middle" font-size="9" fill="#1a1612">35 GB for 70B</text>
+
+    <rect x="180" y="0" width="120" height="50" fill="#fff5d8" stroke="#d4a017" stroke-width="2"/>
+    <text x="240" y="22" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1612">scales fp16</text>
+    <text x="240" y="38" text-anchor="middle" font-size="9" fill="#1a1612">1 per 128 params</text>
+
+    <rect x="320" y="0" width="120" height="50" fill="#fff8a8" stroke="#1a1612" stroke-width="2"/>
+    <text x="380" y="22" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1612">activations bf16</text>
+
+    <rect x="460" y="0" width="120" height="50" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="2"/>
+    <text x="520" y="22" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1612">output bf16</text>
+  </g>
+
+  <!-- Arrows down -->
+  <path d="M 100 130 L 100 165" stroke="#1f5f5b" stroke-width="1.5" fill="none" marker-end="url(#arrQ)"/>
+  <path d="M 240 130 L 240 165" stroke="#1f5f5b" stroke-width="1.5" fill="none" marker-end="url(#arrQ)"/>
+  <path d="M 380 130 L 380 165" stroke="#1f5f5b" stroke-width="1.5" fill="none" marker-end="url(#arrQ)"/>
+  <path d="M 520 175 L 520 130" stroke="#c1502e" stroke-width="1.5" fill="none" marker-end="url(#arrQ)"/>
+
+  <!-- On-chip kernel work -->
+  <text x="20" y="180" font-size="12" font-weight="700" fill="#1f5f5b">On-chip (registers + shared, ~10 PB/s):</text>
+  <g transform="translate(20, 190)">
+    <rect x="0" y="0" width="700" height="80" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="2"/>
+    <text x="350" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1612">Triton kernel inner loop (per K tile)</text>
+
+    <text x="20" y="42" font-size="10" fill="#1a1612">  1. extract 4-bit nibbles from packed int32 → b_int4 [BLOCK_K, BLOCK_N]</text>
+    <text x="20" y="55" font-size="10" fill="#1a1612">  2. dequantize: b = scale * (b_int4 - zero) → bf16 in registers</text>
+    <text x="20" y="68" font-size="10" fill="#1a1612">  3. tl.dot(a, b) → acc += matmul on tensor cores</text>
+  </g>
+
+  <text x="370" y="295" font-family="'Caveat', cursive" font-size="20" fill="#c1502e" text-anchor="middle">key win: 4× less HBM bandwidth for weights, same compute</text>
+  <text x="370" y="315" font-family="'Caveat', cursive" font-size="20" fill="#1f5f5b" text-anchor="middle">memory-bound inference → 2-3× wall-clock speedup over fp16</text>
+</svg>
+</div>
+
+<p>Why this is fast: <strong>most LLM inference is memory-bound</strong>, especially the autoregressive decode phase where you're processing one token at a time and the GPU is waiting for the next layer's weights to load from HBM. Cutting the weight bytes by 4× cuts the wait time by ~4× for the memory-bound regions. The matmul compute itself doesn't change — it's still bf16 × bf16 in tensor cores — but you spend much less time waiting for weights to arrive.</p>
+
+<p>For the prefill phase (processing a long prompt) which is more compute-bound, the speedup is smaller — but still positive because of better cache pressure with smaller weight footprint.</p>
+
+<h3>Why are these kernels so finicky?</h3>
+
+<p>A few sources of complexity that make int4 kernels hand-written-only:</p>
+
+<ul>
+  <li><strong>Packing layouts</strong>. Eight int4s in one int32 saves space, but the pack order matters — kernels assume specific layouts (Marlin uses one layout, GPTQ another, AWQ a third). Mixing them gives garbage.</li>
+  <li><strong>Group-size variations</strong>. group=128 is most common, but some libraries use 64 or 32. The kernel needs to know.</li>
+  <li><strong>Symmetric vs asymmetric</strong>. Different kernels assume different schemes; the dequantization step is slightly different.</li>
+  <li><strong>Hardware-specific MMA layouts</strong>. The bit-extraction and dequant work has to align with the tensor-core MMA tile layout for maximum throughput. The Marlin kernel does extensive bit-twiddling to get this right on Ampere/Hopper.</li>
+  <li><strong>Per-architecture optimizations</strong>. Hopper has cleaner async-load primitives (TMA), so the int4 kernel layout differs from Ampere's.</li>
+</ul>
+
+<p>Practical advice: <em>don't write your own int4 matmul</em>. Use <code>torchao</code>, <code>marlin</code>, <code>vllm</code>'s GPTQ kernels, or <code>bitsandbytes</code>. They've all been tuned heavily. Read them to learn the patterns; use them in production.</p>
+
+<h2>fp8: a different game</h2>
+
+<p>fp8 is conceptually a different beast. We met it briefly in M14: e4m3 (max ~448) and e5m2 (max ~57344). Both are 8-bit floats with hardware tensor-core support on H100+.</p>
+
+<p>fp8 is for <em>training</em> as well as inference. The pattern: forward activations and weights in e4m3 (more precision, less range — fine for forward); backward gradients in e5m2 (more range, less precision — needed because gradients can have large magnitudes during training). Per-tensor scaling (similar to GradScaler from M14, but per-tensor and managed separately for each direction) keeps values in the representable range.</p>
+
+<p>Library support: <code>TransformerEngine</code> from NVIDIA, <code>torchao</code>, native PyTorch in 2.4+. The recipe:</p>
+
+<pre><code><span class="com"># With torchao (modern approach)</span>
+<span class="kw">from</span> torchao.float8 <span class="kw">import</span> convert_to_float8_training
+
+model = <span class="fn">build_model</span>()
+<span class="fn">convert_to_float8_training</span>(model)            <span class="com"># in-place; replaces matmuls with fp8 versions</span>
+<span class="com"># Now train normally — fp8 is handled inside the matmul kernels</span></code></pre>
+
+<p>Speedup vs bf16: roughly 1.3-1.7× on H100 (tensor cores are 2× faster at fp8, but everything-else stays bf16). Quality: usually within noise of bf16 with proper scaling. Used in Llama 3 405B training and most frontier-scale fp8 deployments.</p>
+
+<p>fp8 inference is a separate thing — for serving, the standard recipe is e4m3 weights + e4m3 activations, with per-tensor static scales. Frameworks like vLLM and TensorRT-LLM ship fp8 inference paths.</p>
+
+<div class="ndq">
+<h4>About quantization</h4>
+
+<p class="q">Why does int4 weight-only quantization help so much for inference but not much for training?</p>
+<p class="a">Inference is dominated by weight loads — for autoregressive decoding, you're processing one token through the whole model, repeatedly fetching every weight matrix from HBM. 4× smaller weights = ~4× faster weight loads. Training is different: you have the same weights but now ALSO 4-8× of training state (gradients, Adam moments, master copy from M12). Quantizing weights doesn't help that. <em>For training, fp8 helps more — it speeds up the matmul itself, which dominates training throughput.</em></p>
+
+<p class="q">Are quantized models worse than fp16 models in any measurable way?</p>
+<p class="a">Slightly. Typical results: int8 weight-only is essentially indistinguishable from bf16 (perplexity within 0.1%). int4 weight-only with GPTQ/AWQ is usually within 1-3% perplexity. Below int4 (int3, int2, ternary), quality drops noticeably — used only when memory pressure dominates. The trade is highly favorable: 4× memory savings for &lt;3% quality cost is a no-brainer for serving.</p>
+
+<p class="q">What's "outliers" mean in the quantization context?</p>
+<p class="a">In modern LLMs, a small fraction (often &lt; 1%) of weights or activations have magnitudes ~10× larger than the rest. When you compute a per-tensor scale via max-abs, that single outlier sets the scale and the other 99% lose precision. Outliers are the reason naive quantization fails for LLMs and the reason GPTQ/AWQ exist — both algorithms handle outliers more gracefully (GPTQ via Hessian-aware reconstruction; AWQ by scaling salient channels separately).</p>
+
+<p class="q">When should I use QAT (quantization-aware training)?</p>
+<p class="a">Three cases. (1) When you need to push past int4 (int3, int2) and PTQ quality isn't enough. (2) When you need very specific deployment constraints (e.g., int8 weights AND int8 activations end-to-end, where activation quantization needs the model to "know" about it during training). (3) When compute is cheap and quality must be perfect. For most LLM inference: <em>PTQ (GPTQ or AWQ) is sufficient and 100× cheaper than QAT</em>.</p>
+
+<p class="q">Can I quantize just some layers and not others?</p>
+<p class="a">Yes — and you should for sensitive layers. The lm_head (final projection to vocab) and embeddings often stay in fp16/bf16 even when the rest is int4 — they're small relative to the transformer body, and their precision matters disproportionately. Some recipes also keep the first and last transformer layers in higher precision. Tools like <code>torchao</code> let you specify per-module quantization configs.</p>
+
+<p class="q">What's "double quantization" / "QLoRA"-style?</p>
+<p class="a">A space-saving trick: the per-group scales (which are fp16, ~0.4% overhead) can themselves be quantized to int8 with their own meta-scales. Saves a few percent of memory at trivial quality cost. Used in QLoRA fine-tuning to fit 65B models on a single 24GB GPU. The frozen-base-model is double-quantized; only the LoRA adapters train in fp16/bf16.</p>
+</div>
+
+<h2>Practical recipe: what to use when</h2>
+
+<div class="table-wrap">
+<table>
+<caption>Quantization decision tree</caption>
+<thead><tr><th>Goal</th><th>Recipe</th><th>Library</th></tr></thead>
+<tbody>
+<tr><td>Inference: fastest, max compression</td><td>int4 weight-only (GPTQ or AWQ), group-size 128</td><td><code>torchao</code>, <code>auto-gptq</code>, <code>autoawq</code></td></tr>
+<tr><td>Inference: simplest, best quality</td><td>int8 weight-only, per-channel</td><td><code>torchao</code>, <code>bitsandbytes</code></td></tr>
+<tr><td>Inference: H100, max throughput</td><td>fp8 weights + fp8 activations</td><td><code>vLLM</code>, <code>TensorRT-LLM</code></td></tr>
+<tr><td>Training: H100, want bf16-equivalent quality at higher speed</td><td>fp8 (e4m3 fwd + e5m2 bwd)</td><td><code>torchao.float8</code>, <code>TransformerEngine</code></td></tr>
+<tr><td>Fine-tuning a quantized base model with LoRA</td><td>int4 base + bf16 adapters</td><td><code>QLoRA</code> / <code>peft</code></td></tr>
+<tr><td>Sub-int4 (research)</td><td>int3 / int2 / ternary; QAT recommended</td><td>research codebases</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>The 90% case for production LLM inference: <strong>int4 weight-only with GPTQ or AWQ, served via vLLM or similar</strong>. The 10% case is fp8 on H100+ for very high throughput.</p>
+
+<h2>Code Magnets: identify the dequant kernel structure</h2>
+
+<p>You're writing the inner loop of an int4-weight × bf16-activation matmul kernel. Three magnets are wrong choices.</p>
+
+<div class="magnets">
+<p>Arrange the magnets into a correct K-tile inner loop.</p>
+
+<div class="magnet-pool">
+  <span class="magnet">a = tl.load(a_ptr + offs_m[:, None] * K + (offs_k[None, :] + k))</span>
+  <span class="magnet">b_packed = tl.load(b_q_ptr + ((offs_k[None, :] + k) // 8) * N + offs_n[None, :])</span>
+  <span class="magnet">b_packed = tl.load(b_q_ptr + (offs_k[None, :] + k) * N + offs_n[None, :])</span>
+  <span class="magnet">shift = ((offs_k[None, :] + k) % 8) * 4</span>
+  <span class="magnet">b_int4 = (b_packed >> shift) & 0xF</span>
+  <span class="magnet">b_int4 = b_packed & 0xF</span>
+  <span class="magnet">scale = tl.load(scales_ptr + ((offs_k[None, :] + k) // GROUP_SIZE) * N + offs_n[None, :])</span>
+  <span class="magnet">b = (b_int4.to(tl.float32) - zero.to(tl.float32)) * scale.to(tl.float32)</span>
+  <span class="magnet">acc += tl.dot(a, b.to(tl.bfloat16))</span>
+  <span class="magnet">acc += tl.dot(a, b_int4.to(tl.bfloat16))</span>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<pre><code>a = tl.<span class="fn">load</span>(a_ptr + offs_m[:, <span class="kw">None</span>] * K + (offs_k[<span class="kw">None</span>, :] + k))
+b_packed = tl.<span class="fn">load</span>(b_q_ptr + ((offs_k[<span class="kw">None</span>, :] + k) // <span class="num">8</span>) * N + offs_n[<span class="kw">None</span>, :])
+shift = ((offs_k[<span class="kw">None</span>, :] + k) % <span class="num">8</span>) * <span class="num">4</span>
+b_int4 = (b_packed &gt;&gt; shift) &amp; <span class="num">0xF</span>
+scale = tl.<span class="fn">load</span>(scales_ptr + ((offs_k[<span class="kw">None</span>, :] + k) // GROUP_SIZE) * N + offs_n[<span class="kw">None</span>, :])
+b = (b_int4.<span class="fn">to</span>(tl.float32) - zero.<span class="fn">to</span>(tl.float32)) * scale.<span class="fn">to</span>(tl.float32)
+acc += tl.<span class="fn">dot</span>(a, b.<span class="fn">to</span>(tl.bfloat16))</code></pre>
+<p>The traps:</p>
+<ul>
+  <li><code>b_packed = tl.load(b_q_ptr + (offs_k[None, :] + k) * N + offs_n[None, :])</code>: missing the <code>// 8</code> for the int4 packing. Each int32 holds 8 int4 values, so the K index in the packed array is K // 8.</li>
+  <li><code>b_int4 = b_packed & 0xF</code>: missing the bit shift. Without shifting, you only get the lowest int4 of the int32 — same value for all 8 K positions. Bug produces garbage.</li>
+  <li><code>acc += tl.dot(a, b_int4.to(tl.bfloat16))</code>: skips the dequantization (scale * (q - zero)). The int4 values themselves aren't the real weights — they need to be rescaled.</li>
+</ul>
+<p>The full pattern: <strong>load packed int32 → bit-shift to extract this position's int4 → load per-group scale + zero → dequantize via scale*(q-zero) → cast to bf16 → matmul on tensor cores</strong>. Every step matters; skipping any of them produces silently wrong outputs.</p>
+</details>
+</div>
+
+<h2>Who does what?</h2>
+
+<div class="matching">
+<p class="intro">Match each quantization concept to its real role.</p>
+
+<div class="match-grid">
+  <div class="header">Concept</div>
+  <div class="header">Real role</div>
+
+  <div>Per-group quantization</div>
+  <div>A. One scale + one zero-point per 128 weights along input dim — best quality at small overhead.</div>
+
+  <div>GPTQ</div>
+  <div>B. Hessian-aware quantization that minimizes per-layer output reconstruction error.</div>
+
+  <div>AWQ</div>
+  <div>C. Activation-aware: scale up salient channels before quantizing so they round more precisely.</div>
+
+  <div>int4 weight-only matmul</div>
+  <div>D. Inference kernel: int4 weights from HBM, dequantize in registers, matmul on tensor cores in bf16.</div>
+
+  <div>Outlier weights / activations</div>
+  <div>E. The reason naive quantization fails for LLMs — a few large values ruin per-tensor scales.</div>
+
+  <div>fp8 (e4m3 + e5m2)</div>
+  <div>F. Training-friendly low-bit floats: e4m3 forward, e5m2 backward, with per-tensor scales.</div>
+
+  <div>QAT (quantization-aware training)</div>
+  <div>G. Train with simulated quantization in the loop. Best quality, most expensive.</div>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<p>
+<strong>Per-group quantization</strong> → A<br>
+<strong>GPTQ</strong> → B<br>
+<strong>AWQ</strong> → C<br>
+<strong>int4 weight-only matmul</strong> → D<br>
+<strong>Outlier weights / activations</strong> → E<br>
+<strong>fp8 (e4m3 + e5m2)</strong> → F<br>
+<strong>QAT</strong> → G
+</p>
+<p>The mental shortcut: <em>per-group = best PTQ granularity, GPTQ = Hessian-aware, AWQ = activation-aware, int4 kernel = dequant-in-registers, outliers = the reason for fancy algorithms, fp8 = training-friendly, QAT = train with quant simulated</em>.</p>
+</details>
+</div>
+
+<h2>Exercises</h2>
+
+<div class="exercise">
+<p><strong>1.</strong> A team quantizes their 7B model to int4 with simple max-abs (no GPTQ/AWQ). Eval perplexity rises by 60%. What likely happened, and what's the fix?</p>
+<details class="answer"><summary>show answer</summary>
+<p>Outliers. The max-abs scale is dominated by a small number of large weights, which forces the other 99% of weights into a coarse rounding grid. The 60% perplexity rise is symptomatic — modern LLM weight distributions are heavy-tailed enough that naive int4 PTQ is borderline unusable. Fix: switch to GPTQ or AWQ, both of which handle outliers explicitly. GPTQ propagates rounding error via Hessian to compensate; AWQ rescales salient channels so they don't dominate. Either should drop the perplexity rise to 1-3%. The key insight: <strong>for int4, naive max-abs isn't a valid baseline — use a proper PTQ algorithm</strong>.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>2.</strong> Why does int4 weight-only quantization give a much bigger speedup for autoregressive decode than for prefill?</p>
+<details class="answer"><summary>show answer</summary>
+<p>Decode processes one token at a time through every layer of the model. The matmul shapes are <code>(1, K) × (K, N)</code> — extremely tall-and-skinny, with very few FLOPs per byte of weight loaded. <em>Decode is heavily memory-bound</em>: most time is spent waiting for weights to come from HBM. Cutting weight bytes by 4× cuts wait time by ~4×, giving a near-linear speedup.</p>
+<p>Prefill processes the whole prompt at once (e.g., 2048 tokens). Matmuls have shape <code>(2048, K) × (K, N)</code> — much more compute per byte of weight, closer to compute-bound. Weight bandwidth still helps but isn't the bottleneck. Speedup is smaller, often 1.3-1.5×. <strong>This is why "int4 makes inference fast" is mostly about decode latency — the prefill TFLOPs/sec doesn't change much.</strong></p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>3.</strong> A team's 7B model with GPTQ-int4 has good perplexity but produces garbage on certain inputs. Investigation shows it's specifically inputs with rare tokens. What's likely going on?</p>
+<details class="answer"><summary>show answer</summary>
+<p>The embedding and lm_head matrices are likely quantized along with the rest of the model, and the rows for rare tokens — used very rarely during calibration — were quantized poorly. Calibration data didn't activate those rows enough for GPTQ to optimize them. Fix: <strong>keep embeddings and lm_head in fp16/bf16 even when the rest is int4</strong>. They're small (typically &lt;5% of model size) and their precision matters disproportionately for token quality. Most production quantization recipes do this by default — explicitly excluding the embedding and head from quantization. <em>Lesson: not all layers should be quantized at the same precision. Sensitive parts stay in higher precision.</em></p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>4.</strong> Why is fp8 useful for training but int4 isn't? They're both ~2× compression vs bf16 weights.</p>
+<details class="answer"><summary>show answer</summary>
+<p>Two reasons.</p>
+<p>(1) <strong>Range vs precision tradeoff</strong>. fp8 (especially e5m2) has fp32-comparable range — it can represent gradients across many orders of magnitude. int4 has 16 evenly-spaced values within [-7, 7]; gradients (which span many orders of magnitude during training, especially in early steps and for sparse updates) fall off the end. You'd need per-tensor scaling that adapts every step (essentially what fp16 + GradScaler does).</p>
+<p>(2) <strong>Hardware tensor cores</strong>. fp8 has direct tensor-core support on H100 — the matmul itself is twice as fast as bf16. int4 has no native tensor-core matmul (CUTLASS has int4 MMA but it's specialized and rarely useful for training); the dequant-then-matmul pattern is for inference where weights are static. <em>For training, you need the matmul itself to be faster, which fp8 does and int4 doesn't.</em></p>
+<p>This is why the modern recipe is: int4 (or int8) for inference (decode is bandwidth-bound; weights are static; per-group calibration is fine); fp8 for training (matmul is the bottleneck; dynamic range matters; tensor cores accelerate both fwd and bwd).</p>
+</details>
+</div>
+
+<div class="bullet-points">
+<h3>What just happened?</h3>
+<ul>
+  <li>Quantization stores weights in fewer bits: <strong>int8</strong> (2× compression), <strong>int4</strong> (4×), <strong>fp8</strong> (2×, but trains).</li>
+  <li>The math: <code>q = round(w/s + z)</code>, <code>w_hat = s*(q − z)</code>. Scales and zero-points are stored alongside the quantized weights.</li>
+  <li><strong>Granularity</strong>: per-tensor (worst quality), per-channel (good for int8), per-group with group-size 128 (best, used for int4).</li>
+  <li><strong>PTQ algorithms</strong>: MinMax (naive, ok for int8 only), GPTQ (Hessian-aware reconstruction), AWQ (activation-aware salient-channel preservation). Both GPTQ and AWQ work for int4; try both.</li>
+  <li><strong>Outliers</strong> (a few weights/activations ~10× larger than the rest) are the reason naive quantization fails for LLMs — they dominate per-tensor scales.</li>
+  <li><strong>The int4 weight-only matmul kernel</strong>: load packed int4 weights from HBM, extract nibbles in registers, dequantize via <code>w = scale*(q − zero)</code>, matmul in bf16 on tensor cores. Hand-written kernel territory; not in cuBLAS.</li>
+  <li><strong>Why int4 is fast for inference</strong>: most LLM inference is memory-bound on weight loads; 4× smaller weights ≈ near-linear speedup, especially for decode.</li>
+  <li><strong>fp8</strong> is for training and inference both: e4m3 forward, e5m2 backward, with per-tensor scaling (similar to GradScaler). Matmul itself is faster on H100 tensor cores.</li>
+  <li>Practical recipe for inference: <strong>int4 with GPTQ or AWQ, group-size 128, with embedding and lm_head kept in bf16</strong>. For training on H100: <strong>fp8 via torchao.float8 or TransformerEngine</strong>.</li>
+  <li>Don't write int4 kernels yourself — use <code>torchao</code>, <code>marlin</code>, <code>vllm</code>, <code>bitsandbytes</code>. Read them to learn the patterns.</li>
+  <li><strong>Sensitive layers stay in higher precision</strong>: embeddings and lm_head usually in bf16 even when the body is int4.</li>
+  <li>The reflex: when serving an LLM, ask "is this memory-bound or compute-bound?" Quantize for the memory-bound parts; fp8 for the compute-bound matmuls; leave outlier-sensitive layers alone.</li>
+</ul>
+</div>
+
+<p>Module 27 takes quantization plus FlashAttention plus the dispatcher and assembles them into <strong>inference systems</strong>. The KV cache and how it's managed; paged attention as the descendant of FlashAttention for variable-length serving; speculative decoding; the throughput vs latency tradeoff; what vLLM and TensorRT-LLM are doing under the hood. Then M28 closes the course with mixture-of-experts and a frontier capstone.</p>
+
+<div class="module-footer">
+  <span>PyTorch · From Tensor to Kernel</span>
+  <span class="num">26</span>
+  <span>Quantization: int8, int4, GPTQ, AWQ &amp; fp8</span>
+</div>
+"""
+
+emit("26_quantization", "Module 26 — Quantization: int8, int4, GPTQ, AWQ & fp8", BODY)

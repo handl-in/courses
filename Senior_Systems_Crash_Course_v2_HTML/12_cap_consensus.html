@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam thinks he gets CAP</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 12</p>
+</div>
+<div class="module-title">
+<p>CAP, Quorum &amp; Consensus</p>
+</div>
+<div class="subtitle">
+<p>CAP theorem stated correctly, quorum mathematics, and how Raft and Paxos make distributed agreement possible</p>
+</div>
+</div>
+<div class="opener">
+<p>"We picked AP because we need availability." Almost every engineer has heard this in a meeting. Almost nobody saying it knows what CAP actually says — including, often, the person saying it.</p>
+<p>This module fixes that. By the end, you'll know what CAP guarantees, what it doesn't, why "AP" is rarely the right framing, and how production consensus algorithms actually work.</p>
+</div>
+<h1>Sam thinks he gets CAP</h1>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+OK CAP theorem. Consistency, Availability, Partition tolerance — pick two. We can't have all three. I learned this in school.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+That's the version everyone learned. It's also misleading enough that the guy who <em>invented</em> CAP — Eric Brewer — wrote a follow-up paper saying "actually, that's not what I meant." The "pick two" framing makes people think they're choosing among three roughly-equal options. They're not.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+What did he mean?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Partitions are not optional. In a real distributed system, network partitions <em>will happen</em>. Cables get cut, routers reboot, switches fail, cloud providers have AZ-wide incidents. So you don't get to "trade away P." P is a fact of nature. The actual choice is: <strong>when a partition happens, do you choose Consistency or Availability?</strong></p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+Oh. So it's CP or AP, not CA.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Right. And even <em>that</em> is a per-operation choice, not a per-system one. The same database can be CP for some operations and AP for others. CAP is more of a vocabulary for talking about a specific moment — the moment of partition — than a system-wide label. By the end of this module you'll be able to say "CAP" without being wrong about it. Then we'll cover quorum, Raft, and Paxos — the actual machinery that makes distributed agreement work.</p>
+</div>
+</div>
+<div class="keyidea">
+<p><strong>CAP, stated correctly:</strong> during a network partition, a distributed system must choose between Consistency (refusing to serve potentially-stale data) and Availability (serving stale data rather than refusing). Partition tolerance isn't optional in real systems — partitions happen. <strong>The choice is what to do <em>during</em> a partition, not whether to tolerate one.</strong></p>
+</div>
+<h1>CAP, finally</h1>
+<p>The original 2000 statement of CAP from Brewer:</p>
+<blockquote>
+<p>Among <strong>C</strong>onsistency, <strong>A</strong>vailability, and <strong>P</strong>artition tolerance, you can have any two but not all three.</p>
+</blockquote>
+<p>The 2012 retraction (paraphrased):</p>
+<blockquote>
+<p>Partitions are inevitable. So the choice is between C and A <em>during</em> a partition. When the network is healthy, you can have both.</p>
+</blockquote>
+<div class="pullquote">
+<p>CAP isn't "pick two of three." It's "during a partition, choose between consistency and availability." Almost everything else about CAP that people think they know is wrong.</p>
+</div>
+<h2>What the letters actually mean</h2>
+<table>
+<thead>
+<tr>
+<th>Letter</th>
+<th>What it actually means</th>
+<th>What it doesn't mean</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C</strong></td>
+<td><strong>Linearizability</strong> — every read sees the latest committed write</td>
+<td>Not "ACID Consistency" — different concept, same word</td>
+</tr>
+<tr>
+<td><strong>A</strong></td>
+<td>Every request receives a (non-error) response</td>
+<td>Not "uptime" — a system can be 100% up and still violate availability per CAP</td>
+</tr>
+<tr>
+<td><strong>P</strong></td>
+<td>The system continues to function during network partitions</td>
+<td>Not "horizontally scalable"</td>
+</tr>
+</tbody>
+</table>
+<div class="warning">
+<p><strong>The "C" in CAP is not the "C" in ACID.</strong> Different concepts that share a letter.</p>
+<p>CAP-Consistency = linearizability = "I see the latest write."
+ACID-Consistency = "constraints hold, invariants preserved."</p>
+<p>If someone in an interview says "we trade ACID for availability," that's not what CAP says. ACID is about transactional behavior on a single node. CAP is about distributed system behavior during partition.</p>
+<p><strong>Senior engineers separate these concepts explicitly</strong> when discussing trade-offs.</p>
+</div>
+<h2>Why "CA" doesn't really exist</h2>
+<div class="scenario">
+<p><strong>The myth of CA databases:</strong></p>
+<p>People sometimes claim "single-node Postgres is CA." Sort of true, sort of meaningless. A single node has no partitions because there's no network to partition. CAP is about distributed systems; for a single node, the question doesn't apply.</p>
+<p>What about distributed Postgres with replicas? <strong>The moment you have multiple nodes connected by a network, partitions become possible.</strong> And when they happen, you must choose: do replicas serve stale reads (AP) or refuse (CP)?</p>
+<p>You don't <em>get</em> to "pick CA" once you have multiple nodes. P happens whether you want it to or not.</p>
+<p>The real choice your distributed system makes:
+- <strong>CP</strong>: during partition, refuse some operations to preserve consistency. Postgres with strict sync replication. CockroachDB. Spanner. ZooKeeper. etcd.
+- <strong>AP</strong>: during partition, accept all operations even if data diverges. Cassandra at default. Dynamo-style key-value stores. Riak.</p>
+</div>
+<h2>CP and AP: what each actually does</h2>
+<div class="compare">
+<div class="vs-left">
+<h4>CP system during partition</h4>
+<p>Detects partition. <em>Refuses to serve some operations</em> on the minority side. Preserves consistency by sacrificing availability for affected requests.</p>
+<p><b>Examples</b>: ZooKeeper refuses writes if it can't reach majority. CockroachDB rejects writes to ranges not covered by quorum. Postgres with sync replication blocks writes if sync replica is unreachable.</p>
+<p><b>User experience</b>: errors during partition. "We'll be back shortly." Better than serving wrong data.</p>
+</div>
+<div class="vs-right">
+<h4>AP system during partition</h4>
+<p>Detects partition. <em>Continues to serve all operations</em>. Different sides of the partition see different data; reconciliation happens later.</p>
+<p><b>Examples</b>: Cassandra at default consistency level (ONE/QUORUM). DynamoDB at default. Eventually-consistent caches.</p>
+<p><b>User experience</b>: continued availability, but stale or even contradictory data. "Your update happened" can be a lie until reconciliation completes.</p>
+</div>
+</div>
+<div class="insider">
+<p><strong>Per-operation CAP choice is the modern reality.</strong></p>
+<p>Cassandra exposes consistency levels — <code>ONE</code>, <code>QUORUM</code>, <code>LOCAL_QUORUM</code>, <code>ALL</code>. The same database is more AP at <code>ONE</code> and more CP at <code>ALL</code>.</p>
+<p>DynamoDB lets each read specify <code>ConsistentRead=true</code> (CP-flavored) or false (AP-flavored, default).</p>
+<p>CockroachDB defaults to CP but allows you to read from follower replicas with stale snapshots if you opt in.</p>
+<p>The senior framing: <strong>don't label a system as "CP" or "AP" wholesale.</strong> Talk about per-operation tradeoffs.</p>
+</div>
+<h1>PACELC — the better framework</h1>
+<p>CAP only describes what happens during partition. PACELC adds: <strong>what about when there's no partition?</strong></p>
+<div class="keyidea">
+<p><strong>PACELC</strong>: If there's a Partition, choose between Availability and Consistency (PA / PC). Else (no partition), choose between Latency and Consistency (EL / EC).</p>
+<p>The "else" half is the part most engineers miss. Even with no partition, distributed systems trade Latency vs Consistency. Synchronous replication is consistent but slow. Asynchronous replication is fast but eventually-consistent.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>System</th>
+<th>Partition behavior</th>
+<th>No-partition behavior</th>
+<th>Label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cassandra</td>
+<td>Available (writes accepted on partitioned side)</td>
+<td>Low latency (eventual consistency)</td>
+<td>PA/EL</td>
+</tr>
+<tr>
+<td>DynamoDB (default)</td>
+<td>Available</td>
+<td>Low latency</td>
+<td>PA/EL</td>
+</tr>
+<tr>
+<td>Spanner</td>
+<td>Consistent (refuses writes outside quorum)</td>
+<td>Higher latency for global consistency</td>
+<td>PC/EC</td>
+</tr>
+<tr>
+<td>MongoDB (majority writes)</td>
+<td>Consistent</td>
+<td>Lower latency on local reads</td>
+<td>PC/EC</td>
+</tr>
+<tr>
+<td>Postgres + sync replication</td>
+<td>Consistent</td>
+<td>Higher write latency (waits for sync)</td>
+<td>PC/EC</td>
+</tr>
+<tr>
+<td>Postgres + async replication</td>
+<td>Consistent for primary writes</td>
+<td>Low latency, eventual consistency on replicas</td>
+<td>PC/EL</td>
+</tr>
+</tbody>
+</table>
+<div class="insider">
+<p><strong>PACELC is more useful than CAP</strong> for real architecture conversations. It captures the constant-time tradeoffs, not just the partition-time ones. <strong>Mention PACELC</strong> in an interview and you signal you've moved past the textbook framing.</p>
+</div>
+<h1>Quorum: the math</h1>
+<p>To make consistency work in distributed systems with possible failures, we use <strong>quorums</strong> — requiring a majority of replicas to agree before considering an operation "done."</p>
+<div class="workout">
+<p><strong>The quorum math:</strong></p>
+<div class="step">
+<p>You have <strong>N</strong> replicas total.</p>
+</div>
+<div class="step">
+<p>Writes must be acknowledged by <strong>W</strong> replicas before considered committed.</p>
+</div>
+<div class="step">
+<p>Reads must consult <strong>R</strong> replicas to find the latest version.</p>
+</div>
+<div class="step">
+<p><strong>The quorum invariant: W + R &gt; N.</strong></p>
+</div>
+<div class="step">
+<p>This guarantees that any read overlaps with any write — i.e., at least one replica that confirmed the write is also queried by every read.</p>
+</div>
+</div>
+<div class="scenario">
+<p><strong>Concrete example: N = 5 replicas.</strong></p>
+<ul>
+<li>W=3, R=3: every write reaches 3 nodes; every read consults 3 nodes. By pigeonhole, the read and write share at least 1 node. <strong>Strong consistency.</strong></li>
+<li>W=1, R=1: writes go to 1 node, reads go to 1 node. They might not overlap. Read can return a stale value. <strong>Eventual consistency.</strong></li>
+<li>W=5, R=1: writes need all 5; reads need any 1. Reads always fresh. Writes very expensive (require all replicas alive).</li>
+<li>W=1, R=5: writes need 1; reads need all 5. Writes fast; reads always-fresh but require all replicas alive to succeed.</li>
+</ul>
+</div>
+<div class="keyidea">
+<p>The choice of W and R determines consistency vs availability. <strong>W + R &gt; N gives you strong consistency.</strong> Most production systems use W=R=⌈(N+1)/2⌉ — the majority quorum, with the smallest values that still give consistency.</p>
+</div>
+<h2>Why majority?</h2>
+<div class="brain">
+<p>A majority is the minimum quorum that guarantees no two simultaneous quorums can disagree.</p>
+<p>If 3 of 5 nodes elect a leader, no other 3 can elect a different leader — they'd have to overlap with the first 3 by at least 1 node, and that node knows about the first election.</p>
+<p>If you only required 2 of 5, two disjoint subsets of 2 could each "elect" a leader. Split-brain. Disaster.</p>
+<p><strong>Majority quorum is the floor for consistency in distributed agreement.</strong> Going below means accepting split-brain risk. Going above means accepting unnecessary availability loss.</p>
+</div>
+<h2>The 5-node sweet spot</h2>
+<div class="insider">
+<p>Why do production consensus systems often run 5 nodes (sometimes 3) and rarely more?</p>
+<p><strong>3 nodes</strong>: tolerates 1 failure. Quorum = 2.
+<strong>5 nodes</strong>: tolerates 2 failures. Quorum = 3.
+<strong>7 nodes</strong>: tolerates 3 failures. Quorum = 4.</p>
+<p>The marginal availability gain from each additional node decreases. The marginal cost — every write must reach majority, more nodes = slower writes — increases.</p>
+<p><strong>5 nodes is the sweet spot</strong> for most production consensus deployments. Tolerates two simultaneous failures (one for maintenance + one accidental), still small enough that quorum latency is bounded.</p>
+<p>ZooKeeper, etcd, CockroachDB control plane, and Kubernetes etcd all default to 3 or 5 nodes. <strong>Mention the 5-node sweet spot</strong> in an interview about distributed consensus design and you signal real-world experience.</p>
+</div>
+<h1>Consensus algorithms</h1>
+<p>We've talked about quorum as a <em>requirement</em>. The algorithm that <em>implements</em> quorum-based agreement is called <strong>consensus</strong>. Two algorithms dominate: Paxos (older) and Raft (newer, easier to understand).</p>
+<div class="keyidea">
+<p><strong>Consensus</strong> is the problem of getting a group of nodes to agree on a value, even when some nodes fail or messages are delayed. Solving this is the foundation of every replicated state machine — the abstraction underneath leader election, distributed locks, configuration management, and replicated databases.</p>
+</div>
+<h2>Raft in 5 minutes</h2>
+<p>Raft is the consensus algorithm most modern systems use. It was designed in 2013 specifically to be understandable.</p>
+<div class="workout">
+<p><strong>The three things Raft does:</strong></p>
+<div class="step">
+<p><strong>Leader election.</strong> One node is elected leader. All writes go through it. If it fails, surviving nodes elect a new one.</p>
+</div>
+<div class="step">
+<p><strong>Log replication.</strong> The leader appends each write to its log, replicates to followers. A write is considered committed once a majority have it.</p>
+</div>
+<div class="step">
+<p><strong>Safety.</strong> Even during failures and network issues, no two leaders are elected for the same term, and committed entries are never lost.</p>
+</div>
+</div>
+<div class="diagram">
+<pre><code>                          RAFT IN ONE PICTURE
+</code></pre>
+<p>┌──── Leader (term=5) ────┐
+  │                          │
+  │   Log:                   │
+  │   [1: x=1] committed     │
+  │   [2: x=2] committed     │
+  │   [3: y=5] committed     │
+  │   [4: z=7] <em>pending</em>     │  ← waiting for majority ack
+  │                           │
+  └────────┬─────────────────┘
+           │ append entries (heartbeats / replication)
+           │
+    ┌──────┼────────┬────────┐
+    ▼      ▼        ▼        ▼
+  Follower Follower Follower Follower
+  (term=5) (term=5) (term=5) (term=5)
+   logs OK  logs OK  logs OK  catching up</p>
+<p>Quorum for entry [4] = 3 of 5 (including leader).
+  Once 2 followers ack, entry [4] commits and is applied.</p>
+<p>If leader dies:
+  - Followers stop hearing heartbeats.
+  - First follower to time out triggers election (becomes candidate).
+  - Sends RequestVote to others. Each grants vote to first valid request per term.
+  - Candidate with majority votes becomes leader for new term.
+  - Resumes log replication.</p>
+</div>
+<h2>Paxos in 30 seconds</h2>
+<p>Paxos predates Raft (Lamport, 1989). Mathematically equivalent in capability — solves the same problem — but harder to implement and understand. Used in many older systems.</p>
+<div class="insider">
+<p><strong>The vocabulary you need to know:</strong></p>
+<ul>
+<li><strong>Proposers</strong> — nodes that want to propose values.</li>
+<li><strong>Acceptors</strong> — nodes that vote on proposals.</li>
+<li><strong>Learners</strong> — nodes that learn the agreed value.</li>
+<li><strong>Two phases</strong>: prepare (acquire promise from majority), accept (push value).</li>
+</ul>
+<p>For interviews, knowing "Paxos works but is hard; Raft is the modern reformulation that's easier to implement" is enough. <strong>Don't try to derive Paxos in 5 minutes</strong> — even Lamport's original paper baffles most engineers. The point is recognizing the name and what category it solves.</p>
+<p><strong>Most modern systems use Raft.</strong> Paxos is mostly in older Google infrastructure (Chubby, Megastore) and some academic systems.</p>
+</div>
+<h2>What systems use what</h2>
+<table>
+<thead>
+<tr>
+<th>System</th>
+<th>Algorithm</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>etcd</strong></td>
+<td>Raft</td>
+<td>Kubernetes' control plane, configuration store</td>
+</tr>
+<tr>
+<td><strong>Consul</strong></td>
+<td>Raft</td>
+<td>Service discovery, KV store</td>
+</tr>
+<tr>
+<td><strong>CockroachDB</strong></td>
+<td>Raft</td>
+<td>Per-range consensus for distributed SQL</td>
+</tr>
+<tr>
+<td><strong>TiDB / TiKV</strong></td>
+<td>Raft</td>
+<td>Distributed key-value foundation</td>
+</tr>
+<tr>
+<td><strong>MongoDB</strong></td>
+<td>Raft (since 4.0)</td>
+<td>Replica set elections and writes</td>
+</tr>
+<tr>
+<td><strong>Kafka (newer)</strong></td>
+<td>Raft (KRaft, replacing ZooKeeper)</td>
+<td>Cluster metadata management</td>
+</tr>
+<tr>
+<td><strong>ZooKeeper</strong></td>
+<td>Zab (Paxos variant)</td>
+<td>Original Hadoop-era coordination service</td>
+</tr>
+<tr>
+<td><strong>Google Spanner</strong></td>
+<td>Paxos</td>
+<td>Globally distributed SQL</td>
+</tr>
+<tr>
+<td><strong>Apache Cassandra</strong></td>
+<td>Lightweight Transactions use Paxos</td>
+<td>Linearizable transactions when needed</td>
+</tr>
+</tbody>
+</table>
+<h2>Why consensus is hard</h2>
+<div class="brain">
+<p>The fundamental difficulty: <strong>in an asynchronous network with possible node failures, consensus is provably impossible</strong> without some additional assumption.</p>
+<p>This is the <strong>FLP impossibility result</strong> (Fischer, Lynch, Paterson, 1985). It's a real theorem — you can't have a deterministic algorithm that always reaches consensus in bounded time when:
+1. Messages can be delayed arbitrarily.
+2. Even one node can fail.
+3. The algorithm must always terminate.</p>
+<p>In practice, all consensus algorithms (Paxos, Raft) work <em>most of the time</em> by relying on:
+- <strong>Timeouts</strong> — eventually we assume a node is dead.
+- <strong>Randomized delays</strong> — to break symmetry in elections.
+- <strong>Partial synchrony assumptions</strong> — the network is "usually" responsive.</p>
+<p>So a consensus algorithm that works in production might fail to reach consensus during a particularly bad network event. But it'll never <em>return the wrong answer</em> — only delay until the situation improves.</p>
+<p><strong>Knowing FLP exists is enough for interviews.</strong> It explains why these algorithms have leader-election timeouts (rather than always-running magic) and why network instability can cause periods where the system is unavailable for writes.</p>
+</div>
+<h1>Split-brain prevention via quorum</h1>
+<p>Module 10 introduced split-brain. Now we have the tool to prevent it: <strong>quorum-based promotion.</strong></p>
+<div class="scenario">
+<p><strong>The split-brain scenario, revisited:</strong></p>
+<p>5-node cluster. Network partition splits it into a 2-node side and a 3-node side.</p>
+<p>The 3-node side has a quorum (majority of 5 = 3). It can elect a leader, accept writes, continue normally.</p>
+<p>The 2-node side has no quorum (only 2 of 5). It cannot elect a leader. It cannot accept writes. <strong>It refuses requests rather than create a split-brain.</strong></p>
+<p>When the partition heals, the 2-node side sees the higher-term leader on the other side and rejoins as followers. No data divergence. No split-brain.</p>
+</div>
+<div class="keyidea">
+<p>Quorum-based promotion is the engineering solution to CAP's CP choice. <strong>The minority side gives up availability</strong> (refuses writes) <strong>to preserve consistency</strong> (single authoritative version).</p>
+<p>This is why production-grade replication tools (Patroni, etcd, Consul) require quorum and why misconfigured 2-node clusters are dangerous — there's no way to have a meaningful majority of 2.</p>
+</div>
+<div class="warning">
+<p><strong>Never run a 2-node cluster for HA.</strong> A 2-node cluster has no real majority — quorum of 2 is "both alive," which means <em>any</em> failure means <em>no quorum.</em> You either need 3 nodes (real quorum) or you accept that you have no real failure tolerance.</p>
+<p>This trips up small teams who think "we'll have a primary and a hot standby — that's HA." It's not. <strong>HA requires at minimum 3 nodes for real consensus.</strong></p>
+</div>
+<h1>Three more ways to think about consensus</h1>
+<div class="metaphor">
+<p><strong>Way 1: a board of directors.</strong></p>
+<p>A 5-person board votes on every major decision. Decisions need 3 votes (majority) to pass.</p>
+<p>If 2 directors are out sick, the remaining 3 can still operate — full majority intact.</p>
+<p>If 3 are out, the remaining 2 cannot make decisions — there's no majority. They wait for others to return.</p>
+<p>Two factions splitting the board into two smaller groups: only the group with majority can operate. The minority group, however convinced it's right, has no authority.</p>
+<p>That's quorum. The board is the cluster. The directors are nodes. The majority requirement is what prevents a minority from making conflicting decisions.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 2: village elders.</strong></p>
+<p>A village has 7 elders. To approve any major decision, 4 of them must agree.</p>
+<p>A storm cuts off 3 elders in the south, leaving 4 in the north. The 4 in the north can still approve decisions — they have a majority of 7.</p>
+<p>The 3 in the south, even if they unanimously agree on something, cannot approve it. They lack a majority. They wait for the storm to pass.</p>
+<p>This is exactly Raft's leader election: the side with a majority can act; the minority cannot. <strong>The system stays consistent at the cost of the minority being temporarily unavailable.</strong></p>
+</div>
+<div class="metaphor">
+<p><strong>Way 3: jury verdicts.</strong></p>
+<p>A 12-person jury must reach unanimous agreement (12 of 12) to convict. If even one juror disagrees, no decision.</p>
+<p>This is "all-quorum" — strong consistency, but can deadlock easily.</p>
+<p>A "majority verdict" jury (say, 9 of 12) is a different tradeoff — fewer holdouts can block, but split decisions are possible if the protocol isn't careful.</p>
+<p>Real-world consensus tunes this dial. Most distributed systems require a strict majority (more than half), which is enough to prevent two competing decisions from both being valid.</p>
+</div>
+<h1>Sharpen your pencil</h1>
+<div class="exercise">
+<p><strong>Exercise 1.</strong> A team has a 3-node Postgres cluster with Patroni. They lose 1 node permanently due to a hardware failure. They're considering: (a) running on 2 nodes for now, (b) adding a new replica to get back to 3 nodes, (c) reducing to 1 node and running without HA.</p>
+<p>Order from worst to best, with reasoning.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>Worst: (a) running on 2 nodes for now.</strong></p>
+<p>A 2-node "cluster" has no real quorum — quorum of 2 is "both alive," meaning any single failure breaks consensus. You're not running a 2-node HA cluster; you're running an HA cluster <em>that pretends to be HA but isn't</em>. Worse than running on 1 node, because failover automation might trigger and cause split-brain when the network blips.</p>
+<p><strong>Bad: (c) reducing to 1 node and running without HA.</strong></p>
+<p>At least it's honest. No false sense of safety. But you have a single point of failure — the next hardware failure is an outage. Acceptable only as a very temporary state while you reprovision.</p>
+<p><strong>Best: (b) adding a new replica.</strong></p>
+<p>Get back to 3 nodes (or better, 5) as fast as possible. Until then, treat the cluster as 1-node-effective for safety. The senior reflex: when running below quorum, <em>prioritize restoring it</em> over everything else.</p>
+<p><strong>The principle</strong>: HA isn't a nominal node count. It's "can the system survive a failure?" 2 nodes can't. Use 3 or 5.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2.</strong> Your service uses Cassandra at consistency level <code>LOCAL_QUORUM</code> for both reads and writes. A coworker says: "we should switch to <code>ONE</code> for faster reads." Two arguments why this is dangerous.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>Argument 1: Loses read-your-writes consistency.</strong></p>
+<p>At <code>LOCAL_QUORUM</code> for both reads and writes (with N=3, that's W=R=2), the quorum invariant W + R &gt; N holds (2 + 2 &gt; 3). Reads see the latest committed write.</p>
+<p>At <code>ONE</code> reads (W=2, R=1), W + R = 3, not &gt; N. The read might hit a replica that hasn't received the write yet. <strong>Users will see "ghost data" — submit a form, refresh, see stale state.</strong></p>
+<p><strong>Argument 2: Doesn't help much in the common case.</strong></p>
+<p>Cassandra's read latency at <code>LOCAL_QUORUM</code> typically queries 2 of 3 replicas in parallel and returns when both respond. The latency is bounded by the <em>faster</em> of the two. At <code>ONE</code>, you query 1 node — but the long-tail latency dominates. You traded a small p50 improvement for <em>much worse</em> p99 (when you happen to hit a slow node).</p>
+<p><strong>The senior framing</strong>: consistency level should match the use case, not the desire for "faster." For most user-facing reads, <code>LOCAL_QUORUM</code> is the right default. Only relax to <code>ONE</code> for genuinely best-effort data — analytics counters, logging, etc.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3.</strong> Explain to non-technical Sam, in two sentences, what "quorum" means and why distributed systems need it.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>A quorum is a majority of nodes that must agree before a decision is considered final — like requiring 3 of 5 board members to vote yes before passing a policy. Distributed systems need this because without it, two halves of a network split could each make conflicting decisions and end up with two contradictory "official" answers — and quorum guarantees that any two majority groups must overlap, so they can't disagree.</p>
+</div>
+</div>
+<h1>There are no dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p>Q: What's the difference between Raft and Multi-Paxos?</p>
+</div>
+<div class="a">
+<p>A: Multi-Paxos is the original "Paxos extended to a sequence of decisions" — what you actually need for log replication. Raft is essentially a clean reformulation of Multi-Paxos with explicit leader election, designed for understandability. Functionally equivalent. Raft's contribution was making it teachable; Multi-Paxos works but is famously hard to implement correctly.</p>
+</div>
+<div class="q">
+<p>Q: What happens if a Raft cluster has more than one leader?</p>
+</div>
+<div class="a">
+<p>A: Briefly, it might. During a network partition or a leader's transient unavailability, two nodes might both think they're leader temporarily. But Raft's safety properties guarantee that <em>only one</em> leader can have a majority's votes for a given term. The "stale leader" can't get its writes accepted because followers reject anything from a lower term. Once it discovers the new leader (higher term), it steps down. <strong>Two leaders can briefly exist; they cannot both succeed at writing.</strong></p>
+</div>
+<div class="q">
+<p>Q: How does Raft handle a network partition that splits the cluster 50/50?</p>
+</div>
+<div class="a">
+<p>A: Neither side has a majority (assuming an even-sized cluster, which is bad practice). Both sides will hold elections, both will fail to get majority. The cluster is unavailable for writes until the partition heals. <strong>This is why even-sized clusters are an anti-pattern</strong> — always run odd numbers (3, 5, 7) so a 50/50 split is impossible.</p>
+</div>
+<div class="q">
+<p>Q: What's a "leader lease" in Raft?</p>
+</div>
+<div class="a">
+<p>A: An optimization. Normally, every read should go through quorum to ensure linearizability. With a leader lease — the leader is granted a time-bounded "lease" by the followers — the leader can serve linearizable reads <em>locally</em> without consulting followers, as long as the lease hasn't expired. CockroachDB uses this. Etcd uses this. Significantly improves read latency at the cost of slightly more complex implementation.</p>
+</div>
+<div class="q">
+<p>Q: Are CRDTs related to consensus?</p>
+</div>
+<div class="a">
+<p>A: Different approach to the same problem. CRDTs (Conflict-free Replicated Data Types) are data structures designed so that any merge of concurrent updates produces a sensible result automatically. They sidestep consensus by <em>making conflict resolution deterministic</em>. Used in collaborative apps (Figma, Riak), but limited to data types that fit the CRDT model. Doesn't replace consensus for arbitrary state machines.</p>
+</div>
+<div class="q">
+<p>Q: What's "Byzantine consensus"?</p>
+</div>
+<div class="a">
+<p>A: Consensus where some nodes can act <em>maliciously</em> — return arbitrary or wrong answers, not just fail. Standard Paxos and Raft assume nodes either work correctly or fail (called "crash failures"). Byzantine consensus protocols (PBFT, etc.) handle malicious nodes too. Used in blockchain systems and high-security environments. <strong>Vastly more complex than crash-failure consensus.</strong> Mention it as awareness, but for typical database systems, you're dealing with crash-failure tolerance only.</p>
+</div>
+<div class="q">
+<p>Q: Can Raft handle "more than half failed"?</p>
+</div>
+<div class="a">
+<p>A: No. With 5 nodes, if 3 die, the remaining 2 can't make progress. Writes are unavailable until a quorum is restored — either nodes come back or you bring up replacements (which is operationally fragile during failure scenarios). This is fundamental to majority-quorum consensus.</p>
+</div>
+<div class="q">
+<p>Q: How is etcd different from ZooKeeper?</p>
+</div>
+<div class="a">
+<p>A: Same problem space (distributed coordination, leader election, KV store), different generations. ZooKeeper uses Zab (Paxos variant), is from the Hadoop era, has a more complex API. etcd uses Raft, is newer (founded 2013), has a simpler HTTP/gRPC API, and is the default choice for newer deployments — Kubernetes' control plane uses etcd. <strong>Functionally similar; etcd is easier to operate.</strong></p>
+</div>
+</div>
+<h1>Three myths to dynamite</h1>
+<div class="myth">
+<p><strong>"CAP says you can pick any two of consistency, availability, and partition tolerance."</strong></p>
+<p>Misleading. Partitions are not optional in real distributed systems — they happen whether you want them to or not. The actual choice is: <em>during</em> a partition, do you sacrifice consistency or availability? Brewer himself published a follow-up paper clarifying this. Senior engineers state CAP correctly.</p>
+</div>
+<div class="myth">
+<p><strong>"NoSQL = AP. SQL = CP."</strong></p>
+<p>False. The choice is per-system, sometimes per-operation, not per-paradigm. Cassandra at <code>ALL</code> consistency is more CP than Postgres with async replication. DynamoDB with <code>ConsistentRead=true</code> is CP for that read. The label "AP" or "CP" is a vocabulary for talking about specific moments, not a permanent system characteristic.</p>
+</div>
+<div class="myth">
+<p><strong>"More replicas = more reliable."</strong></p>
+<p>Half-true. More replicas tolerate more failures <em>if</em> you keep majority quorum requirements. But each additional replica adds latency to every quorum-based write (the slowest of N must respond). At some point, the marginal reliability gain isn't worth the latency cost. <strong>5 nodes is the sweet spot</strong> for most production consensus deployments.</p>
+</div>
+<h1>Interview gotchas</h1>
+<div class="gotcha">
+<p><strong>Stating CAP as "pick two."</strong> That's the buzz-version. The accurate version is "during a partition, choose between consistency and availability." Senior engineers state it correctly.</p>
+</div>
+<div class="gotcha">
+<p><strong>Conflating CAP-Consistency with ACID-Consistency.</strong> Same letter, different concepts. CAP-C is linearizability; ACID-C is "constraints hold." Don't say "we trade ACID for AP" — that's a category error.</p>
+</div>
+<div class="gotcha">
+<p><strong>Recommending 2-node "HA" clusters.</strong> Quorum of 2 means any failure is total failure. 3 nodes is the floor for meaningful HA via consensus.</p>
+</div>
+<div class="gotcha">
+<p><strong>Not knowing PACELC.</strong> CAP only describes partition behavior. PACELC adds the "no partition" trade-off (latency vs consistency). More useful for real architecture conversations.</p>
+</div>
+<div class="gotcha">
+<p><strong>Trying to derive Paxos in an interview.</strong> It's mathematically equivalent to Raft but famously hard to explain. "Paxos works, Raft is the modern reformulation that's easier to implement" is enough. Don't dig deeper unless you've actually implemented one.</p>
+</div>
+<h1>Mock interview</h1>
+<div class="mock-interview">
+<div class="turn q">
+<p>We're designing a new service. The architect says "we need an AP database because we want availability." How would you respond?</p>
+</div>
+<div class="turn a">
+<p>I'd want to unpack that statement before agreeing. A few questions:</p>
+<p><strong>One — what does "availability" mean in this context?</strong></p>
+<p>CAP-availability is "every request gets a non-error response, possibly stale." Most engineering conversations actually mean "the service stays up" — which a CP system can absolutely deliver during normal operation. CP only refuses requests <em>during</em> a partition, and then only for some operations.</p>
+<p>If we need 99.99% uptime, both AP and CP can deliver — neither is automatically better.</p>
+<p><strong>Two — what data are we storing?</strong></p>
+<p>If it's user-facing transactional data (orders, user accounts, inventory), AP introduces real failure modes. Two users in different regions might each "successfully" buy the last item; eventual reconciliation has to pick a winner, and the loser sees their order silently fail. That's worse than a 30-second outage during a partition.</p>
+<p>If it's eventually-consistent data by nature (counters, logs, social feed) — AP is fine and possibly correct.</p>
+<p><strong>Three — what's our actual partition rate?</strong></p>
+<p>In a single cloud region, partitions are rare — measured in minutes per year. Across regions, partitions are real and last hours. The CAP trade-off matters more for cross-region systems than single-region.</p>
+<p><strong>Four — can we make a per-operation choice?</strong></p>
+<p>Most modern systems let you pick consistency level per operation. Maybe writes are CP (we want them confirmed) and analytical reads are AP (eventual is fine). The system doesn't have to be all one thing.</p>
+<p><strong>My instinct:</strong> "we need AP" is often a slogan for "we want reliability" without specifying what's being given up. I'd push for clarity on the actual workload before accepting AP as the answer.</p>
+</div>
+<div class="commentary">
+<p>Doesn't dismiss the architect — asks clarifying questions. Distinguishes CAP-availability from "uptime." Names the per-operation choice as the modern reality. The "slogan for reliability" framing is the senior reflex.</p>
+</div>
+<div class="turn q">
+<p>We're going to deploy etcd as a configuration store for our microservices. How many nodes should we run?</p>
+</div>
+<div class="turn a">
+<p>For production: <strong>5 nodes</strong>, ideally across 3 availability zones (3+1+1 or similar).</p>
+<p>The reasoning:</p>
+<p><strong>Why not 3?</strong> 3 nodes tolerates 1 failure. In a managed cloud environment, you can lose a node for maintenance + accidentally a second one in the same window. With 3 nodes, that means total cluster unavailability during the rare maintenance-plus-failure case.</p>
+<p><strong>Why not 7?</strong> 7 nodes tolerates 3 failures, but every write must reach quorum (4 of 7). Latency increases (slowest of 4 dominates). For etcd, writes are usually small and fast — but at 7 nodes you're paying latency cost without much practical reliability gain.</p>
+<p><strong>Why 5?</strong> Tolerates 2 failures. Quorum is 3 of 5. Survives one maintenance + one accidental failure. Write latency bounded by the slowest of 3 acks. <strong>The sweet spot for most production consensus.</strong></p>
+<p><strong>AZ distribution:</strong> 5 nodes in a single AZ is foolish — AZ failure takes down the whole cluster. Spread across 3 AZs minimum. Common patterns:
+- 2-2-1 (5 nodes, 3 AZs): tolerates 1 AZ failure if it's the AZ with 2.
+- Better: 5 nodes across 5 AZs if available, 3-1-1 across 3 AZs as a fallback.</p>
+<p><strong>Other considerations:</strong>
+- Use SSD-backed disks. etcd is sensitive to disk latency (every write goes through fsync).
+- Don't run other services on the same boxes. etcd needs predictable resources.
+- Monitor leader election rate — frequent re-elections suggest network or disk problems.</p>
+<p>The senior framing: <strong>5 nodes across 3+ AZs is the default for production consensus</strong>, with deviation requiring explicit justification.</p>
+</div>
+<div class="commentary">
+<p>Concrete numbers and reasoning. Mentions specific operational details (SSD disks, AZ distribution patterns). The "default with deviation requiring justification" framing is the senior approach.</p>
+</div>
+<div class="turn q">
+<p>Cassandra has consistency levels: ONE, QUORUM, LOCAL_QUORUM, ALL. We're running cross-region. How would you choose?</p>
+</div>
+<div class="turn a">
+<p>The choice depends on the consistency vs latency vs availability trade-off, <em>per operation</em>.</p>
+<p><strong>LOCAL_QUORUM</strong> — quorum within a single data center. Good default for cross-region Cassandra: writes durable in one region, reads from one region, doesn't pay cross-region latency. <strong>Most user-facing operations should use LOCAL_QUORUM.</strong></p>
+<p><strong>EACH_QUORUM</strong> — quorum in <em>every</em> data center. Strongest consistency across regions; expensive (every write pays cross-region latency to get quorum in each DC). Used for the rare operation that absolutely must be globally consistent.</p>
+<p><strong>QUORUM</strong> — global quorum across all DCs. Less precise than EACH_QUORUM (might leave one DC behind), still pays cross-region latency. Rarely the right answer.</p>
+<p><strong>ALL</strong> — every replica acks. Even worse than EACH_QUORUM for availability — any one slow replica blocks. Almost never used in production.</p>
+<p><strong>ONE</strong> — single replica acks. Fast but loses read-your-writes if combined with single-replica reads. Only for genuinely best-effort data.</p>
+<p><strong>A typical pattern:</strong>
+- <strong>Most writes</strong>: <code>LOCAL_QUORUM</code>. Local data center quorum, cross-region async replication.
+- <strong>Most reads</strong>: <code>LOCAL_QUORUM</code>. Same data center.
+- <strong>"I just made this update, I want to see it immediately"</strong>: read with <code>LOCAL_QUORUM</code> from the local DC. As long as user is sticky to one DC, read-your-writes works.
+- <strong>Cross-region critical operations</strong> (rare): <code>EACH_QUORUM</code> for those specific writes.
+- <strong>Counters, logs</strong>: maybe <code>ONE</code> for raw throughput, accepting eventual consistency.</p>
+<p>The senior pattern: <strong>default to LOCAL_QUORUM, escalate per operation when justified.</strong> Don't pick a global setting that's overkill for 99% of operations.</p>
+</div>
+<div class="commentary">
+<p>Walks through each level with concrete trade-offs. The per-operation framing is the modern reality. Specific user-facing patterns. "Don't pick a global setting that's overkill" is the senior heuristic.</p>
+</div>
+<div class="turn q">
+<p>Last one. A junior engineer says "we need consensus, so we should use Paxos because it's the original." What do you tell them?</p>
+</div>
+<div class="turn a">
+<p>The junior is technically right but practically wrong, and I'd want to redirect their thinking gently.</p>
+<p><strong>The technical bit:</strong></p>
+<p>Paxos is older (1989) and Raft is newer (2014). Both solve the same fundamental problem — distributed consensus among nodes that can fail. They're mathematically equivalent in capability.</p>
+<p>The difference is <strong>understandability</strong>. Raft was specifically designed to be teachable and implementable correctly. Paxos famously is so hard to implement correctly that papers like "Paxos Made Live" exist — Google describing the <em>years</em> it took to ship a working Paxos implementation. The standard joke: "Paxos is so hard to understand that people who think they understand it are usually wrong."</p>
+<p><strong>The practical bit:</strong></p>
+<p>If you're building a system, you don't implement Paxos or Raft from scratch. You use a battle-tested implementation:
+- <strong>etcd</strong> for KV/coordination: uses Raft.
+- <strong>CockroachDB / TiKV</strong> for distributed databases: use Raft.
+- <strong>MongoDB</strong> since 4.0: uses Raft.
+- <strong>Apache Kafka</strong> (newer KRaft mode): uses Raft.
+- <strong>ZooKeeper</strong> for legacy systems: uses Zab (Paxos variant).
+- <strong>Google Spanner / Chubby</strong>: use Paxos (because they were built before Raft existed).</p>
+<p><strong>The pattern</strong>: new systems use Raft; older systems use Paxos because they've already invested in it.</p>
+<p><strong>My advice to the junior</strong>: don't pick the <em>algorithm</em> — pick the <em>system</em> that already implements it well. If you need consensus, choose etcd or Consul or a managed equivalent. If you need a distributed database, choose one that handles consensus internally. <strong>The job of "use consensus correctly" is solved by the system you choose, not by you implementing the algorithm.</strong></p>
+<p>The deeper lesson: <strong>for almost everything, you don't write the algorithm — you compose the systems that wrote it.</strong> This applies to consensus, to crypto, to compilers. Knowing what the algorithms do conceptually is essential. Knowing the right system to delegate to is more valuable than knowing the algorithm by heart.</p>
+</div>
+<div class="commentary">
+<p>Doesn't shame the junior but redirects. Names specific systems by name to ground the abstract discussion. The closing — "compose the systems that wrote it" — is the senior framing for engineering pragmatism.</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<h3>CAP, Quorum &amp; Consensus — One Page</h3>
+<h4>CAP, stated correctly</h4>
+<p><strong>During a network partition</strong>, choose between Consistency (linearizability) and Availability (every request gets a non-error response).</p>
+<p><strong>Partition tolerance is not optional</strong> — partitions happen. The choice is what to do <em>during</em> one.</p>
+<p>CAP-Consistency ≠ ACID-Consistency. Different concepts, same letter.</p>
+<h4>PACELC (better framework)</h4>
+<ul>
+<li><strong>PA / PC</strong>: during partition, choose A or C.</li>
+<li><strong>EL / EC</strong>: even when no partition, choose Latency or Consistency.</li>
+</ul>
+<h4>Quorum math</h4>
+<ul>
+<li>N replicas, W writes ack, R reads consult.</li>
+<li><strong>W + R &gt; N</strong> guarantees overlap → strong consistency.</li>
+<li>Most production: W = R = ⌈(N+1)/2⌉ (majority).</li>
+</ul>
+<h4>Why majority?</h4>
+<p>Two simultaneous majority groups must overlap by ≥1 node. Overlap prevents conflicting decisions. Majority is the floor for consistent agreement.</p>
+<h4>Cluster sizing</h4>
+<ul>
+<li>3 nodes: tolerates 1 failure.</li>
+<li>5 nodes: tolerates 2 failures (the production sweet spot).</li>
+<li>7 nodes: tolerates 3, marginal benefit, more latency.</li>
+<li><strong>Even-sized clusters are anti-patterns</strong> (50/50 split = no quorum).</li>
+<li><strong>2-node "HA" is not real HA</strong> — quorum requires both alive.</li>
+</ul>
+<h4>Consensus algorithms</h4>
+<ul>
+<li><strong>Paxos (1989)</strong>: original, mathematically robust, famously hard to implement.</li>
+<li><strong>Raft (2014)</strong>: clean reformulation, designed for understandability. Modern default.</li>
+<li><strong>Both</strong>: leader election, log replication, majority-quorum safety.</li>
+<li><strong>FLP impossibility</strong>: pure async consensus is impossible without timing assumptions. Real algorithms use timeouts.</li>
+</ul>
+<h4>Production usage</h4>
+<ul>
+<li>etcd, Consul, MongoDB, CockroachDB, Kafka (KRaft) — Raft.</li>
+<li>ZooKeeper — Zab (Paxos variant).</li>
+<li>Google Spanner, Chubby — Paxos.</li>
+</ul>
+<h4>Cassandra consistency levels (per-operation)</h4>
+<ul>
+<li>ONE: any 1 replica acks.</li>
+<li>QUORUM: majority globally.</li>
+<li>LOCAL_QUORUM: majority within DC. Sweet spot for cross-region.</li>
+<li>EACH_QUORUM: majority in every DC.</li>
+<li>ALL: every replica acks.</li>
+</ul>
+<h4>Split-brain prevention</h4>
+<p>Quorum-based promotion. The minority side gives up availability to preserve consistency. Combined with fencing tokens / STONITH for old-leader prevention.</p>
+<h4>The 30-second verbal answer</h4>
+<p>"CAP says during a network partition, you choose between consistency and availability — partitions aren't optional. PACELC extends this with a no-partition latency-vs-consistency trade. Quorum is the math: W+R&gt;N gives strong consistency. Production consensus uses Raft (modern, e.g. etcd) or Paxos (older, e.g. Spanner) — both are majority-based. The sweet spot is 5 nodes across 3 AZs. Don't run 2-node HA — it's not."</p>
+<h4>Always pair with</h4>
+<p>Replication (Module 10), CDC (Module 11), 2PC and sagas (Module 13), partitioning (Module 15), HA, quorum, split-brain prevention, PACELC, linearizability.</p>
+</div>
+<h1>What's next</h1>
+<p>You can now state CAP correctly, articulate the per-operation consistency model, do the quorum math, and explain when to reach for a Raft-based system (modern default) vs Paxos (legacy reasons). The vocabulary of distributed agreement is in your hands.</p>
+<p><strong>Module 13 covers distributed transactions:</strong> 2PC, 3PC, sagas, idempotency. The patterns for "do this thing across services that can each fail independently." We'll see why 2PC is the canonical answer and why almost no modern system actually uses it — because the operational pain of holding locks across services is worse than the alternative (sagas with compensating actions).</p>
+<p><strong>Module 14</strong> then dives into schema evolution and schema registries — how to change the structure of your data without breaking every consumer.</p>
+<p>Get water. Consensus is in your toolkit. Distributed transactions extend it across services.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="11_cdc_logical_geo.html" class="prev">&laquo; 11 CDC</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="13_distributed_txns_sagas.html" class="next">13 Dist Txns &raquo;</a>
+</nav>
+</body>
+</html>

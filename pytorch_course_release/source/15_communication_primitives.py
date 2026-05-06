@@ -1,0 +1,492 @@
+#!/usr/bin/env python3
+"""Module 15: Communication primitives — full HF vibe."""
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent))
+from build_module import emit
+
+BODY = r"""
+<div class="module-header">
+  <div class="module-tag">Part VI · Module 15</div>
+  <h1 class="module-title">Communication <em>primitives</em></h1>
+  <p class="module-sub">— the four collective ops that every distributed training scheme is built on, why ring all-reduce is bandwidth-optimal, and how to read a "this is communication-bound" trace</p>
+</div>
+
+<p>Welcome to Part VI. We're done squeezing single-GPU performance — the next four modules are about what happens when you have <em>many</em> GPUs and they need to agree on something.</p>
+
+<p>The whole story of distributed deep learning is built on five or six communication primitives. DDP is "all-reduce after backward" (M16). ZeRO/FSDP is "all-gather params, reduce-scatter grads" (M17). Tensor parallelism is "all-reduce activations inside layers" (M18). Pipeline parallelism is "send/recv between stages" (M18 also). Once you understand the primitives, every distributed scheme is just a different schedule of them.</p>
+
+<div class="keyidea">
+The four collective ops you'll meet over and over: <strong>all-reduce</strong> (sum each tensor across ranks; everyone gets the sum), <strong>all-gather</strong> (concatenate each rank's tensor; everyone gets the concatenation), <strong>reduce-scatter</strong> (sum across ranks, but each rank only keeps its slice), and <strong>broadcast</strong> (one rank sends to everyone). Every distributed training scheme is a clever scheduling of these. The cost of each is dominated by <em>bytes transferred per rank</em>, and the optimal algorithm — ring all-reduce — achieves <code>2(N-1)/N · message_size</code> per rank, asymptotically optimal.
+</div>
+
+<h2>Two new players</h2>
+
+<div class="character" style="--c: #1f5f5b;">
+  <div class="avatar" style="background: #1f5f5b; color: #fff;">R</div>
+  <div>
+    <p class="who">Rank</p>
+    <p class="name">"I'm a process with a number. I see the world as my slice of the work."</p>
+    <p class="says">In a distributed run with N GPUs, there are N of me, numbered 0 through N-1. We each have our own copy of the model (or a slice — depends on the scheme). We each load our own data shard. We process our own forward pass. The only time I talk to my siblings is during a <em>collective</em> — and it costs me real seconds of bandwidth, so I try to do it rarely and in big chunks.</p>
+  </div>
+</div>
+
+<div class="character" style="--c: #c1502e;">
+  <div class="avatar" style="background: #c1502e; color: #fff;">⊕</div>
+  <div>
+    <p class="who">Collective</p>
+    <p class="name">"I'm an op every Rank participates in. We all enter, none of us leaves until the result is everywhere it needs to be."</p>
+    <p class="says">I'm <code>all_reduce</code>, <code>all_gather</code>, <code>reduce_scatter</code>, <code>broadcast</code>, <code>scatter</code>, <code>gather</code>, <code>all_to_all</code>. I'm a synchronization point — every Rank must call me, in the same order, with matching shapes. Skip me on one rank and the others wait forever. Call me with the wrong shape and you get a deadlock or a memory corruption. I'm strict because I have to be. Get me right, and I scale to thousands of GPUs.</p>
+  </div>
+</div>
+
+<h2>The four primitives, in pictures</h2>
+
+<p>Each primitive is defined by what each rank starts with and what each rank ends with. Read the diagrams literally — every column is one rank, every row is the data on that rank before/after.</p>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 740 460" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs>
+    <marker id="arrC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f5f5b"/>
+    </marker>
+  </defs>
+  <text x="370" y="22" font-size="14" font-weight="700" fill="#1a1612" text-anchor="middle">Four collectives — what each rank has before and after</text>
+
+  <!-- ====== Broadcast ====== -->
+  <text x="20" y="55" font-size="12" font-weight="700" fill="#c1502e">① Broadcast (1 → many)</text>
+  <g transform="translate(20, 65)">
+    <text x="-5" y="14" font-size="10" fill="#6b5d4f" text-anchor="end">before</text>
+    <rect x="0"   y="3" width="60" height="22" fill="#fcecec" stroke="#c1502e" stroke-width="1.5"/><text x="30" y="18" text-anchor="middle" font-size="11" fill="#1a1612">A</text>
+    <rect x="70"  y="3" width="60" height="22" fill="#ede2cc" stroke="#6b5d4f" stroke-width="1.5"/><text x="100" y="18" text-anchor="middle" font-size="11" fill="#6b5d4f">·</text>
+    <rect x="140" y="3" width="60" height="22" fill="#ede2cc" stroke="#6b5d4f" stroke-width="1.5"/><text x="170" y="18" text-anchor="middle" font-size="11" fill="#6b5d4f">·</text>
+    <rect x="210" y="3" width="60" height="22" fill="#ede2cc" stroke="#6b5d4f" stroke-width="1.5"/><text x="240" y="18" text-anchor="middle" font-size="11" fill="#6b5d4f">·</text>
+
+    <text x="-5" y="50" font-size="10" fill="#6b5d4f" text-anchor="end">after</text>
+    <rect x="0"   y="38" width="60" height="22" fill="#fcecec" stroke="#c1502e" stroke-width="1.5"/><text x="30" y="53" text-anchor="middle" font-size="11" fill="#1a1612">A</text>
+    <rect x="70"  y="38" width="60" height="22" fill="#fcecec" stroke="#c1502e" stroke-width="1.5"/><text x="100" y="53" text-anchor="middle" font-size="11" fill="#1a1612">A</text>
+    <rect x="140" y="38" width="60" height="22" fill="#fcecec" stroke="#c1502e" stroke-width="1.5"/><text x="170" y="53" text-anchor="middle" font-size="11" fill="#1a1612">A</text>
+    <rect x="210" y="38" width="60" height="22" fill="#fcecec" stroke="#c1502e" stroke-width="1.5"/><text x="240" y="53" text-anchor="middle" font-size="11" fill="#1a1612">A</text>
+
+    <text x="0" y="78" font-size="10" fill="#6b5d4f">rank 0</text><text x="70" y="78" font-size="10" fill="#6b5d4f">rank 1</text><text x="140" y="78" font-size="10" fill="#6b5d4f">rank 2</text><text x="210" y="78" font-size="10" fill="#6b5d4f">rank 3</text>
+    <text x="290" y="35" font-size="10" fill="#1a1612" font-style="italic">"sender's data goes</text>
+    <text x="290" y="50" font-size="10" fill="#1a1612" font-style="italic">to every rank"</text>
+  </g>
+
+  <!-- ====== All-Reduce ====== -->
+  <text x="400" y="55" font-size="12" font-weight="700" fill="#1f5f5b">② All-Reduce (sum, all rks)</text>
+  <g transform="translate(400, 65)">
+    <text x="-5" y="14" font-size="10" fill="#6b5d4f" text-anchor="end">before</text>
+    <rect x="0"   y="3" width="60" height="22" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="1.5"/><text x="30" y="18" text-anchor="middle" font-size="11" fill="#1a1612">A</text>
+    <rect x="70"  y="3" width="60" height="22" fill="#fff8a8" stroke="#1f5f5b" stroke-width="1.5"/><text x="100" y="18" text-anchor="middle" font-size="11" fill="#1a1612">B</text>
+    <rect x="140" y="3" width="60" height="22" fill="#ffd5dc" stroke="#1f5f5b" stroke-width="1.5"/><text x="170" y="18" text-anchor="middle" font-size="11" fill="#1a1612">C</text>
+    <rect x="210" y="3" width="60" height="22" fill="#d3e9f5" stroke="#1f5f5b" stroke-width="1.5"/><text x="240" y="18" text-anchor="middle" font-size="11" fill="#1a1612">D</text>
+
+    <text x="-5" y="50" font-size="10" fill="#6b5d4f" text-anchor="end">after</text>
+    <rect x="0"   y="38" width="60" height="22" fill="#fff8a8" stroke="#1f5f5b" stroke-width="2"/><text x="30" y="53" text-anchor="middle" font-size="10" fill="#1a1612">A+B+C+D</text>
+    <rect x="70"  y="38" width="60" height="22" fill="#fff8a8" stroke="#1f5f5b" stroke-width="2"/><text x="100" y="53" text-anchor="middle" font-size="10" fill="#1a1612">A+B+C+D</text>
+    <rect x="140" y="38" width="60" height="22" fill="#fff8a8" stroke="#1f5f5b" stroke-width="2"/><text x="170" y="53" text-anchor="middle" font-size="10" fill="#1a1612">A+B+C+D</text>
+    <rect x="210" y="38" width="60" height="22" fill="#fff8a8" stroke="#1f5f5b" stroke-width="2"/><text x="240" y="53" text-anchor="middle" font-size="10" fill="#1a1612">A+B+C+D</text>
+
+    <text x="0" y="78" font-size="10" fill="#6b5d4f">rank 0</text><text x="70" y="78" font-size="10" fill="#6b5d4f">rank 1</text><text x="140" y="78" font-size="10" fill="#6b5d4f">rank 2</text><text x="210" y="78" font-size="10" fill="#6b5d4f">rank 3</text>
+  </g>
+
+  <!-- ====== All-Gather ====== -->
+  <text x="20" y="195" font-size="12" font-weight="700" fill="#d4a017">③ All-Gather (concat, all)</text>
+  <g transform="translate(20, 205)">
+    <text x="-5" y="14" font-size="10" fill="#6b5d4f" text-anchor="end">before</text>
+    <rect x="0"   y="3" width="60" height="22" fill="#fff5d8" stroke="#d4a017" stroke-width="1.5"/><text x="30" y="18" text-anchor="middle" font-size="11" fill="#1a1612">A</text>
+    <rect x="70"  y="3" width="60" height="22" fill="#fff5d8" stroke="#d4a017" stroke-width="1.5"/><text x="100" y="18" text-anchor="middle" font-size="11" fill="#1a1612">B</text>
+    <rect x="140" y="3" width="60" height="22" fill="#fff5d8" stroke="#d4a017" stroke-width="1.5"/><text x="170" y="18" text-anchor="middle" font-size="11" fill="#1a1612">C</text>
+    <rect x="210" y="3" width="60" height="22" fill="#fff5d8" stroke="#d4a017" stroke-width="1.5"/><text x="240" y="18" text-anchor="middle" font-size="11" fill="#1a1612">D</text>
+
+    <text x="-5" y="50" font-size="10" fill="#6b5d4f" text-anchor="end">after</text>
+    <rect x="0"   y="38" width="60" height="22" fill="#fff5d8" stroke="#d4a017" stroke-width="2"/><text x="30" y="53" text-anchor="middle" font-size="11" fill="#1a1612">A|B|C|D</text>
+    <rect x="70"  y="38" width="60" height="22" fill="#fff5d8" stroke="#d4a017" stroke-width="2"/><text x="100" y="53" text-anchor="middle" font-size="11" fill="#1a1612">A|B|C|D</text>
+    <rect x="140" y="38" width="60" height="22" fill="#fff5d8" stroke="#d4a017" stroke-width="2"/><text x="170" y="53" text-anchor="middle" font-size="11" fill="#1a1612">A|B|C|D</text>
+    <rect x="210" y="38" width="60" height="22" fill="#fff5d8" stroke="#d4a017" stroke-width="2"/><text x="240" y="53" text-anchor="middle" font-size="11" fill="#1a1612">A|B|C|D</text>
+
+    <text x="0" y="78" font-size="10" fill="#6b5d4f">rank 0</text><text x="70" y="78" font-size="10" fill="#6b5d4f">rank 1</text><text x="140" y="78" font-size="10" fill="#6b5d4f">rank 2</text><text x="210" y="78" font-size="10" fill="#6b5d4f">rank 3</text>
+    <text x="290" y="35" font-size="10" fill="#1a1612" font-style="italic">"each rank's piece</text>
+    <text x="290" y="50" font-size="10" fill="#1a1612" font-style="italic">becomes everyone's whole"</text>
+  </g>
+
+  <!-- ====== Reduce-Scatter ====== -->
+  <text x="400" y="195" font-size="12" font-weight="700" fill="#b85a6c">④ Reduce-Scatter (sum then split)</text>
+  <g transform="translate(400, 205)">
+    <text x="-5" y="14" font-size="10" fill="#6b5d4f" text-anchor="end">before</text>
+    <rect x="0"   y="3" width="60" height="22" fill="#ffd5dc" stroke="#b85a6c" stroke-width="1.5"/><text x="30" y="18" text-anchor="middle" font-size="10" fill="#1a1612">[a₀ a₁ a₂ a₃]</text>
+    <rect x="70"  y="3" width="60" height="22" fill="#ffd5dc" stroke="#b85a6c" stroke-width="1.5"/><text x="100" y="18" text-anchor="middle" font-size="10" fill="#1a1612">[b₀ b₁ b₂ b₃]</text>
+    <rect x="140" y="3" width="60" height="22" fill="#ffd5dc" stroke="#b85a6c" stroke-width="1.5"/><text x="170" y="18" text-anchor="middle" font-size="10" fill="#1a1612">[c₀ c₁ c₂ c₃]</text>
+    <rect x="210" y="3" width="60" height="22" fill="#ffd5dc" stroke="#b85a6c" stroke-width="1.5"/><text x="240" y="18" text-anchor="middle" font-size="10" fill="#1a1612">[d₀ d₁ d₂ d₃]</text>
+
+    <text x="-5" y="50" font-size="10" fill="#6b5d4f" text-anchor="end">after</text>
+    <rect x="0"   y="38" width="60" height="22" fill="#ffd5dc" stroke="#b85a6c" stroke-width="2"/><text x="30" y="53" text-anchor="middle" font-size="10" fill="#1a1612">a₀+b₀+c₀+d₀</text>
+    <rect x="70"  y="38" width="60" height="22" fill="#ffd5dc" stroke="#b85a6c" stroke-width="2"/><text x="100" y="53" text-anchor="middle" font-size="10" fill="#1a1612">a₁+b₁+c₁+d₁</text>
+    <rect x="140" y="38" width="60" height="22" fill="#ffd5dc" stroke="#b85a6c" stroke-width="2"/><text x="170" y="53" text-anchor="middle" font-size="10" fill="#1a1612">a₂+b₂+c₂+d₂</text>
+    <rect x="210" y="38" width="60" height="22" fill="#ffd5dc" stroke="#b85a6c" stroke-width="2"/><text x="240" y="53" text-anchor="middle" font-size="10" fill="#1a1612">a₃+b₃+c₃+d₃</text>
+
+    <text x="0" y="78" font-size="10" fill="#6b5d4f">rank 0</text><text x="70" y="78" font-size="10" fill="#6b5d4f">rank 1</text><text x="140" y="78" font-size="10" fill="#6b5d4f">rank 2</text><text x="210" y="78" font-size="10" fill="#6b5d4f">rank 3</text>
+  </g>
+
+  <!-- Identities -->
+  <text x="20" y="335" font-size="13" font-weight="700" fill="#1a1612">Two key identities to memorize:</text>
+
+  <g transform="translate(40, 350)">
+    <rect x="0" y="0" width="690" height="28" fill="#fff8a8" stroke="#1a1612" stroke-width="1"/>
+    <text x="345" y="18" text-anchor="middle" font-size="13" fill="#1a1612">all_reduce  ≡  reduce_scatter  +  all_gather</text>
+  </g>
+  <g transform="translate(40, 385)">
+    <rect x="0" y="0" width="690" height="28" fill="#d4ecc8" stroke="#1a1612" stroke-width="1"/>
+    <text x="345" y="18" text-anchor="middle" font-size="13" fill="#1a1612">all_gather  ≡  N broadcasts (one per rank)  —  but cheaper as one collective</text>
+  </g>
+
+  <text x="370" y="445" font-family="'Caveat', cursive" font-size="20" fill="#c1502e" text-anchor="middle">FSDP exploits identity #1: shard params, all-gather to compute, reduce-scatter the grads</text>
+</svg>
+</div>
+
+<p>Read each panel. The "before" row shows what each rank starts with; the "after" row shows what each rank ends with. The colors are the same within a panel where the data has the same meaning.</p>
+
+<p>Spend ten seconds on each:</p>
+
+<ul>
+  <li><strong>Broadcast</strong>: one rank has data, the rest don't, after — everyone has it. The simplest collective. <em>Used at the start of training to sync the initial weights from rank 0 to all others.</em></li>
+  <li><strong>All-reduce</strong>: every rank has different data. After — everyone has the sum (or other reduction op: max, min, mean). <em>The DDP gradient sync.</em></li>
+  <li><strong>All-gather</strong>: every rank has its own slice. After — everyone has the concatenation of all slices. <em>FSDP uses this to materialize a sharded parameter for one layer's forward.</em></li>
+  <li><strong>Reduce-scatter</strong>: every rank has the same shape, broken into N chunks. After — each rank has only <em>its</em> chunk, summed across all ranks. <em>FSDP uses this for the gradient reduction.</em></li>
+</ul>
+
+<p>The two identities at the bottom of the diagram are worth memorizing. <strong>All-reduce equals reduce-scatter followed by all-gather</strong> — and this is exactly how NCCL implements ring all-reduce internally. <strong>FSDP/ZeRO-3 exploits this identity</strong>: instead of doing the full all-reduce, you split the work and only do the reduce-scatter for gradients (since you only need your slice anyway), saving bandwidth.</p>
+
+<h2>Ring all-reduce: why it's bandwidth-optimal</h2>
+
+<p>The naive all-reduce is "everyone sends to rank 0; rank 0 sums; rank 0 broadcasts back." That works but the bandwidth at rank 0 is O(N × M) — every rank's full message goes through it. For 1024 GPUs, this is unworkable.</p>
+
+<p>The trick: arrange ranks in a logical ring. Pass the data around the ring in N-1 steps, summing as it goes. Then pass the summed result around for another N-1 steps so everyone has the final answer. <em>Each rank only ever sends and receives <code>M/N</code> bytes per step</em>, where M is the message size. Total per-rank traffic: <code>2(N-1)/N × M</code>, which approaches <code>2M</code> as N grows. Independent of N. That's bandwidth-optimal.</p>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 740 320" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c1502e"/>
+    </marker>
+  </defs>
+  <text x="370" y="22" font-size="14" font-weight="700" fill="#1a1612" text-anchor="middle">Ring all-reduce: each rank sends only M/N per step</text>
+
+  <!-- Ring of 4 nodes -->
+  <text x="135" y="55" font-size="12" font-weight="700" fill="#1a1612" text-anchor="middle">step k of N-1: reduce-scatter phase</text>
+  <g transform="translate(50, 70)">
+    <!-- 4 ranks in a ring -->
+    <circle cx="80"  cy="40"  r="30" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="2"/>
+    <text x="80"  y="45" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1612">R0</text>
+
+    <circle cx="170" cy="100" r="30" fill="#fff8a8" stroke="#c1502e" stroke-width="2"/>
+    <text x="170" y="105" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1612">R1</text>
+
+    <circle cx="80"  cy="160" r="30" fill="#ffd5dc" stroke="#b85a6c" stroke-width="2"/>
+    <text x="80"  y="165" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1612">R2</text>
+
+    <circle cx="-10" cy="100" r="30" fill="#d3e9f5" stroke="#133e3b" stroke-width="2"/>
+    <text x="-10" y="105" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1612">R3</text>
+
+    <!-- arrows: each sends 1/4 of message clockwise -->
+    <path d="M 105 55 Q 145 65 152 85" stroke="#c1502e" stroke-width="2" fill="none" marker-end="url(#arrR)"/>
+    <path d="M 165 130 Q 130 150 105 158" stroke="#c1502e" stroke-width="2" fill="none" marker-end="url(#arrR)"/>
+    <path d="M 55 158 Q 15 150 5  130" stroke="#c1502e" stroke-width="2" fill="none" marker-end="url(#arrR)"/>
+    <path d="M 5  85  Q 15 65 55 55"   stroke="#c1502e" stroke-width="2" fill="none" marker-end="url(#arrR)"/>
+
+    <!-- chunk labels on arrows -->
+    <text x="135" y="65" font-size="9" fill="#c1502e">a₀+r3a₀</text>
+    <text x="140" y="148" font-size="9" fill="#c1502e">b₁+r0b₁</text>
+    <text x="20" y="148" font-size="9" fill="#c1502e">c₂+r1c₂</text>
+    <text x="20" y="65" font-size="9" fill="#c1502e">d₃+r2d₃</text>
+  </g>
+
+  <!-- Right side: math -->
+  <g transform="translate(350, 70)">
+    <text x="0" y="14" font-size="13" font-weight="700" fill="#1a1612">After N-1 = 3 reduce-scatter steps:</text>
+    <text x="0" y="34" font-size="11" fill="#1a1612">  rank 0 has the FULL SUM of chunk 0 (= a₀+b₀+c₀+d₀)</text>
+    <text x="0" y="50" font-size="11" fill="#1a1612">  rank 1 has the FULL SUM of chunk 1</text>
+    <text x="0" y="66" font-size="11" fill="#1a1612">  rank 2 has the FULL SUM of chunk 2</text>
+    <text x="0" y="82" font-size="11" fill="#1a1612">  rank 3 has the FULL SUM of chunk 3</text>
+
+    <text x="0" y="110" font-size="13" font-weight="700" fill="#1a1612">Then N-1 all-gather steps to broadcast:</text>
+    <text x="0" y="130" font-size="11" fill="#1a1612">  every rank now has the FULL SUM of every chunk</text>
+    <text x="0" y="146" font-size="11" fill="#1a1612">  → done!</text>
+
+    <rect x="0" y="170" width="370" height="60" fill="#fcecec" stroke="#c1502e" stroke-width="1.5"/>
+    <text x="185" y="190" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1612">total bytes per rank ≈ 2(N-1)/N × M</text>
+    <text x="185" y="208" text-anchor="middle" font-size="11" fill="#1a1612">≈ 2M for large N — independent of N!</text>
+    <text x="185" y="222" text-anchor="middle" font-size="10" fill="#1a1612" font-style="italic">vs naïve gather-and-broadcast: O(N × M) at the root</text>
+  </g>
+
+  <text x="370" y="295" font-family="'Caveat', cursive" font-size="20" fill="#c1502e" text-anchor="middle">this is why scaling DDP from 8 GPUs to 1024 GPUs only adds ~2× to the all-reduce</text>
+</svg>
+</div>
+
+<p>The result: doubling N barely changes the per-rank cost. This is the bandwidth-optimality that makes large-scale training possible. NCCL implements ring all-reduce by default for medium messages; for very small or very large messages, it switches to tree-based or double-binary-tree algorithms that have different latency/bandwidth tradeoffs.</p>
+
+<h2>The PyTorch API</h2>
+
+<p>The collective ops live in <code>torch.distributed</code>. Initialization first:</p>
+
+<pre><code><span class="kw">import</span> torch.distributed <span class="kw">as</span> dist
+<span class="kw">import</span> os
+
+<span class="kw">def</span> <span class="fn">setup</span>():
+    dist.<span class="fn">init_process_group</span>(
+        backend=<span class="str">'nccl'</span>,                      <span class="com"># GPU collectives — gloo for CPU</span>
+        init_method=<span class="str">'env://'</span>,                <span class="com"># reads MASTER_ADDR, MASTER_PORT, RANK, WORLD_SIZE</span>
+    )
+    rank = dist.<span class="fn">get_rank</span>()
+    world_size = dist.<span class="fn">get_world_size</span>()
+    torch.cuda.<span class="fn">set_device</span>(rank % torch.cuda.<span class="fn">device_count</span>())
+    <span class="kw">return</span> rank, world_size
+
+<span class="kw">def</span> <span class="fn">cleanup</span>():
+    dist.<span class="fn">destroy_process_group</span>()</code></pre>
+
+<p>Each process is a <em>rank</em> in the world. The launcher (<code>torchrun</code>, see below) sets the env vars; <code>init_process_group</code> reads them. NCCL is the GPU backend; it manages the actual NIC traffic and uses NVLink between same-host GPUs when available.</p>
+
+<h3>The collectives themselves</h3>
+
+<pre><code><span class="com"># Broadcast: rank 0 sends, others receive</span>
+x = torch.<span class="fn">randn</span>(<span class="num">1024</span>, device=<span class="str">'cuda'</span>) <span class="kw">if</span> rank == <span class="num">0</span> <span class="kw">else</span> torch.<span class="fn">zeros</span>(<span class="num">1024</span>, device=<span class="str">'cuda'</span>)
+dist.<span class="fn">broadcast</span>(x, src=<span class="num">0</span>)             <span class="com"># in-place: every rank now has rank 0's data</span>
+
+<span class="com"># All-reduce: in-place, sum across all ranks</span>
+g = torch.<span class="fn">randn</span>(<span class="num">1024</span>, device=<span class="str">'cuda'</span>)
+dist.<span class="fn">all_reduce</span>(g, op=dist.ReduceOp.SUM)   <span class="com"># every rank now has the sum</span>
+
+<span class="com"># All-gather: each rank's tensor → list of tensors on every rank</span>
+local = torch.<span class="fn">randn</span>(<span class="num">256</span>, device=<span class="str">'cuda'</span>)        <span class="com"># my slice</span>
+gathered = [torch.<span class="fn">empty_like</span>(local) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(world_size)]
+dist.<span class="fn">all_gather</span>(gathered, local)            <span class="com"># gathered[i] is rank i's local tensor</span>
+
+<span class="com"># Reduce-scatter: list of tensors per rank → each rank gets one summed slice</span>
+inputs = [torch.<span class="fn">randn</span>(<span class="num">256</span>, device=<span class="str">'cuda'</span>) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(world_size)]
+out = torch.<span class="fn">empty</span>(<span class="num">256</span>, device=<span class="str">'cuda'</span>)
+dist.<span class="fn">reduce_scatter</span>(out, inputs)            <span class="com"># out = sum_i inputs_per_rank[i][my_rank]</span></code></pre>
+
+<p>Three things to note about the API. (1) Collectives are <strong>in-place by default</strong> for <code>all_reduce</code> and <code>broadcast</code> — they modify their argument tensor. (2) The dtype must match across ranks — passing fp32 on rank 0 and fp16 on rank 1 will deadlock or error. (3) The shapes must match. Both are easy to violate when conditional code paths differ across ranks.</p>
+
+<div class="warn">
+<strong>Asymmetric calls = silent hang.</strong> If rank 0 calls <code>all_reduce</code> and rank 1 forgets to (e.g., skips because of a divergent branch), every rank waits forever. NCCL has a timeout (default 30 minutes — yes, really) but the "hang" looks like training just stopped logging. Symptom: trace looks fine until step N, then nothing. Diagnosis: print rank ID at every collective call site; the rank that gets stuck is the one that didn't call. <strong>Always make sure every collective is called by every rank with matching args.</strong>
+</div>
+
+<h2>The launcher: <code>torchrun</code></h2>
+
+<p>You don't manually start N processes. Use the launcher:</p>
+
+<pre><code><span class="com"># Single node, 8 GPUs:</span>
+torchrun --nproc_per_node=<span class="num">8</span> train.py
+
+<span class="com"># Two nodes, 8 GPUs each (run on each node):</span>
+torchrun --nproc_per_node=<span class="num">8</span> --nnodes=<span class="num">2</span> --node_rank=<span class="num">0</span> \
+         --rdzv_backend=c10d --rdzv_endpoint=<span class="str">"node0:29500"</span> train.py
+
+<span class="com"># Same on node 1, but with --node_rank=1</span></code></pre>
+
+<p>What torchrun does: spawns N processes per node, sets <code>RANK</code>, <code>LOCAL_RANK</code>, <code>WORLD_SIZE</code>, <code>MASTER_ADDR</code>, <code>MASTER_PORT</code> env vars in each, then runs your script. Inside your script, you read these via <code>init_process_group(init_method='env://')</code>.</p>
+
+<p>The two ranks worth knowing:</p>
+
+<ul>
+  <li><strong>Global rank</strong> (<code>dist.get_rank()</code>): your unique ID across the whole job (0 to world_size-1).</li>
+  <li><strong>Local rank</strong> (<code>os.environ['LOCAL_RANK']</code>): your ID on this node (0 to gpus_per_node-1). Used for <code>cuda:LOCAL_RANK</code> device selection.</li>
+</ul>
+
+<p>The pattern <code>torch.cuda.set_device(int(os.environ['LOCAL_RANK']))</code> is what binds each process to its dedicated GPU. Get this wrong and multiple processes contend for the same GPU.</p>
+
+<h2>Bandwidth math: predict before you scale</h2>
+
+<p>Like memory and time before it, distributed cost is calculable. For an all-reduce of message size M bytes across N ranks on a network with bandwidth B bytes/sec:</p>
+
+<pre><code>time_per_allreduce ≈ <span class="num">2</span> × M / B               <span class="com"># for large enough N</span></code></pre>
+
+<p>Worked example. DDP all-reduces all gradients after every backward. For a 1B-param model in fp32, gradient size is 4 GB. On NVLink 4 (~600 GB/s within a node), that's <code>2 × 4 GB / 600 GB/s ≈ 13 ms</code> per step — negligible if your step takes 200 ms. On 100 Gb/s ethernet between nodes, it's <code>2 × 4 GB / 12.5 GB/s ≈ 640 ms</code> — that's eating your training time.</p>
+
+<p>This is why intra-node bandwidth (NVLink) is so much higher than inter-node (PCIe + ethernet/InfiniBand): you want all the cheap collectives to happen within a node, and only the unavoidable ones to cross the network. Modern training schemes (FSDP, hybrid sharded data parallel) are explicitly designed around this hierarchy.</p>
+
+<div class="ndq">
+<h4>About communication primitives</h4>
+
+<p class="q">Why is there a separate <code>reduce</code> when we have <code>all_reduce</code>?</p>
+<p class="a"><code>reduce</code> sums to one rank; <code>all_reduce</code> sums and gives the result to every rank. <code>reduce</code> is half the bandwidth of <code>all_reduce</code> (skips the gather phase). Useful when only one rank actually needs the result — e.g., logging from rank 0, or saving a checkpoint.</p>
+
+<p class="q">What about <code>scatter</code> and <code>gather</code>?</p>
+<p class="a"><code>scatter</code> is the inverse of <code>gather</code>: one rank has a list, scatters one element to each other rank. <code>gather</code>: every rank has data, one rank ends up with the list. They're less common in modern training (mostly subsumed by all_gather and all_to_all), but show up in some sharding schemes and in debugging.</p>
+
+<p class="q">When is <code>all_to_all</code> used?</p>
+<p class="a">In Mixture-of-Experts (M28). Each token gets routed to a specific expert on a specific rank; the routing is essentially a transpose of the data layout, which is exactly what <code>all_to_all</code> does. Also used in some tensor-parallel attention patterns.</p>
+
+<p class="q">My collective hangs intermittently. What should I check?</p>
+<p class="a">Order of the diagnosis tree: (1) Are all ranks calling the same collectives in the same order? Print rank ID at every collective. (2) Are dtypes and shapes identical across ranks? <code>print(g.dtype, g.shape)</code> right before. (3) Are you mixing CPU and CUDA tensors? NCCL only does GPU. (4) Is one rank exiting early (e.g., crashed, ran out of data)? The other ranks block forever. NCCL's <code>NCCL_TIMEOUT</code> env var lets you fail fast (set to e.g. 60 seconds for development).</p>
+
+<p class="q">Should I use <code>backend='gloo'</code> instead of NCCL for some workloads?</p>
+<p class="a">Use NCCL for GPU. Use Gloo for CPU-only training (rare in modern DL). Gloo on GPU works but is much slower. NCCL also has better topology awareness — it knows about NVLink, NVSwitch, InfiniBand and routes accordingly.</p>
+</div>
+
+<h2>Cost model: latency vs bandwidth</h2>
+
+<p>One more nuance. A collective has two costs:</p>
+
+<ul>
+  <li><strong>Latency</strong>: a startup cost per call, typically 5-50 microseconds. Doesn't depend on message size.</li>
+  <li><strong>Bandwidth</strong>: bytes-per-second cost, scales with message size.</li>
+</ul>
+
+<p>For tiny messages, latency dominates and ring all-reduce isn't optimal — you want a tree algorithm with O(log N) depth. For huge messages, bandwidth dominates and ring is optimal. NCCL automatically picks the right algorithm based on message size.</p>
+
+<p>The implication for your code: <strong>fewer larger collectives are better than many small ones</strong>. This is exactly what DDP's "gradient bucketing" exploits (M16) — instead of all-reducing each parameter's gradient as it becomes available (many small collectives, dominated by latency), DDP groups gradients into ~25 MB buckets and all-reduces each bucket (few medium collectives, near-optimal bandwidth utilization).</p>
+
+<h2>Code Magnets: build a minimal distributed setup</h2>
+
+<p>Build a small distributed program that initializes process groups, all-reduces a tensor, and shuts down cleanly. Two magnets are red herrings.</p>
+
+<div class="magnets">
+<p>Arrange the magnets into a working setup. Two are red herrings.</p>
+
+<div class="magnet-pool">
+  <span class="magnet">import os, torch, torch.distributed as dist</span>
+  <span class="magnet">dist.init_process_group(backend='nccl')</span>
+  <span class="magnet">dist.init_process_group(backend='gloo')</span>
+  <span class="magnet">rank = dist.get_rank(); world_size = dist.get_world_size()</span>
+  <span class="magnet">torch.cuda.set_device(int(os.environ['LOCAL_RANK']))</span>
+  <span class="magnet">torch.cuda.set_device(rank)</span>
+  <span class="magnet">x = torch.tensor([float(rank)], device='cuda')</span>
+  <span class="magnet">dist.all_reduce(x, op=dist.ReduceOp.SUM)</span>
+  <span class="magnet">print(f"rank {rank}: x = {x.item()}")</span>
+  <span class="magnet">dist.destroy_process_group()</span>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<pre><code><span class="kw">import</span> os, torch, torch.distributed <span class="kw">as</span> dist
+
+dist.<span class="fn">init_process_group</span>(backend=<span class="str">'nccl'</span>)
+rank = dist.<span class="fn">get_rank</span>(); world_size = dist.<span class="fn">get_world_size</span>()
+torch.cuda.<span class="fn">set_device</span>(<span class="fn">int</span>(os.environ[<span class="str">'LOCAL_RANK'</span>]))
+
+x = torch.<span class="fn">tensor</span>([<span class="fn">float</span>(rank)], device=<span class="str">'cuda'</span>)
+dist.<span class="fn">all_reduce</span>(x, op=dist.ReduceOp.SUM)
+<span class="fn">print</span>(<span class="fn">f"rank {rank}: x = {x.item()}"</span>)
+
+dist.<span class="fn">destroy_process_group</span>()</code></pre>
+<p>Run with: <code>torchrun --nproc_per_node=4 program.py</code>. Each rank starts with <code>x = float(rank)</code>; after all-reduce, every rank has <code>0+1+2+3 = 6.0</code>.</p>
+<p>The traps:</p>
+<ul>
+  <li><code>dist.init_process_group(backend='gloo')</code>: Gloo is for CPU. For GPU collectives, use NCCL.</li>
+  <li><code>torch.cuda.set_device(rank)</code>: works for single-node, but breaks for multi-node where global rank can exceed the per-node GPU count. Always use <code>LOCAL_RANK</code>.</li>
+</ul>
+</details>
+</div>
+
+<h2>Who does what?</h2>
+
+<div class="matching">
+<p class="intro">Match each collective concept to its real role.</p>
+
+<div class="match-grid">
+  <div class="header">Concept</div>
+  <div class="header">Real role</div>
+
+  <div>broadcast</div>
+  <div>A. Sum across ranks; result goes to every rank.</div>
+
+  <div>all_reduce</div>
+  <div>B. One rank's data → every rank.</div>
+
+  <div>all_gather</div>
+  <div>C. Each rank has a slice; after, every rank has the concatenation of all slices.</div>
+
+  <div>reduce_scatter</div>
+  <div>D. Sum across ranks, but each rank only keeps its slice — used in FSDP for gradients.</div>
+
+  <div>Ring all-reduce</div>
+  <div>E. Bandwidth-optimal algorithm: per-rank traffic ≈ 2M, independent of N.</div>
+
+  <div>LOCAL_RANK</div>
+  <div>F. Per-node rank index — what you pass to <code>torch.cuda.set_device</code>.</div>
+
+  <div>Gradient bucketing</div>
+  <div>G. Group small gradients into larger buckets to amortize collective latency.</div>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<p>
+<strong>broadcast</strong> → B<br>
+<strong>all_reduce</strong> → A<br>
+<strong>all_gather</strong> → C<br>
+<strong>reduce_scatter</strong> → D<br>
+<strong>Ring all-reduce</strong> → E<br>
+<strong>LOCAL_RANK</strong> → F<br>
+<strong>Gradient bucketing</strong> → G
+</p>
+<p>The mental shortcut: <em>broadcast = 1→all, all_reduce = sum-everywhere, all_gather = concat-everywhere, reduce_scatter = sum-then-shard, ring is optimal, LOCAL_RANK selects GPU, bucketing amortizes latency</em>.</p>
+</details>
+</div>
+
+<h2>Exercises</h2>
+
+<div class="exercise">
+<p><strong>1.</strong> A team's distributed run hangs at step 47 of training. <code>nvidia-smi</code> shows all GPUs at 0% utilization. What's the most likely cause and the diagnostic?</p>
+<details class="answer"><summary>show answer</summary>
+<p>An asymmetric collective. One rank skipped a collective (often because of a conditional that's true on some ranks but not others — e.g., "only do extra work on rank 0 every 10 steps") and now the others wait forever. Diagnosis: print rank id and a tag at every collective call site. The rank with the missing tag is the culprit. Quick fixes: replicate the work on all ranks, or use a barrier (<code>dist.barrier()</code>) before the divergent code so you can spot the imbalance fast. Setting <code>NCCL_TIMEOUT</code> low (60s) during development makes hangs fail fast instead of silently.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>2.</strong> You're all-reducing a 100 MB tensor across 16 GPUs on NVLink (600 GB/s effective). What's the rough wall-clock time?</p>
+<details class="answer"><summary>show answer</summary>
+<p>Ring all-reduce: <code>2 × M / B = 2 × 0.1 GB / 600 GB/s ≈ 0.33 ms</code>. Roughly negligible compared to a typical training step. Now do it on a 100 Gb/s ethernet network (12.5 GB/s effective): <code>2 × 0.1 / 12.5 = 16 ms</code> — getting noticeable. This is exactly why intra-node communication is faster — and why FSDP's ZeRO-3 (M17) tries to keep the heaviest collectives (parameter all-gathers) within a node when possible.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>3.</strong> Implement a manual gradient sync for a model trained on N ranks (assume the model and grads exist on each rank already). What single collective do you need?</p>
+<details class="answer"><summary>show answer</summary>
+<pre><code><span class="kw">def</span> <span class="fn">sync_gradients</span>(model, world_size):
+    <span class="kw">for</span> p <span class="kw">in</span> model.<span class="fn">parameters</span>():
+        <span class="kw">if</span> p.grad <span class="kw">is not</span> <span class="kw">None</span>:
+            dist.<span class="fn">all_reduce</span>(p.grad, op=dist.ReduceOp.SUM)
+            p.grad /= world_size       <span class="com"># average rather than sum</span></code></pre>
+<p>This is what DDP does internally, except DDP <em>buckets</em> gradients (groups them into ~25 MB chunks) so the collective is amortized over many parameters. Calling <code>all_reduce</code> per-parameter (as above) hits the latency cost N times. Module 16 covers DDP's bucketing.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>4.</strong> Why does <code>all_reduce ≡ reduce_scatter + all_gather</strong>? Sketch why this matters for FSDP.</p>
+<details class="answer"><summary>show answer</summary>
+<p>The identity: an all-reduce produces the full sum on every rank. You can split that into two phases: (1) reduce-scatter — each rank computes the sum of <em>its own slice</em>; (2) all-gather — each rank's slice gets distributed to everyone. Total bandwidth is unchanged, just split.</p>
+<p>Why FSDP cares: in ZeRO-3 / FSDP, each rank only needs to <em>store</em> its own slice of each parameter and gradient (1/N memory). For the optimizer step, each rank only needs the sum of <em>its</em> gradient slice — so reduce-scatter is enough. The all-gather only happens at parameter-fetch time during the forward pass. By splitting the all-reduce, you save not bandwidth but <em>memory</em>: each rank holds 1/N of each tensor instead of all of it. This is the core trick behind sharding (M17).</p>
+</details>
+</div>
+
+<div class="bullet-points">
+<h3>What just happened?</h3>
+<ul>
+  <li><strong>Five primitives</strong> are the foundation of all distributed deep learning: broadcast, all-reduce, all-gather, reduce-scatter, and (for MoE) all-to-all.</li>
+  <li><strong>Two key identities</strong>: <code>all_reduce = reduce_scatter + all_gather</code> (the FSDP/ZeRO insight) and <code>all_gather = N broadcasts but cheaper</code>.</li>
+  <li><strong>Ring all-reduce</strong> is bandwidth-optimal: per-rank cost ≈ <code>2(N-1)/N × M ≈ 2M</code>, independent of N.</li>
+  <li>The naive "gather to root, broadcast back" is O(N × M) at the root — unworkable at scale. NCCL never does this.</li>
+  <li><strong>NCCL</strong> is the GPU collectives backend; <strong>Gloo</strong> is for CPU. Always use NCCL for GPU training.</li>
+  <li><strong>Process groups</strong>: every rank calls <code>init_process_group</code> before doing any collective. The launcher (<code>torchrun</code>) sets the env vars; <code>init_method='env://'</code> reads them.</li>
+  <li><strong>Two ranks</strong>: global rank (across the whole world), local rank (within this node — used to pick the GPU).</li>
+  <li><code>torchrun --nproc_per_node=8</code> for single-node; add <code>--nnodes</code>, <code>--node_rank</code>, <code>--rdzv_endpoint</code> for multi-node.</li>
+  <li><strong>Asymmetric calls cause silent hangs.</strong> Every rank must call every collective in matching order with matching dtypes and shapes. Print rank IDs at call sites for diagnosis.</li>
+  <li><strong>Bandwidth math</strong>: <code>time ≈ 2M / B</code> per all-reduce. For a 1B-param fp32 gradient on NVLink: ~13 ms. On 100 Gb ethernet: ~640 ms. Network choice matters a lot.</li>
+  <li><strong>Latency vs bandwidth</strong>: small messages dominated by latency, large by bandwidth. Bucket small ops into larger collectives — this is exactly what DDP does (M16).</li>
+  <li>The reflex: when distributed training is slow or hangs, ask <em>which collective is firing how often, with what message size, on what network</em>. The bandwidth math tells you whether the cost is reasonable; if it isn't, the schedule (DDP / FSDP / TP) is the lever.</li>
+</ul>
+</div>
+
+<p>Module 16 takes these primitives and assembles the most common distributed pattern: Distributed Data Parallel. Same model on every GPU, different data shards, all-reduce after backward. The bucketing trick, the find-unused-parameters foot-gun, and the gradient-overlap optimization that makes DDP scale.</p>
+
+<div class="module-footer">
+  <span>PyTorch · From Tensor to Kernel</span>
+  <span class="num">15</span>
+  <span>Communication primitives</span>
+</div>
+"""
+
+emit("15_communication_primitives", "Module 15 — Communication primitives", BODY)

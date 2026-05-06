@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 03 — Devices, dtypes & numerics</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800;9..144,900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@400;500;600;700&family=Patrick+Hand&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+  :root {
+    --paper: #f6efe1; --paper-deep: #ede2cc;
+    --ink: #1a1612; --ink-soft: #3a322a; --ink-muted: #6b5d4f;
+    --terracotta: #c1502e; --terracotta-deep: #8c3a20;
+    --teal: #1f5f5b; --teal-deep: #133e3b;
+    --mustard: #d4a017; --rose: #b85a6c;
+    --pytorch: #ee4c2c;
+    --code-bg: #2a2520; --code-bg-light: #f0e8d4;
+    --rule: #c8b89a;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; padding: 0 0 60px 0; background: var(--paper);
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(193,80,46,0.04) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(31,95,91,0.04) 0%, transparent 40%);
+    color: var(--ink);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px; line-height: 1.7;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 60px 40px 120px; }
+  .module-header { border-bottom: 3px double var(--ink); padding-bottom: 32px; margin-bottom: 48px; position: relative; }
+  .module-tag {
+    display: inline-block; font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--terracotta-deep); background: var(--paper-deep);
+    padding: 6px 14px; border: 1.5px solid var(--terracotta-deep);
+    border-radius: 2px; margin-bottom: 20px;
+  }
+  .module-title {
+    font-family: 'Fraunces', serif; font-weight: 900; font-size: 56px;
+    line-height: 1.05; margin: 0 0 14px; color: var(--ink); letter-spacing: -0.02em;
+  }
+  .module-title em { font-style: italic; font-weight: 400; color: var(--terracotta); }
+  .module-sub { font-family: 'Caveat', cursive; font-size: 26px; color: var(--ink-soft); margin: 0; }
+  h2 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 32px; margin: 56px 0 18px; color: var(--ink); line-height: 1.15; letter-spacing: -0.01em; }
+  h2::before { content: "§ "; color: var(--terracotta); font-weight: 600; }
+  h3 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px; margin: 36px 0 12px; color: var(--teal-deep); letter-spacing: -0.005em; }
+  h4 { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; margin: 28px 0 10px; color: var(--ink-soft); }
+  p { margin: 0 0 18px; }
+  p strong { color: var(--terracotta-deep); font-weight: 600; }
+  p em { color: var(--teal-deep); }
+  blockquote { border-left: 4px solid var(--terracotta); padding: 4px 0 4px 22px; margin: 24px 0; font-style: italic; color: var(--ink-soft); font-size: 18px; }
+  a { color: var(--teal-deep); text-decoration: underline wavy var(--mustard); text-underline-offset: 4px; }
+  code { font-family: 'IBM Plex Mono', monospace; font-size: 0.88em; background: var(--code-bg-light); padding: 1px 6px; border-radius: 3px; color: var(--terracotta-deep); border: 1px solid rgba(0,0,0,0.06); }
+  pre { background: var(--code-bg); color: #e8d9b8; font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; line-height: 1.55; padding: 22px 26px; border-radius: 4px; overflow-x: auto; margin: 24px 0; border-left: 4px solid var(--pytorch); box-shadow: 4px 4px 0 var(--ink); position: relative; }
+  pre::before { content: ">_"; position: absolute; top: 8px; right: 14px; font-size: 11px; color: var(--pytorch); opacity: 0.7; letter-spacing: 0.1em; }
+  pre code { background: transparent; color: inherit; padding: 0; border: none; font-size: inherit; }
+  pre .kw { color: #ff8a65; }
+  pre .str { color: #a5d6a7; }
+  pre .num { color: #ffcc80; }
+  pre .com { color: #8d7d65; font-style: italic; }
+  pre .fn { color: #82b1ff; }
+  pre .ty { color: #ce93d8; }
+  .sticky { background: #fff8a8; background-image: linear-gradient(180deg, #fff8a8 0%, #ffeb7a 100%); padding: 22px 26px; margin: 28px 0; box-shadow: 3px 4px 12px rgba(0,0,0,0.18), inset 0 -8px 14px rgba(0,0,0,0.04); transform: rotate(-0.4deg); font-family: 'Patrick Hand', cursive; font-size: 19px; line-height: 1.5; color: var(--ink); position: relative; }
+  .sticky::before { content: ""; position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 80px; height: 22px; background: rgba(193,80,46,0.5); border-radius: 1px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+  .sticky.pink { background-image: linear-gradient(180deg, #ffd5dc 0%, #ffb8c4 100%); transform: rotate(0.5deg); }
+  .sticky.blue { background-image: linear-gradient(180deg, #d3e9f5 0%, #aed4ec 100%); transform: rotate(-0.6deg); }
+  .sticky.green { background-image: linear-gradient(180deg, #d4ecc8 0%, #b3d99e 100%); transform: rotate(0.3deg); }
+  .sticky strong { color: var(--terracotta-deep); }
+  .brainpower { border: 2.5px solid var(--ink); background: var(--paper-deep); padding: 24px 28px 26px; margin: 32px 0; border-radius: 2px; position: relative; box-shadow: 5px 5px 0 var(--terracotta); }
+  .brainpower::before { content: "BRAIN POWER"; position: absolute; top: -13px; left: 22px; background: var(--terracotta); color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; padding: 4px 12px; letter-spacing: 0.18em; }
+  .brainpower p { margin: 8px 0; font-size: 16px; }
+  .brainpower p:first-child { margin-top: 6px; }
+  .ndq { background: linear-gradient(180deg, #fdf6e3 0%, #f5ead0 100%); border: 1.5px dashed var(--ink-soft); border-radius: 8px; padding: 28px 30px; margin: 36px 0; }
+  .ndq h4 { font-family: 'Fraunces', serif; font-size: 22px; text-transform: none; letter-spacing: 0; color: var(--terracotta-deep); margin: 0 0 18px; border-bottom: 1.5px solid var(--rule); padding-bottom: 8px; }
+  .ndq h4::before { content: "Q&A — "; color: var(--ink-muted); font-style: italic; }
+  .ndq .q { font-family: 'Caveat', cursive; font-size: 22px; color: var(--teal-deep); margin: 14px 0 4px; line-height: 1.3; }
+  .ndq .q::before { content: "Q: "; font-weight: 700; color: var(--terracotta); }
+  .ndq .a { margin: 0 0 16px 14px; padding-left: 14px; border-left: 3px solid var(--mustard); color: var(--ink-soft); font-size: 16px; }
+  .ndq .a::before { content: "A: "; font-weight: 700; color: var(--ink); font-family: 'Fraunces', serif; }
+  .table-wrap { margin: 28px 0; overflow-x: auto; border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--teal); background: #fff; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; font-family: 'Lora', serif; }
+  table caption { font-family: 'Caveat', cursive; font-size: 22px; color: var(--terracotta-deep); padding: 12px 0; text-align: left; caption-side: top; }
+  th { background: var(--ink); color: #fff; text-align: left; padding: 12px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+  td { padding: 12px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--paper-deep); }
+  tr:last-child td { border-bottom: none; }
+  td strong { color: var(--terracotta-deep); }
+  td code { font-size: 12.5px; }
+  .decision { background: #fff; border: 2px solid var(--ink); border-radius: 2px; padding: 24px 28px; margin: 32px 0; box-shadow: 5px 5px 0 var(--mustard); font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.8; white-space: pre; overflow-x: auto; color: var(--ink); }
+  .warn { background: #fcecec; border-left: 6px solid var(--terracotta); padding: 18px 22px; margin: 28px 0; border-radius: 0 4px 4px 0; position: relative; }
+  .warn::before { content: "⚠"; position: absolute; top: 14px; right: 18px; font-size: 24px; color: var(--terracotta); }
+  .warn strong { color: var(--terracotta-deep); }
+  .keyidea { background: var(--teal); color: #f6efe1; padding: 26px 30px; margin: 32px 0; border-radius: 2px; font-family: 'Fraunces', serif; font-size: 19px; font-weight: 500; line-height: 1.5; position: relative; box-shadow: 4px 4px 0 var(--ink); }
+  .keyidea::before { content: "★ KEY IDEA"; position: absolute; top: -11px; left: 22px; background: var(--mustard); color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700; padding: 4px 10px; letter-spacing: 0.18em; }
+  .keyidea strong { color: var(--mustard); }
+  .exercise { border: 2px dashed var(--teal-deep); padding: 24px 28px; margin: 36px 0; background: rgba(255,255,255,0.5); border-radius: 2px; }
+  .exercise::before { content: "✎ SHARPEN YOUR PENCIL"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px dotted var(--teal); }
+  .exercise .answer { margin-top: 14px; padding: 14px 18px; background: var(--paper-deep); border-radius: 4px; font-size: 15px; }
+  .exercise .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+  ul, ol { margin: 16px 0; padding-left: 28px; }
+  li { margin: 8px 0; }
+  ul li::marker { color: var(--terracotta); }
+  ol li::marker { color: var(--teal-deep); font-weight: 600; }
+  .dialogue { margin: 28px 0; padding: 20px 24px; background: var(--paper-deep); border-radius: 4px; border-left: 4px solid var(--rose); }
+  .dialogue .speaker { font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--rose); font-weight: 700; display: block; margin-top: 10px; }
+  .dialogue .speaker:first-child { margin-top: 0; }
+  .dialogue .speaker.b { color: var(--teal-deep); }
+  .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin: 28px 0; }
+  .twocol > div { padding: 20px 22px; border-radius: 2px; background: #fff; border: 1.5px solid var(--rule); }
+  .twocol > div h4 { margin-top: 0; }
+  .twocol .good { border-color: var(--teal); border-left: 5px solid var(--teal); }
+  .twocol .bad { border-color: var(--terracotta); border-left: 5px solid var(--terracotta); }
+  .ascii { background: var(--paper-deep); padding: 22px 26px; margin: 28px 0; border: 1.5px solid var(--rule); border-radius: 2px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.5; white-space: pre; overflow-x: auto; color: var(--ink); }
+  .module-footer { margin-top: 80px; padding-top: 28px; border-top: 3px double var(--ink); display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-muted); }
+  .module-footer .num { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 800; color: var(--terracotta); line-height: 1; }
+  .toc { background: #fff; border: 2px solid var(--ink); padding: 30px 40px; margin: 40px 0; box-shadow: 6px 6px 0 var(--teal); }
+  .toc h3 { font-family: 'Fraunces', serif; font-size: 26px; margin: 0 0 20px; color: var(--ink); }
+  .toc ol { columns: 2; column-gap: 40px; padding-left: 24px; }
+  .toc li { font-size: 15px; break-inside: avoid; margin: 4px 0; }
+  .toc li strong { color: var(--terracotta-deep); }
+  .toc .part { font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--teal-deep); margin: 16px 0 6px; column-span: all; border-bottom: 1px dashed var(--rule); padding-bottom: 4px; }
+
+  /* CODE MAGNETS — fridge-magnet style code snippets to be arranged */
+  .magnets { margin: 36px 0; padding: 26px 28px 30px; background: #ede2cc; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--teal-deep); position: relative; }
+  .magnets::before { content: "✦ CODE MAGNETS"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px dotted var(--ink-soft); }
+  .magnets p { margin: 0 0 18px; font-size: 16px; }
+  .magnet-pool { display: flex; flex-wrap: wrap; gap: 10px; padding: 16px; background: #c8c0a8; background-image: linear-gradient(135deg, #c8c0a8 25%, transparent 25%), linear-gradient(225deg, #c8c0a8 25%, transparent 25%), linear-gradient(45deg, #c8c0a8 25%, transparent 25%), linear-gradient(315deg, #c8c0a8 25%, #b5ad95 25%); background-size: 14px 14px; background-position: 7px 0, 7px 0, 0 0, 0 0; border-radius: 6px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.2); margin: 12px 0; min-height: 70px; }
+  .magnet { display: inline-block; background: #fff; padding: 10px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink); border-radius: 3px; box-shadow: 2px 2px 4px rgba(0,0,0,0.25), inset 0 -2px 0 rgba(0,0,0,0.05); border: 1px solid #d8d0b4; transform: rotate(-1deg); transition: transform 0.15s; cursor: default; user-select: all; }
+  .magnet:nth-child(2n) { transform: rotate(1.5deg); background: #fff8e8; }
+  .magnet:nth-child(3n) { transform: rotate(-2deg); background: #f0f5ee; }
+  .magnet:nth-child(5n) { transform: rotate(0.8deg); background: #f5e8e0; }
+  .magnet:hover { transform: rotate(0) scale(1.05); z-index: 2; }
+  .magnets .answer { margin-top: 16px; padding: 14px 18px; background: #fff8d8; border-radius: 4px; font-size: 15px; border-left: 4px solid var(--mustard); }
+  .magnets .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+  .magnets .answer pre { margin: 12px 0 0; }
+
+  /* CHARACTER — anthropomorphized objects with avatar and speech */
+  .character { margin: 30px 0; padding: 20px 22px 22px; background: #fff; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--rose); position: relative; display: grid; grid-template-columns: 80px 1fr; gap: 18px; align-items: start; }
+  .character .avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--mustard); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 900; font-size: 30px; color: var(--ink); border: 2.5px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+  .character.tensor .avatar { background: var(--pytorch); color: #fff; }
+  .character.stride .avatar { background: var(--teal); color: #fff; }
+  .character.storage .avatar { background: var(--mustard); }
+  .character.dtype .avatar { background: var(--rose); color: #fff; }
+  .character.autograd .avatar { background: var(--terracotta); color: #fff; }
+  .character .who { font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-muted); font-weight: 700; margin: 0 0 4px; }
+  .character .name { font-family: 'Fraunces', serif; font-weight: 800; font-size: 22px; color: var(--ink); margin: 0 0 8px; line-height: 1; }
+  .character .says { font-family: 'Lora', serif; font-size: 16px; line-height: 1.55; color: var(--ink); margin: 0; font-style: italic; }
+  .character .says::before { content: '"'; font-family: 'Fraunces', serif; font-size: 28px; color: var(--terracotta); line-height: 0; vertical-align: -8px; margin-right: 4px; }
+  .character .says::after { content: '"'; font-family: 'Fraunces', serif; font-size: 28px; color: var(--terracotta); line-height: 0; vertical-align: -8px; margin-left: 2px; }
+  .character + .character { margin-top: -10px; }
+
+  /* BULLET POINTS — recap section with checklist vibe */
+  .bullet-points { margin: 48px 0 36px; padding: 32px 36px 36px; background: var(--paper-deep); border: 3px solid var(--ink); border-radius: 4px; position: relative; box-shadow: 6px 6px 0 var(--mustard); }
+  .bullet-points::before { content: "BULLET POINTS"; position: absolute; top: -16px; left: 28px; background: var(--ink); color: var(--mustard); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; padding: 6px 16px; letter-spacing: 0.2em; }
+  .bullet-points h3 { font-family: 'Caveat', cursive; font-size: 28px; color: var(--terracotta); margin: 0 0 16px; }
+  .bullet-points ul { list-style: none; padding-left: 0; margin: 0; }
+  .bullet-points ul li { position: relative; padding: 6px 0 6px 38px; font-size: 16px; line-height: 1.5; border-bottom: 1px dashed var(--rule); }
+  .bullet-points ul li:last-child { border-bottom: none; }
+  .bullet-points ul li::before { content: ""; position: absolute; left: 6px; top: 11px; width: 18px; height: 18px; border: 2px solid var(--terracotta); border-radius: 3px; background: #fff; }
+  .bullet-points ul li::after { content: "✓"; position: absolute; left: 9px; top: 6px; font-family: 'Caveat', cursive; font-size: 22px; font-weight: 700; color: var(--terracotta); }
+  .bullet-points ul li strong { color: var(--terracotta-deep); }
+  .bullet-points ul li code { font-size: 13px; }
+
+  /* MATCHING — "Who Does What?" two-column matching exercise */
+  .matching { margin: 36px 0; padding: 26px 28px 28px; background: #fff; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--teal); position: relative; }
+  .matching::before { content: "✦ WHO DOES WHAT?"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 6px; padding-bottom: 10px; border-bottom: 2px dotted var(--ink-soft); }
+  .matching p.intro { margin: 8px 0 18px; font-size: 15px; font-style: italic; color: var(--ink-soft); }
+  .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1.5px solid var(--ink); }
+  .match-grid > div { padding: 12px 14px; border-bottom: 1px solid var(--rule); font-size: 14.5px; vertical-align: middle; display: flex; align-items: center; }
+  .match-grid > div:nth-child(4n+1), .match-grid > div:nth-child(4n+2) { background: var(--paper-deep); }
+  .match-grid > div:nth-child(2n+1) { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--terracotta-deep); border-right: 1.5px dashed var(--ink); }
+  .match-grid > div:nth-child(2n) { color: var(--ink); }
+  .match-grid > div:nth-last-child(-n+2) { border-bottom: none; }
+  .match-grid .header { background: var(--ink) !important; color: #fff !important; font-family: 'IBM Plex Mono', monospace !important; font-size: 11px !important; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; padding: 10px 14px; border-bottom: none; }
+  .matching .answer { margin-top: 16px; padding: 14px 18px; background: var(--paper-deep); border-radius: 4px; font-size: 15px; }
+  .matching .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+
+  @media (max-width: 720px) {
+    .wrap { padding: 40px 22px 80px; }
+    .module-title { font-size: 40px; }
+    .twocol { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .character { grid-template-columns: 56px 1fr; gap: 12px; }
+    .character .avatar { width: 56px; height: 56px; font-size: 22px; }
+    .match-grid { grid-template-columns: 1fr 1fr; font-size: 13px; }
+  }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+<div class="module-header">
+  <div class="module-tag">Part I · Module 03</div>
+  <h1 class="module-title">Devices, dtypes &amp; <em>numerics</em></h1>
+  <p class="module-sub">— what the bits actually mean, why your loss went NaN at step 4000, and the difference between "moved to GPU" and "actually moved to GPU"</p>
+</div>
+
+<p>You've got the storage/stride model from Module 01 and the shape rules from Module 02. Now we get to the part that decides whether your code <em>just works</em> or trains for nine hours and then dies: the numbers themselves.</p>
+
+<p>Floating-point numbers are not real numbers. They're a finite, lumpy approximation that gets weirder near zero and weirder near infinity. And tensors don't just float around — they live on devices, get moved across PCIe, and pretend to be deterministic when they aren't. This module is about the parts of PyTorch where physics meets your code.</p>
+
+<div class="keyidea">
+A dtype is a <strong>contract about precision and range</strong>. A device is a <strong>physical location with a finite pipe to other devices</strong>. The bugs in this module aren't logic bugs — they're <em>physics</em> bugs. Loss goes NaN because numbers overflowed. Training is slow because you're shuffling bytes across PCIe one tensor at a time. Results aren't reproducible because the GPU runs reductions in a non-deterministic order. None of these are PyTorch's fault. They're how computers work.
+</div>
+
+<h2>Meet the float family</h2>
+
+<p>Three new characters today, plus a returning face. They will fight in subtle ways for the rest of the course.</p>
+
+<div class="character" style="--c: #1f5f5b;">
+  <div class="avatar" style="background: #1f5f5b; color: #fff;">F32</div>
+  <div>
+    <p class="who">Float32</p>
+    <p class="name">"I'm 4 bytes, 8 decimal digits of precision, and 38 orders of magnitude of range. I'm the default for a reason."</p>
+    <p class="says">23 bits of mantissa, 8 bits of exponent, 1 sign bit. If you don't know what dtype you want, you want me. Training works in me. Gradients are stable in me. The only reason to leave is speed or memory — and both of those reasons are real, but you should leave deliberately, not by accident.</p>
+  </div>
+</div>
+
+<div class="character" style="--c: #c1502e;">
+  <div class="avatar" style="background: #c1502e; color: #fff;">F16</div>
+  <div>
+    <p class="who">Float16</p>
+    <p class="name">"I'm 2 bytes, fast, and I overflow at 65,504."</p>
+    <p class="says">10 bits of mantissa, 5 bits of exponent. Half the memory of Float32, twice the throughput on tensor cores. But my range is tiny — anything above 65,504 becomes <code>inf</code>, anything below 6e-5 underflows to zero. Gradient norms during training routinely exceed me. You need a <em>loss scaler</em> to use me safely. Otherwise: NaN. We'll talk in Module 14.</p>
+  </div>
+</div>
+
+<div class="character" style="--c: #d4a017;">
+  <div class="avatar" style="background: #d4a017;">BF16</div>
+  <div>
+    <p class="who">BFloat16</p>
+    <p class="name">"I'm Float16's smarter cousin. Same memory, fp32's range."</p>
+    <p class="says">7 bits of mantissa (yes, fewer than Float16!), but 8 bits of exponent — same as Float32. So I overflow at the same gigantic value F32 does, around 3.4e38. I'm less <em>precise</em> than F16, but that almost never matters in deep learning, where you've got noise everywhere anyway. I'm the modern training default on hardware that supports me (Ampere+, TPUs).</p>
+  </div>
+</div>
+
+<div class="character storage">
+  <div class="avatar">P</div>
+  <div>
+    <p class="who">Pinned Memory</p>
+    <p class="name">"I'm CPU memory that's promised the GPU I won't move."</p>
+    <p class="says">Normally the OS can swap CPU memory pages around freely. That's bad for the GPU, which wants to DMA bytes directly without worrying they'll vanish mid-transfer. So you ask for <em>pinned</em> (page-locked) memory, and the OS guarantees I stay put. The benefit: GPU transfers can be <em>async</em> and overlap with compute. Without me, every transfer is a hidden synchronous copy.</p>
+  </div>
+</div>
+
+<h2>What the bits actually mean</h2>
+
+<p>Time to look inside a float. Skip this if you remember it from your numerical-methods class; otherwise read carefully because every "weird precision" issue you'll ever debug starts here.</p>
+
+<p>A floating-point number is three fields: a sign bit, an exponent, and a mantissa (also called significand). The value is roughly:</p>
+
+<pre><code>value = (-<span class="num">1</span>)<sup><span class="ty">sign</span></sup> × <span class="num">1.</span><span class="ty">mantissa</span> × <span class="num">2</span><sup><span class="ty">exponent</span> − <span class="num">bias</span></sup></code></pre>
+
+<p>The number of mantissa bits sets your <em>precision</em> (how finely you can resolve nearby numbers). The number of exponent bits sets your <em>range</em> (how far you can go from zero in either direction). Trading bits between mantissa and exponent is the whole story of why we have so many small float types.</p>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs>
+    <marker id="arrFmt" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c1502e"/>
+    </marker>
+  </defs>
+  <text x="360" y="24" font-size="14" font-weight="700" fill="#1a1612" text-anchor="middle">Same 16 bits, different deals</text>
+
+  <!-- FP32 (32 bits, scaled-down view) -->
+  <text x="20" y="60" font-size="12" font-weight="700" fill="#1f5f5b">Float32 — 32 bits total</text>
+  <g transform="translate(20, 70)">
+    <rect x="0"   y="0" width="20" height="32" fill="#1f5f5b"/><text x="10" y="22" text-anchor="middle" font-size="11" fill="#fff">S</text>
+    <rect x="20"  y="0" width="160" height="32" fill="#d4ecc8" stroke="#1f5f5b"/><text x="100" y="22" text-anchor="middle" font-size="12" fill="#1a1612">exponent (8)</text>
+    <rect x="180" y="0" width="500" height="32" fill="#fff8a8" stroke="#1f5f5b"/><text x="430" y="22" text-anchor="middle" font-size="12" fill="#1a1612">mantissa (23)</text>
+  </g>
+  <text x="690" y="92" font-size="11" fill="#1f5f5b" text-anchor="end">range ≈ ±3.4e38 · ε ≈ 1.2e-7</text>
+
+  <!-- FP16 (16 bits, in-scale relative to fp32 above) -->
+  <text x="20" y="135" font-size="12" font-weight="700" fill="#c1502e">Float16 — 16 bits total</text>
+  <g transform="translate(20, 145)">
+    <rect x="0"  y="0" width="20" height="32" fill="#c1502e"/><text x="10" y="22" text-anchor="middle" font-size="11" fill="#fff">S</text>
+    <rect x="20"  y="0" width="100" height="32" fill="#fcecec" stroke="#c1502e"/><text x="70"  y="22" text-anchor="middle" font-size="12" fill="#1a1612">exp (5)</text>
+    <rect x="120" y="0" width="220" height="32" fill="#fff8a8" stroke="#c1502e"/><text x="230" y="22" text-anchor="middle" font-size="12" fill="#1a1612">mantissa (10)</text>
+  </g>
+  <text x="350" y="167" font-size="11" fill="#c1502e">range ≈ ±65,504 · ε ≈ 9.8e-4</text>
+
+  <!-- BF16 -->
+  <text x="20" y="210" font-size="12" font-weight="700" fill="#8c6512">BFloat16 — 16 bits total</text>
+  <g transform="translate(20, 220)">
+    <rect x="0"  y="0" width="20" height="32" fill="#d4a017"/><text x="10" y="22" text-anchor="middle" font-size="11" fill="#fff">S</text>
+    <rect x="20"  y="0" width="160" height="32" fill="#fff5d8" stroke="#d4a017"/><text x="100" y="22" text-anchor="middle" font-size="12" fill="#1a1612">exponent (8) — same as fp32!</text>
+    <rect x="180" y="0" width="160" height="32" fill="#fff8a8" stroke="#d4a017"/><text x="260" y="22" text-anchor="middle" font-size="12" fill="#1a1612">mantissa (7)</text>
+  </g>
+  <text x="350" y="242" font-size="11" fill="#8c6512">range ≈ ±3.4e38 · ε ≈ 7.8e-3</text>
+
+  <!-- key annotation -->
+  <text x="350" y="280" font-family="'Caveat', cursive" font-size="20" fill="#c1502e">F16 trades range for precision — BF16 keeps range, drops precision</text>
+</svg>
+</div>
+
+<p>Look at that diagram. F16 and BF16 are the <em>same number of bits</em> — but BF16 spends more of them on the exponent. That's the entire difference, and it's why BF16 dominates training while F16 is mostly relegated to inference and gradient tensors with explicit scaling.</p>
+
+<div class="table-wrap">
+<table>
+<caption>The dtypes, with the only stats that matter</caption>
+<thead><tr><th>Dtype</th><th>Bytes</th><th>Max value</th><th>Smallest normal</th><th>Decimal digits</th></tr></thead>
+<tbody>
+<tr><td><code>float64</code></td><td>8</td><td>~1.8e308</td><td>~2.2e-308</td><td>~16</td></tr>
+<tr><td><code>float32</code> (default)</td><td>4</td><td>~3.4e38</td><td>~1.2e-38</td><td>~7</td></tr>
+<tr><td><code>bfloat16</code></td><td>2</td><td>~3.4e38</td><td>~1.2e-38</td><td>~3</td></tr>
+<tr><td><code>float16</code></td><td>2</td><td><strong>65,504</strong></td><td>~6.0e-5</td><td>~3</td></tr>
+<tr><td><code>float8 (e4m3)</code></td><td>1</td><td>448</td><td>~1.5e-3</td><td>~1</td></tr>
+<tr><td><code>float8 (e5m2)</code></td><td>1</td><td>57,344</td><td>~6.1e-5</td><td>~1</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>That tiny "65,504" for float16 is the entire reason mixed-precision training is hard. Imagine a forward pass that produces an intermediate value of 70,000 — you've already overflowed before any gradient computation begins. And once a single value in your tensor becomes <code>inf</code>, everything downstream becomes <code>NaN</code>, and training is over.</p>
+
+<div class="warn">
+<strong>fp16 vs bf16 in one rule.</strong> If your hardware supports bf16 (Ampere/A100/H100/TPU/MI200+), use bf16 for training. If you're stuck with fp16 (older GPUs), you need a GradScaler (Module 14) and you'll spend more time hunting NaNs. The mantissa precision difference (10 bits vs 7) almost never matters in deep learning. The exponent range difference (5 bits vs 8) almost always does.
+</div>
+
+<h2>Casting and the dtype hierarchy</h2>
+
+<p>You can move tensors between dtypes with <code>.to()</code>, <code>.float()</code>, <code>.half()</code>, <code>.bfloat16()</code>, and friends. The interesting question is what happens when you mix dtypes in a single op.</p>
+
+<pre><code>a = torch.tensor([<span class="num">1.0</span>], dtype=torch.float32)
+b = torch.tensor([<span class="num">1.0</span>], dtype=torch.float16)
+
+c = a + b
+<span class="fn">print</span>(c.dtype)        <span class="com"># torch.float32 — promotes to the wider type</span>
+
+i = torch.tensor([<span class="num">1</span>], dtype=torch.int32)
+f = torch.tensor([<span class="num">1.0</span>], dtype=torch.float32)
+<span class="fn">print</span>((i + f).dtype)  <span class="com"># torch.float32 — int promotes to float</span></code></pre>
+
+<p>PyTorch follows a type promotion table almost identical to NumPy's: when two dtypes meet, the result is the "wider" one in a careful sense (more range, then more precision). This is usually what you want, but it can sneak up on you in mixed-precision code: an fp16 activation added to an fp32 buffer becomes fp32, possibly costing you the speed win you were after.</p>
+
+<p>Casting itself is cheap — it's a kernel that walks the tensor and converts each element. It's not free though, especially on big tensors. Aim to minimize unnecessary casts in hot loops.</p>
+
+<div class="ndq">
+<h4>About dtypes</h4>
+
+<p class="q">If bf16 has the same range as fp32, why is anyone still using fp16?</p>
+<p class="a">Three reasons. (1) Older GPUs (Pascal, Volta) only have fp16 tensor cores, no bf16. (2) Some research code is still written assuming fp16 + GradScaler, and porting is non-trivial. (3) For inference, fp16 has more precision than bf16 in the same byte count, which can matter for quality-sensitive workloads.</p>
+
+<p class="q">What is fp8 actually for?</p>
+<p class="a">Inference acceleration on H100+ and MI300+ hardware that has dedicated fp8 tensor cores. It comes in two flavors — e4m3 (more precision, less range) for forward activations, and e5m2 (more range) for backward gradients. You don't typically work in fp8 by hand; libraries like TransformerEngine or torchao handle the casting and scaling.</p>
+
+<p class="q">My loss tensor is in fp32 but the model weights are fp16. Is that bad?</p>
+<p class="a">It's actually good. The standard mixed-precision recipe is: <em>weights and activations in fp16/bf16, but loss and reductions in fp32</em>. Reductions like <code>sum</code> and <code>norm</code> are particularly bite-y in low precision because they accumulate many small errors. Module 14 has the full story.</p>
+
+<p class="q">When should I use float64?</p>
+<p class="a">Almost never in deep learning. Two real use cases: (1) <code>torch.autograd.gradcheck</code> for verifying custom autograd functions (Module 6) — it requires fp64 to get reliable finite-difference comparisons. (2) Scientific simulations where you actually need the precision. Otherwise fp64 will halve your throughput for nothing.</p>
+</div>
+
+<h2>Numerical stability primitives</h2>
+
+<p>Now we get to the operations that look correct but explode. The classic example is computing softmax naively:</p>
+
+<pre><code><span class="kw">def</span> <span class="fn">naive_softmax</span>(x):
+    e = x.exp()
+    <span class="kw">return</span> e / e.sum(dim=-<span class="num">1</span>, keepdim=<span class="kw">True</span>)
+
+x = torch.tensor([<span class="num">1000.0</span>, <span class="num">2.0</span>, <span class="num">3.0</span>])
+<span class="fn">print</span>(<span class="fn">naive_softmax</span>(x))   <span class="com"># tensor([nan, nan, nan])</span></code></pre>
+
+<p>What happened? <code>1000.exp()</code> overflows even fp32 (<code>e^1000</code> ≈ 10^434, way past 3.4e38), giving <code>inf</code>. Then <code>inf / inf</code> = <code>NaN</code>. The math is right, the implementation is broken.</p>
+
+<p>The fix is to subtract the max <em>before</em> exponentiating. Mathematically the result is identical (the constant cancels in numerator and denominator). Numerically, every exponent now lies in <code>(-∞, 0]</code>, so every <code>exp</code> lies in <code>(0, 1]</code>. No overflow.</p>
+
+<pre><code><span class="kw">def</span> <span class="fn">stable_softmax</span>(x):
+    x = x - x.max(dim=-<span class="num">1</span>, keepdim=<span class="kw">True</span>).values
+    e = x.exp()
+    <span class="kw">return</span> e / e.sum(dim=-<span class="num">1</span>, keepdim=<span class="kw">True</span>)
+
+<span class="fn">print</span>(<span class="fn">stable_softmax</span>(torch.tensor([<span class="num">1000.0</span>, <span class="num">2.0</span>, <span class="num">3.0</span>])))
+<span class="com"># tensor([1.0000e+00, 0.0000e+00, 0.0000e+00])</span></code></pre>
+
+<p>This trick — <em>subtract the max before exponentiating</em> — appears all over deep learning. It's the reason real softmax implementations (yours, PyTorch's, FlashAttention's) are slightly different from the textbook formula.</p>
+
+<h3>logsumexp: the numerical workhorse</h3>
+
+<p>You'll see this function constantly: <code>torch.logsumexp(x, dim)</code>. It computes <code>log(sum(exp(x)))</code>, but does it stably using the same max-subtraction trick. Why care? Because cross-entropy loss is essentially a <code>logsumexp</code>:</p>
+
+<pre><code><span class="com"># Cross-entropy of logits against targets, by hand:</span>
+<span class="kw">def</span> <span class="fn">my_cross_entropy</span>(logits, targets):
+    <span class="com"># logits: (B, V), targets: (B,)</span>
+    log_probs = logits - torch.logsumexp(logits, dim=-<span class="num">1</span>, keepdim=<span class="kw">True</span>)
+    <span class="kw">return</span> -log_probs.gather(<span class="num">1</span>, targets[:, <span class="kw">None</span>]).squeeze(<span class="num">1</span>).mean()</code></pre>
+
+<p>This is exactly what <code>F.cross_entropy</code> does internally. <code>logsumexp</code> is the numerically-stable building block.</p>
+
+<div class="sticky green">
+<strong>Whiteboard tattoo:</strong> the pair "<code>x.exp()</code> + <code>sum</code> + <code>log</code>" is always wrong. Use <code>logsumexp</code>. Always. Even if it looks the same on small inputs, the exp-overflow lurks the moment your input has a big positive value.
+</div>
+
+<h3>Kahan summation and reduction order</h3>
+
+<p>Floating-point addition is not associative. <code>(a + b) + c</code> is not, in general, <code>a + (b + c)</code>. This bites you when summing many small values into a large running total — each addition loses some precision, and the errors compound.</p>
+
+<p>The classic fix is <em>Kahan summation</em>, which keeps a separate "compensation" term to track the lost bits. PyTorch doesn't expose Kahan-style sums by default (the cost is real), but the existence of the problem explains why:</p>
+
+<ul>
+  <li>Sums of large arrays in fp16 lose precision badly. <code>torch.sum(x, dim=..., dtype=torch.float32)</code> lets you accumulate in fp32 even if <code>x</code> is fp16.</li>
+  <li>Different reduction orders (e.g., parallel vs sequential) produce slightly different results. Two GPUs computing the "same" sum can disagree in the last few bits.</li>
+  <li>That non-determinism is also why <code>torch.use_deterministic_algorithms(True)</code> matters — and why it sometimes errors, because some kernels have no deterministic implementation.</li>
+</ul>
+
+<pre><code><span class="com"># Reduce in higher precision when accumulating fp16 tensors</span>
+x = torch.randn(<span class="num">1_000_000</span>, dtype=torch.float16)
+sum_low  = x.sum()                              <span class="com"># in fp16 — lossy</span>
+sum_safe = x.sum(dtype=torch.float32)           <span class="com"># cast on the fly</span></code></pre>
+
+<h2>Devices: where the bytes actually live</h2>
+
+<p>A device is a physical location with its own memory and compute. The big three:</p>
+
+<div class="table-wrap">
+<table>
+<caption>The devices you'll see</caption>
+<thead><tr><th>Device</th><th>What it is</th><th>Notable quirks</th></tr></thead>
+<tbody>
+<tr><td><code>cpu</code></td><td>Your computer's RAM and CPU cores</td><td>Always available. Ops use OpenMP or MKL. Slow for large tensors but fine for small ones.</td></tr>
+<tr><td><code>cuda</code> / <code>cuda:0</code> / <code>cuda:1</code></td><td>NVIDIA GPU memory + CUDA cores</td><td>Asynchronous launches. Caching allocator. 99% of PyTorch GPU code targets this.</td></tr>
+<tr><td><code>mps</code></td><td>Apple Silicon GPU (Metal Performance Shaders)</td><td>Available on M1/M2/M3 Macs. Coverage is improving but not 100% of ops are supported.</td></tr>
+<tr><td><code>xpu</code></td><td>Intel GPUs</td><td>Real but rare in practice today.</td></tr>
+<tr><td><code>meta</code></td><td>A "fake" device — shape only, no storage</td><td>Used for model construction without allocating memory. Module 7 again.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Three things to internalize about devices:</p>
+
+<ol>
+  <li>A tensor lives on exactly one device. Ops between tensors require both on the same device, or PyTorch raises a clear error.</li>
+  <li>Moving tensors between devices costs bytes-per-second — the PCIe (or NVLink) bandwidth between CPU and GPU. For a typical PCIe 4.0 x16 link, you get about 25 GB/s in each direction. Move a billion-byte tensor and you've spent 40ms of pure transfer.</li>
+  <li>GPU operations are <em>asynchronous</em> by default. <code>x = x.cuda(); y = x + 1</code> queues two operations and returns immediately. The result isn't ready until you observe it (e.g., <code>print(y)</code>, <code>y.cpu()</code>, or <code>torch.cuda.synchronize()</code>).</li>
+</ol>
+
+<div class="character autograd">
+  <div class="avatar">∂</div>
+  <div>
+    <p class="who">Autograd (with a warning)</p>
+    <p class="name">"Async kernels mean profiling lies."</p>
+    <p class="says">Because GPU ops queue up and return immediately, you can't time them with <code>time.time()</code>. The Python clock will say "0.001 seconds" while the GPU is still working. To measure correctly, call <code>torch.cuda.synchronize()</code> right before reading the timer. We'll cover the proper profiler in Module 13. For now: <em>don't trust naive timings on GPU.</em></p>
+  </div>
+</div>
+
+<h2>Pinned memory and async transfers</h2>
+
+<p>Now the punch line. The standard <code>x.to('cuda')</code> from a regular CPU tensor is <em>synchronous</em> — Python waits while the bytes copy. That's a problem if your training loop is loading data on the CPU while the GPU is doing forward+backward. The CPU finishes loading, kicks off a transfer, the GPU sits idle waiting for the bytes. Then the GPU computes. Then it sits idle while the CPU loads the next batch. Pipeline stall.</p>
+
+<p>The fix is <em>pinned memory</em> + <em>non-blocking transfer</em>. Pinned memory is CPU memory that's locked in place, allowing the GPU's DMA engine to read from it without OS interference. With pinned memory, the transfer can proceed asynchronously while the GPU does other work.</p>
+
+<pre><code><span class="com"># Without pinning — transfer is synchronous, blocks Python</span>
+x = torch.randn(<span class="num">1024</span>, <span class="num">1024</span>)             <span class="com"># pageable CPU memory</span>
+x_gpu = x.to(<span class="str">'cuda'</span>)                  <span class="com"># Python waits here</span>
+
+<span class="com"># With pinning + non-blocking — transfer overlaps with compute</span>
+x = torch.randn(<span class="num">1024</span>, <span class="num">1024</span>, pin_memory=<span class="kw">True</span>)
+x_gpu = x.to(<span class="str">'cuda'</span>, non_blocking=<span class="kw">True</span>)   <span class="com"># returns immediately</span>
+<span class="com"># ... GPU can now overlap this transfer with prior queued ops</span></code></pre>
+
+<p>The DataLoader handles this for you (Module 10) when you pass <code>pin_memory=True</code>. For one-off transfers, you do it yourself.</p>
+
+<div class="warn">
+<strong>Pinned memory isn't free.</strong> It comes from a smaller pool than regular pageable RAM, and excessive pinning can starve the OS. Don't pin everything — pin the things that get transferred to GPU repeatedly (data batches), not your one-off scratch tensors.
+</div>
+
+<h3>The async kernel model in one diagram</h3>
+
+<div class="ascii">CPU side:
+  Python:  load_batch()  -->  x.to('cuda', non_blocking=True)  -->  model(x)  -->  ...
+                                |                                        |
+                                v                                        v
+  GPU command queue:    [transfer_kernel]    [forward_kernel_1]   [forward_kernel_2] ...
+                                ↑                  ↑                     ↑
+                          DMA from pinned     starts as soon as          continues
+                          mem; overlaps       transfer is done           the queue
+                          with prior work     ↑
+                                              this is where async wins:
+                                              GPU never stalls waiting
+                                              for the bytes</div>
+
+<p>The whole point of pinned memory + non-blocking is to keep the GPU command queue full. As long as there's a kernel queued, the GPU isn't idle. Empty queue = GPU sleeping = wasted hardware.</p>
+
+<h2>Code Magnets: build a fast move-to-GPU helper</h2>
+
+<p>You're writing a utility that takes a CPU tensor and gets it to GPU as efficiently as possible. The user might pass a regular tensor or a pre-pinned one; you want to do the right thing in both cases.</p>
+
+<div class="magnets">
+<p>Arrange these magnets into a function body. There are two red herrings.</p>
+
+<div class="magnet-pool">
+  <span class="magnet">if not x.is_pinned():</span>
+  <span class="magnet">x = x.pin_memory()</span>
+  <span class="magnet">x = x.contiguous()</span>
+  <span class="magnet">return x.to('cuda', non_blocking=True)</span>
+  <span class="magnet">return x.to('cuda')</span>
+  <span class="magnet">torch.cuda.synchronize()</span>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<pre><code><span class="kw">def</span> <span class="fn">to_gpu_fast</span>(x):
+    <span class="kw">if not</span> x.is_pinned():
+        x = x.pin_memory()
+    <span class="kw">return</span> x.to(<span class="str">'cuda'</span>, non_blocking=<span class="kw">True</span>)</code></pre>
+<p>The traps:</p>
+<ul>
+  <li><code>x.contiguous()</code> looks reasonable but is unrelated. <code>pin_memory()</code> already requires contiguous storage and will handle it.</li>
+  <li><code>torch.cuda.synchronize()</code> would <em>defeat</em> the whole purpose — it forces a wait, killing the async benefit. The caller may want to sync later, but this helper shouldn't.</li>
+  <li><code>return x.to('cuda')</code> (no <code>non_blocking</code>) gives up the async win.</li>
+</ul>
+<p>The check <code>if not x.is_pinned()</code> matters because pinning is expensive — calling it on already-pinned memory wastes a copy.</p>
+</details>
+</div>
+
+<h2>Determinism: the train of compromises</h2>
+
+<p>You ran your model twice and got slightly different loss values. Are you losing your mind? No — you're meeting one of PyTorch's most important caveats.</p>
+
+<p>True determinism on a GPU costs throughput. A non-deterministic <code>scatter_add</code> can run as a single fused kernel with atomic operations; a deterministic version has to serialize the writes. The default is non-deterministic. You opt in to the slower-but-reproducible path explicitly.</p>
+
+<p>The full incantation:</p>
+
+<pre><code><span class="kw">import</span> torch
+<span class="kw">import</span> random
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="kw">def</span> <span class="fn">set_deterministic</span>(seed=<span class="num">42</span>):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+    <span class="com"># cuDNN convolutions and similar — pick deterministic algorithms</span>
+    torch.backends.cudnn.deterministic = <span class="kw">True</span>
+    torch.backends.cudnn.benchmark = <span class="kw">False</span>
+
+    <span class="com"># PyTorch operator-level — error if a non-deterministic op is used</span>
+    torch.use_deterministic_algorithms(<span class="kw">True</span>)
+
+    <span class="com"># Required env var for some CUDA kernels (set BEFORE importing torch in real code)</span>
+    <span class="kw">import</span> os
+    os.environ[<span class="str">'CUBLAS_WORKSPACE_CONFIG'</span>] = <span class="str">':4096:8'</span></code></pre>
+
+<p>Three things to know about this:</p>
+
+<ol>
+  <li><strong>Some ops have no deterministic implementation.</strong> <code>torch.use_deterministic_algorithms(True)</code> will <em>raise an error</em> if you call one. That's a feature — it tells you exactly where determinism breaks. Common offenders: <code>scatter_add</code> on CUDA, certain <code>index_put</code> patterns, some atomics.</li>
+  <li><strong>Performance hits are real.</strong> Convolutions can be 2× slower in deterministic mode. For research/debugging, that's fine. For production training, you usually accept non-determinism.</li>
+  <li><strong>Cross-device determinism is harder still.</strong> Two GPUs of the same model may produce slightly different results because of float-summation order in collective ops (Module 15). Even with all the flags, you can't generally guarantee bit-equality across hardware.</li>
+</ol>
+
+<div class="dialogue">
+<span class="speaker">JUNIOR</span>I set <code>torch.manual_seed(42)</code> and my loss is <em>still</em> different across runs. Why?
+<span class="speaker b">SENIOR</span>You probably have a CUDA op that's non-deterministic. Add <code>torch.use_deterministic_algorithms(True)</code>; if anything errors, that's the culprit.
+<span class="speaker">JUNIOR</span>And if it does error?
+<span class="speaker b">SENIOR</span>You either rewrite the offending op (sometimes a deterministic alternative exists), or accept that your training run isn't going to be bit-reproducible. You can usually still get <em>statistically</em> reproducible results — same final accuracy, same general loss trajectory — just not bitwise.
+</div>
+
+<h2>Who does what?</h2>
+
+<div class="matching">
+<p class="intro">Match each operation or flag to what it actually does.</p>
+
+<div class="match-grid">
+  <div class="header">Operation / flag</div>
+  <div class="header">What it does</div>
+
+  <div>x.pin_memory()</div>
+  <div>A. Numerically stable computation of log(sum(exp(x))) without overflow.</div>
+
+  <div>torch.logsumexp(x, dim)</div>
+  <div>B. Locks CPU memory in place so the GPU can DMA from it asynchronously.</div>
+
+  <div>torch.use_deterministic_algorithms(True)</div>
+  <div>C. Tells cuDNN to pick deterministic algorithms for convolutions.</div>
+
+  <div>torch.cuda.synchronize()</div>
+  <div>D. Waits for all queued GPU work to finish before returning.</div>
+
+  <div>torch.backends.cudnn.deterministic = True</div>
+  <div>E. Errors when any non-deterministic PyTorch op is called.</div>
+
+  <div>x.to('cuda', non_blocking=True)</div>
+  <div>F. Queues an async transfer; only beneficial if x is in pinned memory.</div>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<p>
+<strong>x.pin_memory()</strong> → B<br>
+<strong>torch.logsumexp(x, dim)</strong> → A<br>
+<strong>torch.use_deterministic_algorithms(True)</strong> → E<br>
+<strong>torch.cuda.synchronize()</strong> → D<br>
+<strong>torch.backends.cudnn.deterministic = True</strong> → C<br>
+<strong>x.to('cuda', non_blocking=True)</strong> → F
+</p>
+<p>The two determinism flags do different things: the cudnn one is about <em>which convolution algorithm</em> (auto-tuned vs deterministic), while the use_deterministic_algorithms one is about <em>any op</em> in the broader codebase. You usually want both for true reproducibility.</p>
+</details>
+</div>
+
+<h2>Exercises</h2>
+
+<div class="exercise">
+<p><strong>1.</strong> Compute the smallest positive value representable in float16 vs bfloat16. Why is the bf16 version smaller?</p>
+<details class="answer"><summary>show answer</summary>
+<pre><code><span class="kw">import</span> torch
+<span class="fn">print</span>(torch.finfo(torch.float16).tiny)    <span class="com"># 6.103515625e-05</span>
+<span class="fn">print</span>(torch.finfo(torch.bfloat16).tiny)   <span class="com"># 1.1754943508222875e-38</span></code></pre>
+<p>BF16 has 8 exponent bits to F16's 5, giving it a hugely larger range — both upward and downward. The <em>precision</em> near zero is much worse in bf16 (because of the 7-bit mantissa), but you can <em>represent</em> much smaller numbers without underflow.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>2.</strong> Naive softmax overflows on large inputs. Will it also have problems with very <em>negative</em> inputs (e.g., <code>[-1000, -1000, -1000]</code>)?</p>
+<details class="answer"><summary>show answer</summary>
+<p>Yes, but a different problem: <em>underflow</em>. <code>(-1000).exp()</code> is approximately zero in any float type. Then <code>0 / 0</code> = NaN. The max-subtraction trick still saves you: subtracting <code>-1000</code> gives <code>[0, 0, 0]</code>, then <code>exp</code> gives <code>[1, 1, 1]</code>, then divide by 3 gives <code>[1/3, 1/3, 1/3]</code> — the correct uniform distribution.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>3.</strong> You're training in bf16 and your loss is computed by hand as <code>(logits.exp() / logits.exp().sum()).log() ...</code>. Even with the max trick, the loss is noisy. What's the fix?</p>
+<details class="answer"><summary>show answer</summary>
+<p>Compute the loss in fp32 even though the model runs in bf16. Either use <code>F.cross_entropy(logits, targets)</code> (which handles dtype promotion internally) or upcast manually: <code>logits.float()</code> before the loss. The 7-bit mantissa of bf16 isn't precise enough for the small differences that matter at the loss tail.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>4.</strong> You time a GPU operation with <code>t0 = time.time(); model(x); t1 = time.time()</code> and get suspiciously fast results. What's the proper way?</p>
+<details class="answer"><summary>show answer</summary>
+<pre><code>torch.cuda.synchronize()
+t0 = time.time()
+out = model(x)
+torch.cuda.synchronize()    <span class="com"># wait for queued work to finish</span>
+t1 = time.time()</code></pre>
+<p>Without the syncs, you're timing the Python overhead of <em>queuing</em> the kernels, not their actual execution. The first sync ensures any prior work is done so it doesn't bleed into your measurement; the second waits for your code's work to actually complete. For more rigorous benchmarking, use <code>torch.cuda.Event</code> with <code>event.elapsed_time</code> — Module 13.</p>
+</details>
+</div>
+
+<div class="bullet-points">
+<h3>What just happened?</h3>
+<ul>
+  <li>A <strong>dtype</strong> is a precision/range tradeoff. <strong>fp32</strong> is the safe default. <strong>bf16</strong> = same range as fp32, less precision — usually best for training. <strong>fp16</strong> = better precision than bf16 but tiny range (overflows at 65,504), needs a GradScaler. <strong>fp8</strong> is for inference on H100+ via specialized libraries.</li>
+  <li>Type promotion follows NumPy-like rules: mixing dtypes in an op promotes to the wider type. Watch for accidental upcasts in mixed-precision code.</li>
+  <li><strong>Naive softmax overflows.</strong> Always subtract the max before exp. <strong>Use <code>logsumexp</code></strong> instead of <code>log(sum(exp(x)))</code>. These tricks aren't optional — they're the difference between training and NaN.</li>
+  <li>Floating-point sums are <strong>not associative</strong>. Different reduction orders give different results in the last few bits. This is why GPU code is non-deterministic by default.</li>
+  <li>Use <code>x.sum(dtype=torch.float32)</code> to accumulate fp16/bf16 tensors in higher precision without an explicit upcast.</li>
+  <li>A tensor lives on <strong>exactly one device</strong>. Use <code>.to(device)</code>; <code>cpu</code>, <code>cuda</code>, <code>mps</code>, <code>meta</code> are the ones you'll see.</li>
+  <li><strong>GPU ops are asynchronous.</strong> Python returns immediately. <code>torch.cuda.synchronize()</code> forces a wait. Naive <code>time.time()</code> measurements lie.</li>
+  <li><strong>Pinned memory + non-blocking transfer</strong> = async CPU→GPU copy that overlaps with compute. Standard for DataLoader. Don't over-pin — it's a finite resource.</li>
+  <li>Reproducibility requires four things: seeds (Python/NumPy/torch/cuda), <code>cudnn.deterministic = True</code>, <code>torch.use_deterministic_algorithms(True)</code>, and the <code>CUBLAS_WORKSPACE_CONFIG</code> env var. It costs throughput. Use only when needed.</li>
+  <li>Bit-exact reproducibility across GPUs is essentially impossible. Statistical reproducibility (same final result, modulo last-decimal noise) is achievable.</li>
+</ul>
+</div>
+
+<p>That closes Part I. You now have the storage/stride model, the shape rules, and the dtype/device model. In Part II we go meet the framework that makes all of this <em>differentiable</em>: autograd. Module 04 walks the dynamic graph by hand on a small example until <code>.backward()</code> stops being magic.</p>
+
+<div class="module-footer">
+  <span>PyTorch · From Tensor to Kernel</span>
+  <span class="num">03</span>
+  <span>Devices, dtypes & numerics</span>
+</div>
+
+</div>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="02_indexing_broadcasting.html" class="prev">&laquo; 02 Broadcasting</a>
+  <a href="../../index.html" class="home">Home</a>
+  <a href="04_what_backward_does.html" class="next">04 Backward &raquo;</a>
+</nav>
+</body>
+</html>

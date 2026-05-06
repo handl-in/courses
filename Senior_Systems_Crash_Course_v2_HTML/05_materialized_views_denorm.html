@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam has been told to denormalize</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 05</p>
+</div>
+<div class="module-title">
+<p>Materialized Views &amp; Denormalization</p>
+</div>
+<div class="subtitle">
+<p>The spectrum from "model it like the textbook" to "store it precomputed because reads are hot"</p>
+</div>
+</div>
+<div class="opener">
+<p>"Should I denormalize this?" is the question every senior engineer hears at least once a week. The answer is never the same. The wrong answer ends up as a JIRA ticket six months later titled <em>"why is our data inconsistent."</em></p>
+<p>This module gives you a framework so robust that "should I denormalize this?" becomes a 60-second conversation, not a 90-minute meeting.</p>
+</div>
+<h1>Sam has been told to denormalize</h1>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+A senior on my team told me to denormalize our orders table. We have an <code>orders</code> table that joins to <code>users</code> and <code>products</code> to render the order page. Page loads are slow. He said "just embed the user name and product name in the order row, problem solved." Should I do it?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Probably not yet. What's the actual page load time?</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+600ms.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+And how often is that page loaded?</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+Maybe a hundred times an hour, total.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+So you're going to introduce data duplication, write-time complexity, and a permanent denormalization debt to fix a query that runs once every 36 seconds. Have you tried indexing first?</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+...no.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+This is what I want you to internalize. Denormalization is a <em>tool</em>, not a <em>default</em>. The senior framing is: I have a normalized schema and a query problem. I have a ladder of solutions, from cheap to expensive. I climb the ladder only as far as I have to.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+What's the ladder?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Indexes (Module 4). Then materialized views — precomputed query results. Then caching layers. Then partial denormalization — embedding <em>snapshot</em> values that don't drift. And only then full denormalization. Most "we should denormalize" conversations should die at step one.</p>
+</div>
+</div>
+<div class="keyidea">
+<p>Normalization optimizes for write correctness — every fact lives in one place. Denormalization optimizes for read speed — facts get duplicated. Materialized views are the negotiated middle ground: precomputed results that go slightly stale in exchange for read speed. <strong>Pick by what's actually slow, not by aesthetic preference.</strong></p>
+</div>
+<h1>Normalization in 90 seconds</h1>
+<p>A normalized schema removes redundancy. Each fact lives in <strong>exactly one place</strong>. To answer queries, you JOIN.</p>
+<div class="scenario">
+<p>A normalized e-commerce schema:</p>
+<pre><code>users(id, name, email)
+orders(id, user_id, created_at, total)
+order_items(id, order_id, product_id, quantity, price)
+products(id, name, sku, current_price)
+</code></pre>
+<p>To show "Alice's order from Tuesday with all line items," you JOIN four tables. The user's name lives in exactly one row of <code>users</code>. The product name lives in exactly one row of <code>products</code>. Update once, and every query downstream sees the new value automatically.</p>
+</div>
+<div class="metaphor">
+<p><strong>The card catalog system.</strong></p>
+<p>A normalized library has one card per book. The book's title, author, ISBN, and shelf location are recorded once. To find "books by Toni Morrison," the catalog cross-references — you don't store "Toni Morrison" on every card.</p>
+<p>If Morrison releases a new book under a slight name variation, you update one record. Every query that depends on her name automatically reflects the change.</p>
+<p>The catalog is <em>normalized</em> for correctness. The trade-off: every lookup is a small dance — find the author card, then the book cards, then go to the shelves. Many small steps.</p>
+</div>
+<h2>What normalization wins</h2>
+<table>
+<thead>
+<tr>
+<th>Win</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Single source of truth</strong></td>
+<td>Update a product name once; all orders show the new name</td>
+</tr>
+<tr>
+<td><strong>No data drift</strong></td>
+<td>"This row says Alice, that row says Alic" — impossible</td>
+</tr>
+<tr>
+<td><strong>Constraints enforce integrity</strong></td>
+<td>Foreign keys, UNIQUE, NOT NULL all work cleanly</td>
+</tr>
+<tr>
+<td><strong>Schema evolution is cleaner</strong></td>
+<td>Add a column to <code>products</code>, every order automatically gets it</td>
+</tr>
+<tr>
+<td><strong>Storage efficiency</strong></td>
+<td>A million orders by Alice all reference one user row</td>
+</tr>
+</tbody>
+</table>
+<h2>What normalization loses</h2>
+<table>
+<thead>
+<tr>
+<th>Loss</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>JOIN cost at query time</strong></td>
+<td>Every read pays for the lookup dance</td>
+</tr>
+<tr>
+<td><strong>Multi-table writes need transactions</strong></td>
+<td>"Insert order + line items" is two tables</td>
+</tr>
+<tr>
+<td><strong>Aggregations across joins are expensive</strong></td>
+<td>"Total revenue by user country" hits four tables</td>
+</tr>
+<tr>
+<td><strong>Doesn't fit some data models</strong></td>
+<td>NoSQL document stores can't really "join" — they push back to denormalization</td>
+</tr>
+</tbody>
+</table>
+<div class="nodumbq">
+<div class="q">
+<p>Q: What does "3rd Normal Form" actually mean in practice?</p>
+</div>
+<div class="a">
+<p>A: Roughly: every non-key column depends on the primary key, the whole key, and nothing but the key. In English: don't have columns that are functions of other non-key columns. For interview purposes, "3NF" rarely matters as a label — what matters is whether you can articulate the duplication trade-off and decide intelligently. Saying "this schema is in 3NF" gets you nothing. Saying "I'm storing the user's name in the orders table because we don't want order history to change when users rename themselves" gets you points.</p>
+</div>
+</div>
+<h1>Denormalization: redundancy on purpose</h1>
+<p>A denormalized schema <strong>embeds related data</strong> to avoid JOINs.</p>
+<div class="scenario">
+<p>The same data, denormalized:</p>
+<pre><code>orders(
+  id,
+  user_id, user_name, user_email,        ← embedded user
+  created_at, total,
+  items: [                                ← embedded items array
+    {product_id, product_name, sku, quantity, price_at_purchase},
+    {product_id, product_name, sku, quantity, price_at_purchase}
+  ]
+)
+</code></pre>
+<p>To show Alice's order: a single point read. <strong>No JOINs.</strong> The page loads in 5ms instead of 600ms.</p>
+<p>The price: every time someone updates a user's name or a product's name, you might have a stale value in old orders.</p>
+</div>
+<div class="metaphor">
+<p><strong>The receipt analogy.</strong></p>
+<p>When you buy something at a store, the receipt shows: the item name, the price you paid, the cashier's number, the store address. All printed right there. The receipt doesn't say "go look up the price in our database" — it captures the values <em>at the moment of purchase</em>.</p>
+<p>That's denormalization for <em>historical accuracy</em>. The price on the receipt is what you actually paid, even if the store changes the price next week. The user's name on an old order is what they were called <em>at the time</em>, even if they renamed themselves yesterday.</p>
+<p>For things like orders, denormalization isn't just a performance hack — it's <em>semantically correct</em>. Orders are historical events, and the values at the time matter.</p>
+</div>
+<div class="keyidea">
+<p>There are two reasons to denormalize: <strong>performance</strong> (avoid JOINs) and <strong>historical correctness</strong> (capture values that shouldn't change with the source). Senior engineers separate these motivations explicitly — the first is a tool of last resort, the second is good schema design.</p>
+</div>
+<h2>The denormalization update problem</h2>
+<p>Now we're at the heart of where denormalization goes wrong.</p>
+<div class="scenario">
+<p><strong>The naive denormalization disaster.</strong></p>
+<p>A team denormalizes their <code>orders</code> table — embedding <code>user_name</code> and <code>product_name</code> directly. Page loads go from 600ms to 5ms. Everyone celebrates.</p>
+<p>Six months later, a customer files a support ticket: their old orders show their <em>previous</em> name. They renamed themselves in their account, but the orders still show "Mike Johnson" instead of "Michael Johnson Jr."</p>
+<p>The team scrambles. Now they need a sync job: whenever a user updates their name, find every order they've ever placed and update the embedded <code>user_name</code>. They build it. It's a complex job, runs nightly, sometimes fails.</p>
+<p>Then a different ticket: a product's name was wrong in the catalog. They fixed it. But every customer who bought it before the fix still sees the wrong name in their order history. Now they need <em>another</em> sync job for products.</p>
+<p>After a year of patching, the team realizes the denormalization wasn't worth the complexity. But unwinding it — restoring the JOIN-based queries and migrating off the denormalized fields — is its own project. They're stuck.</p>
+</div>
+<div class="warning">
+<p><strong>Denormalization seems cheap up front and gets expensive forever.</strong> Every embedded field is a permanent commitment. Every "should this propagate when the source changes?" decision becomes a piece of business logic that has to be maintained.</p>
+<p>The senior reflex: <strong>before denormalizing, decide explicitly whether each embedded field is a <em>snapshot</em> (frozen in time) or a <em>mirror</em> (must propagate updates)</strong>. The mirror case is where the cost lurks.</p>
+</div>
+<h2>The pattern that works: snapshots vs identity</h2>
+<div class="insider">
+<p>Here's the pattern senior engineers use when they <em>do</em> denormalize.</p>
+<p><strong>Embed historical state</strong>: the values that should <em>not</em> change when the source changes. Examples: price at purchase, address at shipping time, product name at order time, tax rate at billing time. These are <em>snapshots</em>. Their job is to be permanent records.</p>
+<p><strong>Reference mutable identity</strong>: foreign keys to the source. <code>user_id</code>, <code>product_id</code>, <code>address_id</code>. The current state lives at the source. Old orders reference the source if you need to look up the <em>current</em> user.</p>
+<p>The result: an orders table that's both <em>fast</em> (mostly self-contained) and <em>correct</em> (preserves history). When the user renames, the order keeps its old <code>user_name</code> (which is right!), but the <code>user_id</code> still points to the same person.</p>
+<p>Schema as receipt + lookup hybrid. Best of both worlds.</p>
+<pre><code>orders(
+  id,
+  user_id,           ← reference (current identity)
+  user_name,         ← snapshot (name at purchase time)
+  user_email,        ← snapshot
+  created_at,
+  items: [
+    {product_id,           ← reference
+     product_name,         ← snapshot
+     price_at_purchase,    ← snapshot (semantically correct!)
+     ...}
+  ]
+)
+</code></pre>
+<p>When asked about denormalization in an interview, this pattern signals depth. "We embed historical state and reference mutable identity" — that's a senior answer.</p>
+</div>
+<h1>Materialized views: the negotiated middle</h1>
+<p>A <strong>materialized view</strong> is a precomputed query result, stored as a table. The database keeps it up to date — either on demand or incrementally.</p>
+<pre><code class="language-sql">CREATE MATERIALIZED VIEW user_order_summary AS
+SELECT
+  u.id,
+  u.name,
+  COUNT(o.id) AS order_count,
+  SUM(oi.quantity * oi.price) AS lifetime_value
+FROM users u
+LEFT JOIN orders o ON o.user_id = u.id
+LEFT JOIN order_items oi ON oi.order_id = o.id
+GROUP BY u.id, u.name;
+</code></pre>
+<p>A read against <code>user_order_summary</code> is now a single-table scan or index lookup. <strong>The expensive JOIN/aggregate happened once, at refresh time.</strong></p>
+<div class="diagram">
+<pre><code>                   MATERIALIZED VIEW LIFECYCLE
+</code></pre>
+<p>┌─────────────────────────────────────────────────────────────┐
+  │ users + orders + order_items     ← source tables             │
+  │   (live, normalized,             ← writes hit these          │
+  │    constantly updated)                                        │
+  └─────────────────────────────────────────────────────────────┘
+                       │
+                       │  REFRESH MATERIALIZED VIEW
+                       │  (scheduled, incremental, or on-commit)
+                       ▼
+  ┌─────────────────────────────────────────────────────────────┐
+  │ user_order_summary                ← precomputed result        │
+  │   (read-optimized,                ← reads hit this            │
+  │    refreshed periodically)                                    │
+  │                                                                │
+  │   user_id  |  name   | order_count | lifetime_value           │
+  │   --------+--------+------------+----------------            │
+  │   1        |  Alice  |  47         |  $3,891.50                │
+  │   2        |  Bob    |  3          |  $89.00                   │
+  │   3        |  Carol  |  22         |  $1,250.75                │
+  └─────────────────────────────────────────────────────────────┘</p>
+<p>Reads are simple lookups. Original query (with JOINs) ran once
+  to populate. Future reads pay nothing extra.</p>
+<p>But the view is <em>stale</em> — it reflects the source as of the last
+  refresh. New orders since then aren't counted yet.</p>
+</div>
+<div class="keyidea">
+<p>Materialized views buy you read speed by spending refresh time. The question becomes: <em>how stale is acceptable?</em> That answer determines your refresh strategy.</p>
+</div>
+<h2>Refresh strategies</h2>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>How</th>
+<th>Cost</th>
+<th>Staleness</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Full refresh</strong></td>
+<td>Recompute the entire view</td>
+<td>Expensive on big data</td>
+<td>Up to refresh interval</td>
+</tr>
+<tr>
+<td><strong>Incremental refresh</strong></td>
+<td>Apply only changes since last refresh</td>
+<td>Cheap if supported</td>
+<td>Up to refresh interval</td>
+</tr>
+<tr>
+<td><strong>On-demand</strong></td>
+<td>Manual <code>REFRESH MATERIALIZED VIEW</code></td>
+<td>Whatever you set</td>
+<td>Whatever you accept</td>
+</tr>
+<tr>
+<td><strong>On-commit</strong></td>
+<td>Refresh as part of every base-table txn</td>
+<td>Slows down all writes</td>
+<td>Always fresh</td>
+</tr>
+<tr>
+<td><strong>Streaming</strong></td>
+<td>Continuously updated (Materialize, Flink, RisingWave)</td>
+<td>Infrastructure cost</td>
+<td>Sub-second</td>
+</tr>
+</tbody>
+</table>
+<div class="scenario">
+<p><strong>A finance dashboard's lifetime customer value report.</strong></p>
+<p>The underlying query joins 200M rows across <code>users</code>, <code>orders</code>, and <code>order_items</code>. Running it on demand: 8 seconds. The dashboard is loaded ~50 times per hour.</p>
+<p>Without materialization: 50 × 8 seconds = 400 seconds of database CPU per hour, just for this one report. Plus user-perceived latency of 8 seconds per page load.</p>
+<p>With a nightly materialized view: 1 × 8 seconds at 3 AM. Reads against the view: 50ms. <strong>Page loads drop to under 100ms. Database load drops by 99.9%.</strong></p>
+<p>The cost: data is up to 24 hours stale. Acceptable for monthly reporting. <strong>Not acceptable</strong> for "who's on call right now."</p>
+<p>Match the freshness to the use case.</p>
+</div>
+<h2>Incremental refresh: the magic, with caveats</h2>
+<div class="insider">
+<p><strong>Incremental refresh</strong> is one of those features that sounds great and works for some queries.</p>
+<p>The idea: instead of recomputing the whole view, the database tracks changes to the source tables (often via triggers or CDC) and updates only the affected rows of the view.</p>
+<p>Postgres has had <code>REFRESH MATERIALIZED VIEW CONCURRENTLY</code> since 9.4 — but that's not actually incremental, it just minimizes locking. <strong>True incremental materialized views in Postgres require an extension</strong> (pg_ivm, or a CDC-based pipeline you build yourself).</p>
+<p>SQL Server has indexed views with auto-update — true incremental.</p>
+<p>BigQuery has materialized views that auto-refresh incrementally for supported query shapes.</p>
+<p>Snowflake has dynamic tables — declarative incremental updates.</p>
+<p><strong>Streaming engines</strong> (Materialize, RisingWave, Flink Table API) take this further: they compute and maintain materialized views with sub-second freshness. The whole engine is built around incremental computation.</p>
+<p>Mention incremental materialized views in an interview, and you signal awareness of the modern data platform stack.</p>
+</div>
+<h2>When materialized views are the right call</h2>
+<p>Three conditions, all of which need to be true:</p>
+<ol>
+<li><strong>A specific query is hot.</strong> It runs many times. Caching its result pays back.</li>
+<li><strong>The query is expensive.</strong> Big JOINs, aggregations, lots of rows scanned. Worth precomputing.</li>
+<li><strong>Some staleness is acceptable.</strong> You can name a refresh interval that fits.</li>
+</ol>
+<p>If even one is false, materialized views aren't the right tool.</p>
+<div class="workout">
+<p><strong>Decision: should we materialize this report?</strong></p>
+<div class="step">
+<p>Is the query genuinely expensive? Run it. If under ~500ms, indexes might be enough.</p>
+</div>
+<div class="step">
+<p>Is it run often? Check <code>pg_stat_statements</code> or your equivalent. If it's run twice a day, just let it run.</p>
+</div>
+<div class="step">
+<p>Is some staleness OK? If users need second-by-second accuracy, materialization isn't your answer; streaming or denormalization might be.</p>
+</div>
+<div class="step">
+<p>Can you tolerate the refresh load? Refresh consumes resources. Schedule for off-peak.</p>
+</div>
+<div class="step">
+<p>Does the database support incremental refresh for this query? If yes, easy. If no, you're choosing between full refresh (expensive) and rolling your own incremental logic (complex).</p>
+</div>
+</div>
+<h1>The full spectrum, visualized</h1>
+<p>Now we put it all together. Picture a slider with normalization on one end and denormalization on the other.</p>
+<div class="diagram">
+<p>←  NORMALIZED                                  DENORMALIZED  →</p>
+<p>Write-optimal                                   Read-optimal
+   Slow reads (JOINs)                              Fast reads
+   Easy updates                                    Update propagation pain
+   No redundancy                                   Lots of redundancy
+   3NF schema                                      Embedded everything</p>
+<pre><code>   │                                                       │
+   │                                                       │
+   │  ←─── Indexes (Module 04) ───→                        │
+   │  Same schema, faster lookups                          │
+   │  Cheap intervention                                   │
+   │                                                       │
+   │  ←─── Materialized views ───→                         │
+   │  Precomputed results, refreshed periodically          │
+   │  Controlled staleness                                 │
+   │                                                       │
+   │  ←─── Caching layers (Redis, app) ───→                │
+   │  Same as materialized views, outside the DB           │
+   │  Manual invalidation                                  │
+   │                                                       │
+   │  ←─── Snapshot denormalization ───→                   │
+   │  Embed historical state (price at purchase, etc.)     │
+   │  No update propagation needed                         │
+   │  Semantically correct for historical data             │
+   │                                                       │
+   │  ←─── Mirror denormalization ───→                     │
+   │  Embed mutable state (user name, product name)        │
+   │  Requires sync logic                                  │
+   │  The expensive one. Use rarely.                       │
+   │                                                       │
+</code></pre>
+</div>
+<div class="keyidea">
+<p>Each step on the spectrum trades write complexity for read speed. The senior move is to climb the ladder one rung at a time, only as far as needed to solve the <em>actual</em> problem at hand.</p>
+</div>
+<h1>Three more ways to think about this</h1>
+<div class="metaphor">
+<p><strong>Way 1: cooking and reheating.</strong></p>
+<p>Normalization is cooking from scratch every time someone orders a meal. Quality is perfect. The wait is real.</p>
+<p>Denormalization is precooking everything in advance. Service is instant. But you've committed to specific dishes — adapting to dietary changes is painful.</p>
+<p>Materialized views are batch cooking once a day, with a known refresh schedule. Most orders go fast (you have it ready). Some require a recook (the daily refresh). And periodically, the whole kitchen is dedicated to refresh — no service during that window.</p>
+<p>Caching is letting customers eat from a pre-warmed buffet. They're happy with what's there. When the buffet runs low, you cook more. Sometimes you serve yesterday's leftover.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 2: encyclopedias.</strong></p>
+<p>A normalized library has the canonical encyclopedia. Every fact, fully cross-referenced. The truth lives there. To answer questions, you cross-reference.</p>
+<p>A denormalized brochure pamphlet has the most popular facts pre-extracted. You can read it instantly. But every time the encyclopedia updates, the pamphlet is wrong until reprinted.</p>
+<p>A materialized view is an annual digest — refreshed yearly from the canonical source. Fast to consult. Up to a year out of date. Acceptable for non-time-critical queries.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 3: photography vs notes.</strong></p>
+<p>A snapshot denormalized field is a photograph of a moment — captures exactly what was there. Doesn't change when the world changes. Right for <em>historical</em> records.</p>
+<p>A mirror denormalized field is a sticky note copied from a whiteboard. When the whiteboard changes, the sticky note becomes a lie unless you also update it. Right only when the world doesn't change much, or when you're committed to maintaining the lie-prevention pipeline.</p>
+<p>A normalized field is just a pointer to the whiteboard. Always current. Costs you a glance.</p>
+</div>
+<h1>Caching: the spiritual cousin</h1>
+<div class="brain">
+<p>A caching layer (Redis, Memcached, app-level cache) is, at its heart, <strong>a materialized view that lives outside the database</strong>.</p>
+<p>The same questions apply:</p>
+<ul>
+<li>How is it invalidated when the source changes?</li>
+<li>When is it stale?</li>
+<li>Who's responsible for keeping it consistent?</li>
+<li>What's the refresh strategy?</li>
+</ul>
+<p>Many engineers treat "use Redis" and "use a materialized view" as different conversations. They aren't. They're the same engineering decision — <em>trade staleness for read speed</em> — implemented in different parts of the stack.</p>
+<p>The materialized view lives in the database, refreshes via SQL semantics, has clearer transactional semantics. The cache lives outside the database, refreshes via application logic or message bus, has no transactional guarantees but is more flexible.</p>
+<p>Pick based on operational fit, not because one is "more modern."</p>
+</div>
+<div class="insider">
+<p>The two architectural patterns most teams accidentally fall into:</p>
+<p><strong>Pattern A: read-through cache.</strong> App reads from cache; on cache miss, reads from DB and populates cache. Simplest. Risks "thundering herd" on cold cache (many concurrent requests all miss, all hit DB at once).</p>
+<p><strong>Pattern B: write-through cache.</strong> App writes to DB and to cache simultaneously. Stays consistent but couples writes to two systems. Harder to recover from cache outages.</p>
+<p><strong>Pattern C: write-behind cache.</strong> App writes to cache only; cache asynchronously flushes to DB. Fast writes, but durability tied to cache survival.</p>
+<p><strong>Pattern D: cache-aside via CDC.</strong> DB is source of truth; CDC stream updates cache as a downstream consumer. Cleanest separation, more infrastructure.</p>
+<p>Senior engineers can name these patterns and pick by use case. Junior engineers say "use Redis" without knowing which pattern they're committing to.</p>
+</div>
+<h1>Fan-out: the social media problem</h1>
+<div class="scenario">
+<p><strong>The Twitter feed problem.</strong></p>
+<p>You build a social app. Users follow each other. The home feed shows posts from people you follow.</p>
+<p><strong>Naive normalized</strong>: when a user opens their feed, run <code>SELECT * FROM posts WHERE user_id IN (followees) ORDER BY created_at DESC LIMIT 50</code>. JOINs all the way. Slow at scale.</p>
+<p><strong>Fan-out on read</strong>: same as above. Whoever opens the feed pays the cost.</p>
+<p><strong>Fan-out on write</strong>: when a user posts, copy the post into the inbox of every follower. Each follower's feed becomes a fast lookup of <em>their inbox</em> — a precomputed denormalization. <strong>O(followers) writes per post.</strong></p>
+<p>For a normal user with 200 followers: 200 writes per post. Fast feeds. Acceptable.</p>
+<p>For a celebrity with 50 million followers: 50M writes per post. Each post is now a write storm. <strong>Catastrophic.</strong></p>
+<p>The pattern that actually works: <strong>hybrid fan-out</strong>.</p>
+<ul>
+<li>For normal users: fan-out on write. Their followers' feeds are precomputed and fast.</li>
+<li>For celebrities (defined by follower threshold): fan-out on read. Their posts go to a global "celebrity posts" table, queried at feed-render time and merged with the inbox.</li>
+</ul>
+<p>Now the system handles both extremes. Normal users get fast feeds. Celebrities don't melt the cluster on every tweet.</p>
+</div>
+<div class="keyidea">
+<p>Fan-out on write is denormalization for read speed. Hybrid fan-out is denormalization with an explicit fallback when denormalization is too expensive. <strong>This is the canonical pattern for "feed-style" reads at scale</strong>, used by Twitter, Instagram, Facebook, and most social apps.</p>
+</div>
+<h1>CDC + read models: the modern way</h1>
+<div class="insider">
+<p>The most modern denormalization pattern doesn't live in the OLTP database at all.</p>
+<p><strong>Pattern</strong>: keep your service-of-record schema <strong>fully normalized</strong>. Stream changes via CDC (Module 11) to downstream stores that maintain <strong>denormalized read models</strong> for specific use cases.</p>
+<pre><code>┌────────────────────────┐
+│ Postgres (normalized)   │  ← writes go here
+│ users, orders, items    │
+└───────────┬─────────────┘
+            │  CDC (Debezium)
+            ▼
+┌────────────────────────┐
+│ Kafka                   │
+└───────────┬─────────────┘
+            │
+   ┌────────┼─────────────────────────┐
+   ▼        ▼                         ▼
+┌────────┐ ┌────────────────┐  ┌──────────────────┐
+│ Redis  │ │ Elasticsearch  │  │ Read DB           │
+│ (cache)│ │ (search index) │  │ (denormalized     │
+│        │ │                │  │  view of orders)  │
+└────────┘ └────────────────┘  └──────────────────┘
+</code></pre>
+<p>Each consumer maintains its own optimized representation. Search team owns Elasticsearch. Cache team owns Redis. Reporting team owns the denormalized read DB.</p>
+<p><strong>The OLTP database stays pristine.</strong> Nobody puts denormalization debt in it. The pain of denormalization moves to downstream consumers, where it's contained and owned by the team that needs it.</p>
+<p>This is what most modern engineering organizations actually do. Mention this architecture in an interview and you signal real-world awareness.</p>
+</div>
+<h1>When to denormalize: the heuristic</h1>
+<p>Walk through these in order. Stop at the first one that's true.</p>
+<div class="workout">
+<p><strong>The denormalization decision flow:</strong></p>
+<div class="step">
+<p><strong>Have you indexed the slow query?</strong> If no, do that first. 80% of "slow JOIN" problems are actually missing indexes. (Module 04.)</p>
+</div>
+<div class="step">
+<p><strong>Have you profiled it with <code>EXPLAIN ANALYZE</code>?</strong> If the planner is making a bad choice, fix that first. Stale stats? Wrong join order? Missing indexes? Often the JOIN is fine; the planner is confused. (Module 06.)</p>
+</div>
+<div class="step">
+<p><strong>Is the read pattern fixed and frequent?</strong> If yes, materialized view if staleness is acceptable. Caching layer if staleness should be invalidatable.</p>
+</div>
+<div class="step">
+<p><strong>Is the data semantically historical?</strong> If yes, snapshot denormalization is <em>good schema design</em>, not a hack. Embed price-at-purchase, name-at-order, etc.</p>
+</div>
+<div class="step">
+<p><strong>Is staleness unacceptable AND queries cross-cutting AND scale is real?</strong> If yes, consider CDC + read models. Don't denormalize the source.</p>
+</div>
+<div class="step">
+<p><strong>Is none of the above sufficient?</strong> Now, and only now, consider mirror denormalization. Build the sync pipeline. Document the trade-off. Accept the long-term maintenance cost.</p>
+</div>
+</div>
+<div class="warning">
+<p>The senior anti-pattern is climbing this ladder in reverse — starting with mirror denormalization "for performance" before having tried the simpler steps. That's the path to the 19-table-update sync pipeline that nobody on the team understands six months later.</p>
+</div>
+<h1>Sharpen your pencil</h1>
+<div class="exercise">
+<p><strong>Exercise 1.</strong> A team's "user feed" page joins <code>users</code>, <code>follows</code>, and <code>posts</code>. Page loads at 4 seconds. They're considering three options:</p>
+<ol>
+<li>Materialized view of feeds, refreshed nightly.</li>
+<li>Fan-out on write (denormalize the feed).</li>
+<li>CDC + dedicated read model.</li>
+</ol>
+<p>For each, what does it give up?</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>Option 1: Materialized view, refreshed nightly.</strong>
+What it gives up: freshness. Posts created today don't appear in your feed until tomorrow. <strong>Acceptable for low-engagement feeds (newsletters, daily digests). Catastrophic for social media</strong> where users expect to see their own post appear immediately.</p>
+<p><strong>Option 2: Fan-out on write.</strong>
+What it gives up: write capacity for posts, especially for users with many followers. A celebrity with 50M followers does 50M writes per post. Without hybrid mitigation (treating celebrities specially), the system melts. Twitter famously runs hybrid fan-out for exactly this reason.</p>
+<p><strong>Option 3: CDC + read model.</strong>
+What it gives up: architectural simplicity. You now run a CDC pipeline, a separate read database, and consumers that maintain consistency. Operationally heavier. But scales independently, isolates concerns, and is what most modern systems above ~100M users converge to.</p>
+<p>The senior reflex: <strong>the right answer depends on engagement patterns and scale</strong>. There's no single best choice. Articulate the trade-offs explicitly, recommend based on the specific situation, and acknowledge what you're giving up.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2.</strong> A team proposes embedding <code>current_email</code> directly in their <code>orders</code> table to skip the user lookup. You disagree. Two arguments against, one alternative.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>Argument 1: It's the wrong kind of denormalization.</strong>
+<code>current_email</code> is a <em>mirror</em> (must reflect current state) — every email change requires updating every old order. Even if the team builds the sync pipeline, they're committing to maintaining it forever. The cost compounds.</p>
+<p><strong>Argument 2: It's solving a problem they should solve elsewhere.</strong>
+If the bottleneck is "users JOIN to render the order," fix the JOIN: index the FK, ensure stats are fresh, or add a caching layer. <strong>The order schema should not bear the cost of optimizing the order-rendering query.</strong></p>
+<p><strong>Alternative: snapshot the email at purchase time.</strong>
+Store <code>email_at_purchase</code> (denormalized snapshot — never propagates) instead of <code>current_email</code> (denormalized mirror — always propagates). Solves the "show old orders without joining" use case AND captures historical correctness — if a user changes email, old orders correctly show the email <em>at that order's time</em>, not the current one.</p>
+<p>This is the senior pattern: <strong>embed history, reference identity</strong>.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3.</strong> Explain to non-technical Sam, in two sentences, what a materialized view is.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>A materialized view is a precomputed answer to a slow query, saved as a regular table that you can read from instantly. The trade-off: the answer goes a little stale between refreshes — but for queries where "a few minutes old" is fine, it's the difference between an 8-second dashboard and a 50-millisecond one.</p>
+</div>
+</div>
+<h1>There are no dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p>Q: What's the difference between a regular VIEW and a MATERIALIZED VIEW?</p>
+</div>
+<div class="a">
+<p>A: A regular <code>VIEW</code> is just a saved query — every time you read from it, the underlying query runs. It's a convenience for query writers; it provides no performance benefit. A <code>MATERIALIZED VIEW</code> actually stores the results, so reads are fast, but they need to be refreshed. Junior engineers often conflate them.</p>
+</div>
+<div class="q">
+<p>Q: Can I create indexes on a materialized view?</p>
+</div>
+<div class="a">
+<p>A: Yes — materialized views are stored as tables, so they support indexes like any other table. This is one of the big wins: precompute the result <em>and</em> index it for fast lookups.</p>
+</div>
+<div class="q">
+<p>Q: How do I know if my materialized view is stale?</p>
+</div>
+<div class="a">
+<p>A: It's always stale unless you just refreshed it. The question is "by how much, and is that acceptable?" Postgres tracks <code>last_refresh</code> per materialized view in the catalog. Some engines auto-track and surface staleness in metadata. The discipline is: don't query a materialized view without knowing its refresh schedule.</p>
+</div>
+<div class="q">
+<p>Q: What about views that depend on other views?</p>
+</div>
+<div class="a">
+<p>A: Avoid them. Refresh dependencies become a complex DAG that has to be managed carefully. Materialized views should refresh from base tables as much as possible. Dependency chains create pain that nobody enjoys debugging at 2 AM.</p>
+</div>
+<div class="q">
+<p>Q: Can I REFRESH a materialized view without locking it?</p>
+</div>
+<div class="a">
+<p>A: In Postgres, yes — <code>REFRESH MATERIALIZED VIEW CONCURRENTLY</code>. It builds the new version in the background and atomically swaps. Requires a unique index on the view. Slower than a non-concurrent refresh but doesn't block reads.</p>
+</div>
+<div class="q">
+<p>Q: When should I use a denormalized table vs a materialized view?</p>
+</div>
+<div class="a">
+<p>A: Materialized views are managed by the database — refresh schedule, queryability, integration with transactions. Denormalized tables are managed by your application — you decide when to write. <strong>Use materialized views when the data exists in the same database and the query is expressible in SQL.</strong> Use denormalized tables when the data spans systems or the update logic is too complex for refresh semantics.</p>
+</div>
+<div class="q">
+<p>Q: Is denormalization required for NoSQL?</p>
+</div>
+<div class="a">
+<p>A: Often, yes. Document stores (MongoDB, DynamoDB) don't really do JOINs at scale. The data model essentially forces you to embed related data into the document. This is one of the architectural trade-offs of choosing NoSQL — you accept denormalization as a constraint, in exchange for simpler horizontal scale.</p>
+</div>
+<div class="q">
+<p>Q: How do I undo denormalization once it's in production?</p>
+</div>
+<div class="a">
+<p>A: Slowly and carefully. The pattern: (1) start populating the new normalized schema in parallel, (2) backfill historical data, (3) migrate readers one at a time, (4) verify consistency, (5) eventually stop writing the denormalized fields. This is a multi-quarter effort if the denormalization is deeply embedded. The lesson: <strong>think hard before denormalizing in the first place</strong>.</p>
+</div>
+</div>
+<h1>Three myths to dynamite</h1>
+<div class="myth">
+<p><strong>"Denormalization is a performance optimization."</strong></p>
+<p>Half-true and dangerous as a slogan. Denormalization for <em>performance</em> should be a last resort. Denormalization for <em>historical correctness</em> (snapshotting values at the moment they matter) is good schema design. Senior engineers separate these motivations explicitly.</p>
+</div>
+<div class="myth">
+<p><strong>"NoSQL is faster than SQL because it doesn't do JOINs."</strong></p>
+<p>False as stated. NoSQL avoids JOINs by <em>forcing</em> denormalization at the data model level — you embed related data in the document. The "speed" comes from "you've already paid the denormalization cost in your schema." A well-indexed normalized SQL query can be just as fast as a NoSQL document fetch. The trade-off is <em>flexibility</em> (NoSQL forces you into specific access patterns), not raw speed.</p>
+</div>
+<div class="myth">
+<p><strong>"Materialized views fix slow queries forever."</strong></p>
+<p>False. They trade compute time for staleness. They have to be refreshed (which costs resources). They can lag and produce wrong-feeling results. They don't help if the underlying schema is mismodeled or if the query needs sub-second freshness. Use them as one tool in a toolkit, not as a panacea.</p>
+</div>
+<h1>Interview gotchas</h1>
+<div class="gotcha">
+<p><strong>Saying "denormalize for performance" without specifics.</strong> Senior interviewers will press: which queries get faster, what's the storage cost, how do you handle updates. Be ready with all three.</p>
+</div>
+<div class="gotcha">
+<p><strong>Forgetting the consistency angle.</strong> Denormalized data eventually drifts unless you have a guaranteed sync mechanism. "We'll keep it in sync" without a concrete pipeline (CDC, dual writes inside a transaction, message queue with idempotent consumers) is hand-waving.</p>
+</div>
+<div class="gotcha">
+<p><strong>Confusing VIEW with MATERIALIZED VIEW.</strong> A regular VIEW is just a saved query that runs every time. A MATERIALIZED VIEW stores results. Junior engineers conflate them; senior engineers know the distinction matters operationally.</p>
+</div>
+<div class="gotcha">
+<p><strong>Not knowing when fan-out on read vs write applies.</strong> "Fan-out" is a senior interview vocabulary word. Knowing the social media examples (Twitter's hybrid approach) and being able to articulate when each makes sense is a senior signal.</p>
+</div>
+<div class="gotcha">
+<p><strong>Treating caching as separate from materialized views.</strong> They're the same engineering pattern in different stack locations. Senior engineers can articulate this. Junior ones treat them as unrelated topics.</p>
+</div>
+<h1>Mock interview</h1>
+<div class="mock-interview">
+<div class="turn q">
+<p>We have an analytics dashboard. The underlying query takes 30 seconds. The dashboard is loaded every 5 minutes by 100 different teams. What do you do?</p>
+</div>
+<div class="turn a">
+<p>First — push back on the dashboard owner. 5 minutes × 100 teams = 30,000 reloads per day. Each is 30 seconds of compute. That's 250 hours per day of database CPU just on this one query. Before any optimization conversation: is this dashboard actually being used by 100 teams, or is it just left open in browsers? If a substantial fraction is idle reloads, the cheapest fix is to add session-aware lazy loading on the frontend.</p>
+<p>Assuming the load is real, the plan:</p>
+<p><strong>One — create a materialized view of the dashboard query.</strong> Refresh on a schedule. The right interval depends on freshness requirements: if "5-minute fresh" is acceptable, refresh every 1 minute (1440 refreshes per day, vs 30,000 raw runs). The dashboard reads against the view, drops to under 100ms.</p>
+<p><strong>Two — verify the source database can handle the refresh load.</strong> Refreshing a 30-second query consumes 30 seconds of database CPU. If that contends with OLTP traffic, run the refresh on a read replica.</p>
+<p><strong>Three — if even 1-minute staleness is unacceptable</strong>, escalate:
+- Incremental refresh (Postgres extensions, BigQuery materialized views, Snowflake dynamic tables) for sub-30-second freshness.
+- Streaming materialized views (Materialize, RisingWave) for sub-second freshness — at infrastructure cost.
+- Or denormalize via CDC into a purpose-built read store.</p>
+<p>For "5-minute fresh is fine," scheduled materialized view is by far the simplest. <strong>Always solve the easy version first.</strong></p>
+</div>
+<div class="commentary">
+<p>Starts by questioning the requirement. Even mentions the cheapest non-database fix. That alone signals senior thinking — junior candidates dive straight into "let's add a cache."</p>
+</div>
+<div class="turn q">
+<p>The team comes back and says "we want sub-second freshness." What does that change?</p>
+</div>
+<div class="turn a">
+<p>The simple materialized view approach is dead — refresh-and-read can't hit sub-second economically.</p>
+<p>Three options, ordered by complexity and cost:</p>
+<p><strong>Option A: Live query with aggressive caching of partial results.</strong>
+Don't precompute the whole answer; precompute the <em>expensive parts</em> and combine cheaply at query time. If the dashboard aggregates millions of rows, but the rollup-by-day cardinality is small, materialize just the daily rollups, then sum them on the fly per request. The fast on-the-fly part keeps freshness; the precomputation absorbs the heavy lifting.</p>
+<p><strong>Option B: Streaming materialized view.</strong>
+Tools like Materialize, RisingWave, or Flink Table API maintain a continuously-updated view that reflects source-table changes within seconds. The query result is always current; the engine does the incremental work. Operationally heavier — you're running a stream processor — but it's the cleanest fit for sub-second latency on complex aggregations.</p>
+<p><strong>Option C: Push-down to a real-time analytics database.</strong>
+ClickHouse, Druid, or Pinot ingest continuously and serve sub-second queries on real-time data. Pair with CDC from your OLTP source. This is the "stop fighting Postgres for analytics" answer — accept that the workload doesn't fit the OLTP engine.</p>
+<p><strong>My default</strong>: option A first if the data shape allows partial precomputation. If it doesn't, option B for tighter integration with the existing database, option C for clearer architectural separation.</p>
+<p>Each is a real shift — from "tune the query" to "rethink where this workload lives." Sub-second freshness on aggregations isn't free.</p>
+</div>
+<div class="commentary">
+<p>Three concrete options with explicit ordering and trade-offs. Mentions Materialize and RisingWave by name — modern data-platform vocabulary. The framing "real shift" acknowledges that the requirement change is architecturally meaningful, not just a config tweak.</p>
+</div>
+<div class="turn q">
+<p>Switching topics — when would you embed <code>user_name</code> directly in an <code>orders</code> table vs joining to <code>users</code> every time?</p>
+</div>
+<div class="turn a">
+<p>The question I'd ask first: <strong>is the embedded value a snapshot of historical state, or a mirror of current state?</strong></p>
+<p>If it's a snapshot — capturing the user's name <em>at the time of purchase</em> — embedding is good schema design. Orders are historical events; the receipt is the receipt. Even if the user renames themselves, the order should still reflect what they were called at purchase. I'd name the column <code>user_name_at_purchase</code> or just <code>user_name</code> with documented snapshot semantics.</p>
+<p>If it's a mirror — meaning we want the embedded value to track the user's current name and update when they rename — that's a much bigger commitment. I'd push back on it. We now have a sync problem: every user-rename triggers an update to potentially millions of historical orders. We need a pipeline (triggers, CDC, batch jobs), monitoring, drift detection. The cost compounds forever.</p>
+<p>For the mirror case, I'd suggest the alternative: keep <code>orders</code> joining to <code>users</code> for the <em>current</em> name. Add an index, ensure stats are fresh. If the JOIN is genuinely the bottleneck after that, consider a caching layer or a denormalized read model populated via CDC — separating the denormalization concern from the OLTP schema.</p>
+<p>The senior pattern: <strong>embed historical state freely, reference mutable identity, push mirror denormalization to read models outside the source of truth.</strong></p>
+</div>
+<div class="commentary">
+<p>Establishes the snapshot-vs-mirror distinction immediately. Doesn't just answer "should we do it" — explains the framework that determines when to do it. Closing principle is the kind of crisp summary that wins interviews.</p>
+</div>
+<div class="turn q">
+<p>Last one. Imagine I tell you the entire team is dogmatically anti-denormalization — they've been burned before. They want to keep everything in 3NF and just buy bigger hardware. What do you tell them?</p>
+</div>
+<div class="turn a">
+<p>I'd respect the scar tissue and meet them on common ground.</p>
+<p><strong>Acknowledge the trauma.</strong> Mirror denormalization without discipline is genuinely awful — sync pipelines fail, data drifts, debugging is miserable. Their instinct to avoid it isn't irrational; it's experience.</p>
+<p><strong>Distinguish what they're rejecting.</strong> They're (rightly) rejecting <em>mirror denormalization without sync infrastructure</em>. They might be (wrongly) rejecting:
+- Indexes — not denormalization at all.
+- Materialized views — managed by the database, refresh-controlled.
+- Snapshot denormalization — historical correctness, no sync needed.
+- CDC + read models — denormalization moved out of the OLTP source, owned by downstream teams.</p>
+<p>A senior conversation distinguishes these. "We don't denormalize" is a slogan. "We don't write mirror denormalization into our OLTP schema, but we use materialized views, snapshots, and downstream read models" is a <em>position</em>.</p>
+<p><strong>Show them the cost of not denormalizing.</strong> Bigger hardware has limits — both technical (single-node Postgres has ceilings) and economic. At some point, the JOIN cost on every read exceeds what hardware can fix. Show them concrete projections: "at our growth rate, our $5K/month database becomes a $50K/month database in 18 months." That changes the calculus.</p>
+<p><strong>Propose the smallest, safest experiment.</strong> Pick one query that's a real bottleneck. Apply the <em>cheapest</em> denormalization tool — usually a materialized view or a snapshot field. Measure. Demonstrate the trade-offs are manageable. Build trust before scaling the pattern.</p>
+<p>Cultural change is slow, but the path is: respect the lesson they learned, expand the vocabulary, propose small experiments. Don't argue them into denormalizing the whole schema.</p>
+</div>
+<div class="commentary">
+<p>Empathetic, practical, and political. "Acknowledge the trauma" is a senior framing — recognizing that engineering decisions are made by humans with histories. Closing with cultural-change strategy shows the candidate understands tech leadership, not just technical correctness.</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<h3>Materialized Views &amp; Denormalization — One Page</h3>
+<h4>Normalization</h4>
+<p>Facts in one place. Update once, reflected everywhere. JOINs at read time. Default for OLTP. Loved by transactional integrity.</p>
+<h4>Denormalization</h4>
+<p>Redundancy embedded for read speed. Update propagation problem. Two flavors:
+- <strong>Snapshot</strong>: capture historical state. Doesn't propagate. <em>Good schema design</em> for historical data.
+- <strong>Mirror</strong>: track current state. Must propagate. <em>Expensive forever</em>. Use sparingly.</p>
+<h4>Materialized views</h4>
+<p>Precomputed query results, stored, refreshed on schedule. Read fast, slightly stale. Best of both worlds for fixed query patterns.</p>
+<p><strong>Refresh strategies</strong>:
+- Full refresh (cheap to think about, expensive to run on big data).
+- Incremental (cheap if database supports it for your query shape).
+- On-demand vs scheduled vs on-commit vs streaming.</p>
+<h4>The decision ladder (climb only as far as needed)</h4>
+<ol>
+<li><strong>Index</strong> the slow query (Module 04).</li>
+<li><strong>Profile with EXPLAIN ANALYZE</strong> (Module 06).</li>
+<li><strong>Materialized view</strong> if staleness is acceptable.</li>
+<li><strong>Caching layer</strong> (Redis, app cache) if invalidation is per-key.</li>
+<li><strong>Snapshot denormalize</strong> for historical state.</li>
+<li><strong>CDC + read model</strong> for cross-cutting denormalization at scale.</li>
+<li><strong>Mirror denormalize</strong> only if all else has failed and you accept sync overhead.</li>
+</ol>
+<h4>Fan-out (the social media problem)</h4>
+<ul>
+<li><strong>Fan-out on read</strong>: query at feed-render time. Slow at scale.</li>
+<li><strong>Fan-out on write</strong>: precompute follower inboxes. Catastrophic for celebrities (50M-write storms).</li>
+<li><strong>Hybrid fan-out</strong>: fan-out on write for normal users, fan-out on read for celebrities. <em>The pattern that works.</em></li>
+</ul>
+<h4>CDC + read models</h4>
+<p>Keep OLTP normalized. Stream changes via CDC. Downstream consumers maintain denormalized read models per use case. The modern way to handle denormalization without polluting the source-of-truth schema.</p>
+<h4>The 30-second verbal answer</h4>
+<p>"Normalization is the default for OLTP — facts in one place, JOINs at query time. Denormalization comes in two flavors: snapshots (historical state, good schema design) and mirrors (current state, expensive sync forever). Materialized views and caches sit between, trading staleness for read speed. Climb the ladder of solutions one rung at a time — start with indexes, only denormalize when nothing simpler works."</p>
+<h4>Always pair with</h4>
+<p>Indexes, query planner, CDC, eventual consistency, write amplification, fan-out, read-through cache, transactional outbox.</p>
+</div>
+<h1>What's next</h1>
+<p>You now have the framework: normalization is the default, denormalization is a tool with multiple flavors and costs, materialized views are the negotiated middle, and the modern pattern pushes denormalization to downstream consumers via CDC.</p>
+<p>The piece you're missing — and the one you'll need before you can talk fluently about why the planner chose Plan A over Plan B — is <strong>how the planner actually works</strong>. Module 06 demystifies the cost-based optimizer, statistics, and the EXPLAIN ANALYZE output that you'll be reading for the rest of your career.</p>
+<p>After that, we move into the transactions chapter — ACID, isolation levels, MVCC, and the concurrency anomalies that bite even the most careful applications.</p>
+<p>Get water. The query side is almost wrapped up.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="04_indexes.html" class="prev">&laquo; 04 Indexes</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="06_query_planner.html" class="next">06 Query Planner &raquo;</a>
+</nav>
+</body>
+</html>

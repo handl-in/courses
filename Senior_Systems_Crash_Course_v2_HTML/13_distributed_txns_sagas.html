@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam meets the multi-service problem</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 13</p>
+</div>
+<div class="module-title">
+<p>Distributed Transactions, Sagas &amp; Idempotency</p>
+</div>
+<div class="subtitle">
+<p>2PC, 3PC, sagas, and the patterns that make "do this thing across services" actually work</p>
+</div>
+</div>
+<div class="opener">
+<p>A user clicks "buy." The order service writes a row. The payment service charges the card. The inventory service decrements stock. The shipping service creates a label.</p>
+<p>If any one of those services crashes mid-flow, you're left with: charged-card-no-order, decremented-stock-no-charge, or eight other partial states. None of them are good.</p>
+<p>Distributed transactions are how you avoid being the engineer who explains those states to angry customers.</p>
+</div>
+<h1>Sam meets the multi-service problem</h1>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+OK so transactions in one database, I get. ACID. BEGIN, do stuff, COMMIT. But at work we have like 12 microservices that each have their own database. When a user clicks "checkout," we have to update 4 of them. How does that work?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Ha. Welcome to one of the genuinely hard problems in distributed systems. The textbook answer is "two-phase commit." The production answer is "almost nobody does that, because the operational pain is worse than the alternative."</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+What do they actually do?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Sagas plus idempotency. Sometimes outbox patterns. Sometimes hold their nose and accept eventual consistency. Big point: there is <strong>no good way</strong> to do distributed transactions. Every approach has costs. The senior skill is knowing the trade-offs of each — when 2PC is right, when sagas are right, and what idempotency actually demands.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+Wait, idempotency is involved?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Centrally. The biggest mistake junior engineers make is treating idempotency as an afterthought. In distributed systems, every operation might happen twice. Every retry might be a duplicate. Every network blip might cause a redelivery. <strong>If your operations aren't idempotent, distributed retries can't be safe.</strong> And without safe retries, none of the patterns we'll discuss actually work.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+That sounds harder than I expected.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+It is. By the end of this module you'll have the vocabulary and the patterns. But also a healthy respect for "let's just do it in one database if we can." Distributed transactions are real engineering, not a thing you sprinkle on.</p>
+</div>
+</div>
+<div class="keyidea">
+<p>Distributed transactions span multiple services or databases. <strong>No approach is free.</strong> 2PC gives strong consistency at the cost of operational fragility (locks held across services). Sagas give availability at the cost of complexity (compensating actions). Both require <strong>idempotent operations</strong> to be safely retryable. The senior skill is matching pattern to problem.</p>
+</div>
+<h1>The two-phase commit (2PC)</h1>
+<p>The textbook approach. Coordinator-managed atomic commit across multiple participants.</p>
+<div class="workout">
+<p><strong>The 2PC protocol:</strong></p>
+<div class="step">
+<p><strong>Phase 1: Prepare.</strong> Coordinator sends "prepare to commit" to all participants. Each participant either:
+- Locally locks its resources, persists tentative changes, replies "ready."
+- Or finds it can't commit, replies "abort."</p>
+</div>
+<div class="step">
+<p><strong>Phase 2a: Commit.</strong> If <em>all</em> participants replied "ready," coordinator sends "commit." Each participant finalizes its tentative changes, releases locks, replies "committed."</p>
+</div>
+<div class="step">
+<p><strong>Phase 2b: Abort.</strong> If <em>any</em> participant replied "abort," coordinator sends "abort." Each participant rolls back tentative changes, releases locks.</p>
+</div>
+</div>
+<div class="diagram">
+<pre><code>                      TWO-PHASE COMMIT (2PC)
+
+                   Coordinator
+                        │
+            ┌───────────┼───────────┐
+            ▼           ▼           ▼
+        Service A   Service B   Service C
+            │           │           │
+</code></pre>
+<p>PHASE 1 (PREPARE):
+                │ ──prepare?── │ ──prepare?── │
+                │              │              │
+                │ ──ready────► │ ──ready────► │
+                ◄──────────────┴──────────────┤
+            (coordinator collects all "ready"s)</p>
+<p>PHASE 2 (COMMIT):
+                │ ──commit──── │ ──commit──── │
+                │              │              │
+                │ ──committed─►│ ──committed─►│
+                ◄──────────────┴──────────────┤</p>
+<p>Result: atomic commit across all services. ✓</p>
+<p>But what if the coordinator crashes between phase 1 and 2?
+  Or service B crashes after replying "ready" but before "commit"?
+  Resources stay locked — possibly forever.</p>
+</div>
+<h2>Why 2PC is correct (in theory)</h2>
+<div class="keyidea">
+<p>2PC guarantees <strong>atomic commit</strong> across multiple participants. Either all participants commit, or all abort. No participant unilaterally decides — they all wait for the coordinator's verdict.</p>
+<p>The protocol's safety property: if a participant replied "ready" in Phase 1, it <em>must</em> be able to commit in Phase 2 even after a crash. So Phase 1 acts as a durable promise: "I have written this change tentatively, locked the rows, and I will commit when you say so."</p>
+</div>
+<h2>Why 2PC is broken (in practice)</h2>
+<div class="warning">
+<p><strong>2PC has a fundamental flaw</strong>: it's a <em>blocking</em> protocol. If the coordinator crashes between Phase 1 and Phase 2, participants that voted "ready" are stuck — they've locked their resources and don't know whether to commit or abort. They wait. <strong>Forever</strong>, if the coordinator never recovers.</p>
+<p>This means: a single crash of the coordinator can hang every participant's locks indefinitely. In a high-throughput system, this cascades into total unavailability within seconds.</p>
+</div>
+<div class="scenario">
+<p><strong>The classic 2PC outage pattern:</strong></p>
+<p>A coordinator crashes mid-transaction. Three participants are all in "ready" state, holding locks on rows they're about to modify.</p>
+<p>The coordinator restarts. It needs to figure out the state of every in-flight transaction by reading its log. The log says: "transaction 1234 was in Phase 2 commit, status unknown."</p>
+<p>The coordinator queries participants: "what's the status of 1234?" Two participants reply "I voted ready, waiting." Third participant times out (network blip).</p>
+<p><strong>The coordinator can't unilaterally decide</strong> — the third participant might have already committed locally and be waiting to ack, or might have rolled back.</p>
+<p>This is the heuristic outcome problem. There's no clean answer. Most production implementations have a manual escalation path: a human operator inspects logs, decides, manually commits or aborts.</p>
+<p>In production, this happens. It's the second 3 AM page after the first one.</p>
+</div>
+<div class="insider">
+<p><strong>Why almost no modern system uses 2PC:</strong></p>
+<ul>
+<li>Locks held during the protocol block all other transactions touching the same rows. Throughput craters under contention.</li>
+<li>Coordinator crashes leave participants in indeterminate state. Recovery is operationally painful.</li>
+<li>Cross-service participation requires every service to implement the 2PC protocol. Real-world: services rarely do.</li>
+<li>Latency = sum of network round-trips × 2 (prepare + commit). Cross-region 2PC is unusable.</li>
+</ul>
+<p><strong>XA transactions</strong> are a specific implementation of 2PC defined by the X/Open consortium. JDBC has an <code>XAResource</code> interface. Some databases support XA. <strong>In practice, almost no production system uses XA at scale</strong>. The pain is too high.</p>
+<p>If asked about 2PC in an interview, articulate the protocol <em>and</em> the reasons it's almost never used. Senior engineers know both halves.</p>
+</div>
+<h2>Three-phase commit (3PC)</h2>
+<p>3PC adds an extra phase to fix 2PC's blocking issue. <strong>In theory.</strong></p>
+<div class="workout">
+<p><strong>3PC's extra phase:</strong></p>
+<div class="step">
+<p>Phase 1 (Prepare) — same as 2PC.</p>
+</div>
+<div class="step">
+<p><strong>Phase 2 (Pre-Commit)</strong>: coordinator tells participants "all are ready, prepare to commit." Each acks.</p>
+</div>
+<div class="step">
+<p>Phase 3 (Commit) — coordinator tells participants to actually commit.</p>
+</div>
+</div>
+<div class="warning">
+<p><strong>3PC's promise</strong>: if coordinator crashes after Phase 2, participants can communicate among themselves and decide to commit (since they all know everyone was ready). No more indefinite blocking.</p>
+<p><strong>3PC's reality</strong>: assumes a synchronous network — bounded message delivery time. Real networks aren't synchronous. Under network partitions, 3PC has the same fundamental issue with a different shape.</p>
+<p><strong>In practice, 3PC is academic.</strong> Distributed databases either use Paxos/Raft (Module 12) for consensus over a single value, or sagas (next section) for multi-service flows. 3PC is rarely deployed.</p>
+</div>
+<h1>Sagas: the practical alternative</h1>
+<p>If 2PC is too rigid for production, sagas are what most modern distributed systems actually use.</p>
+<div class="keyidea">
+<p>A <strong>saga</strong> is a sequence of local transactions, each with a corresponding <strong>compensating action</strong> that undoes its effect. Instead of one big atomic transaction, you have many small ones, with rollback logic for each. If the saga fails partway, you run compensating actions in reverse order to undo the work that already succeeded.</p>
+</div>
+<div class="scenario">
+<p><strong>The order checkout saga:</strong></p>
+<pre><code>Step 1: Order Service       → CreateOrder         | Compensate: CancelOrder
+Step 2: Payment Service     → ChargeCard          | Compensate: RefundCard
+Step 3: Inventory Service   → DecrementStock      | Compensate: IncrementStock
+Step 4: Shipping Service    → CreateShippingLabel | Compensate: CancelLabel
+</code></pre>
+<p>Happy path: all 4 steps succeed.</p>
+<p>Sad path: step 3 fails (out of stock). Saga runs compensations in reverse:
+- Compensate step 2 (refund the charge).
+- Compensate step 1 (cancel the order).</p>
+<p>User sees an "order failed" message. No charge on their card. <strong>No partial states.</strong></p>
+</div>
+<div class="diagram">
+<pre><code>                          SAGA EXECUTION
+</code></pre>
+<p>HAPPY PATH:</p>
+<p>CreateOrder ──► ChargeCard ──► DecrementStock ──► CreateShippingLabel
+       ✓             ✓                ✓                     ✓
+                                                       SAGA COMPLETE</p>
+<p>─────────────────────────────────────────────────────────────────────</p>
+<p>SAD PATH (decrement fails):</p>
+<p>CreateOrder ──► ChargeCard ──► DecrementStock  (FAILS — out of stock)
+       ✓             ✓                ✗
+                     │
+                     ▼
+                 RefundCard ◄── CancelOrder
+                     ✓                ✓
+                                                  SAGA COMPENSATED</p>
+<p>Each step is a regular local transaction.
+  Each step has a compensating "undo" step.
+  No global locks. No coordinator-can-die-and-hang issue.</p>
+</div>
+<h2>Two saga implementations</h2>
+<div class="compare">
+<div class="vs-left">
+<h4>Choreography</h4>
+<p>Each service publishes events. Other services react. <em>No central coordinator.</em></p>
+<p><b>Pro</b>: simple, decoupled, no coordinator failure mode.</p>
+<p><b>Con</b>: hard to reason about — flow is implicit. Hard to debug "where is this saga right now?"</p>
+<p><b>Common implementation</b>: services publish to Kafka; other services subscribe.</p>
+</div>
+<div class="vs-right">
+<h4>Orchestration</h4>
+<p>A central <em>orchestrator</em> tells each service what to do step-by-step.</p>
+<p><b>Pro</b>: centralized state — easy to inspect "saga at step 3 of 4."</p>
+<p><b>Con</b>: orchestrator is now a critical service that needs HA.</p>
+<p><b>Common implementation</b>: workflow engines like Temporal, AWS Step Functions, Camunda.</p>
+</div>
+</div>
+<div class="insider">
+<p><strong>Choreography vs orchestration in practice:</strong></p>
+<p>For 2-3 service flows, <strong>choreography</strong> is simple and good enough. Each service emits an event; the next reacts. Easy to add new services.</p>
+<p>For 5+ service flows or complex error handling, <strong>orchestration</strong> wins. You can see the whole saga state in one place. Debugging is much easier — "where is this transaction stuck?" has an answer.</p>
+<p><strong>Temporal is currently the dominant orchestration framework</strong> for sagas. It handles retries, timeouts, compensations, and durable state. Mention Temporal in an interview about saga implementation and you sound like someone who's actually built one.</p>
+</div>
+<h2>Sagas aren't free</h2>
+<div class="warning">
+<p><strong>Sagas trade atomicity for flexibility.</strong> They're not transactions — they're <em>workflows</em>. Specific costs:</p>
+<p><strong>No isolation.</strong> During a saga, intermediate states are visible to other readers. The user might see "order created but not yet paid" in their order history briefly. The system has no concept of "this saga's work is invisible until complete."</p>
+<p><strong>Compensations aren't always possible.</strong> "Send notification email" is hard to compensate — you can send a "disregard previous email" follow-up, but the original was already sent. Some real-world actions are <em>irreversible</em>. The saga has to be designed knowing this.</p>
+<p><strong>Compensations can fail too.</strong> If your saga is compensating, what if the refund itself fails? Now you have a <em>failed compensation</em> in addition to the original failure. Need to retry, escalate, or accept manual intervention.</p>
+<p><strong>Eventual consistency.</strong> Until the saga completes, the system is in an intermediate state. Other parts of the application have to handle this gracefully or wait.</p>
+</div>
+<div class="scenario">
+<p><strong>The "irreversible action" problem:</strong></p>
+<p>A saga step sends an email confirming the order. Step 3 then fails (inventory out). The saga compensates back: refund, cancel order. <strong>But the email already went out.</strong> The customer received "Your order is confirmed." Now they get a second email "Your order is canceled." They are confused. They call support.</p>
+<p>The fix isn't compensation — it's <em>not sending the email</em> until the saga <em>can't possibly fail</em>. Move the email step to <em>after</em> all other steps succeed. <strong>Order steps so irreversible ones come last.</strong></p>
+<p>This is a key saga design principle: <strong>put the most reversible steps first, the most irreversible last.</strong> The saga can fail and compensate the early steps with no user-visible damage. Only commit to irreversible side effects when you know the rest succeeded.</p>
+</div>
+<h1>Idempotency: the foundation</h1>
+<p>Now we get to the <em>real</em> foundation underneath all of this.</p>
+<div class="keyidea">
+<p>An operation is <strong>idempotent</strong> if applying it multiple times has the same effect as applying it once. <em>f(f(x)) = f(x).</em></p>
+<p>In distributed systems, every operation might be retried. Every message might be redelivered. Every network blip might cause a duplicate. <strong>If your operations aren't idempotent, retries can corrupt state.</strong></p>
+</div>
+<div class="scenario">
+<p><strong>Why retries demand idempotency:</strong></p>
+<p>Service A calls Service B's <code>decrementStock</code> endpoint. Network blip. Service A doesn't get the response. Service A retries.</p>
+<p>But the first call did succeed — Service B decremented the stock. Service A's retry causes a second decrement. <strong>Stock is now -1 when it should be 0.</strong></p>
+<p>The fix: Service B's endpoint must be idempotent. It must recognize "this is the same call as before" and not double-decrement.</p>
+</div>
+<h2>Three patterns for idempotency</h2>
+<div class="workout">
+<p><strong>The patterns:</strong></p>
+<div class="step">
+<p><strong>Idempotency keys.</strong> Caller generates a unique ID per logical operation. Server stores "I've processed key X" in a deduplication table. On retry with same key, server returns the cached result without re-executing.</p>
+</div>
+<div class="step">
+<p><strong>Conditional updates.</strong> Use the data state itself as the conditional. <code>UPDATE accounts SET balance = balance - 100 WHERE id = 1 AND last_txn_id != 'abc123'</code> — second time around, the WHERE fails, no change.</p>
+</div>
+<div class="step">
+<p><strong>Operation log.</strong> Record every applied operation. On retry, check if it's in the log. Replay only operations not already applied.</p>
+</div>
+</div>
+<div class="insider">
+<p><strong>Idempotency keys are the dominant pattern in modern APIs.</strong></p>
+<p>Stripe pioneered this for payments — every charge request includes an <code>Idempotency-Key</code> header. The same key returns the same response, even if you call the API a thousand times.</p>
+<p>The implementation:
+- Server has a deduplication table: <code>(idempotency_key, response_body, expires_at)</code>.
+- Incoming request: check if key exists. If yes, return stored response without re-executing. If no, execute normally and store the result.
+- Keys expire (typically 24h) — old retries are unlikely.</p>
+<p><strong>Use idempotency keys for any external API call, especially payments and other irreversible actions.</strong> Mention "idempotency keys" in any distributed-systems interview and you signal real-world API design experience.</p>
+</div>
+<div class="warning">
+<p><strong>A subtle gotcha</strong>: idempotency must be at the <em>operation</em> level, not the request level. If the request is the same byte-for-byte but the <em>logical operation</em> it represents is different (different user, different time), it's not the same operation.</p>
+<p>The fix: include semantically meaningful parts in the key. Stripe's idempotency key is a per-charge UUID generated by the client — guaranteed unique per logical charge attempt.</p>
+</div>
+<h2>Naturally idempotent operations</h2>
+<div class="scenario">
+<p><strong>Some operations are inherently idempotent:</strong></p>
+<ul>
+<li><code>SET balance = 500</code> — no matter how many times applied, balance is 500. Idempotent.</li>
+<li><code>DELETE row WHERE id = 5</code> — first call deletes, second call says "0 rows affected" but state is the same. Idempotent.</li>
+<li><code>UPSERT row WITH id = 5, balance = 500</code> — same effect each time. Idempotent.</li>
+</ul>
+<p><strong>Some operations are inherently NOT idempotent:</strong></p>
+<ul>
+<li><code>UPDATE balance = balance + 100</code> — applies the addition each time. Not idempotent.</li>
+<li><code>INSERT new_row(...)</code> — each call creates a new row. Not idempotent (unless using ON CONFLICT).</li>
+<li><code>SEND_EMAIL(...)</code> — each call sends another email. Not idempotent.</li>
+</ul>
+<p><strong>Design favors the first kind when you can.</strong> Express operations as "set X to Y" rather than "increment X by Y." Use UPSERTs instead of INSERTs. The state-based formulation is naturally retry-safe.</p>
+</div>
+<h1>The transactional outbox pattern</h1>
+<p>A specific saga problem: how do you reliably send an event to Kafka <em>and</em> commit a database row, in a way that doesn't lose either?</p>
+<div class="scenario">
+<p><strong>The dual-write problem:</strong></p>
+<p>Naive approach:</p>
+<pre><code>BEGIN;
+UPDATE orders SET status = 'paid' WHERE id = 42;
+COMMIT;
+publishToKafka(&quot;order_paid&quot;, {id: 42});  -- network call
+</code></pre>
+<p>What if Kafka is down between the COMMIT and the publish? The DB updated; the event never sent. Inconsistent.</p>
+<p>Reverse:</p>
+<pre><code>publishToKafka(&quot;order_paid&quot;, {id: 42});
+BEGIN;
+UPDATE orders SET status = 'paid' WHERE id = 42;
+COMMIT;
+</code></pre>
+<p>What if the DB update fails after the Kafka send? Event sent for an order that never updated. Inconsistent.</p>
+<p><strong>There's no way to atomically commit to both</strong> without 2PC, which we've ruled out.</p>
+</div>
+<div class="keyidea">
+<p><strong>The transactional outbox pattern</strong>: write the event to a database table (in the same transaction as the order update). A separate process polls the table and publishes events to Kafka, then deletes them from the outbox.</p>
+<p>The same database transaction commits both the order <em>and</em> the event. They're atomic. The publish-to-Kafka step is now decoupled, retryable, and observable.</p>
+</div>
+<div class="diagram">
+<pre><code>              TRANSACTIONAL OUTBOX PATTERN
+</code></pre>
+<p>┌─── Application ────┐
+  │                    │
+  │  BEGIN;            │
+  │   UPDATE orders... │  ───┐
+  │   INSERT INTO     │     │  Atomic: both succeed or both fail
+  │     outbox(event) │  ───┘
+  │  COMMIT;          │
+  └────────────────────┘
+              │
+              ▼
+  ┌────────────────────┐
+  │  outbox table      │  rows queued for publishing
+  │  (event_id,        │
+  │   payload,         │
+  │   sent_at: NULL)   │
+  └─────────┬──────────┘
+            │  poller / Debezium reads new rows
+            ▼
+  ┌────────────────────┐
+  │       Kafka         │
+  └────────────────────┘
+            │  consumers
+            ▼
+   downstream services</p>
+</div>
+<div class="insider">
+<p><strong>Two implementations of the outbox pattern:</strong></p>
+<p><strong>1. Application-level poller.</strong> A worker process polls the outbox table for unpublished rows. Publishes each to Kafka. Marks as sent (or deletes). Simple, can be implemented in any language.</p>
+<p><strong>2. CDC-based outbox.</strong> Use Debezium (Module 11) to capture inserts to the outbox table and publish to Kafka automatically. No separate poller. The DB's WAL is the source of truth.</p>
+<p>CDC-based is the modern preferred pattern when you have CDC infrastructure already. Lower latency, no polling overhead, handles ordering naturally.</p>
+<p><strong>Mention "transactional outbox with CDC" in an interview about distributed messaging</strong> and you sound like someone who's done this. It's the canonical solution.</p>
+</div>
+<h1>Three more ways to think about it</h1>
+<div class="metaphor">
+<p><strong>Way 1: a wedding ceremony.</strong></p>
+<p>2PC is the wedding ceremony itself. The officiant (coordinator) asks each party "do you take..." and waits for "I do" from both. If either says no, the ceremony halts. If both say yes, they're married.</p>
+<p>But what if the officiant has a heart attack mid-ceremony, after both said "I do"? Are they married? No paperwork is signed. Legally ambiguous. That's the 2PC blocking problem.</p>
+<p>A saga is the engagement period instead. Each step (proposal accepted, ring bought, venue booked, invitations sent) is its own commitment. If the engagement breaks, each step has its own undo (return ring, cancel venue, send "wedding canceled" notes). It's not atomic — there's a period where some steps are done and others aren't — but each individual step is durable on its own.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 2: shipping a package.</strong></p>
+<p>2PC is delivering all packages in a single truck — every recipient must confirm receipt before the trip is "done." If any recipient is unavailable, the truck waits in the driveway, holding all the packages. A breakdown means everyone gets their delivery delayed.</p>
+<p>A saga is independent shipments. Each package goes its own way. If one fails, you compensate (issue a refund, send a replacement) without affecting the others. More flexible. No central truck waiting on anyone.</p>
+<p>The transactional outbox is the shipping label printed before the package leaves. Once the label exists in the system, the carrier picks it up later — reliably, even if the printer crashes immediately after.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 3: signing a contract with multiple parties.</strong></p>
+<p>2PC is everyone signing simultaneously in the same room. Everyone says "ready," everyone signs at once. Powerful guarantee. But if one person doesn't show up, nothing happens.</p>
+<p>A saga is sequential signing — one party signs and sends the contract to the next. If one party refuses, you go back and explain to the previously-signed parties that the deal's off. Everyone has their own undo (rip up their copy). Less elegant; more practical when scheduling all parties simultaneously is impossible.</p>
+<p>Idempotency is making sure that if the contract is somehow signed <em>twice</em> by the same person (mistake, retry), it's still treated as one signature. Each signature has a unique key; duplicates are silently ignored.</p>
+</div>
+<h1>Sharpen your pencil</h1>
+<div class="exercise">
+<p><strong>Exercise 1.</strong> A team is building a checkout flow involving order, payment, inventory, and shipping services. They're debating: 2PC, choreography saga, or orchestration saga. What do you tell them?</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>Skip 2PC.</strong> Across 4 microservices, the coordinator-blocking failure mode would dominate. One coordinator crash leaves all services with locked resources. Even if it works in steady state, the operational pain is too high.</p>
+<p><strong>Choose between choreography and orchestration based on flow complexity.</strong></p>
+<p>For 4 steps with clear ordering and reversibility, <strong>orchestration is probably better</strong>. Reasons:
+- Centralized saga state means you can inspect "where is this transaction now?" easily.
+- Compensations are explicit and easier to audit.
+- Tools like Temporal handle retries, timeouts, and durable state — you don't reinvent.</p>
+<p><strong>Choreography</strong> would mean each service emits events on completion, and the next listens. Simpler infrastructure, but:
+- The flow is implicit in the events. Harder to debug.
+- Adding a new step means changing event subscriptions across services.
+- Compensation flow is harder to coordinate without a central authority.</p>
+<p><strong>The recommendation</strong>: orchestration with Temporal (or AWS Step Functions, or Camunda). Define the saga workflow explicitly. Implement each service's "do" and "compensate" steps. Make every operation idempotent (idempotency keys for external calls). Order steps so the most irreversible (sending email, charging card) come last.</p>
+<p>Document the compensation logic carefully — that's where junior engineers cut corners and senior ones spot trouble. The "what if compensation itself fails?" question must have an answer (retry, alert, manual escalation).</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2.</strong> A coworker proposes implementing an idempotent payment endpoint by storing the entire request body as a hash and rejecting duplicates. What concerns would you raise?</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>Three concerns:</p>
+<p><strong>1. Request body equality is not the same as logical operation equality.</strong></p>
+<p>Two charges for $50 from the same user could be intentional (they bought two things separately). Hashing the request body would silently reject the second one. <strong>The user's second purchase is silently dropped.</strong> Worse than no idempotency.</p>
+<p><strong>Fix</strong>: idempotency keys must be unique per <em>logical operation</em> — generated client-side per checkout attempt. Stripe's pattern: client generates a UUID per intent to charge.</p>
+<p><strong>2. Hash collisions and edge cases.</strong></p>
+<p>If hashing produces collisions (extremely unlikely with SHA-256 but possible), or if the hash is computed on different fields than expected, you get hard-to-debug "duplicate" failures. Idempotency keys should be opaque tokens chosen by the client, not derived from the request.</p>
+<p><strong>3. The dedup table needs lifecycle management.</strong></p>
+<p>If every payment hash is stored forever, the table grows unboundedly. Stripe's approach: keys expire after 24h. Old retries are unlikely. The table stays bounded.</p>
+<p><strong>The corrected design</strong>:
+- Caller generates an idempotency key (UUID) per logical operation.
+- Server's dedup table: <code>(idempotency_key, response_body, created_at)</code>.
+- On request with key X: check if X exists. If yes, return the stored response. If no, process and store.
+- Keys expire after a reasonable retention period (24h).</p>
+<p><strong>The senior framing</strong>: idempotency is a contract between the caller and the API, with the caller responsible for unique keys. Don't try to derive idempotency from the request alone — give the caller the responsibility, since only they know what's a "logical operation."</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3.</strong> Explain to non-technical Sam, in two sentences, why the transactional outbox pattern exists.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>When your application needs to do two things at once — like updating a database row and sending a notification to another service — there's a fundamental problem: you can't make both succeed or both fail atomically across systems that aren't in the same database. The outbox pattern sidesteps this by writing the "send a notification" instruction <em>into the same database</em> as a row in a special outbox table; a separate worker reads that table and actually delivers the notification, so the database commit guarantees both pieces happen exactly once.</p>
+</div>
+</div>
+<h1>There are no dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p>Q: Are sagas just "eventual consistency"?</p>
+</div>
+<div class="a">
+<p>A: They're a <em>specific way</em> to implement eventual consistency for multi-step flows. Eventual consistency is the broader concept — "the system will become consistent eventually." Sagas are a structured pattern for getting there with explicit forward and compensating actions. Not all eventually consistent systems use sagas; not all sagas explicitly call themselves "eventually consistent."</p>
+</div>
+<div class="q">
+<p>Q: When SHOULD I use 2PC?</p>
+</div>
+<div class="a">
+<p>A: Inside a single database (multiple tables), regular transactions handle this — that's not 2PC. Across databases or services, 2PC is rare in modern systems. Where you'll see real XA: legacy enterprise systems, especially with established middleware (IBM MQ, Tibco), and some financial systems with hard atomic-commit requirements. <strong>Almost no modern greenfield system adopts 2PC.</strong></p>
+</div>
+<div class="q">
+<p>Q: What's the difference between a saga and a workflow?</p>
+</div>
+<div class="a">
+<p>A: A saga is specifically a multi-step flow with compensating actions. A workflow is a more general term — any orchestrated multi-step process, with or without compensations. All sagas are workflows; not all workflows are sagas. Tools like Temporal handle both shapes.</p>
+</div>
+<div class="q">
+<p>Q: How does the outbox pattern handle ordering?</p>
+</div>
+<div class="a">
+<p>A: With CDC-based outbox, ordering is preserved — the WAL captures changes in commit order, so events are published in the order they were committed. With application-poller outbox, you must explicitly order by insertion timestamp or sequence number. Multi-partition Kafka topics can break ordering across partitions; use a partition key (typically the entity ID) to keep related events on the same partition.</p>
+</div>
+<div class="q">
+<p>Q: Is idempotency the same as exactly-once delivery?</p>
+</div>
+<div class="a">
+<p>A: Related but distinct. Exactly-once delivery is a guarantee that a message is delivered exactly once between systems — usually impossible in pure form due to network unreliability. <strong>Idempotency is an effectively-once-processing model on top of at-least-once delivery.</strong> The message might arrive twice; the operation processes it once. Most "exactly once" systems are really "at least once delivery + idempotent processing."</p>
+</div>
+<div class="q">
+<p>Q: What's a "compensating action" if a delete?</p>
+</div>
+<div class="a">
+<p>A: A delete's compensation is <em>insert the row back</em>. But: was the row referenced elsewhere? Did anyone read the deleted state? You can't fully unwind some deletes — they're effectively irreversible. <strong>Senior pattern: avoid deletes in saga steps; use soft deletes (status flag) instead, with the compensation being "set status back."</strong> Real deletion happens later, outside any saga.</p>
+</div>
+<div class="q">
+<p>Q: What if my saga is taking forever and the user has navigated away?</p>
+</div>
+<div class="a">
+<p>A: Sagas are async by design. The user shouldn't wait synchronously for the whole saga to complete. Pattern: return immediately with "your order is being processed," show progress on a status page or via push notifications, complete the work asynchronously. <strong>Sync UX requires sub-second saga completion; long sagas always need async UX.</strong></p>
+</div>
+<div class="q">
+<p>Q: How do I test sagas?</p>
+</div>
+<div class="a">
+<p>A: Hard. You need to test happy paths plus every step's failure-and-compensation flow. Unit tests cover individual services. Integration tests cover the saga flow with deliberately-injected failures at each step. Tools like Temporal have built-in test frameworks. <strong>Plan testing time when designing sagas — they have N+1 paths that all need verification.</strong></p>
+</div>
+</div>
+<h1>Three myths to dynamite</h1>
+<div class="myth">
+<p><strong>"2PC is the standard way to do distributed transactions."</strong></p>
+<p>Misleading. 2PC is the <em>textbook</em> way. The <em>production</em> reality is that sagas plus idempotency dominate, with 2PC reserved for legacy enterprise systems and a few specific use cases. If you say "we'll use 2PC" in an interview without acknowledging its operational issues, you sound like you've read a textbook but not run a system.</p>
+</div>
+<div class="myth">
+<p><strong>"Eventual consistency is bad."</strong></p>
+<p>False. Eventual consistency is a <em>trade-off</em> — you give up immediate consistency for availability and partition tolerance. Many things in the real world are eventually consistent (mail delivery, bank deposits clearing, social media notifications) and the systems work fine. The bad version is <em>unmanaged</em> eventual consistency where users see contradictory data with no UX accommodation.</p>
+</div>
+<div class="myth">
+<p><strong>"If my operation is naturally idempotent, I don't need idempotency keys."</strong></p>
+<p>Half-true. An operation can be idempotent at the data level but still have observable side effects. SET balance = 500 is idempotent but if you accidentally set it three times for three different intended transitions, you've lost two updates. <strong>Idempotency keys at the API layer protect against retry-induced lost intents; intrinsic idempotency at the data layer protects against retry-induced state corruption.</strong> Both are useful for different reasons.</p>
+</div>
+<h1>Interview gotchas</h1>
+<div class="gotcha">
+<p><strong>Recommending 2PC for distributed transactions.</strong> Even mentioning 2PC without immediately acknowledging its operational issues sounds textbook-only. Senior engineers know 2PC works <em>in theory</em> and saga patterns dominate <em>in practice</em>.</p>
+</div>
+<div class="gotcha">
+<p><strong>Forgetting compensation actions in saga descriptions.</strong> A saga without explicit compensations isn't a saga — it's just a sequential flow that can leave inconsistent state on failure. Always describe both the forward step and the compensation step.</p>
+</div>
+<div class="gotcha">
+<p><strong>Not addressing irreversible actions.</strong> Some saga steps can't be perfectly undone (sent emails, charges to external systems). The senior pattern: order steps so reversible ones are first, irreversible ones last. Mention this when describing saga design.</p>
+</div>
+<div class="gotcha">
+<p><strong>Treating idempotency as an implementation detail.</strong> Idempotency is a <em>contract</em> with callers. The API design includes idempotency keys; the documentation specifies their semantics; the dedup logic is part of the system architecture. Not an afterthought.</p>
+</div>
+<div class="gotcha">
+<p><strong>Recommending dual writes (DB + Kafka) without the outbox pattern.</strong> "Just write to both" introduces silent inconsistency on partial failure. The outbox pattern is the canonical fix. Mention it whenever the dual-write problem comes up.</p>
+</div>
+<h1>Mock interview</h1>
+<div class="mock-interview">
+<div class="turn q">
+<p>You're building a checkout system that involves an order service, a payment service, and an inventory service. Walk me through the design.</p>
+</div>
+<div class="turn a">
+<p>Sounds like a saga problem. Let me walk through the design.</p>
+<p><strong>The core flow:</strong> when a user clicks "buy," we need to: (1) create an order, (2) charge the card, (3) decrement inventory. If any step fails, the earlier steps need to be undone.</p>
+<p><strong>Architecture choice — saga, not 2PC.</strong> Across these three services, 2PC's blocking failure mode would dominate. A saga gives us flexibility and isolates each service's transaction.</p>
+<p><strong>Saga choreography vs orchestration?</strong> For three steps, choreography would work — order publishes "OrderCreated," payment subscribes and publishes "PaymentCharged," inventory subscribes and publishes "InventoryDecremented." But I'd lean toward orchestration here because:
+- Adding a fourth service (shipping, notifications) is easier with explicit orchestration.
+- Compensating flow is more visible.
+- Debugging "where is this saga now?" is easier with centralized state.</p>
+<p><strong>My recommendation: Temporal as orchestrator.</strong> Define the saga as a workflow; each service exposes "do" and "compensate" endpoints; Temporal handles retries, timeouts, and durable state.</p>
+<p><strong>The flow:</strong></p>
+<pre><code>Step 1: CreateOrder         | Compensate: CancelOrder (mark cancelled, no delete)
+Step 2: ChargeCard          | Compensate: RefundCard (idempotent refund API)
+Step 3: DecrementStock      | Compensate: IncrementStock
+Step 4: SendConfirmation    | (no compensation needed if step 4 only fires on success)
+</code></pre>
+<p><strong>Step ordering matters.</strong> Notice step 4 is intentionally last and <em>not compensated</em> — it's the irreversible action. We send the email only after everything else succeeds. If step 3 fails, we compensate steps 2 and 1 cleanly, never sending an email about a failed order.</p>
+<p><strong>Idempotency everywhere.</strong> Every endpoint must accept an idempotency key. The saga retries on transient failures; without idempotency, retries cause duplicate charges or double-decremented stock.</p>
+<p><strong>The transactional outbox</strong> for the saga's own state. The orchestrator's "saga step completed" events are written to its DB and to Kafka via the outbox pattern, so we never lose state on orchestrator failure.</p>
+<p><strong>UX consideration.</strong> This saga might take 1-3 seconds. Don't block the UI synchronously. Return immediately: "your order is being processed." Show progress via WebSocket or polling. Push notification on completion.</p>
+<p><strong>Failure handling beyond compensations.</strong> If the saga is stuck (e.g., one service permanently down, compensation failing), Temporal can alert and escalate to a human operator. Plan for "compensations also fail" — sometimes manual intervention is the right answer.</p>
+<p>The senior framing: <strong>distributed transactions are hard. The right answer is to make them recoverable, observable, and idempotent — not to chase atomic guarantees that don't exist across services.</strong></p>
+</div>
+<div class="commentary">
+<p>Names tools (Temporal). Walks through the failure modes and compensation order. The "step 4 is irreversible and intentionally last" detail is senior-level. The "compensations also fail" plan acknowledges reality.</p>
+</div>
+<div class="turn q">
+<p>The team is worried about double-charging customers if the payment service is retried after a network blip. How do you ensure that doesn't happen?</p>
+</div>
+<div class="turn a">
+<p>This is the canonical idempotency case. The pattern:</p>
+<p><strong>Client generates an idempotency key.</strong> A UUID, generated when the user clicks "pay." The same key is sent on every retry of that one logical charge attempt.</p>
+<p><strong>Payment service has a deduplication table.</strong></p>
+<pre><code>CREATE TABLE payment_dedup (
+  idempotency_key UUID PRIMARY KEY,
+  response_body JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+</code></pre>
+<p><strong>On every charge request:</strong>
+1. Begin transaction.
+2. Try to INSERT into the dedup table. If conflict (key exists), return the stored response.
+3. Process the charge (call to the card processor).
+4. Store the response in the dedup table.
+5. Commit.</p>
+<p><strong>Key details:</strong></p>
+<ul>
+<li>The dedup INSERT and the charge happen in the same transaction. If the charge fails, the dedup row isn't committed. Next retry can attempt afresh.</li>
+<li>The card processor itself should also support idempotency keys — pass through the same key. Stripe natively supports <code>Idempotency-Key</code> headers for exactly this reason.</li>
+<li>Keys expire after 24h. Beyond that, retries are unlikely. Old keys get cleaned up; the table stays bounded.</li>
+</ul>
+<p><strong>Common mistakes to avoid:</strong></p>
+<ul>
+<li><strong>Hashing the request body</strong> instead of using a key. Two intentionally-distinct charges with the same body get rejected. Bug.</li>
+<li><strong>Not propagating the key downstream.</strong> If the payment service does its dedup but calls the card processor without an idempotency key, the card processor can charge twice on retry. Pass keys through the entire chain.</li>
+<li><strong>Forgetting key expiration cleanup.</strong> The table grows unboundedly without it.</li>
+</ul>
+<p><strong>The senior framing</strong>: idempotency is a contract — the caller commits to unique keys per intent, the server commits to dedup-and-replay-result. Document this in the API spec. Test it with deliberate duplicates.</p>
+</div>
+<div class="commentary">
+<p>Concrete schema. Specific details (Stripe's <code>Idempotency-Key</code> header). Names the common mistakes. The "contract" framing — senior engineers think of idempotency at the API design layer, not the implementation layer.</p>
+</div>
+<div class="turn q">
+<p>What if the saga's orchestrator itself crashes mid-saga? How do we recover?</p>
+</div>
+<div class="turn a">
+<p>This is exactly why orchestrator durability matters. A few layers of mitigation:</p>
+<p><strong>Layer 1: durable state.</strong> The orchestrator must persist saga state at every step boundary. Tools like Temporal use an event-sourced model — every step transition is logged. On orchestrator restart, the saga state is reconstructed from the log, and execution resumes from the last consistent point.</p>
+<p><strong>Layer 2: idempotency on every step.</strong> When the orchestrator restarts, it might re-issue commands the dead orchestrator already issued. Each service must handle this — usually via the same idempotency key pattern. The service recognizes "I already processed this" and returns the same result.</p>
+<p><strong>Layer 3: timeouts on stuck steps.</strong> If a step has been "in progress" for longer than expected, the orchestrator probes the service: "is this step done yet?" If yes, advance. If no, retry or escalate. Without this, a saga can wait indefinitely on an unresponsive service.</p>
+<p><strong>Layer 4: human-readable saga state.</strong> Operations should be able to query "where is saga X right now?" and see something like "Step 3 of 4: ChargeCard, in progress, started at 10:23:14, retried 2 times." This is essential for debugging stuck sagas.</p>
+<p><strong>Layer 5: explicit failure-handling actions.</strong></p>
+<p>What if compensations themselves fail? Pattern:
+- Retry compensations a few times.
+- After N retries, mark the saga as "failed, needs manual attention."
+- Alert the on-call engineer.
+- Provide tooling to manually complete or roll back individual steps.</p>
+<p><strong>A real failure mode I'd plan for</strong>: orchestrator crashes mid-compensation. Now you've completed compensations for steps 4 and 3, but step 2's compensation is unknown. On restart, idempotency lets you safely re-issue compensation for step 2. If it succeeded the first time, it's a no-op. If it didn't, it now does.</p>
+<p><strong>Tools</strong>: Temporal handles most of this out of the box. AWS Step Functions handles it via a different mechanism (state machine with explicit retry config). Camunda has long-standing BPMN workflow support.</p>
+<p><strong>The senior framing</strong>: orchestrator failure is a <em>plan-for-it</em> concern, not an <em>avoid-it</em> concern. Distributed systems crash. The orchestrator needs durable state, idempotent steps, timeouts, observability, and manual escalation paths. With those in place, an orchestrator crash is a 10-minute incident, not a 24-hour one.</p>
+</div>
+<div class="commentary">
+<p>Five-layer answer covering durability, idempotency, timeouts, observability, and manual escalation. Acknowledges that compensations themselves can fail. Names specific tools. The "plan-for-it not avoid-it" framing is the senior reflex.</p>
+</div>
+<div class="turn q">
+<p>Last one. Your team uses dual writes — write to Postgres, then send to Kafka. They've started seeing inconsistencies. How would you fix it?</p>
+</div>
+<div class="turn a">
+<p>This is the classic dual-write problem, and the canonical fix is the <strong>transactional outbox pattern</strong>.</p>
+<p><strong>The bug they're hitting:</strong></p>
+<pre><code>BEGIN;
+UPDATE orders SET status = 'paid';
+COMMIT;
+publishToKafka(&quot;order_paid&quot;);  // can fail after commit
+</code></pre>
+<p>If publishToKafka fails, the DB has the update but Kafka doesn't. Other services don't see the event. <strong>Inconsistent.</strong></p>
+<p>Reverse order has the symmetric problem — Kafka has the event but the DB might not have committed.</p>
+<p><strong>The outbox fix:</strong></p>
+<p>Add a table to the same database:</p>
+<pre><code>CREATE TABLE outbox (
+  event_id UUID PRIMARY KEY,
+  payload JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  sent_at TIMESTAMPTZ
+);
+</code></pre>
+<p>Now the application does:</p>
+<pre><code>BEGIN;
+UPDATE orders SET status = 'paid';
+INSERT INTO outbox (event_id, payload) VALUES (...);
+COMMIT;
+</code></pre>
+<p>The order update and the event insert happen in the same transaction. They're atomic.</p>
+<p><strong>Then a publisher process delivers events.</strong></p>
+<p>Two implementations:</p>
+<p><strong>Option A: Application-level poller.</strong> A worker queries <code>SELECT * FROM outbox WHERE sent_at IS NULL ORDER BY created_at LIMIT 100</code>, publishes each to Kafka, and updates <code>sent_at = NOW()</code>. Simple but requires a poller per service.</p>
+<p><strong>Option B: CDC-based.</strong> Use Debezium to capture inserts to the outbox table and publish to Kafka automatically. No separate poller needed; the WAL is the source of truth. <strong>This is the modern preferred approach</strong> if you have CDC infrastructure.</p>
+<p><strong>Why this works:</strong></p>
+<ul>
+<li>The outbox INSERT and the business state change are atomic (same transaction).</li>
+<li>The publisher reads from the outbox; it can retry indefinitely until Kafka accepts.</li>
+<li>If the publisher crashes, on restart it resumes from the unprocessed outbox rows.</li>
+<li>Consumers see events in the same order they were committed (with proper partitioning).</li>
+</ul>
+<p><strong>Operational details:</strong></p>
+<ul>
+<li>Outbox rows need cleanup (after some retention, delete sent rows).</li>
+<li>Idempotency keys propagated as the event ID — downstream consumers can deduplicate.</li>
+<li>Monitoring: alerting on outbox backlog age (rows older than X with <code>sent_at IS NULL</code> mean publisher is stuck).</li>
+</ul>
+<p><strong>The migration:</strong> to introduce this without a big rewrite, change the application code to write to the outbox alongside business updates (or via CDC capturing existing tables). Migrate the publishing layer to read from the outbox. The dual-writes can be removed once the outbox is verified.</p>
+<p><strong>The senior framing</strong>: the outbox pattern is <em>the</em> canonical solution to the dual-write problem. Mention it whenever someone says "we need to write to the database and also publish an event." The naive "just write to both" almost always silently corrupts data.</p>
+</div>
+<div class="commentary">
+<p>Concrete schema. Two implementation options ranked. Operational details (cleanup, monitoring). The "migration" plan acknowledges the team isn't starting from scratch. The "canonical solution" closing is the right framing — outbox is <em>the</em> answer to dual-writes.</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<h3>Distributed Transactions, Sagas &amp; Idempotency — One Page</h3>
+<h4>2PC (textbook, rarely production)</h4>
+<p>Coordinator-managed atomic commit. Phase 1: prepare. Phase 2: commit/abort.
+<strong>Blocking failure mode</strong>: coordinator crash leaves participants with held locks indefinitely.
+Used in legacy enterprise (XA transactions). Almost no modern system adopts.</p>
+<h4>3PC (academic)</h4>
+<p>Adds pre-commit phase to fix 2PC's blocking. Assumes synchronous network — which real networks aren't. Rarely deployed.</p>
+<h4>Sagas (the production pattern)</h4>
+<p>Sequence of local transactions, each with a compensating action. Forward path on success; reverse compensations on failure.</p>
+<p><strong>Two implementations:</strong>
+- <strong>Choreography</strong>: services emit events, others react. Decoupled, hard to debug.
+- <strong>Orchestration</strong>: central orchestrator coordinates steps. Easier to inspect; orchestrator is critical service.</p>
+<p><strong>Tools</strong>: Temporal (modern dominant), AWS Step Functions, Camunda.</p>
+<h4>Saga design rules</h4>
+<ol>
+<li><strong>Order steps</strong>: most reversible first, most irreversible last.</li>
+<li><strong>Every step has a compensation</strong> (or document why it's irreversible).</li>
+<li><strong>Idempotency on every step</strong> — retries are expected.</li>
+<li><strong>Plan for compensations failing</strong> — manual escalation path required.</li>
+<li><strong>Async UX</strong> — long sagas don't fit synchronous request/response.</li>
+</ol>
+<h4>Idempotency</h4>
+<p><strong>Definition</strong>: f(f(x)) = f(x). Applying twice = applying once.</p>
+<p><strong>Patterns</strong>:
+- <strong>Idempotency keys</strong> (Stripe-style): caller-generated UUID per logical operation. Server dedupes via key.
+- <strong>Conditional updates</strong>: <code>UPDATE ... WHERE state = expected</code>.
+- <strong>Operation log</strong>: record applied operations, skip duplicates on retry.</p>
+<p><strong>Naturally idempotent</strong>: SET, UPSERT, DELETE.
+<strong>Naturally NOT idempotent</strong>: INCREMENT, INSERT, send_email.</p>
+<h4>Transactional outbox pattern</h4>
+<p>Solves the dual-write problem (DB + Kafka).</p>
+<pre><code>BEGIN;
+UPDATE business_table;
+INSERT INTO outbox (event);
+COMMIT;
+</code></pre>
+<p>Then publisher (poller or CDC) sends from outbox to Kafka.</p>
+<p><strong>Atomic</strong> — both write together. <strong>Reliable</strong> — publisher can retry. <strong>Modern preferred</strong>: use Debezium for CDC-based outbox.</p>
+<h4>When to use what</h4>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Atomic across single DB</td>
+<td>Regular transaction</td>
+</tr>
+<tr>
+<td>Atomic across services, can't tolerate eventual</td>
+<td>2PC (rarely; legacy systems)</td>
+</tr>
+<tr>
+<td>Atomic-ish across services, can tolerate eventual</td>
+<td>Saga</td>
+</tr>
+<tr>
+<td>Reliable DB → Kafka publish</td>
+<td>Transactional outbox</td>
+</tr>
+<tr>
+<td>API retry safety</td>
+<td>Idempotency keys</td>
+</tr>
+</tbody>
+</table>
+<h4>Anti-patterns</h4>
+<ul>
+<li>2PC for greenfield distributed transactions.</li>
+<li>Sagas without explicit compensations.</li>
+<li>Dual writes without the outbox pattern.</li>
+<li>Hashing request body for idempotency (use unique keys).</li>
+<li>Forgetting that compensations themselves can fail.</li>
+</ul>
+<h4>The 30-second verbal answer</h4>
+<p>"2PC is the textbook answer for distributed transactions but rarely used in production due to blocking failure modes. Sagas — sequences of local transactions with compensating actions — are the modern pattern. Idempotency is the foundation: every step must be safely retryable, typically via idempotency keys. The transactional outbox pattern solves the dual-write problem (DB + Kafka). Tools like Temporal handle saga orchestration; the senior skill is matching pattern to problem."</p>
+<h4>Always pair with</h4>
+<p>ACID/isolation (Module 07), CAP/consensus (Module 12), CDC (Module 11), exactly-once vs at-least-once delivery, Temporal, idempotency keys, transactional outbox.</p>
+</div>
+<h1>What's next</h1>
+<p>You can now articulate why 2PC is impractical in modern systems, design sagas with proper compensation logic, and explain the transactional outbox pattern when someone proposes dual writes. Idempotency is now a first-class concern in your API design instinct.</p>
+<p><strong>Module 14 covers schema evolution and schema registries</strong> — how data structure changes propagate through CDC streams, how producers and consumers stay compatible across versions, and the operational discipline of "never break the consumers."</p>
+<p><strong>Module 15</strong> then opens the partitioning chapter — how to split data across nodes when one machine isn't enough, consistent hashing, range vs hash partitioning, and the operational realities of resharding.</p>
+<p>Get water. Distributed transactions are now in your toolkit. Schema evolution is next.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="12_cap_consensus.html" class="prev">&laquo; 12 CAP</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="14_schema_evolution.html" class="next">14 Schema &raquo;</a>
+</nav>
+</body>
+</html>

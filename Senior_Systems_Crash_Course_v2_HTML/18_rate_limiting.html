@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam meets the noisy neighbor</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 18</p>
+</div>
+<div class="module-title">
+<p>Rate Limiting</p>
+</div>
+<div class="subtitle">
+<p>Token bucket, leaky bucket, sliding windows — and why "we'll add rate limiting" is the start, not the end, of the conversation</p>
+</div>
+</div>
+<div class="opener">
+<p>A bot abuses your API with 50,000 requests per second. A misconfigured retry storm hammers a downstream service. An overzealous customer's batch job saturates your servers at 3 AM.</p>
+<p>Rate limiting is the discipline of saying "no" politely — protecting your system from being overwhelmed by individual callers. Sounds simple. The implementations have nine algorithms, dozens of edge cases, and exactly one configuration that survives contact with production.</p>
+</div>
+<h1>Sam meets the noisy neighbor</h1>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+OK so we're getting hammered. One customer's integration started looping infinitely yesterday — it sent 200,000 requests per minute to our API. Took down our auth service. We need rate limiting. I'll add a per-IP limit, like, 100 requests per second. Done?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Done? You haven't even started. What happens when the customer's traffic comes from 50 different IPs because they're behind a NAT?</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+Oh.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+What about a legitimate customer making 100 requests in one second as a normal burst — search-as-you-type, autocomplete, parallel page loads? Are you blocking them?</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+Hmm.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+What about distributed rate limiting? You have 10 application servers — does each one count requests independently, allowing 1000 RPS in aggregate when you said 100? Or do they coordinate?</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+I... didn't think about that.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+And when you do block someone, what do you tell them? "429 Too Many Requests" with no <code>Retry-After</code> header? They retry immediately. You've created a tight loop instead of stopping one.</p>
+<p>Rate limiting is one of those topics where the textbook description is 5% of the actual engineering. The other 95% is choosing the right algorithm, the right scope, the right response, and making it work across distributed systems. By the end of this module, you'll be able to design and defend rate limiting like someone who's actually shipped it.</p>
+</div>
+</div>
+<div class="keyidea">
+<p>Rate limiting protects your system from overload by limiting how many requests a caller can make in a time window. The choices: which algorithm (token bucket, leaky bucket, sliding window, fixed window), which scope (per-IP, per-user, per-key, per-endpoint, global), where to enforce (edge, API gateway, application, database), and how to respond (429 with Retry-After, queue, degrade). <strong>Each choice has consequences for fairness, accuracy, and operational complexity.</strong></p>
+</div>
+<h1>Why rate limiting exists</h1>
+<p>Three distinct problems, often conflated.</p>
+<div class="workout">
+<p><strong>The three motivations:</strong></p>
+<div class="step">
+<p><strong>Protection from abuse.</strong> Bots, scrapers, attackers, runaway scripts. The traffic is illegitimate or malicious. You want to block it hard.</p>
+</div>
+<div class="step">
+<p><strong>Fair resource sharing.</strong> Your service has finite capacity. One enthusiastic customer shouldn't consume so much that others starve. You want to ensure everyone gets a slice.</p>
+</div>
+<div class="step">
+<p><strong>Cost control.</strong> Each request costs you money — CPU, database queries, downstream API calls. You charge customers a tier; their tier limits their consumption. Without limits, your unit economics break.</p>
+</div>
+</div>
+<div class="scenario">
+<p><strong>Why these motivations matter:</strong></p>
+<p>A "protection from abuse" rate limit can be aggressive — block instantly, no warning. The user is bad-faith.</p>
+<p>A "fair resource sharing" rate limit must be careful — legitimate users have legitimate bursts. Blocking them looks like a bug.</p>
+<p>A "cost control" rate limit is a business decision, not a technical one. The limit is per the customer's plan, surfaced in invoices and billing.</p>
+<p><strong>Mixing them up causes pain.</strong> "Block aggressive bots" rules accidentally block legitimate customers' bursts. "Cost control" limits get misconfigured to block when they should just charge overage. <strong>Senior engineers separate these.</strong></p>
+</div>
+<h1>The four canonical algorithms</h1>
+<p>Each makes a different trade-off between simplicity, accuracy, and burst handling.</p>
+<h2>Algorithm 1: Fixed window</h2>
+<p>Count requests in fixed time windows (e.g., per calendar minute). When the count exceeds the limit, reject.</p>
+<div class="diagram">
+<pre><code>                      FIXED WINDOW
+                      Limit: 10 requests/minute
+</code></pre>
+<p>10:00:00 ─────────── 10:00:59 │ 10:01:00 ─────────── 10:01:59
+  ╭───────────────────────────╮  ╭───────────────────────────╮
+  │  Window 1 (count: 0→10)    │  │ Window 2 (count: 0→10)    │
+  │                            │  │                            │
+  │  Request comes in:         │  │                            │
+  │  count++                   │  │                            │
+  │  if count &gt; 10: reject     │  │                            │
+  ╰───────────────────────────╯  ╰───────────────────────────╯</p>
+<p>Reset at minute boundary. New window starts fresh.</p>
+</div>
+<div class="workout">
+<p><strong>The implementation:</strong></p>
+<div class="step">
+<p>Maintain a counter per (user, current_window).</p>
+</div>
+<div class="step">
+<p>On each request: increment counter.</p>
+</div>
+<div class="step">
+<p>If counter exceeds limit, reject.</p>
+</div>
+<div class="step">
+<p>At window boundary, reset counter (or use a new key).</p>
+</div>
+</div>
+<div class="warning">
+<p><strong>The fixed window's fatal flaw: edge bursts.</strong></p>
+<p>Suppose limit is 10 requests/minute. A user sends 10 requests at 10:00:59 (end of window 1). All accepted. Then 10 requests at 10:01:00 (start of window 2). All accepted.</p>
+<p><strong>They just sent 20 requests in one second</strong>, but neither window saw more than 10. Your "10 requests per minute" limit allowed an effective burst of 20 per second.</p>
+<p>This is why fixed window is rarely used alone in production — but it's the simplest implementation, so it's where most engineers start.</p>
+</div>
+<h2>Algorithm 2: Sliding window log</h2>
+<p>Store a timestamp for every request. To check the limit, count timestamps within the last N seconds.</p>
+<div class="workout">
+<p><strong>The implementation:</strong></p>
+<div class="step">
+<p>Maintain a list of timestamps per user.</p>
+</div>
+<div class="step">
+<p>On each request: add current timestamp to list.</p>
+</div>
+<div class="step">
+<p>Remove timestamps older than the window.</p>
+</div>
+<div class="step">
+<p>If remaining list size exceeds limit, reject.</p>
+</div>
+</div>
+<div class="scenario">
+<p><strong>The accuracy is perfect:</strong></p>
+<p>Limit: 10 requests/minute. The window slides continuously — at any moment, you're counting requests from "now" back 60 seconds.</p>
+<p>The 10:00:59 + 10:01:00 burst would be caught: 20 requests fall within the same 60-second sliding window.</p>
+<p>Trade-off: you store every request timestamp. For a million users at 100 requests/minute, that's 100M timestamps in memory. <strong>Doesn't scale.</strong></p>
+</div>
+<div class="warning">
+<p><strong>Sliding window log is accurate but memory-heavy.</strong> It's ideal for low-volume, high-precision limits — say, login attempts per user. For high-volume traffic, the storage cost is prohibitive.</p>
+</div>
+<h2>Algorithm 3: Sliding window counter (the modern default)</h2>
+<p>Approximation of sliding window log with bounded memory. Combines counts from current and previous fixed window.</p>
+<div class="workout">
+<p><strong>The math:</strong></p>
+<div class="step">
+<p>Two counters: current window, previous window.</p>
+</div>
+<div class="step">
+<p>Approximate sliding window count = (previous_window_count × overlap_fraction) + current_window_count.</p>
+</div>
+<div class="step">
+<p>Where overlap_fraction = (window_size - elapsed_in_current_window) / window_size.</p>
+</div>
+</div>
+<div class="scenario">
+<p><strong>The intuition:</strong></p>
+<p>It's 10:00:30 (30 seconds into a 60-second window). Window started at 10:00:00, ends at 10:01:00.</p>
+<p>You "look back" 60 seconds, which means: 30 seconds of the previous window (10:00:30 to 10:01:00 — wait, that's the future) and 30 seconds of the current window.</p>
+<p>Wait, let me restate: at 10:00:30, the sliding window covers 10:00:30 backward to 09:59:30. That's 30 seconds of the previous (09:59) window and 30 seconds of the current (10:00) window so far.</p>
+<p>The approximation: assume the previous window's requests were uniformly distributed. Take 50% of its count + 100% of the current window's count.</p>
+<p>If previous window had 8 requests and current has 5: estimate = 0.5 × 8 + 5 = 9. Compare to limit.</p>
+<p><strong>Memory: 2 counters per user</strong>, regardless of request rate.</p>
+</div>
+<div class="insider">
+<p><strong>Sliding window counter is the production sweet spot.</strong> Memory-efficient, reasonably accurate (typically within 1-3% of true sliding window), simple to reason about. Used by Stripe, Cloudflare, AWS API Gateway, and most modern API rate limiters.</p>
+<p>Mention sliding window counter in interviews about rate limiting and you sound like someone who's read the implementations, not just the textbook.</p>
+</div>
+<h2>Algorithm 4: Token bucket</h2>
+<p>The most flexible algorithm. Allows bursts up to a configurable size, then refills at a sustained rate.</p>
+<div class="diagram">
+<pre><code>                      TOKEN BUCKET
+
+  ┌──────────────────────┐
+  │   Bucket               │  Capacity: 10 tokens (max burst)
+  │                        │  Refill: 1 token per second (sustained)
+  │   ●●●●●●●●●●          │
+  └──────────────────────┘
+        │
+        │ Each request consumes 1 token
+        ▼
+  Request: takes 1 token if available
+            if no tokens: reject (or wait)
+
+  Tokens refill steadily over time.
+  Burst of 10 immediately allowed (full bucket).
+  After burst, refill rate is 1/sec sustained.
+</code></pre>
+<p>Example timeline:
+    t=0:   Bucket = 10 (full)
+    t=0:   Send 10 requests → bucket = 0 (all allowed)
+    t=1:   1 token refilled → bucket = 1, send 1 → bucket = 0
+    t=2:   1 token refilled → bucket = 1, send 1 → bucket = 0
+    ... sustained at 1 RPS thereafter</p>
+</div>
+<div class="workout">
+<p><strong>The implementation:</strong></p>
+<div class="step">
+<p>Each user has a bucket: current token count, last refill timestamp.</p>
+</div>
+<div class="step">
+<p>On each request: calculate how many tokens to add since last refill (elapsed × rate, capped at bucket size).</p>
+</div>
+<div class="step">
+<p>If bucket has ≥ 1 token: subtract 1, allow request.</p>
+</div>
+<div class="step">
+<p>If bucket has &lt; 1 token: reject (or queue, see leaky bucket variant).</p>
+</div>
+</div>
+<div class="keyidea">
+<p><strong>Token bucket allows controlled bursts.</strong> Users can spend "saved up" tokens for a quick burst, but their sustained rate is bounded by the refill rate. This is <em>exactly</em> the behavior real users want: occasional bursts (page load, parallel calls) without the system breaking, but no sustained abuse.</p>
+</div>
+<h2>Algorithm 5: Leaky bucket</h2>
+<p>Closely related to token bucket but inverted: requests fill the bucket, processed at a constant rate.</p>
+<div class="scenario">
+<p><strong>The leaky bucket model:</strong></p>
+<p>Requests arrive and queue up in the bucket. The bucket has a fixed processing rate — say, 10 requests/second. The bucket also has a maximum size — say, 100.</p>
+<p>If the bucket is full (100 queued), new requests are rejected.</p>
+<p>The queue smooths bursts. If 100 requests arrive in one second, the system processes 10 per second for 10 seconds.</p>
+<p><strong>Trade-off vs token bucket</strong>: leaky bucket <em>delays</em> requests; token bucket <em>rejects</em> them when full. Different UX.</p>
+</div>
+<div class="insider">
+<p><strong>When to use which:</strong></p>
+<ul>
+<li><strong>Token bucket</strong>: when bursts are allowed but sustained rate is bounded. Good for HTTP APIs.</li>
+<li><strong>Leaky bucket</strong>: when sustained rate must be smooth. Good for traffic shaping, processing pipelines.</li>
+<li><strong>Sliding window counter</strong>: when accurate per-window enforcement is needed and memory matters.</li>
+<li><strong>Fixed window</strong>: only as a starting point or when edge bursts don't matter.</li>
+<li><strong>Sliding window log</strong>: only for low-volume, high-precision needs.</li>
+</ul>
+<p>Most production systems use <strong>token bucket</strong> for user-facing APIs and <strong>sliding window counter</strong> for billing/quota enforcement.</p>
+</div>
+<h1>The scope question</h1>
+<p>Algorithms are half the choice. Scope is the other half. <strong>Who is the limit per?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Scope</th>
+<th>Use case</th>
+<th>Trade-off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Per-IP</strong></td>
+<td>Stop bots; protect against simple DDoS</td>
+<td>Easy to evade (NAT, proxy rotation); blocks legitimate users behind NAT</td>
+</tr>
+<tr>
+<td><strong>Per-API-key</strong></td>
+<td>Protect API; align with billing</td>
+<td>Requires authentication; doesn't help unauthenticated endpoints</td>
+</tr>
+<tr>
+<td><strong>Per-user</strong></td>
+<td>Fair sharing among logged-in users</td>
+<td>Requires session/auth; doesn't help anonymous traffic</td>
+</tr>
+<tr>
+<td><strong>Per-endpoint</strong></td>
+<td>Protect expensive endpoints</td>
+<td>Doesn't catch cumulative abuse across endpoints</td>
+</tr>
+<tr>
+<td><strong>Per-tenant</strong></td>
+<td>Multi-tenant SaaS</td>
+<td>Hard to scope when one user spans tenants</td>
+</tr>
+<tr>
+<td><strong>Global</strong></td>
+<td>Protect total system capacity</td>
+<td>Doesn't differentiate good vs bad traffic</td>
+</tr>
+<tr>
+<td><strong>Composite (e.g., per-API-key + per-endpoint)</strong></td>
+<td>Layered defense</td>
+<td>Implementation complexity; multiple checks per request</td>
+</tr>
+</tbody>
+</table>
+<div class="scenario">
+<p><strong>The senior pattern: layered scopes.</strong></p>
+<p>A real production rate limit has <em>multiple</em> layers:</p>
+<ul>
+<li><strong>Global</strong>: total RPS across all customers can't exceed system capacity (say, 100K RPS).</li>
+<li><strong>Per-tenant</strong>: each tenant has a plan-based limit (say, 1000 RPS for premium, 100 for free).</li>
+<li><strong>Per-API-key</strong>: each key within a tenant has a limit (say, 500 RPS, ensuring one runaway integration doesn't consume the tenant's whole budget).</li>
+<li><strong>Per-endpoint within key</strong>: expensive endpoints (search, exports, ML inference) get tighter limits than cheap ones.</li>
+<li><strong>Per-IP</strong>: catch authenticated users sending from too many IPs (potential abuse).</li>
+</ul>
+<p>Each request checks several limits in sequence. Any one failing rejects the request. <strong>The layers compound to give protection at every level of the architecture.</strong></p>
+</div>
+<div class="warning">
+<p><strong>Per-IP alone is broken in 2026.</strong> NAT, IPv6 privacy extensions, mobile carriers' shared IPs, corporate proxies, VPNs — all create scenarios where many users share IPs or one user has many IPs. Modern rate limiting uses <em>authenticated identity</em> (API key, user ID, tenant ID) as the primary scope, with per-IP as a secondary defense.</p>
+</div>
+<h1>Distributed rate limiting</h1>
+<p>The hard part. You have 10 application servers behind a load balancer. A user sends 100 RPS. Each server sees 10 RPS. <strong>Each server's local counter says "well under limit." User is over the limit globally but no individual server knows.</strong></p>
+<p>This is distributed rate limiting. Three approaches.</p>
+<h2>Approach 1: Centralized Redis counter</h2>
+<div class="scenario">
+<p><strong>The simple production pattern:</strong></p>
+<p>Every server uses Redis as the central counter:</p>
+<pre><code>INCR rate_limit:user_42:60s_window
+EXPIRE rate_limit:user_42:60s_window 60
+</code></pre>
+<p>Each request becomes one Redis round-trip — typically 1-2ms. The counter is global. <strong>All servers see the same number.</strong></p>
+<p>For high traffic, you can use Redis Lua scripts to atomically check-and-increment:</p>
+<pre><code class="language-lua">local count = redis.call(&quot;INCR&quot;, KEYS[1])
+if count == 1 then
+  redis.call(&quot;EXPIRE&quot;, KEYS[1], ARGV[1])
+end
+return count
+</code></pre>
+<p>One round-trip, atomic, returns the count. Compare to limit in application code.</p>
+</div>
+<div class="keyidea">
+<p>Centralized Redis is the dominant production pattern for distributed rate limiting. <strong>Simple, accurate, and Redis can handle 100K-1M ops/sec on modest hardware.</strong> For most systems, this is sufficient.</p>
+</div>
+<div class="warning">
+<p><strong>Failure modes:</strong></p>
+<ul>
+<li><strong>Redis down</strong>: do you fail open (allow all) or closed (reject all)? Failing closed = worst possible time for an outage. Failing open = bypassed rate limit. <strong>Most production systems fail open with alerts</strong>, accepting the brief abuse risk.</li>
+<li><strong>Latency</strong>: every request adds 1-2ms. For ultra-low-latency APIs, this matters.</li>
+<li><strong>Cost</strong>: high request rates = high Redis ops. Can become expensive at very high scale.</li>
+</ul>
+</div>
+<h2>Approach 2: Local counters with periodic sync</h2>
+<div class="scenario">
+<p><strong>The high-throughput optimization:</strong></p>
+<p>Each server keeps a local counter. Periodically (every second, say), it syncs to a central store. Other servers see the synced counts.</p>
+<p>Trade-off: brief inaccuracy. A user might exceed the global limit by up to (per-server-burst × server-count) before the sync catches it.</p>
+<p><strong>Use when</strong>: throughput is too high for centralized Redis on every request, and brief over-allowance is acceptable.</p>
+</div>
+<div class="insider">
+<p><strong>This is how big systems do it.</strong> AWS API Gateway, Cloudflare, and similar services don't check a central counter on every request. They use sophisticated approximations — local counters with bounded over-allowance, then global enforcement on aggregate. The exact algorithm is often proprietary.</p>
+<p><strong>For the 99% of systems</strong>: centralized Redis is fine. Mention this trade-off only when discussing very high-scale (&gt;100K RPS per limit key).</p>
+</div>
+<h2>Approach 3: Sticky routing</h2>
+<div class="scenario">
+<p><strong>The "send the same user to the same server" approach:</strong></p>
+<p>The load balancer hashes (user_id) and always routes to the same server. That server's local counter is authoritative.</p>
+<p>Pros: no central coordination needed. Each server's counter is accurate for its assigned users.</p>
+<p>Cons: load isn't perfectly balanced (some users are heavier). Server failures redistribute users to others — counters reset.</p>
+<p>This pattern is rare in pure form because of the rebalancing issues, but it appears as part of session affinity in some architectures.</p>
+</div>
+<h1>Responding to rate limits</h1>
+<p>You've decided to reject a request. <strong>What do you tell the caller?</strong></p>
+<div class="workout">
+<p><strong>The HTTP 429 contract:</strong></p>
+<div class="step">
+<p><strong>Status code: 429 Too Many Requests</strong> (introduced in RFC 6585).</p>
+</div>
+<div class="step">
+<p><strong>Header: <code>Retry-After</code></strong> — number of seconds the client should wait before retrying. Or an HTTP date.</p>
+</div>
+<div class="step">
+<p><strong>Header: <code>X-RateLimit-Limit</code></strong> — the rate limit ceiling.</p>
+</div>
+<div class="step">
+<p><strong>Header: <code>X-RateLimit-Remaining</code></strong> — requests remaining in the current window.</p>
+</div>
+<div class="step">
+<p><strong>Header: <code>X-RateLimit-Reset</code></strong> — when the limit resets (Unix timestamp).</p>
+</div>
+<div class="step">
+<p><strong>Body: clear error message</strong> explaining the limit and how to address it.</p>
+</div>
+</div>
+<div class="scenario">
+<p><strong>A good 429 response:</strong></p>
+<pre><code class="language-http">HTTP/1.1 429 Too Many Requests
+Content-Type: application/json
+Retry-After: 30
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1729968600
+
+{
+  &quot;error&quot;: &quot;rate_limit_exceeded&quot;,
+  &quot;message&quot;: &quot;You have exceeded your rate limit of 1000 requests per minute.&quot;,
+  &quot;retry_after_seconds&quot;: 30,
+  &quot;limit&quot;: 1000,
+  &quot;limit_period&quot;: &quot;1 minute&quot;,
+  &quot;documentation_url&quot;: &quot;https://api.example.com/docs/rate-limits&quot;
+}
+</code></pre>
+<p>The client knows: what happened, how long to wait, what the limit is, where to learn more.</p>
+</div>
+<div class="warning">
+<p><strong>Bad 429 responses are a frequent cause of cascading failures.</strong></p>
+<ul>
+<li>No <code>Retry-After</code>: clients retry immediately. Tight loop. <strong>They make the problem worse.</strong></li>
+<li>429 without a clear message: clients have no signal what's wrong. They retry hopefully.</li>
+<li>503 instead of 429: looks like a transient outage; clients retry aggressively.</li>
+<li>Silent rejection (just close the connection): clients have no signal at all.</li>
+</ul>
+<p><strong>Always respond with explicit 429, Retry-After, and a clear message.</strong> This is the difference between rate limiting that protects your system and rate limiting that makes things worse.</p>
+</div>
+<div class="insider">
+<p><strong>Stripe's approach to rate limit responses</strong> is the canonical model:</p>
+<pre><code class="language-http">HTTP/1.1 429 Too Many Requests
+Stripe-Should-Retry: true
+Retry-After: 12
+</code></pre>
+<p>The <code>Stripe-Should-Retry</code> header tells clients explicitly whether retry is appropriate. Stripe's SDKs read this and back off accordingly. <strong>The protocol embeds the retry semantics</strong>, not just the limit.</p>
+<p>For high-quality APIs, design the rate-limit response with the SDK in mind. The SDK should know how to handle 429s gracefully.</p>
+</div>
+<h1>Soft vs hard limits</h1>
+<p>Two different policies for what happens at the limit.</p>
+<div class="compare">
+<div class="vs-left">
+<h4>Hard limit</h4>
+<p>Reject all requests over the limit. Return 429.</p>
+<p><b>Use when</b>: protecting from abuse, enforcing strict quotas, or where over-consumption is dangerous.</p>
+<p><b>Trade-off</b>: legitimate burst traffic gets blocked. Customer experience can suffer if limits are too tight.</p>
+</div>
+<div class="vs-right">
+<h4>Soft limit (degraded service)</h4>
+<p>Continue to serve, but with degraded quality — slower responses, simpler features, less accurate data.</p>
+<p><b>Use when</b>: customer experience matters more than strict quota enforcement.</p>
+<p><b>Trade-off</b>: harder to implement; harder to communicate "you're over your limit but I'll still serve you."</p>
+</div>
+</div>
+<div class="scenario">
+<p><strong>Soft limits in practice:</strong></p>
+<p>A SaaS dashboard at 1000 calls/min limit. Customer hits 1500 calls/min.</p>
+<p><strong>Hard limit</strong>: 500 of those calls return 429. Customer's dashboard shows "rate limited" errors. They call support.</p>
+<p><strong>Soft limit</strong>: all 1500 calls succeed, but the responses come from cached data with a "may be stale" indicator instead of fresh queries. Customer's dashboard works; metrics are minutes old. They don't notice.</p>
+<p>Soft limits are kinder to customers but harder to engineer. Each endpoint must have a degraded mode.</p>
+</div>
+<h1>Per-tenant fairness</h1>
+<p>In multi-tenant systems, rate limiting becomes a fairness problem.</p>
+<div class="scenario">
+<p><strong>The noisy neighbor problem:</strong></p>
+<p>A SaaS platform has 1000 tenants sharing a backend cluster. Total system capacity: 100K RPS.</p>
+<p>Without per-tenant limits: tenant A spikes to 50K RPS (50% of system). Tenant B and C, doing normal traffic, see latency spike because the system is saturated. <strong>A noisy neighbor degrades others.</strong></p>
+<p>With per-tenant limits: each tenant capped at, say, 5K RPS. Spike traffic from any one tenant doesn't affect others.</p>
+<p>But: now you have 1000 × 5K = 5M RPS theoretical capacity, 50x the actual capacity. <strong>The aggregate of per-tenant limits doesn't equal system capacity.</strong></p>
+</div>
+<div class="keyidea">
+<p><strong>The senior pattern: layered limits.</strong></p>
+<ul>
+<li>Per-tenant limit: stops one tenant from saturating.</li>
+<li>Global limit: stops aggregate from exceeding system capacity.</li>
+<li>Both enforced; both visible in monitoring.</li>
+</ul>
+<p>When the global limit hits, all tenants are slowed proportionally. When a per-tenant limit hits, only that tenant is affected. <strong>The two work together.</strong></p>
+</div>
+<div class="warning">
+<p><strong>Per-tenant limits don't help against unauthenticated traffic.</strong> If your service has anonymous endpoints, you need IP-based or fingerprint-based limits in front of the per-tenant ones. <strong>Layered defense again.</strong></p>
+</div>
+<h1>Three more ways to think about rate limiting</h1>
+<div class="metaphor">
+<p><strong>Way 1: a nightclub.</strong></p>
+<p>Fixed window: the bouncer counts entries in 5-minute slots. Resets at the top of each 5 minutes. People at 4:59 entries plus 5:00 entries can both happen — bouncer doesn't catch the cluster.</p>
+<p>Sliding window: the bouncer maintains a list of recent entries with timestamps. At any moment, knows exactly how many entered in the last 5 minutes.</p>
+<p>Token bucket: the club has a "VIP card" system. Each card has 10 entries pre-loaded; refills at 1 per minute. Members can burst (use all 10 quickly) or sustain (use 1 per minute), but not exceed the refill rate over time.</p>
+<p>Leaky bucket: a single line outside the club, processed at one entry per minute. Burst doesn't matter; the line just gets longer.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 2: water rationing.</strong></p>
+<p>Hard limit: each household gets 100 gallons/day. Above that, water is shut off.</p>
+<p>Soft limit: each household gets 100 gallons. Above that, water still flows but at reduced pressure (slower fills, can't run multiple appliances). Customer notices but isn't cut off.</p>
+<p>Token bucket: each household has a tank. Refills at 100 gallons/day. Can use 200 gallons in one day if the tank was full, but sustained usage averages 100/day.</p>
+<p>Per-tenant: each district gets 1M gallons/day shared among households. Aggregate per-district enforcement protects against one greedy district. Per-household limits within a district protect against one greedy household.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 3: traffic lights.</strong></p>
+<p>Hard rate limiting: a strict red light. No traffic passes during red.</p>
+<p>Token bucket: a metered onramp. Cars admitted at one per N seconds. Burst accumulates briefly but sustains the rate.</p>
+<p>Leaky bucket: a roundabout. Cars enter at any rate but circulate at a fixed throughput. Excess waits.</p>
+<p>Sliding window: speed cameras that average over a moving window. Hard to game with momentary speeds.</p>
+<p>Layered limits: city-wide gridlock controls (global) plus per-intersection metering (local). Multiple levels of traffic management.</p>
+</div>
+<h1>Sharpen your pencil</h1>
+<div class="exercise">
+<p><strong>Exercise 1.</strong> Your team is implementing rate limiting for a new API. Initial proposal: per-IP, fixed window, 1000 requests per minute, return 429 when exceeded. Identify three problems and propose a better design.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>Three problems with the initial proposal:</strong></p>
+<p><strong>Problem 1: per-IP is broken in modern internet.</strong> NAT, mobile carriers, corporate proxies, and shared cloud infrastructure mean many legitimate users come from the same IP. Conversely, IPv6 privacy extensions and proxy rotation mean one user can have many IPs. Per-IP alone catches some bots but blocks many legitimate users.</p>
+<p><strong>Problem 2: fixed window allows edge bursts.</strong> A user can send 1000 requests at the end of one minute and 1000 at the start of the next — 2000 in 2 seconds, all "within limit." Defeats the purpose.</p>
+<p><strong>Problem 3: 429 without <code>Retry-After</code> and clear messaging causes retry storms.</strong> Clients hammer the API immediately on rejection.</p>
+<p><strong>A better design:</strong></p>
+<p><strong>Layered scopes:</strong>
+- Per-API-key: 1000 requests/minute (the primary scope, aligned with billing).
+- Per-tenant: 10,000 requests/minute (catches multiple keys within a tenant).
+- Per-IP: 5,000 requests/minute (secondary defense against unauthenticated abuse).
+- Global: total system capacity ceiling.</p>
+<p><strong>Sliding window counter</strong> (or token bucket for burst-friendly endpoints): provides accurate enforcement without the edge-burst problem of fixed window.</p>
+<p><strong>Distributed implementation</strong>: centralized Redis counter for accuracy. Lua script for atomic increment-and-check. Fail open with alerts if Redis is unavailable.</p>
+<p><strong>429 responses</strong>: include <code>Retry-After</code>, <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>, <code>X-RateLimit-Reset</code> headers. Clear JSON error body explaining the limit and pointing to documentation.</p>
+<p><strong>Per-endpoint variation</strong>: cheap endpoints (GET) get standard limit; expensive endpoints (search, exports) get tighter limits.</p>
+<p><strong>The senior framing:</strong> <em>rate limiting is layered defense, not a single number</em>. Combine multiple scopes with appropriate algorithms and clear client communication.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2.</strong> A team is using Redis for distributed rate limiting. Redis goes down for 10 minutes. Walk through what happens.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>The crisis: rate limiting depends on Redis. Redis is gone.</strong></p>
+<p><strong>Decision point: fail open or fail closed?</strong></p>
+<p><strong>Fail closed</strong>: every request gets rejected. The system goes from "degraded" to "totally unavailable" because of a Redis outage. <strong>This is usually wrong</strong> — Redis being down doesn't mean traffic is malicious; it just means we can't enforce limits.</p>
+<p><strong>Fail open</strong>: every request is allowed without rate limit checks. The risk: if there's an active abuse, it succeeds for the duration of the outage. The benefit: legitimate users are unaffected.</p>
+<p><strong>Most production systems fail open</strong> because (a) the period is usually brief, (b) rate limiting is not the primary security control (auth is), and (c) the alternative — full outage from a Redis blip — is far worse.</p>
+<p><strong>During the 10-minute outage:</strong></p>
+<ol>
+<li>Application logs every "rate limit check skipped due to Redis unavailability" event. Surfaces in monitoring.</li>
+<li>Alerts fire. On-call investigates.</li>
+<li>The team observes: did anyone abuse? If not, no action needed beyond restoring Redis.</li>
+<li>If abuse occurred (rare), the abusive traffic is logged and can be addressed retroactively (block the API key, contact the customer, ban the IP).</li>
+</ol>
+<p><strong>After Redis recovery:</strong></p>
+<ul>
+<li>Resume normal rate limiting.</li>
+<li>Counters reset (since Redis was down). The next minute starts fresh. <strong>This is fine</strong> — slight under-enforcement for a brief period.</li>
+</ul>
+<p><strong>Hardening for the future:</strong></p>
+<ul>
+<li><strong>Redis replication</strong>: primary + replica. Auto-failover means brief Redis outages don't take down rate limiting.</li>
+<li><strong>Local fallback</strong>: each application server has a local in-memory counter as a backup. When Redis is unavailable, fall back to local counters. Less accurate (one user might exceed global limit by up to N×local_limit) but better than no limits.</li>
+<li><strong>Multiple Redis clusters</strong>: rate limit checks shard across multiple Redis instances. One down = partial enforcement, not zero.</li>
+</ul>
+<p><strong>The senior framing:</strong> <em>rate limiting infrastructure should be highly available</em>. If your rate limiting layer goes down, your business goes down (in fail-closed mode) or becomes vulnerable (in fail-open mode). Treat the rate limiting infrastructure with the same seriousness as the application servers it protects.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3.</strong> Explain to non-technical Sam, in two sentences, the difference between token bucket and fixed window rate limiting.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>Fixed window counts requests in clean time slots — like "no more than 100 between 12:00 and 12:01" — which sounds reasonable but lets someone send 100 right before noon and another 100 right after, sending 200 in two seconds. Token bucket gives each user a small bucket of tokens that refill steadily over time — they can spend tokens quickly for a brief burst (say, opening multiple tabs) but their long-term sustained rate is bounded by the refill speed, which makes it both more accurate and friendlier to normal usage patterns.</p>
+</div>
+</div>
+<h1>There are no dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p>Q: Should rate limits be per-second or per-minute?</p>
+</div>
+<div class="a">
+<p>A: Both, layered. Per-second limits catch sudden spikes (DDoS-style); per-minute limits catch sustained abuse. Per-day limits catch slow, distributed scraping. <strong>Real APIs have multiple time horizons enforced together.</strong> Stripe famously has limits at multiple windows simultaneously.</p>
+</div>
+<div class="q">
+<p>Q: How do I rate limit unauthenticated endpoints?</p>
+</div>
+<div class="a">
+<p>A: Per-IP is the fallback. Combine with browser fingerprinting, request headers (User-Agent), and behavioral analysis (request patterns) for stronger signals. <strong>Cloudflare and AWS WAF specialize in this</strong> — they're built for unauthenticated traffic.</p>
+</div>
+<div class="q">
+<p>Q: What about webhooks I receive — should those be rate limited?</p>
+</div>
+<div class="a">
+<p>A: Yes, but differently. Webhooks come from your customers' systems; you can't refuse them or you'll lose data. Pattern: accept the webhook quickly, queue it, process asynchronously with bounded concurrency. <strong>The "rate limit" is on processing, not acceptance.</strong></p>
+</div>
+<div class="q">
+<p>Q: How does API Gateway rate limiting differ from application-level rate limiting?</p>
+</div>
+<div class="a">
+<p>A: API Gateway (AWS, Apigee, Kong) handles rate limiting at the edge — before the request reaches your application. Pros: protects backend even from massive bot traffic; doesn't consume your app servers. Cons: less context (can't easily limit based on application state). <strong>Common pattern</strong>: edge-level coarse limits (per-IP, per-API-key globally) + application-level finer limits (per-feature, per-user-tier).</p>
+</div>
+<div class="q">
+<p>Q: What's the difference between rate limiting and throttling?</p>
+</div>
+<div class="a">
+<p>A: Often used interchangeably. Strictly: <strong>rate limiting</strong> = enforce a maximum (reject excess); <strong>throttling</strong> = slow down (queue, delay). Token bucket can do either. In practice, "throttling" often means "soft limit with degradation" while "rate limiting" means "hard limit with rejection." Don't fight over the words; clarify the behavior.</p>
+</div>
+<div class="q">
+<p>Q: Should I rate limit by request count or by request cost?</p>
+</div>
+<div class="a">
+<p>A: For nuanced systems, cost-based is better. Each request consumes a "weight" — a simple GET might be 1, a complex aggregation might be 100. The user has a weight budget per window. <strong>GitHub's API does this</strong> — different endpoints consume different amounts of the rate limit. More fair, more accurate to system load. Implementation complexity is higher.</p>
+</div>
+<div class="q">
+<p>Q: How do I handle clients that legitimately need higher rates?</p>
+</div>
+<div class="a">
+<p>A: Tier-based limits per API plan. Free tier gets 100 RPS; pro gets 1000; enterprise gets 10000 with the option to negotiate higher. Communicate clearly via documentation and the rate-limit headers. <strong>For known integrations</strong>, allow custom override on the API key — no need for a tier upgrade for trusted partners.</p>
+</div>
+<div class="q">
+<p>Q: What about retries that cause rate limit hits?</p>
+</div>
+<div class="a">
+<p>A: Use exponential backoff with jitter (Module 17). On 429, wait the <code>Retry-After</code> time before retrying. Add jitter to avoid synchronized retry storms. SDK support for this is essential — clients should handle 429 automatically. <strong>Stripe's SDK does this transparently.</strong></p>
+</div>
+</div>
+<h1>Three myths to dynamite</h1>
+<div class="myth">
+<p><strong>"Rate limiting is just a number per second."</strong></p>
+<p>False. Rate limiting is a <em>layered system</em>: algorithm choice, scope, time horizons, distributed coordination, response semantics, fairness across tenants. The "number" is the easy part; the rest is the engineering.</p>
+</div>
+<div class="myth">
+<p><strong>"Per-IP rate limiting is sufficient."</strong></p>
+<p>False in 2026. NAT, IPv6 privacy, mobile carriers, VPNs, and corporate proxies make IP an unreliable identifier. <strong>Per-IP is a useful secondary defense, never the primary scope.</strong> Use authenticated identity (API key, user, tenant) as primary; IP as supplement.</p>
+</div>
+<div class="myth">
+<p><strong>"Rate limiting at the API gateway is enough."</strong></p>
+<p>False for sophisticated systems. API Gateway handles coarse limits at the edge. But application-level limits (per-feature, per-user-state, cost-based) require knowledge the gateway doesn't have. <strong>Layered enforcement is the production reality.</strong></p>
+</div>
+<h1>Interview gotchas</h1>
+<div class="gotcha">
+<p><strong>Recommending fixed window without acknowledging the edge-burst problem.</strong> Fixed window is the simplest algorithm but has a real flaw. Senior engineers know it and choose it deliberately, not by default.</p>
+</div>
+<div class="gotcha">
+<p><strong>Suggesting per-IP rate limiting alone.</strong> In modern internet, IP is unreliable. Always pair with authenticated identity scopes.</p>
+</div>
+<div class="gotcha">
+<p><strong>Forgetting <code>Retry-After</code> in 429 responses.</strong> Without it, clients retry immediately, creating tight loops. <strong>Always include Retry-After and clear messaging.</strong></p>
+</div>
+<div class="gotcha">
+<p><strong>Not addressing distributed enforcement.</strong> "We'll add rate limiting" without explaining how it works across multiple servers signals incomplete thinking. Centralized Redis is the standard answer.</p>
+</div>
+<div class="gotcha">
+<p><strong>Treating soft limits as a panacea.</strong> Soft limits sound friendlier but require degraded modes for every endpoint. Implementation complexity is real. <strong>Soft limits work where you've engineered them, not by default.</strong></p>
+</div>
+<h1>Mock interview</h1>
+<div class="mock-interview">
+<div class="turn q">
+<p>We need rate limiting for our public API. Walk me through your design.</p>
+</div>
+<div class="turn a">
+<p>Several questions before I commit to a design:</p>
+<p><strong>One — what are we protecting against?</strong> Abuse, fair sharing, or cost control? Each motivates different limits. If abuse, aggressive limits are fine. If cost, the limit aligns with the customer's plan. Often all three, layered.</p>
+<p><strong>Two — what's the traffic shape?</strong> Are bursts legitimate (users browse, then idle, then browse) or symptoms of abuse? Token bucket is ideal for legitimate bursts; sliding window is better for strict enforcement.</p>
+<p><strong>Three — what's the scale?</strong> A few hundred RPS or hundreds of thousands? The choice between centralized Redis and approximate distributed counters depends on this.</p>
+<p><strong>Four — what's the SLA on rate limit availability?</strong> If Redis goes down, do we fail open or closed?</p>
+<p>Assuming a typical mid-scale public API with mixed traffic, here's my design:</p>
+<p><strong>Layered scopes:</strong></p>
+<ul>
+<li><strong>Global</strong>: 100K RPS — total system capacity ceiling.</li>
+<li><strong>Per-tenant</strong>: 5K RPS for paid tier, 500 RPS for free.</li>
+<li><strong>Per-API-key</strong>: 2K RPS within a tenant (so one runaway integration doesn't consume the whole tenant budget).</li>
+<li><strong>Per-endpoint within key</strong>: expensive endpoints (search, ML, exports) get 100-500 RPS; cheap endpoints get 1K+.</li>
+<li><strong>Per-IP</strong>: 5K RPS as a secondary defense.</li>
+</ul>
+<p><strong>Algorithm: token bucket</strong> for user-facing API. Allows legitimate bursts (page loads, parallel requests) while bounding sustained rate. Bucket size = 2 × refill rate per second, providing a 2-second burst capacity.</p>
+<p><strong>Distributed implementation</strong>: centralized Redis with Lua script. Per-key keys: <code>ratelimit:{tenant}:{key}:{endpoint_class}</code>. TTL on keys ensures cleanup.</p>
+<p><strong>Failure mode</strong>: fail open with alerts if Redis is unavailable. Local fallback to in-memory counters as a hedge.</p>
+<p><strong>Response: 429</strong> with <code>Retry-After</code>, <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>, <code>X-RateLimit-Reset</code> headers. JSON body with clear messaging and link to docs.</p>
+<p><strong>Tiering: paid customers get higher limits</strong> by API plan; enterprise customers can negotiate custom overrides.</p>
+<p><strong>Monitoring: per-tenant dashboards</strong> showing limit utilization. Alerts when a customer regularly hits limits — they probably need a plan upgrade or an escalation conversation.</p>
+<p><strong>The senior framing:</strong> rate limiting is <em>layered protection</em> aligned with business model and system architecture. The algorithm and scope choices reflect intent, not just engineering preference.</p>
+</div>
+<div class="commentary">
+<p>Asks four clarifying questions before committing. Layered scopes with concrete numbers. Mentions monitoring and operational concerns. The "aligned with business model" framing is the senior insight.</p>
+</div>
+<div class="turn q">
+<p>A customer reports they're being rate limited but they think the limit is too low. They're a paying customer. How do you handle this?</p>
+</div>
+<div class="turn a">
+<p>This is partly engineering, partly customer success. The right response depends on what's actually happening.</p>
+<p><strong>Step 1: gather data.</strong></p>
+<p>What endpoint are they hitting? At what rate? What's their plan limit? Pull their usage from logs.</p>
+<p>Common findings:</p>
+<ul>
+<li><strong>They're using the API legitimately but at a higher rate than expected.</strong> Their use case has grown. Plan upgrade is the answer.</li>
+<li><strong>They have a bug in their code.</strong> Infinite loop, retry storm, accidental N+1 pattern. Tell them what's happening; they fix it.</li>
+<li><strong>The limit is genuinely too tight for the use case.</strong> Other customers also hit it. Engineering issue.</li>
+<li><strong>Specific endpoint is too aggressively limited.</strong> The endpoint's individual limit doesn't match its actual cost.</li>
+</ul>
+<p><strong>Step 2: choose the right path.</strong></p>
+<p>If it's a plan-tier issue: customer success conversation. Upgrade or custom contract.</p>
+<p>If it's a customer bug: support ticket showing them their request pattern, often with retry storm visible. They fix it.</p>
+<p>If it's a limit that's wrong: engineering review. Adjust the limit. Possibly retroactively credit the affected customer.</p>
+<p>If it's an endpoint-specific issue: revisit cost model. Should this endpoint cost less than I estimated? Or is the customer using it in a way that makes it expensive?</p>
+<p><strong>Step 3: reduce future friction.</strong></p>
+<p>Surface clearer signals to customers:
+- Dashboard in the customer portal showing their current usage vs limit.
+- Email alerts when they're consistently hitting 80% of their limit.
+- Documentation of which endpoints are expensive and why.</p>
+<p><strong>Step 4: document the decision.</strong></p>
+<p>If the customer's case warrants a custom override (large enterprise, special integration, beta customer), document the override on their API key. Note the reason and revisit at renewal.</p>
+<p><strong>The senior framing</strong>: rate limit incidents are usually <em>signals</em>, not just bugs. They tell you something about how customers are using your API and where your design is misaligned. Listen to the signal.</p>
+</div>
+<div class="commentary">
+<p>Distinguishes the four common findings, each with a different resolution. Treats it as a customer-success issue, not just engineering. The "rate limit incidents are signals" framing is the senior reframe.</p>
+</div>
+<div class="turn q">
+<p>Walk me through how you'd implement the actual rate limiter. The Redis Lua script and the application logic.</p>
+</div>
+<div class="turn a">
+<p>Sure, the canonical implementation. Token bucket with Redis.</p>
+<p><strong>The data model:</strong></p>
+<p>Per-rate-limit-key, store two values in Redis:
+- <code>tokens</code>: current token count.
+- <code>last_refill</code>: Unix timestamp of last refill.</p>
+<p>These can be in a single Redis hash: <code>ratelimit:tenant_42:search</code>.</p>
+<p><strong>The Lua script</strong> (atomic check-and-decrement):</p>
+<pre><code class="language-lua">-- KEYS[1]: rate limit key
+-- ARGV[1]: bucket capacity (max tokens)
+-- ARGV[2]: refill rate (tokens per second)
+-- ARGV[3]: current Unix timestamp
+-- ARGV[4]: cost of this request (default 1)
+
+local capacity = tonumber(ARGV[1])
+local refill_rate = tonumber(ARGV[2])
+local now = tonumber(ARGV[3])
+local cost = tonumber(ARGV[4]) or 1
+
+local data = redis.call(&quot;HMGET&quot;, KEYS[1], &quot;tokens&quot;, &quot;last_refill&quot;)
+local tokens = tonumber(data[1]) or capacity
+local last_refill = tonumber(data[2]) or now
+
+-- Calculate tokens to add since last refill
+local elapsed = math.max(0, now - last_refill)
+local refill_amount = elapsed * refill_rate
+tokens = math.min(capacity, tokens + refill_amount)
+
+local allowed = tokens &gt;= cost
+
+if allowed then
+  tokens = tokens - cost
+end
+
+-- Update Redis
+redis.call(&quot;HMSET&quot;, KEYS[1], &quot;tokens&quot;, tokens, &quot;last_refill&quot;, now)
+redis.call(&quot;EXPIRE&quot;, KEYS[1], 3600)  -- cleanup after 1 hour idle
+
+-- Return: allowed (1 or 0), remaining tokens, retry_after seconds
+local retry_after = 0
+if not allowed then
+  retry_after = math.ceil((cost - tokens) / refill_rate)
+end
+return {allowed and 1 or 0, math.floor(tokens), retry_after}
+</code></pre>
+<p><strong>The application code</strong> (Python pseudocode):</p>
+<pre><code class="language-python">def check_rate_limit(tenant_id, endpoint_class, request_cost=1):
+    key = f&quot;ratelimit:{tenant_id}:{endpoint_class}&quot;
+    capacity = get_bucket_capacity(tenant_id, endpoint_class)
+    refill_rate = get_refill_rate(tenant_id, endpoint_class)
+    now = time.time()
+
+    try:
+        result = redis.evalsha(
+            RATE_LIMIT_SCRIPT_SHA,
+            keys=[key],
+            args=[capacity, refill_rate, now, request_cost]
+        )
+        allowed, remaining, retry_after = result
+
+        if allowed:
+            return RateLimitResult(allowed=True, remaining=remaining)
+        else:
+            return RateLimitResult(
+                allowed=False,
+                remaining=0,
+                retry_after=retry_after,
+                limit=capacity,
+                reset_at=now + retry_after
+            )
+    except RedisError:
+        # Fail open with logging
+        log_warning(&quot;rate_limit_redis_unavailable&quot;, key=key)
+        return RateLimitResult(allowed=True, remaining=None)
+</code></pre>
+<p><strong>The HTTP handler</strong>:</p>
+<pre><code class="language-python">def handle_request(request):
+    rate_limit = check_rate_limit(
+        tenant_id=request.tenant_id,
+        endpoint_class=request.endpoint_category,
+        request_cost=request.estimated_cost
+    )
+
+    if not rate_limit.allowed:
+        return Response(
+            status=429,
+            headers={
+                &quot;Retry-After&quot;: str(rate_limit.retry_after),
+                &quot;X-RateLimit-Limit&quot;: str(rate_limit.limit),
+                &quot;X-RateLimit-Remaining&quot;: &quot;0&quot;,
+                &quot;X-RateLimit-Reset&quot;: str(int(rate_limit.reset_at)),
+            },
+            body={
+                &quot;error&quot;: &quot;rate_limit_exceeded&quot;,
+                &quot;retry_after_seconds&quot;: rate_limit.retry_after,
+                # ... clear message
+            }
+        )
+
+    # Add headers to successful response
+    response = process_request(request)
+    response.headers[&quot;X-RateLimit-Remaining&quot;] = str(rate_limit.remaining)
+    return response
+</code></pre>
+<p><strong>Deployment notes:</strong></p>
+<ul>
+<li>Load the Lua script once per Redis connection; cache the SHA. <code>EVALSHA</code> is faster than <code>EVAL</code>.</li>
+<li>Per-tenant settings (capacity, refill rate) cached in application memory with periodic refresh.</li>
+<li>Metrics on rate limit hits: which endpoints, which tenants, what fraction of total traffic.</li>
+<li>Alerts on Redis errors (fail-open path being taken).</li>
+</ul>
+<p><strong>The senior framing</strong>: implementation is simple once the design is right. The complexity is in the configuration (per-tenant rates, per-endpoint costs), monitoring (knowing when limits are hitting), and operational handling (Redis failover, fail-open semantics). <strong>Code is 20%; operations is 80%.</strong></p>
+</div>
+<div class="commentary">
+<p>Concrete Lua script with comments. Application code with proper error handling. HTTP response details. The "code is 20%, operations is 80%" framing is the senior reflex — implementation matters, but the design and ops matter more.</p>
+</div>
+<div class="turn q">
+<p>Last one. Your team is debating: should we build rate limiting in-house, or use a service like Cloudflare or Kong?</p>
+</div>
+<div class="turn a">
+<p>Both are valid. The choice depends on what you actually need.</p>
+<p><strong>Use a service (Cloudflare, Kong, AWS WAF, Apigee) when:</strong></p>
+<ul>
+<li><strong>You need edge-level protection.</strong> Traffic should be limited <em>before</em> hitting your servers. Reduces backend load even from abusive traffic. Crucial for unauthenticated endpoints under DDoS risk.</li>
+<li><strong>You don't have rate limiting as a core competency.</strong> Don't reinvent the wheel for a non-differentiating feature.</li>
+<li><strong>You want managed infrastructure.</strong> Operations, scaling, and reliability of the rate limiter are someone else's problem.</li>
+<li><strong>Coarse limits are enough.</strong> "X requests/sec per IP" or "X per API key" is what these services do well.</li>
+</ul>
+<p><strong>Build in-house when:</strong></p>
+<ul>
+<li><strong>You need application-aware limits.</strong> "User has used 3 of 5 free trials this month" requires application state that edge services don't have.</li>
+<li><strong>You need cost-based limits.</strong> "Each search query costs 5 units; user has 100 units/min." Custom logic.</li>
+<li><strong>You have integrated billing logic.</strong> Rate limits aligned with subscription state. Real-time decisions based on payment status, plan tier, custom contracts.</li>
+<li><strong>You're at a scale where vendor costs are prohibitive.</strong> At very high RPS, rate-limiter-as-a-service can cost more than building it. The break-even depends on the vendor and your traffic.</li>
+</ul>
+<p><strong>The hybrid pattern (most production):</strong></p>
+<ul>
+<li><strong>Edge service</strong> (Cloudflare, AWS WAF) for coarse limits, DDoS protection, bot detection.</li>
+<li><strong>In-house</strong> for application-aware limits, business logic, billing alignment.</li>
+</ul>
+<p>Both layers complement each other. The edge handles volume; the application handles nuance.</p>
+<p><strong>My recommendation for most teams:</strong></p>
+<p>Start with the edge service — it's quick to deploy, protects against the most common threats, and doesn't require your team to operate a critical-path service.</p>
+<p>Add in-house limits as the product matures and you need application-aware enforcement. Don't build in-house from day one unless you have specific needs the edge can't meet.</p>
+<p><strong>The senior framing</strong>: <em>rate limiting is infrastructure with multiple layers</em>. The choice isn't "build vs buy" — it's "which layer goes where?" Most production systems have both, each doing what it does best.</p>
+</div>
+<div class="commentary">
+<p>Doesn't pick one — articulates trade-offs of each. The hybrid pattern is the production reality. "Which layer goes where?" reframes the question. Pragmatic recommendation for most teams to start with edge service.</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<h3>Rate Limiting — One Page</h3>
+<h4>Three motivations</h4>
+<ul>
+<li><strong>Protection from abuse</strong> — block bots, attackers, runaway scripts.</li>
+<li><strong>Fair resource sharing</strong> — prevent noisy neighbors.</li>
+<li><strong>Cost control</strong> — align consumption with business model.</li>
+</ul>
+<p>Senior engineers separate these explicitly.</p>
+<h4>The five algorithms</h4>
+<ul>
+<li><strong>Fixed window</strong> — simplest; vulnerable to edge bursts.</li>
+<li><strong>Sliding window log</strong> — accurate; memory-heavy.</li>
+<li><strong>Sliding window counter</strong> — production sweet spot.</li>
+<li><strong>Token bucket</strong> — allows controlled bursts; modern API default.</li>
+<li><strong>Leaky bucket</strong> — smooths bursts via queueing.</li>
+</ul>
+<h4>Scope choices (layer multiple)</h4>
+<ul>
+<li>Per-IP (secondary defense; broken alone in modern internet).</li>
+<li>Per-API-key (primary scope for authenticated traffic).</li>
+<li>Per-user (fairness within auth).</li>
+<li>Per-endpoint (protect expensive operations).</li>
+<li>Per-tenant (multi-tenant fairness).</li>
+<li>Global (system capacity ceiling).</li>
+</ul>
+<p><strong>The senior pattern: layered scopes, multiple time horizons.</strong></p>
+<h4>Distributed implementation</h4>
+<ul>
+<li><strong>Centralized Redis with Lua script</strong> — production default.</li>
+<li><strong>Local counters with periodic sync</strong> — high-throughput optimization.</li>
+<li><strong>Sticky routing</strong> — niche; rare in pure form.</li>
+</ul>
+<p><strong>Fail open with alerts</strong> if Redis is unavailable.</p>
+<h4>429 response contract</h4>
+<ul>
+<li>Status: <strong>429 Too Many Requests</strong>.</li>
+<li>Headers: <code>Retry-After</code>, <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>, <code>X-RateLimit-Reset</code>.</li>
+<li>Body: clear message, error code, documentation link.</li>
+</ul>
+<p><strong>Stripe's SDK pattern</strong>: include <code>Should-Retry</code> semantics. SDKs handle 429 gracefully.</p>
+<h4>Soft vs hard limits</h4>
+<ul>
+<li><strong>Hard</strong>: reject. Use for abuse, strict quotas.</li>
+<li><strong>Soft</strong>: degrade. Use where customer experience trumps strict enforcement.</li>
+</ul>
+<p>Most APIs use hard limits. Soft requires per-endpoint engineering.</p>
+<h4>Modern reality</h4>
+<ul>
+<li><strong>Edge service</strong> (Cloudflare, AWS WAF, Kong) for coarse limits + DDoS.</li>
+<li><strong>In-house</strong> for application-aware logic, billing, custom rules.</li>
+<li><strong>Layered combination</strong> in most production systems.</li>
+</ul>
+<h4>Anti-patterns</h4>
+<ul>
+<li>Per-IP alone (broken by NAT, IPv6, proxies).</li>
+<li>Fixed window without sliding (edge bursts).</li>
+<li>429 without <code>Retry-After</code> (causes retry storms).</li>
+<li>No global limit on top of per-tenant (aggregate exceeds capacity).</li>
+<li>Building in-house when edge service would suffice.</li>
+<li>Not tiering by plan/business value.</li>
+</ul>
+<h4>The 30-second verbal answer</h4>
+<p>"Rate limiting protects systems from overload through layered enforcement. Algorithm choice — token bucket for bursts, sliding window counter for accuracy — depends on the workload. Scope is layered: per-API-key for authenticated traffic, per-IP for unauthenticated, per-tenant for fairness, global for system capacity. Distributed implementation typically uses centralized Redis with Lua scripts for atomicity. The 429 response includes Retry-After and clear messaging — without these, clients retry immediately and amplify the problem."</p>
+<h4>Always pair with</h4>
+<p>Backpressure (Module 17), circuit breakers, retries with backoff, API gateways, observability, idempotency, fairness, multi-tenancy.</p>
+</div>
+<h1>What's next</h1>
+<p>You can now design rate limiting that actually works in production — the algorithm matched to traffic shape, the scope layered for defense, the distributed implementation aligned with your latency budget, and the 429 response that helps clients instead of triggering retry storms.</p>
+<p>Rate limiting fits naturally with <strong>Module 17's backpressure patterns</strong> — it's the upstream enforcement of the same principle. Your service tells callers "I can't take this much" via 429s; backpressure tells your dependencies via bounded queues.</p>
+<p>Two appendices remain:
+- <strong>Appendix A</strong>: Data lakes vs warehouses — Iceberg, Delta Lake, Hudi, BigQuery, Snowflake, Databricks, the modern lakehouse.
+- <strong>Appendix B</strong>: The 60-second answer template — structured framework for senior interview questions.</p>
+<p>Get water. The rate limiting toolkit is now in your senior interview vocabulary. Two appendices to wrap.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="17_ha_scaling_caching.html" class="prev">&laquo; 17 HA/Scaling</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="19_bottlenecks_observability.html" class="next">19 Observability &raquo;</a>
+</nav>
+</body>
+</html>

@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam learns about distributed pain</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 10</p>
+</div>
+<div class="module-title">
+<p>Replication</p>
+</div>
+<div class="subtitle">
+<p>Leader-follower, multi-leader, and the failover stories that should make you nervous</p>
+</div>
+</div>
+<div class="opener">
+<p>Your boss says "let's add a read replica to scale." Innocent enough — until users start seeing stale data, then duplicate writes when failover goes wrong, then split-brain.</p>
+<p>Replication is where databases go from "single node" to "system." It's also where most engineers' production confidence runs out. By the end of this module, you'll be able to talk through every replication topology and know exactly what fails when.</p>
+</div>
+<h1>Sam learns about distributed pain</h1>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+OK, distributed time. I get the basic idea — we have a primary and replicas, writes go to the primary, reads can go to replicas. We add replicas as we need more read capacity. Right?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Mostly right. Now: a user submits a comment on your site. Their browser sends the POST. Your server writes to the primary, gets a 200, returns success to the user. The user's page reloads — and the comment isn't there. They refresh. Still not there. They refresh again, 30 seconds later. Now it appears. What just happened?</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+Oh. The reload hit a replica that hadn't gotten the update yet?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Exactly. Replication lag. The user wrote to the primary, the read went to a follower, the follower hadn't received the write yet. Their own action seems to have failed — even though the system worked perfectly by its own definition.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+That sounds like a bug.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+It is. It's called the "read your own writes" problem and it's the <em>first</em> thing that breaks when you add replicas. There are five things that break. We're going to walk through all of them.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+Five things?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Read-your-writes. Replication lag during failover. Split-brain. Multi-leader conflicts. The fan-out wall. Each of them has cost real engineering teams real downtime. By the end of this module you'll have the vocabulary, the failure modes, and the playbook.</p>
+</div>
+</div>
+<div class="keyidea">
+<p>Replication has three main topologies: <strong>leader-follower</strong> (one writer, many readers), <strong>multi-leader</strong> (writes accepted in multiple regions), and <strong>leaderless</strong> (any node accepts writes, quorum reads). Each makes different tradeoffs. <strong>None gets you fast writes, fresh reads, and continued operation during partition all at the same time.</strong> Pick what you sacrifice.</p>
+</div>
+<h1>The three topologies</h1>
+<div class="diagram">
+<p>LEADER-FOLLOWER          MULTI-LEADER             LEADERLESS
+   (single primary)         (multiple primaries)     (no primaries)</p>
+<pre><code>  ┌──── Leader              Leader ◄──► Leader        Node ◄──► Node
+  │     │   │               │              │           │  ╲     ╱  │
+  │     ▼   ▼               ▼              ▼           │   ╲   ╱   │
+  │  Follower Follower   Follower      Follower        Node ◄──► Node
+  │
+</code></pre>
+<p>Writes go to leader      Writes can go to any         Writes go to any
+   only. Followers          leader; conflicts must       replica; quorum
+   replicate from leader.   be resolved.                 for consistency.</p>
+<p>Postgres replication.    Cassandra (sort of).         Cassandra,
+   MySQL, Mongo, Kafka.     Active-active geo.           DynamoDB.</p>
+</div>
+<div class="keyidea">
+<p>Most production systems are leader-follower. Multi-leader exists for geo-distributed writes. Leaderless is for high-availability key-value workloads. Senior engineers can articulate when each is appropriate.</p>
+</div>
+<h1>Leader-follower: the dominant pattern</h1>
+<p>One node is the <strong>leader</strong> (also called primary or master). All writes go there. <strong>Followers</strong> (also called secondaries, replicas, or slaves) replicate from the leader.</p>
+<div class="workout">
+<p><strong>The basic flow:</strong></p>
+<div class="step">
+<p>Client sends a write to the leader.</p>
+</div>
+<div class="step">
+<p>Leader writes to its WAL (Module 02) and commits locally.</p>
+</div>
+<div class="step">
+<p>Leader sends the WAL records (or a logical change stream) to each follower.</p>
+</div>
+<div class="step">
+<p>Each follower applies the records to its own data files.</p>
+</div>
+<div class="step">
+<p>Reads can hit any follower — with caveats we're about to discuss.</p>
+</div>
+</div>
+<div class="scenario">
+<p><strong>A typical Postgres setup</strong>: 1 primary, 2 replicas. The primary takes all writes. Reads are load-balanced across the replicas via a pooler like PgBouncer or PgCat. Writes complete on the primary; replicas catch up "eventually" — usually within milliseconds.</p>
+<p>Sounds simple. The complications start with three letters: <strong>lag</strong>.</p>
+</div>
+<h1>Sync vs async — the most important distinction</h1>
+<p>This is the choice that defines everything else about your replication.</p>
+<div class="compare">
+<div class="vs-left">
+<h4>Asynchronous</h4>
+<p>Leader acks the write to the client <em>before</em> followers acknowledge.</p>
+<p><b>Pro:</b> fast writes — no network round-trip wait.</p>
+<p><b>Con:</b> if leader crashes after ack but before replication, the write is <b>lost</b>.</p>
+<p><b>Used by:</b> default Postgres, default MySQL, most cloud-managed setups.</p>
+</div>
+<div class="vs-right">
+<h4>Synchronous</h4>
+<p>Leader waits for at least one follower to confirm before acking.</p>
+<p><b>Pro:</b> writes durable on multiple nodes before client sees success.</p>
+<p><b>Con:</b> latency = leader's local time + slowest sync follower's network. One slow follower stalls writes.</p>
+<p><b>Used by:</b> Postgres with <code>synchronous_standby_names</code>, MySQL with semi-sync.</p>
+</div>
+</div>
+<p>There's also <strong>semi-sync</strong> — at least N out of M followers must confirm. Common middle ground.</p>
+<div class="warning">
+<p><strong>The default in most databases is async.</strong> This means:
+- Writes are fast (good).
+- Writes can be lost on leader failure (bad).</p>
+<p>Most production teams don't realize this until the first failover incident. Senior engineers verify the durability stance <em>before</em> incidents.</p>
+</div>
+<div class="metaphor">
+<p><strong>The mailroom analogy.</strong></p>
+<p>Async replication is like sending a letter via the mailroom and walking out before they confirm it's been delivered. Fast for you. If the mailroom has a fire before delivery, your letter is gone — but you don't find out for days.</p>
+<p>Sync replication is like sitting in the mailroom until they hand you a delivery confirmation. Slow. Annoying. But you <em>know</em> the letter arrived.</p>
+<p>Semi-sync is like requesting a confirmation from "any 2 of 3 mailrooms." You wait, but if one mailroom is slow, the others can confirm. Faster than full sync, safer than pure async.</p>
+</div>
+<h1>Replication lag — the silent enemy</h1>
+<div class="scenario">
+<p><strong>The "ghost data" incident (very common pattern):</strong></p>
+<p>A user submits a comment.
+Server writes to primary, returns 200.
+User's browser refreshes the page.
+Page query is load-balanced to a replica.
+<strong>Replica hasn't received the write yet.</strong>
+User sees their own comment is missing.</p>
+<p>User refreshes again. Now it appears.</p>
+<p>The user thinks the system is broken. The system thinks everything is fine. <strong>Replication lag is the gap between these two perceptions.</strong></p>
+</div>
+<p>This is <strong>the single most common production complaint</strong> in any system that adds read replicas. It has many fixes, ranging from cheap to architectural.</p>
+<h2>Read-your-writes consistency</h2>
+<p>The technical name for the property the user expects: "reads should reflect their own prior writes." Three common workarounds:</p>
+<div class="workout">
+<p><strong>Strategies for read-your-writes:</strong></p>
+<div class="step">
+<p><strong>Read-from-leader after write.</strong> Tag the user's session as "must read from leader for the next 30 seconds." Routes their reads to the primary, where the data is fresh. Other users still hit replicas. Simplest fix; works for most apps.</p>
+</div>
+<div class="step">
+<p><strong>Wait for replication.</strong> Capture the LSN at write time, store it in the user's session. On next read, query the chosen replica's <code>pg_last_wal_replay_lsn()</code> — wait until it's ≥ the captured LSN before serving the read. More precise; more complex.</p>
+</div>
+<div class="step">
+<p><strong>Sticky sessions.</strong> Route a user always to the same replica (via a session-aware load balancer). At least the lag they experience is consistent — they don't toggle between fresh and stale on each request.</p>
+</div>
+</div>
+<div class="tip">
+<p>The simplest pattern that handles most of the pain: <strong>route a user's reads to the leader for a few seconds after they write.</strong> Cookies or session state mark the user as "in read-your-writes window." After the window expires, normal load balancing.</p>
+<p>This is what Reddit, Stack Overflow, and many high-traffic sites do under the hood.</p>
+</div>
+<div class="gotcha">
+<p>For "I just posted, why don't I see it?" — the simplest fix is to read the user's <em>own</em> writes from the leader for a short window. <strong>Don't try to fix all reads.</strong> Most reads tolerate slight staleness; only the user's own actions need freshness.</p>
+</div>
+<h1>Failover — the painful part</h1>
+<p>The leader dies. Now what?</p>
+<p>The cluster must:</p>
+<div class="workout">
+<p><strong>The failover dance:</strong></p>
+<div class="step">
+<p><strong>Detect the failure.</strong> Heartbeat timeouts trigger the suspicion. Too aggressive = false positives = thrashing. Too slow = long downtime. Typical: 3 missed heartbeats over 10-30 seconds.</p>
+</div>
+<div class="step">
+<p><strong>Elect a new leader</strong> from among the followers. Usually the most up-to-date follower wins.</p>
+</div>
+<div class="step">
+<p><strong>Reconfigure clients</strong> to point at the new leader. DNS, service mesh, or connection pool updates.</p>
+</div>
+<div class="step">
+<p><strong>Handle un-replicated writes</strong> that were on the dead leader. <strong>This is where data loss happens.</strong></p>
+</div>
+</div>
+<p>Each of these is a source of bugs.</p>
+<h2>The split-brain disaster</h2>
+<div class="scenario">
+<p><strong>The failure mode that haunts every replication setup:</strong></p>
+<ol>
+<li>A network partition isolates the leader from its followers.</li>
+<li>Clients are still connected to the leader (different network path) — they keep writing.</li>
+<li>Followers can't reach the leader — they think it's dead.</li>
+<li>Followers elect a new leader from among themselves.</li>
+<li>Now there are <em>two leaders</em>, both accepting writes from different subsets of clients.</li>
+<li>When the partition heals, the two leaders have <strong>conflicting writes</strong>. Some data must be lost.</li>
+</ol>
+<p><strong>This is split-brain.</strong> Real systems prevent it via quorum (majority must agree on leader) or fencing tokens (only the new leader can authoritatively act).</p>
+</div>
+<div class="warning">
+<p><strong>Split-brain is the single most dangerous failure in replication.</strong> Two leaders both think they're the source of truth. Reconciliation after the fact often loses data — the system has to pick which version of the conflicting writes wins. Whichever side loses, the users on that side experience their writes silently disappearing.</p>
+<p><strong>Prevention is the only real defense.</strong> Quorum-based promotion (majority of nodes must agree). Fencing tokens (each leadership term has a monotonically-increasing number; old leaders' writes are rejected). STONITH ("Shoot The Other Node In The Head") — explicitly kill the old leader before promoting the new one.</p>
+</div>
+<h2>A real-world failover war story</h2>
+<div class="reallyworld">
+<p><strong>The GitHub 2018 incident — the canonical replication failure case.</strong></p>
+<p>In October 2018, GitHub had a 24-hour partial outage caused by a routine network change.</p>
+<p>The sequence:</p>
+<ol>
+<li><strong>A 43-second cross-coast network partition</strong> isolated MySQL clusters in different regions.</li>
+<li><strong>Failover kicked in.</strong> Clusters in the West Coast region promoted local replicas, started accepting writes.</li>
+<li><strong>Network healed.</strong> Now there were two clusters with divergent writes — East Coast had been writing, West Coast had been writing, neither knew about the other's changes.</li>
+<li><strong>GitHub had to pick which side won</strong> for each affected piece of data. They couldn't merge the divergence — there was no automated way to know which writes mattered more.</li>
+<li><strong>The repair took ~24 hours</strong> of running careful reconciliation jobs and accepting that some data would be lost or marked inconsistent.</li>
+</ol>
+<p>The blameless postmortem GitHub published is required reading for anyone running replicated MySQL. The lessons:
+- A 43-second network blip caused a 24-hour outage.
+- Async replication + automated failover + multi-region = a recipe for split-brain.
+- The recovery was harder than the failure.</p>
+<p><strong>This is why senior engineers are paranoid about failover policies.</strong> "It works in steady state" is not the bar. "It survives a network blip without diverging" is the bar.</p>
+</div>
+<div class="insider">
+<p>Tools and approaches for safer failover by database:</p>
+<table>
+<thead>
+<tr>
+<th>Database</th>
+<th>Failover tool / approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Postgres</strong></td>
+<td>Patroni, Stolon, repmgr, pg_auto_failover</td>
+</tr>
+<tr>
+<td><strong>MySQL</strong></td>
+<td>Orchestrator, ProxySQL, MHA, MySQL InnoDB Cluster</td>
+</tr>
+<tr>
+<td><strong>MongoDB</strong></td>
+<td>Built-in replica sets with majority elections</td>
+</tr>
+<tr>
+<td><strong>Redis</strong></td>
+<td>Redis Sentinel, Redis Cluster</td>
+</tr>
+<tr>
+<td><strong>Kafka</strong></td>
+<td>Built-in (controller-managed)</td>
+</tr>
+</tbody>
+</table>
+<p>The common thread: <strong>all production-grade tools require quorum-based promotion</strong>. Manual failover or majority-of-1 setups are how split-brain happens. Always run with quorum.</p>
+</div>
+<h1>Multi-leader replication</h1>
+<p>Multiple nodes can accept writes. Writes propagate to other leaders.</p>
+<div class="scenario">
+<p><strong>A globally distributed app:</strong> users in NYC and Tokyo. You deploy a leader in each region. NYC users write to NYC's leader; Tokyo writes to Tokyo's. Leaders replicate to each other asynchronously. <strong>Local writes feel fast everywhere.</strong></p>
+<p>Sounds great. The problem appears the moment two users in different regions update the same record concurrently.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Multi-leader</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Wins</strong></td>
+<td>Geographic write locality. Continued operation during inter-region partition. No single point of failure for writes.</td>
+</tr>
+<tr>
+<td><strong>Losses</strong></td>
+<td><strong>Conflict resolution</strong>. Two users in different regions update the same record. Now what?</td>
+</tr>
+</tbody>
+</table>
+<h2>Conflict resolution strategies</h2>
+<div class="workout">
+<p><strong>The four common conflict resolution patterns:</strong></p>
+<div class="step">
+<p><strong>Last write wins (LWW)</strong>: pick the write with the latest timestamp. Easy. <strong>Lossy</strong> — one of the writes is dropped silently. Has a fatal subtlety: clock skew across regions can mean the "latest" write actually happened earlier in real time.</p>
+</div>
+<div class="step">
+<p><strong>Application-defined merge</strong>: store both versions, let the app decide what to do. Common in CRDT-style designs.</p>
+</div>
+<div class="step">
+<p><strong>Operational transform / CRDT</strong>: design the data so updates are commutative — they merge automatically without conflict. Used by collaborative apps like Google Docs and Figma.</p>
+</div>
+<div class="step">
+<p><strong>Custom callback</strong>: tell the database "when conflict, run this function to merge." Flexible, requires careful business logic. Riak made this approach famous.</p>
+</div>
+</div>
+<div class="gotcha">
+<p><strong>Last write wins seems simple but has a fatal flaw: clock skew.</strong> If NYC's clock is 100ms ahead of Tokyo's, NYC writes always "win" — even if they happened earlier in real time.</p>
+<p>The fix: use <strong>logical clocks</strong> (vector clocks, hybrid logical clocks) instead of wall clock when you can. They give you a partial ordering that respects causality without depending on synchronized clocks.</p>
+<p>Don't say LWW in an interview without mentioning the clock skew problem. Senior engineers know.</p>
+</div>
+<h1>Read replicas: the workhorse</h1>
+<p>A "read replica" is just an asynchronous follower used for offloading read traffic. The most common reason teams add replication.</p>
+<p><strong>Use cases:</strong>
+- <strong>Reporting / analytics queries</strong> that would slow down OLTP if run on the primary.
+- <strong>Geographic read locality</strong> — replica near read-heavy region.
+- <strong>Scaling read throughput</strong> horizontally.</p>
+<p><strong>Limitations:</strong>
+- Stale reads (replication lag).
+- Not infinitely scalable — at high replica count, the leader saturates sending data.
+- Doesn't help write throughput at all.</p>
+<div class="warning">
+<p><strong>Read replicas don't help writes.</strong> Junior engineers sometimes think "we'll scale by adding replicas." Reads scale; writes don't. The leader is still doing all write work, plus the additional work of streaming WAL to N replicas. <strong>More replicas can actually slow down the leader</strong> by saturating its network bandwidth.</p>
+</div>
+<h2>The fan-out wall</h2>
+<div class="insider">
+<p><strong>The fan-out limit.</strong> A Postgres leader can typically support 5-10 streaming replicas before WAL shipping becomes the bottleneck. Past that, you have options:</p>
+<p><strong>Cascading replication</strong>: replicas replicating from replicas. The leader streams to a few "hub" replicas, which then stream to "leaf" replicas. Adds slight extra lag at the leaves but spreads the WAL-shipping load.</p>
+<p><strong>WAL archive + restore</strong>: replicas pull WAL from object storage instead of streaming directly from the leader. More tolerant of intermittent connectivity, slightly higher lag.</p>
+<p><strong>Move to logical replication for some replicas</strong>: filter and transform data, send only what each replica needs. More CPU on the leader, less network bandwidth per replica.</p>
+<p>For very large systems: physical replication for hot replicas, logical replication for downstream consumers (analytics, ML). The senior pattern at scale.</p>
+</div>
+<div class="scenario">
+<p><strong>A typical scaling progression</strong>:</p>
+<ul>
+<li><strong>Small</strong>: 1 primary, 1 sync replica for HA. Done.</li>
+<li><strong>Growing</strong>: 1 primary, 1 sync replica, 2 async read replicas. Reads load-balanced across the asyncs.</li>
+<li><strong>Larger</strong>: 1 primary, 1 sync replica, 5+ async replicas. Connection pooling becomes critical.</li>
+<li><strong>At scale</strong>: cascading replication or logical replication for downstream systems. Plus consider sharding (Module 15).</li>
+<li><strong>Very large</strong>: separate read clusters per workload (analytics, search, OLTP), each fed by its own replication path.</li>
+</ul>
+<p>The senior framing: <strong>scaling reads via replicas is fine until ~10 replicas. Past that, the architecture must change.</strong></p>
+</div>
+<h1>Three more ways to think about replication</h1>
+<div class="metaphor">
+<p><strong>Way 1: photocopying.</strong></p>
+<p>Async replication is like photocopying a document and mailing the copy. Fast for you (you finish the original work before the copy arrives). If the original is destroyed before the copy arrives, the copy never exists.</p>
+<p>Sync replication is like dictating to a court reporter who confirms each sentence as you speak. Slow. But you know there's a verified second copy in real time.</p>
+<p>Read replicas are like keeping copies of every memo at five different branch offices. Fast lookup at any branch. Each branch might be a few minutes behind the headquarters. If you absolutely need the latest version, call headquarters.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 2: a busy household.</strong></p>
+<p>Single-node database is one person managing the family calendar. Authoritative, but everyone has to ask them.</p>
+<p>Leader-follower is one person managing the calendar and posting copies on every fridge. Family members can read any copy. If the master copy gets lost, anyone with a recent fridge copy can become the new authority.</p>
+<p>Multi-leader is each parent independently managing their own calendar and trying to sync at dinner. Works great until both parents schedule conflicting things for the kid on Saturday.</p>
+<p>Split-brain is the parents stop talking for a week, both schedule things, and now the kid has two simultaneous obligations.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 3: source code branches.</strong></p>
+<p>Single-node = one main branch, everyone commits to main. Strict serialization.</p>
+<p>Leader-follower = main branch with read-only mirrors. Faster lookups, but mirrors might be a few commits behind.</p>
+<p>Multi-leader = feature branches that get merged later. Conflicts arise when two branches modify the same line. Manual or automated merge resolves them.</p>
+<p>Split-brain = two long-lived branches diverge silently for weeks. Eventually you need a merge conflict resolution process. Some commits will be lost.</p>
+</div>
+<h1>Sharpen your pencil</h1>
+<div class="exercise">
+<p><strong>Exercise 1.</strong> Your team is adding a read replica to a Postgres setup. After deployment, users complain about "ghost data" — submitting a form, then immediately not seeing it. What's happening, and what's the fix?</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>Diagnosis: replication lag exposing read-your-writes.</strong> The user's write went to the primary; their next read got load-balanced to a replica that hadn't received the change yet. Classic.</p>
+<p><strong>Three fixes, in order of preference:</strong></p>
+<p><strong>Fix 1: Sticky-read-after-write window.</strong> In the user's session, route all reads to the primary for N seconds (e.g., 30) after a write. Simple, works, gives users consistent UX. Most production systems use this pattern.</p>
+<p><strong>Fix 2: Replication slot or LSN tracking.</strong> After write, capture the LSN. On next read, wait until the chosen replica's apply LSN ≥ that captured LSN. More precise, more complex. Useful when read-your-writes must work without trapping the user on the primary for any longer than necessary.</p>
+<p><strong>Fix 3: Read from primary for cache-miss-prone queries.</strong> If the data being read is "user's own recent action," always read from primary. Save replicas for "lookup user N's profile."</p>
+<p>What NOT to do: tell the team "just live with eventual consistency." Users hate that, and rightly so. The system <em>should</em> honor "show me my own work."</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2.</strong> Your Postgres setup is currently 1 primary + 1 async replica. You want to add HA — surviving primary failure without data loss. What do you change?</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>The key insight: <strong>async replication can lose recent writes on primary failure.</strong> If you want zero data loss, you need synchronous replication.</p>
+<p><strong>The setup:</strong></p>
+<ol>
+<li>
+<p>Configure <code>synchronous_standby_names = 'replica1'</code> on the primary. Now commits wait for replica1 to acknowledge.</p>
+</li>
+<li>
+<p>Add at least one <em>more</em> async replica (so you have primary + sync_replica + async_replicas). Why: if the sync replica is down, all writes block. Having a second sync-eligible replica via <code>ANY 2 (replica1, replica2)</code> gives you safe quorum.</p>
+</li>
+<li>
+<p>Add an automated failover tool — Patroni or pg_auto_failover. The tool monitors health and promotes a replica when the primary fails. Critical: it must use quorum-based promotion to avoid split-brain.</p>
+</li>
+<li>
+<p>Configure clients to discover the current primary. PgBouncer in front of Patroni-managed clusters handles this transparently.</p>
+</li>
+</ol>
+<p><strong>The trade-offs you accept:</strong>
+- Write latency increases by the network round-trip to the sync replica.
+- If all sync replicas are down, writes block. (Better than data loss, but operationally significant.)
+- Failover takes seconds to tens of seconds — not instant.</p>
+<p><strong>The senior framing:</strong> HA is a property of the <em>whole</em> topology and configuration, not a switch you flip. Each piece (sync replication, automated failover, quorum, client discovery) plays a role. Test the failover under realistic conditions before declaring victory.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3.</strong> Explain to non-technical Sam, in two sentences, why "split-brain" is the worst thing that can happen during failover.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>Split-brain is when the system promotes a new primary while the old primary is still alive and accepting writes — so you suddenly have two authoritative sources of truth that disagree. Reconciling the disagreement after the fact almost always means picking which writes to keep and which to throw away, which means some users' actions silently vanish — the worst possible failure mode for a database that's supposed to remember things.</p>
+</div>
+</div>
+<h1>There are no dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p>Q: What's the difference between physical and logical replication?</p>
+</div>
+<div class="a">
+<p>A: Physical replication ships byte-for-byte changes to disk pages — the replica is an exact bit copy of the primary. Logical replication ships row-level operations ("INSERT into table X with values Y") which the replica applies via SQL-like operations. Physical is faster and exact; logical is more flexible (can replicate to different versions, filter rows, transform). Module 11 covers this in depth.</p>
+</div>
+<div class="q">
+<p>Q: Can the same node be both leader and follower?</p>
+</div>
+<div class="a">
+<p>A: In some cases yes — multi-leader topologies have nodes that are leaders for some data and followers for others. In standard leader-follower, no — a single node is one or the other for the whole database. Replica chains (cascading replication) have intermediate nodes that are followers of the primary and leaders for downstream replicas, blurring the line.</p>
+</div>
+<div class="q">
+<p>Q: What happens during automatic failover if the network just briefly blips?</p>
+</div>
+<div class="a">
+<p>A: This is where things get dangerous. If failover triggers too aggressively (too few missed heartbeats), you can promote a new leader while the old one is still alive — split-brain. The mitigation: tune detection thresholds carefully, require quorum for promotion, and use fencing to ensure the old leader can't continue writing after demotion.</p>
+</div>
+<div class="q">
+<p>Q: Why don't all systems use synchronous replication?</p>
+</div>
+<div class="a">
+<p>A: Latency. Every commit pays the network round-trip to the sync replica. Across regions that can be 100+ ms per commit. For latency-sensitive OLTP, this is unacceptable. The trade-off: throughput vs durability vs consistency. Async writes are the default because most apps prefer fast writes to perfect durability.</p>
+</div>
+<div class="q">
+<p>Q: How do I monitor replication lag?</p>
+</div>
+<div class="a">
+<p>A: In Postgres: <code>SELECT now() - pg_last_xact_replay_timestamp();</code> on a replica gives time-based lag. <code>pg_stat_replication</code> on the primary shows per-replica state including LSN gaps. In MySQL: <code>SHOW SLAVE STATUS;</code> gives <code>Seconds_Behind_Master</code>. Set alerts on these — lag over 30 seconds usually indicates a problem.</p>
+</div>
+<div class="q">
+<p>Q: What's the relationship between replication and backups?</p>
+</div>
+<div class="a">
+<p>A: Replicas are not backups. A bug that deletes data on the primary deletes it on replicas too — replication faithfully copies the deletion. Backups are point-in-time snapshots that protect against logical errors. <strong>You need both.</strong> Senior engineers say "replicas for HA, backups for recovery from data corruption."</p>
+</div>
+<div class="q">
+<p>Q: Can I have a replica in a different cloud provider?</p>
+</div>
+<div class="a">
+<p>A: Yes — and many enterprises do for disaster recovery. Cross-cloud replication usually goes through a CDC pipeline (Module 11) rather than native streaming, because cloud-managed databases often don't expose the streaming protocol externally. Or you run your own Postgres and stream natively.</p>
+</div>
+<div class="q">
+<p>Q: What's "leaderless" replication?</p>
+</div>
+<div class="a">
+<p>A: A topology with no fixed leader. Any replica accepts writes. Reads check multiple replicas (quorum reads) to find the latest version. Popularized by Amazon's Dynamo paper. Cassandra and Riak use this model. Tradeoffs: better write availability during failures (no leader to elect), more complex consistency model, requires application-level conflict handling.</p>
+</div>
+</div>
+<h1>Three myths to dynamite</h1>
+<div class="myth">
+<p><strong>"Adding replicas scales the database."</strong></p>
+<p>Half-true. Replicas scale <em>reads</em>. They do nothing for writes — the leader still does all write work, plus more (streaming to replicas). Past about 10 replicas, the leader's network becomes the bottleneck. <strong>Scaling writes requires sharding (Module 15), not more replicas.</strong></p>
+</div>
+<div class="myth">
+<p><strong>"Sync replication means no data loss."</strong></p>
+<p>Half-true. Sync replication means no data loss <em>if at least one sync replica survives</em>. If all sync replicas die before async ones catch up, the unreplicated writes are lost. Multi-replica quorum sync gives you safety as long as a majority survives.</p>
+</div>
+<div class="myth">
+<p><strong>"Read replicas are just like the primary, just slightly behind."</strong></p>
+<p>Misleading. Replicas can lag arbitrarily under load — minutes or hours during heavy writes. They can serve drastically stale data during catch-up. They can have different query plans (different stats). Treat them as different beasts, not perfect mirrors.</p>
+</div>
+<h1>Interview gotchas</h1>
+<div class="gotcha">
+<p><strong>Treating "replication" as one thing.</strong> Synchronous, asynchronous, semi-sync, logical, physical — all different. Specify which.</p>
+</div>
+<div class="gotcha">
+<p><strong>Forgetting that read replicas don't help writes.</strong> Writes still pile up on the leader. If write throughput is your bottleneck, replicas don't fix it — sharding does.</p>
+</div>
+<div class="gotcha">
+<p><strong>Saying "multi-leader is just better."</strong> Multi-leader trades simplicity for write availability. Conflicts are a real engineering cost. Most production systems are leader-follower for that reason.</p>
+</div>
+<div class="gotcha">
+<p><strong>Recommending automated failover without quorum.</strong> "We have automated failover" is a liability without quorum-based promotion. Split-brain is the result of getting failover wrong.</p>
+</div>
+<div class="gotcha">
+<p><strong>Not knowing the GitHub 2018 incident.</strong> Replication failover stories are interview territory. Knowing the canonical case (network blip → split-brain → 24-hour recovery) signals real-world awareness.</p>
+</div>
+<h1>Mock interview</h1>
+<div class="mock-interview">
+<div class="turn q">
+<p>We have a Postgres primary and three read replicas. We want to scale further. Add more replicas, or do something else?</p>
+</div>
+<div class="turn a">
+<p>Three considerations:</p>
+<p><strong>One — what's the bottleneck?</strong> If writes are saturating the primary, more replicas don't help. The primary is doing the same write work <em>plus</em> shipping WAL to each replica. More replicas = more network/CPU on the primary. There's a fan-out wall around 5-10 replicas in Postgres.</p>
+<p><strong>Two — what kind of reads are slow?</strong> If reports are slow, putting them on a dedicated reporting replica helps. If user-facing latency is high, more replicas help only if the bottleneck is read concurrency, not query plan or data size. Sometimes the fix is "tune the slow query," not "add hardware."</p>
+<p><strong>Three — is staleness acceptable?</strong> More replicas = more replicas to keep in sync = potentially worse tail latency on lag during heavy write spikes.</p>
+<p>Realistic options ranked:
+- <strong>Connection pooling</strong> (PgBouncer or PgCat) to reduce connection overhead. Many "scale" problems are actually connection exhaustion, not throughput.
+- <strong>Materialized views</strong> for hot reports — Module 05.
+- <strong>Cascading replication</strong>: replicas replicating from replicas. Spreads the WAL-shipping load. Slight extra lag.
+- <strong>Partitioning</strong> if a single huge table is the issue.
+- <strong>Sharding</strong> if writes have outgrown one node — Module 15.</p>
+<p>I'd reach for sharding as a last resort because it's expensive operationally. But there's a real ceiling on a single-leader Postgres — somewhere around 100K writes/sec on premium hardware, far less on commodity. If the team is approaching that, plan the sharding work <em>now</em>, not after the wall.</p>
+</div>
+<div class="commentary">
+<p>Multiple diagnostic angles. Specific tools by name. The "sharding as last resort but plan early" framing — operationally aware.</p>
+</div>
+<div class="turn q">
+<p>We've decided to add synchronous replication for HA. The team is worried about latency spikes. What do you tell them?</p>
+</div>
+<div class="turn a">
+<p>The concern is legitimate. Sync replication adds the network round-trip to a sync replica into every commit's latency. On the same data center, that's typically 0.5-2ms — usually acceptable. Cross-AZ within a region: 1-3ms. Cross-region: 50-200ms — usually unacceptable.</p>
+<p>Three mitigation strategies:</p>
+<p><strong>One — keep sync replicas close.</strong> Place at least one sync replica in the same data center or AZ as the primary. Cross-region replicas can be async — they're for disaster recovery, not for the synchronous critical path.</p>
+<p><strong>Two — use quorum sync.</strong> <code>synchronous_standby_names = 'ANY 2 (replica1, replica2, replica3)'</code>. Commits wait for any 2 of 3 to ack. If one is slow, the others can confirm. This protects against single-replica latency without giving up safety.</p>
+<p><strong>Three — measure the impact.</strong> Before deploying, run a benchmark with sync replication enabled. The latency hit might be lower than the team fears, especially with a well-located replica. If it's a problem for <em>some</em> workloads, you can use sync for critical writes (<code>SET LOCAL synchronous_commit = on</code>) and async for non-critical writes (<code>SET LOCAL synchronous_commit = off</code>) — per-transaction control.</p>
+<p>The framing: <strong>sync replication is a conscious latency-vs-durability trade. Quantify both sides before deciding the global default.</strong></p>
+</div>
+<div class="commentary">
+<p>Specific numbers (RTT estimates by topology). The "per-transaction control" detail signals depth — most engineers don't know <code>synchronous_commit</code> is a session-level setting.</p>
+</div>
+<div class="turn q">
+<p>The on-call engineer wakes up to "primary database unreachable." Walk me through the first 10 minutes.</p>
+</div>
+<div class="turn a">
+<p>A triage flow, in order of urgency:</p>
+<p><strong>Minute 0-2: confirm scope.</strong> Is the primary actually down, or is it a network partition that <em>looks</em> like the primary is down? Check from multiple monitoring vantage points. A network blip and an actual crash require different responses.</p>
+<p><strong>Minute 2-5: check failover state.</strong> Did automated failover already trigger? If yes, is the new primary healthy and accepting writes? Check application metrics — are writes succeeding? Reads succeeding? If the failover went cleanly, the immediate crisis is resolved; now we investigate the original cause.</p>
+<p><strong>Minute 5-7: if no automated failover, manual decision.</strong> Is the primary really gone, or is it about to recover? Premature manual failover causes split-brain — the original primary comes back, sees the new primary, and now you have two leaders. <strong>If in doubt, wait a few minutes</strong> for the original primary or for the failover tool to reach quorum.</p>
+<p><strong>Minute 7-10: client traffic.</strong> Once the new primary is established, verify clients are connecting to it. Connection pools may need to refresh. Stale connection caches can route writes to a defunct old primary for several minutes.</p>
+<p><strong>During all of this: communication.</strong> Update the incident channel. Note assumptions made. If data loss is possible (un-replicated writes lost on the dead primary), flag it for the team to investigate after the immediate crisis.</p>
+<p><strong>After the crisis (later):</strong>
+- Postmortem the failover behavior. Did it work as designed?
+- Verify replicas are catching up properly.
+- Investigate the original primary failure cause.
+- Check for any data loss from the failover gap.</p>
+<p>The senior reflex: <strong>don't act fast in distributed system incidents. Acting fast is how you turn a small incident into a big one.</strong> Confirm the situation, then act deliberately.</p>
+</div>
+<div class="commentary">
+<p>Time-boxed plan. The "don't act fast in distributed incidents" framing is the senior insight. Mentions the post-crisis steps that junior engineers forget.</p>
+</div>
+<div class="turn q">
+<p>Last one. Your CEO read about multi-leader databases and wants to know "why aren't we using Cassandra so we never have downtime?"</p>
+</div>
+<div class="turn a">
+<p>The CEO is reacting to a real frustration — outages are bad — but the proposed solution misunderstands what each system gives up.</p>
+<p><strong>The conversation I'd have:</strong></p>
+<p><strong>One: Cassandra is leaderless, not multi-leader, but that's a side issue.</strong> What the CEO actually wants is "never go down." Both leaderless and multi-leader systems achieve this <em>at the cost of consistency and developer experience</em>. They keep accepting writes during failures, but the writes can conflict, and the application has to handle resolution.</p>
+<p><strong>Two: our app may not tolerate that.</strong> Most applications are written assuming they read what they wrote, that constraints hold, that two concurrent writers don't both succeed in mutually contradictory ways. Cassandra-style systems can break all of these. Migrating means rewriting how the application handles data — months of work and ongoing complexity.</p>
+<p><strong>Three: there are gradations.</strong> We don't have to go all the way to Cassandra to improve uptime:
+- Sync replication with quorum across multiple AZs: survives single-AZ failures.
+- Read replicas in multiple regions: survives single-region read failures.
+- Active-passive cross-region with documented manual failover: survives regional failures with a recovery time objective measured in minutes.
+- Active-active cross-region (multi-leader): survives without downtime but accepts conflicts.</p>
+<p>Each step has trade-offs. The CEO's "never go down" goal probably means "fewer pages, less customer impact" — and we can get a long way without abandoning our current model.</p>
+<p><strong>Four: ask what the actual incident rate is.</strong> If we have one significant incident per quarter, the cost of architectural change probably outweighs the benefit. If we have weekly incidents, that's different. Quantify the pain before prescribing the cure.</p>
+<p><strong>The framing:</strong> every "never goes down" architecture has hidden costs. Often the right answer is to harden the current architecture (better monitoring, better failover, better testing) rather than rip and replace. Get the requirements right before redesigning.</p>
+</div>
+<div class="commentary">
+<p>Diplomatic with leadership. Distinguishes the goal ("less customer impact") from the proposed solution ("Cassandra"). Provides the gradient of options. The "ask what the actual incident rate is" instinct grounds the decision in data — the senior way to handle exec proposals.</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<h3>Replication — One Page</h3>
+<h4>Topologies</h4>
+<ul>
+<li><strong>Leader-follower</strong>: one writer, many readers. Most common. Postgres, MySQL, MongoDB default.</li>
+<li><strong>Multi-leader</strong>: writes accepted in multiple places. Conflict resolution required.</li>
+<li><strong>Leaderless</strong>: any node accepts; quorum reads. Cassandra, DynamoDB.</li>
+</ul>
+<h4>Sync vs Async</h4>
+<ul>
+<li><strong>Async</strong>: leader acks before followers confirm. Fast, can lose writes on crash.</li>
+<li><strong>Sync</strong>: leader waits for follower ack. Durable, slower.</li>
+<li><strong>Semi-sync (quorum)</strong>: N of M followers must confirm. Best of both.</li>
+</ul>
+<h4>Replication lag → broken read-your-writes</h4>
+<p>Three fixes:
+1. Read from leader for N seconds after user's own write.
+2. LSN-based wait for replication to catch up.
+3. Sticky sessions (consistent lag per user).</p>
+<h4>Failover</h4>
+<ol>
+<li>Detect failure (heartbeat timeout).</li>
+<li>Elect new leader (quorum required!).</li>
+<li>Reconfigure clients.</li>
+<li>Handle un-replicated writes (data loss possible).</li>
+</ol>
+<p><strong>Tools</strong>: Patroni/pg_auto_failover (Postgres), Orchestrator (MySQL), built-in replica sets (Mongo), Sentinel (Redis).</p>
+<h4>Split-brain</h4>
+<p>Two leaders accepting writes during partition. Reconciliation loses data.</p>
+<p><strong>Prevent via:</strong>
+- Quorum-based promotion (majority must agree).
+- Fencing tokens (monotonically-increasing leader epoch).
+- STONITH (kill old leader before promoting new).</p>
+<h4>Multi-leader conflicts</h4>
+<ul>
+<li>LWW (last write wins) — lossy, clock-skew prone.</li>
+<li>App-defined merge.</li>
+<li>CRDTs (commutative updates).</li>
+<li>Custom callbacks.</li>
+</ul>
+<p><strong>Always pair LWW with: clock skew warning. Use HLC or vector clocks.</strong></p>
+<h4>Read replicas — limitations</h4>
+<ul>
+<li>Don't help write throughput.</li>
+<li>Fan-out wall ~5-10 replicas in Postgres.</li>
+<li>Cascade or move to logical replication for higher fan-out.</li>
+<li>Stale reads possible — handle via sticky reads or LSN waits.</li>
+</ul>
+<h4>War story to know</h4>
+<p><strong>GitHub 2018</strong>: 43-second network blip → automated failover → split-brain across regions → 24-hour recovery. Required reading for replication interviews.</p>
+<h4>The 30-second verbal answer</h4>
+<p>"Replication has three topologies: leader-follower, multi-leader, leaderless. Most production is leader-follower. Sync vs async is the durability-vs-latency trade. Replication lag breaks read-your-writes — fix with sticky reads to leader. Failover risks split-brain — prevent via quorum and fencing. Multi-leader requires conflict resolution; LWW has clock-skew gotchas."</p>
+<h4>Always pair with</h4>
+<p>WAL (Module 02), CAP theorem (Module 12), CDC (Module 11), sharding (Module 15), HA, fencing tokens, quorum.</p>
+</div>
+<h1>What's next</h1>
+<p>You now know the replication landscape — topologies, sync vs async, lag and read-your-writes, failover and split-brain prevention, multi-leader conflicts.</p>
+<p><strong>Module 11 dives deeper</strong> into the replication mechanism: physical vs logical replication, change data capture (CDC), and geo-replication patterns. We'll cover Debezium, the modern lakehouse architecture (CDC → Kafka → Iceberg), and the operational gotchas of geo-distributed systems — including the most underestimated Postgres pitfall: replication slots that fill the disk.</p>
+<p><strong>Module 12</strong> then opens the consensus chapter — CAP theorem stated correctly, quorum, Raft, Paxos, and how systems like etcd and CockroachDB actually agree across nodes during partition.</p>
+<p>Get water. Distributed thinking is starting to compound. Two more modules and the core distributed story is done.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="09_locking.html" class="prev">&laquo; 09 Locking</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="11_cdc_logical_geo.html" class="next">11 CDC &raquo;</a>
+</nav>
+</body>
+</html>

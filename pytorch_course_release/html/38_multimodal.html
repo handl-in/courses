@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 38 — Multimodal architectures</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800;9..144,900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@400;500;600;700&family=Patrick+Hand&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+  :root {
+    --paper: #f6efe1; --paper-deep: #ede2cc;
+    --ink: #1a1612; --ink-soft: #3a322a; --ink-muted: #6b5d4f;
+    --terracotta: #c1502e; --terracotta-deep: #8c3a20;
+    --teal: #1f5f5b; --teal-deep: #133e3b;
+    --mustard: #d4a017; --rose: #b85a6c;
+    --pytorch: #ee4c2c;
+    --code-bg: #2a2520; --code-bg-light: #f0e8d4;
+    --rule: #c8b89a;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; padding: 0 0 60px 0; background: var(--paper);
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(193,80,46,0.04) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(31,95,91,0.04) 0%, transparent 40%);
+    color: var(--ink);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px; line-height: 1.7;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 60px 40px 120px; }
+  .module-header { border-bottom: 3px double var(--ink); padding-bottom: 32px; margin-bottom: 48px; position: relative; }
+  .module-tag {
+    display: inline-block; font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--terracotta-deep); background: var(--paper-deep);
+    padding: 6px 14px; border: 1.5px solid var(--terracotta-deep);
+    border-radius: 2px; margin-bottom: 20px;
+  }
+  .module-title {
+    font-family: 'Fraunces', serif; font-weight: 900; font-size: 56px;
+    line-height: 1.05; margin: 0 0 14px; color: var(--ink); letter-spacing: -0.02em;
+  }
+  .module-title em { font-style: italic; font-weight: 400; color: var(--terracotta); }
+  .module-sub { font-family: 'Caveat', cursive; font-size: 26px; color: var(--ink-soft); margin: 0; }
+  h2 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 32px; margin: 56px 0 18px; color: var(--ink); line-height: 1.15; letter-spacing: -0.01em; }
+  h2::before { content: "§ "; color: var(--terracotta); font-weight: 600; }
+  h3 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px; margin: 36px 0 12px; color: var(--teal-deep); letter-spacing: -0.005em; }
+  h4 { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; margin: 28px 0 10px; color: var(--ink-soft); }
+  p { margin: 0 0 18px; }
+  p strong { color: var(--terracotta-deep); font-weight: 600; }
+  p em { color: var(--teal-deep); }
+  blockquote { border-left: 4px solid var(--terracotta); padding: 4px 0 4px 22px; margin: 24px 0; font-style: italic; color: var(--ink-soft); font-size: 18px; }
+  a { color: var(--teal-deep); text-decoration: underline wavy var(--mustard); text-underline-offset: 4px; }
+  code { font-family: 'IBM Plex Mono', monospace; font-size: 0.88em; background: var(--code-bg-light); padding: 1px 6px; border-radius: 3px; color: var(--terracotta-deep); border: 1px solid rgba(0,0,0,0.06); }
+  pre { background: var(--code-bg); color: #e8d9b8; font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; line-height: 1.55; padding: 22px 26px; border-radius: 4px; overflow-x: auto; margin: 24px 0; border-left: 4px solid var(--pytorch); box-shadow: 4px 4px 0 var(--ink); position: relative; }
+  pre::before { content: ">_"; position: absolute; top: 8px; right: 14px; font-size: 11px; color: var(--pytorch); opacity: 0.7; letter-spacing: 0.1em; }
+  pre code { background: transparent; color: inherit; padding: 0; border: none; font-size: inherit; }
+  pre .kw { color: #ff8a65; }
+  pre .str { color: #a5d6a7; }
+  pre .num { color: #ffcc80; }
+  pre .com { color: #8d7d65; font-style: italic; }
+  pre .fn { color: #82b1ff; }
+  pre .ty { color: #ce93d8; }
+  .sticky { background: #fff8a8; background-image: linear-gradient(180deg, #fff8a8 0%, #ffeb7a 100%); padding: 22px 26px; margin: 28px 0; box-shadow: 3px 4px 12px rgba(0,0,0,0.18), inset 0 -8px 14px rgba(0,0,0,0.04); transform: rotate(-0.4deg); font-family: 'Patrick Hand', cursive; font-size: 19px; line-height: 1.5; color: var(--ink); position: relative; }
+  .sticky::before { content: ""; position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 80px; height: 22px; background: rgba(193,80,46,0.5); border-radius: 1px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+  .sticky.pink { background-image: linear-gradient(180deg, #ffd5dc 0%, #ffb8c4 100%); transform: rotate(0.5deg); }
+  .sticky.blue { background-image: linear-gradient(180deg, #d3e9f5 0%, #aed4ec 100%); transform: rotate(-0.6deg); }
+  .sticky.green { background-image: linear-gradient(180deg, #d4ecc8 0%, #b3d99e 100%); transform: rotate(0.3deg); }
+  .sticky strong { color: var(--terracotta-deep); }
+  .brainpower { border: 2.5px solid var(--ink); background: var(--paper-deep); padding: 24px 28px 26px; margin: 32px 0; border-radius: 2px; position: relative; box-shadow: 5px 5px 0 var(--terracotta); }
+  .brainpower::before { content: "BRAIN POWER"; position: absolute; top: -13px; left: 22px; background: var(--terracotta); color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; padding: 4px 12px; letter-spacing: 0.18em; }
+  .brainpower p { margin: 8px 0; font-size: 16px; }
+  .brainpower p:first-child { margin-top: 6px; }
+  .ndq { background: linear-gradient(180deg, #fdf6e3 0%, #f5ead0 100%); border: 1.5px dashed var(--ink-soft); border-radius: 8px; padding: 28px 30px; margin: 36px 0; }
+  .ndq h4 { font-family: 'Fraunces', serif; font-size: 22px; text-transform: none; letter-spacing: 0; color: var(--terracotta-deep); margin: 0 0 18px; border-bottom: 1.5px solid var(--rule); padding-bottom: 8px; }
+  .ndq h4::before { content: "Q&A — "; color: var(--ink-muted); font-style: italic; }
+  .ndq .q { font-family: 'Caveat', cursive; font-size: 22px; color: var(--teal-deep); margin: 14px 0 4px; line-height: 1.3; }
+  .ndq .q::before { content: "Q: "; font-weight: 700; color: var(--terracotta); }
+  .ndq .a { margin: 0 0 16px 14px; padding-left: 14px; border-left: 3px solid var(--mustard); color: var(--ink-soft); font-size: 16px; }
+  .ndq .a::before { content: "A: "; font-weight: 700; color: var(--ink); font-family: 'Fraunces', serif; }
+  .table-wrap { margin: 28px 0; overflow-x: auto; border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--teal); background: #fff; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; font-family: 'Lora', serif; }
+  table caption { font-family: 'Caveat', cursive; font-size: 22px; color: var(--terracotta-deep); padding: 12px 0; text-align: left; caption-side: top; }
+  th { background: var(--ink); color: #fff; text-align: left; padding: 12px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+  td { padding: 12px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--paper-deep); }
+  tr:last-child td { border-bottom: none; }
+  td strong { color: var(--terracotta-deep); }
+  td code { font-size: 12.5px; }
+  .decision { background: #fff; border: 2px solid var(--ink); border-radius: 2px; padding: 24px 28px; margin: 32px 0; box-shadow: 5px 5px 0 var(--mustard); font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.8; white-space: pre; overflow-x: auto; color: var(--ink); }
+  .warn { background: #fcecec; border-left: 6px solid var(--terracotta); padding: 18px 22px; margin: 28px 0; border-radius: 0 4px 4px 0; position: relative; }
+  .warn::before { content: "⚠"; position: absolute; top: 14px; right: 18px; font-size: 24px; color: var(--terracotta); }
+  .warn strong { color: var(--terracotta-deep); }
+  .keyidea { background: var(--teal); color: #f6efe1; padding: 26px 30px; margin: 32px 0; border-radius: 2px; font-family: 'Fraunces', serif; font-size: 19px; font-weight: 500; line-height: 1.5; position: relative; box-shadow: 4px 4px 0 var(--ink); }
+  .keyidea::before { content: "★ KEY IDEA"; position: absolute; top: -11px; left: 22px; background: var(--mustard); color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700; padding: 4px 10px; letter-spacing: 0.18em; }
+  .keyidea strong { color: var(--mustard); }
+  .exercise { border: 2px dashed var(--teal-deep); padding: 24px 28px; margin: 36px 0; background: rgba(255,255,255,0.5); border-radius: 2px; }
+  .exercise::before { content: "✎ SHARPEN YOUR PENCIL"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px dotted var(--teal); }
+  .exercise .answer { margin-top: 14px; padding: 14px 18px; background: var(--paper-deep); border-radius: 4px; font-size: 15px; }
+  .exercise .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+  ul, ol { margin: 16px 0; padding-left: 28px; }
+  li { margin: 8px 0; }
+  ul li::marker { color: var(--terracotta); }
+  ol li::marker { color: var(--teal-deep); font-weight: 600; }
+  .dialogue { margin: 28px 0; padding: 20px 24px; background: var(--paper-deep); border-radius: 4px; border-left: 4px solid var(--rose); }
+  .dialogue .speaker { font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--rose); font-weight: 700; display: block; margin-top: 10px; }
+  .dialogue .speaker:first-child { margin-top: 0; }
+  .dialogue .speaker.b { color: var(--teal-deep); }
+  .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin: 28px 0; }
+  .twocol > div { padding: 20px 22px; border-radius: 2px; background: #fff; border: 1.5px solid var(--rule); }
+  .twocol > div h4 { margin-top: 0; }
+  .twocol .good { border-color: var(--teal); border-left: 5px solid var(--teal); }
+  .twocol .bad { border-color: var(--terracotta); border-left: 5px solid var(--terracotta); }
+  .ascii { background: var(--paper-deep); padding: 22px 26px; margin: 28px 0; border: 1.5px solid var(--rule); border-radius: 2px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.5; white-space: pre; overflow-x: auto; color: var(--ink); }
+  .module-footer { margin-top: 80px; padding-top: 28px; border-top: 3px double var(--ink); display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-muted); }
+  .module-footer .num { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 800; color: var(--terracotta); line-height: 1; }
+  .toc { background: #fff; border: 2px solid var(--ink); padding: 30px 40px; margin: 40px 0; box-shadow: 6px 6px 0 var(--teal); }
+  .toc h3 { font-family: 'Fraunces', serif; font-size: 26px; margin: 0 0 20px; color: var(--ink); }
+  .toc ol { columns: 2; column-gap: 40px; padding-left: 24px; }
+  .toc li { font-size: 15px; break-inside: avoid; margin: 4px 0; }
+  .toc li strong { color: var(--terracotta-deep); }
+  .toc .part { font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--teal-deep); margin: 16px 0 6px; column-span: all; border-bottom: 1px dashed var(--rule); padding-bottom: 4px; }
+
+  /* CODE MAGNETS — fridge-magnet style code snippets to be arranged */
+  .magnets { margin: 36px 0; padding: 26px 28px 30px; background: #ede2cc; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--teal-deep); position: relative; }
+  .magnets::before { content: "✦ CODE MAGNETS"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px dotted var(--ink-soft); }
+  .magnets p { margin: 0 0 18px; font-size: 16px; }
+  .magnet-pool { display: flex; flex-wrap: wrap; gap: 10px; padding: 16px; background: #c8c0a8; background-image: linear-gradient(135deg, #c8c0a8 25%, transparent 25%), linear-gradient(225deg, #c8c0a8 25%, transparent 25%), linear-gradient(45deg, #c8c0a8 25%, transparent 25%), linear-gradient(315deg, #c8c0a8 25%, #b5ad95 25%); background-size: 14px 14px; background-position: 7px 0, 7px 0, 0 0, 0 0; border-radius: 6px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.2); margin: 12px 0; min-height: 70px; }
+  .magnet { display: inline-block; background: #fff; padding: 10px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink); border-radius: 3px; box-shadow: 2px 2px 4px rgba(0,0,0,0.25), inset 0 -2px 0 rgba(0,0,0,0.05); border: 1px solid #d8d0b4; transform: rotate(-1deg); transition: transform 0.15s; cursor: default; user-select: all; }
+  .magnet:nth-child(2n) { transform: rotate(1.5deg); background: #fff8e8; }
+  .magnet:nth-child(3n) { transform: rotate(-2deg); background: #f0f5ee; }
+  .magnet:nth-child(5n) { transform: rotate(0.8deg); background: #f5e8e0; }
+  .magnet:hover { transform: rotate(0) scale(1.05); z-index: 2; }
+  .magnets .answer { margin-top: 16px; padding: 14px 18px; background: #fff8d8; border-radius: 4px; font-size: 15px; border-left: 4px solid var(--mustard); }
+  .magnets .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+  .magnets .answer pre { margin: 12px 0 0; }
+
+  /* CHARACTER — anthropomorphized objects with avatar and speech */
+  .character { margin: 30px 0; padding: 20px 22px 22px; background: #fff; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--rose); position: relative; display: grid; grid-template-columns: 80px 1fr; gap: 18px; align-items: start; }
+  .character .avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--mustard); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 900; font-size: 30px; color: var(--ink); border: 2.5px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+  .character.tensor .avatar { background: var(--pytorch); color: #fff; }
+  .character.stride .avatar { background: var(--teal); color: #fff; }
+  .character.storage .avatar { background: var(--mustard); }
+  .character.dtype .avatar { background: var(--rose); color: #fff; }
+  .character.autograd .avatar { background: var(--terracotta); color: #fff; }
+  .character .who { font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-muted); font-weight: 700; margin: 0 0 4px; }
+  .character .name { font-family: 'Fraunces', serif; font-weight: 800; font-size: 22px; color: var(--ink); margin: 0 0 8px; line-height: 1; }
+  .character .says { font-family: 'Lora', serif; font-size: 16px; line-height: 1.55; color: var(--ink); margin: 0; font-style: italic; }
+  .character .says::before { content: '"'; font-family: 'Fraunces', serif; font-size: 28px; color: var(--terracotta); line-height: 0; vertical-align: -8px; margin-right: 4px; }
+  .character .says::after { content: '"'; font-family: 'Fraunces', serif; font-size: 28px; color: var(--terracotta); line-height: 0; vertical-align: -8px; margin-left: 2px; }
+  .character + .character { margin-top: -10px; }
+
+  /* BULLET POINTS — recap section with checklist vibe */
+  .bullet-points { margin: 48px 0 36px; padding: 32px 36px 36px; background: var(--paper-deep); border: 3px solid var(--ink); border-radius: 4px; position: relative; box-shadow: 6px 6px 0 var(--mustard); }
+  .bullet-points::before { content: "BULLET POINTS"; position: absolute; top: -16px; left: 28px; background: var(--ink); color: var(--mustard); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; padding: 6px 16px; letter-spacing: 0.2em; }
+  .bullet-points h3 { font-family: 'Caveat', cursive; font-size: 28px; color: var(--terracotta); margin: 0 0 16px; }
+  .bullet-points ul { list-style: none; padding-left: 0; margin: 0; }
+  .bullet-points ul li { position: relative; padding: 6px 0 6px 38px; font-size: 16px; line-height: 1.5; border-bottom: 1px dashed var(--rule); }
+  .bullet-points ul li:last-child { border-bottom: none; }
+  .bullet-points ul li::before { content: ""; position: absolute; left: 6px; top: 11px; width: 18px; height: 18px; border: 2px solid var(--terracotta); border-radius: 3px; background: #fff; }
+  .bullet-points ul li::after { content: "✓"; position: absolute; left: 9px; top: 6px; font-family: 'Caveat', cursive; font-size: 22px; font-weight: 700; color: var(--terracotta); }
+  .bullet-points ul li strong { color: var(--terracotta-deep); }
+  .bullet-points ul li code { font-size: 13px; }
+
+  /* MATCHING — "Who Does What?" two-column matching exercise */
+  .matching { margin: 36px 0; padding: 26px 28px 28px; background: #fff; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--teal); position: relative; }
+  .matching::before { content: "✦ WHO DOES WHAT?"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 6px; padding-bottom: 10px; border-bottom: 2px dotted var(--ink-soft); }
+  .matching p.intro { margin: 8px 0 18px; font-size: 15px; font-style: italic; color: var(--ink-soft); }
+  .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1.5px solid var(--ink); }
+  .match-grid > div { padding: 12px 14px; border-bottom: 1px solid var(--rule); font-size: 14.5px; vertical-align: middle; display: flex; align-items: center; }
+  .match-grid > div:nth-child(4n+1), .match-grid > div:nth-child(4n+2) { background: var(--paper-deep); }
+  .match-grid > div:nth-child(2n+1) { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--terracotta-deep); border-right: 1.5px dashed var(--ink); }
+  .match-grid > div:nth-child(2n) { color: var(--ink); }
+  .match-grid > div:nth-last-child(-n+2) { border-bottom: none; }
+  .match-grid .header { background: var(--ink) !important; color: #fff !important; font-family: 'IBM Plex Mono', monospace !important; font-size: 11px !important; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; padding: 10px 14px; border-bottom: none; }
+  .matching .answer { margin-top: 16px; padding: 14px 18px; background: var(--paper-deep); border-radius: 4px; font-size: 15px; }
+  .matching .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+
+  @media (max-width: 720px) {
+    .wrap { padding: 40px 22px 80px; }
+    .module-title { font-size: 40px; }
+    .twocol { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .character { grid-template-columns: 56px 1fr; gap: 12px; }
+    .character .avatar { width: 56px; height: 56px; font-size: 22px; }
+    .match-grid { grid-template-columns: 1fr 1fr; font-size: 13px; }
+  }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+<div class="module-header">
+  <div class="module-tag">Part X · Module 38 · April 2026 currency</div>
+  <h1 class="module-title"><em>Multimodal architectures:</em> from bolt-on adapters to native omni-models</h1>
+  <p class="module-sub">— the three architectural eras of vision-language models, why SigLIP 2 became the encoder of choice, the connector design space, and the 2025-2026 shift toward native multimodal models that generate as well as perceive</p>
+</div>
+
+<p>For 37 modules we've treated text as the only modality. M38 closes that gap. By April 2026, multimodal models — vision-language, audio-vision-language, omnimodal — are no longer a research curiosity; they're the architectural frontier. Xiaomi's MiMo V2 Omni holds 21% of OpenRouter traffic. NVIDIA released Nemotron 3 Nano Omni on April 28, 2026 as their unified video-audio-image-text agent model. Frontier labs (Anthropic, OpenAI, Google, Meta) all ship multimodal flagships. <em>The single-modality LLM is becoming the special case.</em></p>
+
+<p>The architecture is also moving fast. Models built three years ago bolted vision encoders onto frozen LLMs with a small adapter (LLaVA, BLIP-2). Models built last year used pretrained LLMs as a trunk and trained the adapter end-to-end (Qwen2.5-VL, Llama 3.2-Vision). Models built in 2025-2026 increasingly skip the bolt-on entirely and train a single transformer from scratch on mixed-modality data. This module organizes the architectural moves into three coherent eras, walks through the connector design space (which still matters even in native models), and shows how the 2026 omni-models extend the pattern to audio and video while generating as well as perceiving.</p>
+
+<div class="keyidea">
+Vision-language model architecture went through three eras in five years, and Era 3 has split. <strong>Era 1 (2021-2022)</strong>: frozen vision encoder + frozen LLM bridged by a small learnable connector (CLIP, BLIP, Flamingo). <strong>Era 2 (2023-2025)</strong>: pretrained LLM as the trunk; vision is a bolt-on adapter trained end-to-end (LLaVA, Qwen2.5-VL, GPT-4V, Llama 3.2-Vision). <strong>Era 3 (2025-2026, current frontier)</strong>: drop the bridge; train a single transformer from scratch on mixed-modality data — Chameleon, Show-o2, Ming-Omni, MiMo V2 Omni, Nemotron 3 Nano Omni. Era 3 forks along output: <strong>3a</strong> native input → text out (most current production); <strong>3b</strong> native input → native output (omnimodal generation, still emerging). <strong>SigLIP 2</strong> (Feb 2025) is the encoder of choice for Era 2 production: multilingual, dense features, better localization, NaFlex variants for native aspect ratio; used by Qwen3-VL, Gemma 3, PaliGemma. <strong>Connectors</strong> have converged on MLP projections with token compression (Qwen2.5-VL groups 4 vision tokens → 1 LLM token via MLP); Q-Former and Perceiver Resampler are now niche. <strong>Native models (Era 3)</strong> still need visual tokenization but increasingly use VQ-VAE-style discrete tokens or continuous patches with shared embeddings. <strong>The MoE finding</strong> (Meta FAIR, March 2026): vision is significantly more data-hungry than language; MoE architectures harmonize this scaling asymmetry, becoming the default for unified multimodal pretraining.
+</div>
+
+<h2>Two new faces — closing the cast</h2>
+
+<div class="character" style="--c: #1f5f5b;">
+  <div class="avatar" style="background: #1f5f5b; color: #fff;">E</div>
+  <div>
+    <p class="who">Encoder</p>
+    <p class="name">"I turn pixels into tokens. By 2026, I'm usually SigLIP 2 — but not always."</p>
+    <p class="says">Show me an image; I'll produce visual tokens that downstream language models can attend to. I'm a Vision Transformer trained with contrastive image-text alignment — CLIP's recipe with the SigLIP improvements (sigmoid loss, no global normalization). My output is a grid of token embeddings, typically 256-1024 tokens for a 384×384 image. <em>SigLIP 2</em> (the version in Qwen3-VL, Gemma 3, PaliGemma 2) added multilingual training, dense features, and NaFlex for native aspect ratio. <strong>In Era 3 native multimodal models, I'm being replaced — by VQ-VAE-style tokenizers, continuous patch embeddings, or pure pixel-level early fusion.</strong> The trend is "encoder-free" but production deployments in April 2026 still mostly use me. I'm the workhorse; the cutting edge is somewhere else.</p>
+  </div>
+</div>
+
+<div class="character" style="--c: #c1502e;">
+  <div class="avatar" style="background: #c1502e; color: #fff;">⇄</div>
+  <div>
+    <p class="who">Connector</p>
+    <p class="name">"I bridge encoder space to LLM space. I used to be Q-Former; now I'm usually a small MLP."</p>
+    <p class="says">The vision encoder produces tokens in one embedding space; the language model expects tokens in another. I project between them. The 2023 era favored complex bridges — Q-Former (BLIP-2) with learned queries, Perceiver Resampler (Flamingo) for cross-attention compression. The 2025-2026 consensus is simpler: <strong>I'm a 2-layer MLP</strong>. Qwen2.5-VL adds a token-compression trick: concatenate 4 vision tokens (a 2×2 spatial neighborhood), project through MLP to one LLM token. SigLIP2 + Qwen3 uses attention-pooling for the same purpose. <em>The complex connector designs underperformed simple MLPs once vision encoders got better.</em> When I'm not needed at all (Era 3 native models), I'm absent — the model handles cross-modal attention internally.</p>
+  </div>
+</div>
+
+<h2>The three architectural eras</h2>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 740 420" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs>
+    <marker id="arrM" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f5f5b"/>
+    </marker>
+  </defs>
+  <text x="370" y="22" font-size="14" font-weight="700" fill="#1a1612" text-anchor="middle">Three architectural eras of vision-language models</text>
+
+  <!-- Era 1 -->
+  <g transform="translate(20, 50)">
+    <rect x="0" y="0" width="220" height="160" fill="#fff8a8" stroke="#1a1612" stroke-width="1.5"/>
+    <text x="110" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1612">① 2021-2022: bridged</text>
+    <text x="110" y="36" text-anchor="middle" font-size="9" fill="#6b5d4f">CLIP, BLIP, Flamingo</text>
+
+    <!-- Vision encoder (frozen) -->
+    <rect x="20" y="50" width="80" height="35" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="1" stroke-dasharray="3 2"/>
+    <text x="60" y="65" text-anchor="middle" font-size="9" font-weight="700" fill="#1a1612">Vision enc.</text>
+    <text x="60" y="78" text-anchor="middle" font-size="8" fill="#c1502e">FROZEN</text>
+
+    <!-- Connector -->
+    <rect x="115" y="50" width="40" height="35" fill="#fcecec" stroke="#c1502e" stroke-width="2"/>
+    <text x="135" y="68" text-anchor="middle" font-size="8" font-weight="700" fill="#1a1612">Q-Former /</text>
+    <text x="135" y="78" text-anchor="middle" font-size="8" font-weight="700" fill="#1a1612">Resampler</text>
+
+    <!-- LLM frozen -->
+    <rect x="170" y="50" width="40" height="35" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="1" stroke-dasharray="3 2"/>
+    <text x="190" y="68" text-anchor="middle" font-size="8" font-weight="700" fill="#1a1612">LLM</text>
+    <text x="190" y="78" text-anchor="middle" font-size="8" fill="#c1502e">FROZEN</text>
+
+    <text x="20" y="105" font-size="9" fill="#1a1612">Both modalities pretrained;</text>
+    <text x="20" y="118" font-size="9" fill="#1a1612">only the bridge is trained.</text>
+    <text x="20" y="135" font-size="9" font-weight="700" fill="#c1502e">Pros: cheap to train.</text>
+    <text x="20" y="148" font-size="9" font-weight="700" fill="#c1502e">Cons: bridge bottleneck.</text>
+  </g>
+
+  <!-- Era 2 -->
+  <g transform="translate(260, 50)">
+    <rect x="0" y="0" width="220" height="160" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="1.5"/>
+    <text x="110" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1612">② 2023-2025: bolt-on</text>
+    <text x="110" y="36" text-anchor="middle" font-size="9" fill="#6b5d4f">LLaVA, Qwen-VL, GPT-4V</text>
+
+    <!-- Vision encoder (often frozen, then thawed) -->
+    <rect x="20" y="50" width="80" height="35" fill="#fff5d8" stroke="#d4a017" stroke-width="1.5"/>
+    <text x="60" y="65" text-anchor="middle" font-size="9" font-weight="700" fill="#1a1612">SigLIP 2</text>
+    <text x="60" y="78" text-anchor="middle" font-size="8" fill="#1f5f5b">trained</text>
+
+    <!-- Simple MLP connector -->
+    <rect x="115" y="50" width="40" height="35" fill="#fcecec" stroke="#c1502e" stroke-width="2"/>
+    <text x="135" y="68" text-anchor="middle" font-size="9" font-weight="700" fill="#1a1612">MLP</text>
+    <text x="135" y="78" text-anchor="middle" font-size="8" fill="#1a1612">2-layer</text>
+
+    <!-- LLM trained end-to-end -->
+    <rect x="170" y="50" width="40" height="35" fill="#fff5d8" stroke="#d4a017" stroke-width="1.5"/>
+    <text x="190" y="68" text-anchor="middle" font-size="8" font-weight="700" fill="#1a1612">LLM trunk</text>
+    <text x="190" y="78" text-anchor="middle" font-size="7" fill="#1f5f5b">trained</text>
+
+    <text x="20" y="105" font-size="9" fill="#1a1612">Pretrained LLM as the trunk;</text>
+    <text x="20" y="118" font-size="9" fill="#1a1612">vision adapter trained E2E.</text>
+    <text x="20" y="135" font-size="9" font-weight="700" fill="#1f5f5b">Pros: stronger, scales well.</text>
+    <text x="20" y="148" font-size="9" font-weight="700" fill="#1a1612">Most production in April 2026.</text>
+  </g>
+
+  <!-- Era 3 -->
+  <g transform="translate(500, 50)">
+    <rect x="0" y="0" width="220" height="160" fill="#fcecec" stroke="#c1502e" stroke-width="2"/>
+    <text x="110" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#c1502e">③ 2025-2026: native</text>
+    <text x="110" y="36" text-anchor="middle" font-size="9" fill="#6b5d4f">Chameleon, Show-o2, Ming-Omni</text>
+
+    <!-- Single unified transformer -->
+    <rect x="20" y="50" width="180" height="35" fill="#ffd5dc" stroke="#b85a6c" stroke-width="2"/>
+    <text x="110" y="65" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1612">Single unified transformer</text>
+    <text x="110" y="78" text-anchor="middle" font-size="8" fill="#1a1612">image+text+audio tokens, all mixed</text>
+
+    <text x="20" y="105" font-size="9" fill="#1a1612">No separate encoder; tokens</text>
+    <text x="20" y="118" font-size="9" fill="#1a1612">from all modalities in one stream.</text>
+    <text x="20" y="135" font-size="9" font-weight="700" fill="#b85a6c">Pros: native cross-modal reasoning.</text>
+    <text x="20" y="148" font-size="9" font-weight="700" fill="#c1502e">Cons: pretrain from scratch.</text>
+  </g>
+
+  <!-- Era 3 fork detail -->
+  <g transform="translate(20, 230)">
+    <rect x="0" y="0" width="700" height="170" fill="#fff5d8" stroke="#d4a017" stroke-width="2"/>
+    <text x="350" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1612">Era 3 fork: native input → ? output</text>
+
+    <!-- 3a: text out -->
+    <g transform="translate(20, 40)">
+      <rect x="0" y="0" width="320" height="115" fill="#fff" stroke="#1f5f5b" stroke-width="1.5"/>
+      <text x="160" y="20" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1612">3a: Native input → text output</text>
+      <text x="160" y="35" text-anchor="middle" font-size="9" fill="#6b5d4f">Most current production omni-models</text>
+
+      <text x="10" y="55" font-size="9" fill="#1a1612">  Image+video+audio in via tokens →</text>
+      <text x="10" y="68" font-size="9" fill="#1a1612">  unified transformer → text out only</text>
+
+      <text x="10" y="86" font-size="9" font-weight="700" fill="#1f5f5b">Examples (April 2026):</text>
+      <text x="10" y="99" font-size="9" fill="#1a1612">  Nemotron 3 Nano Omni, MiMo V2 Omni,</text>
+      <text x="10" y="111" font-size="9" fill="#1a1612">  Gemini 2.5/3 Pro, GPT-5.4 (assumed)</text>
+    </g>
+
+    <!-- 3b: native out -->
+    <g transform="translate(360, 40)">
+      <rect x="0" y="0" width="320" height="115" fill="#fff" stroke="#c1502e" stroke-width="1.5"/>
+      <text x="160" y="20" text-anchor="middle" font-size="11" font-weight="700" fill="#c1502e">3b: Native input → native output</text>
+      <text x="160" y="35" text-anchor="middle" font-size="9" fill="#6b5d4f">Omnimodal generation, still emerging</text>
+
+      <text x="10" y="55" font-size="9" fill="#1a1612">  Generates images/audio as tokens or</text>
+      <text x="10" y="68" font-size="9" fill="#1a1612">  via integrated diffusion decoders.</text>
+
+      <text x="10" y="86" font-size="9" font-weight="700" fill="#c1502e">Examples (April 2026):</text>
+      <text x="10" y="99" font-size="9" fill="#1a1612">  Chameleon, Anole, Show-o2, Ming-Omni,</text>
+      <text x="10" y="111" font-size="9" fill="#1a1612">  Ming-Flash-Omni, NExT-OMNI, GPT-4o image</text>
+    </g>
+  </g>
+</svg>
+</div>
+
+<p>The pace is striking. CLIP (Era 1) shipped in 2021. LLaVA (Era 2) shipped in April 2023. Chameleon and the first wave of native models (Era 3) shipped in 2024-2025. Each era has lasted ~2 years before being substantially superseded. April 2026 is roughly the midpoint of the Era 3 transition: most production deployments are still Era 2, but the new releases (Nemotron 3 Nano Omni on April 28, MiMo V2 Omni in March, Ming-Flash-Omni in March) are increasingly Era 3.</p>
+
+<p>The key insight: <strong>each era trades off training cost against capability ceiling</strong>. Era 1 was cheap to train (frozen models, only the bridge) but hit a hard ceiling at the bridge bottleneck. Era 2 increased training cost (everything end-to-end) but raised the ceiling substantially. Era 3 requires pretraining a unified model from scratch — the training cost is proportionally higher than Era 2, but the ceiling is higher still because cross-modal reasoning is no longer constrained by an interface designed before training.</p>
+
+<h2>Era 1: bridged architectures (CLIP, BLIP-2, Flamingo)</h2>
+
+<p>The first real vision-language paradigm was contrastive: train a vision encoder and a text encoder side-by-side so that matching image-text pairs are close in embedding space, non-matching pairs are far. CLIP (Radford et al., 2021) is the canonical example.</p>
+
+<p>For generative tasks (captioning, VQA), this isn't quite enough — you need a language model that can produce text. The Era 1 approach: bolt the contrastive vision encoder to a frozen language model with a small learned bridge.</p>
+
+<ul>
+  <li><strong>BLIP-2 (2023)</strong>: introduced the Q-Former — a small transformer with learned query tokens that cross-attends to the vision encoder's outputs and produces a fixed-size sequence of "queried" tokens for the LLM. The LLM is frozen; only Q-Former is trained.</li>
+  <li><strong>Flamingo (2022)</strong>: introduced the Perceiver Resampler — uses learned latents and cross-attention to compress arbitrary-length vision token sequences to a fixed length. Cross-attention layers inserted into the frozen LLM allow it to attend to vision features. Both LLM cross-attention layers and resampler are trained.</li>
+  <li><strong>CLIP (2021)</strong>: not generative, but the foundational vision encoder that everything else built on.</li>
+</ul>
+
+<p>Era 1 had two structural weaknesses. First, the <strong>bridge bottleneck</strong>: the connector saw only what the vision encoder produced, and the LLM only saw what the connector passed through. Errors compounded; cross-modal reasoning was limited. Second, <strong>frozen-component drift</strong>: the LLM didn't get to adapt its representations for visual content, and the vision encoder didn't get to learn visual features that better serve language tasks.</p>
+
+<h2>Era 2: bolt-on adapters (LLaVA, Qwen-VL, the production sweet spot)</h2>
+
+<p>The Era 2 insight: don't freeze. Take a pretrained LLM as the trunk, attach a vision encoder, train end-to-end on image-text data. The bridge can be much simpler because both sides adapt during training.</p>
+
+<p>The canonical Era 2 architecture, drawn from LLaVA, Qwen2.5-VL, Llama 3.2-Vision, and many siblings:</p>
+
+<pre><code><span class="kw">class</span> <span class="ty">VisionLanguageModel</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, vision_encoder, llm, d_vision, d_llm):
+        <span class="fn">super</span>().<span class="fn">__init__</span>()
+        self.vision_encoder = vision_encoder      <span class="com"># SigLIP 2, ViT, etc.</span>
+        self.llm = llm                            <span class="com"># Llama, Qwen, Gemma backbone</span>
+
+        <span class="com"># Connector: 2-layer MLP from vision dim to LLM dim</span>
+        self.connector = nn.<span class="fn">Sequential</span>(
+            nn.<span class="fn">Linear</span>(d_vision, d_llm),
+            nn.<span class="fn">GELU</span>(),
+            nn.<span class="fn">Linear</span>(d_llm, d_llm),
+        )
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, images, input_ids):
+        <span class="com"># 1. Encode images to visual tokens</span>
+        vision_features = self.<span class="fn">vision_encoder</span>(images)        <span class="com"># [B, N_v, d_vision]</span>
+
+        <span class="com"># 2. Project to LLM embedding space</span>
+        vision_tokens = self.<span class="fn">connector</span>(vision_features)     <span class="com"># [B, N_v, d_llm]</span>
+
+        <span class="com"># 3. Get text token embeddings</span>
+        text_tokens = self.llm.<span class="fn">embed_tokens</span>(input_ids)       <span class="com"># [B, N_t, d_llm]</span>
+
+        <span class="com"># 4. Concatenate: prepend vision tokens to text tokens</span>
+        combined = torch.<span class="fn">cat</span>([vision_tokens, text_tokens], dim=<span class="num">1</span>)
+
+        <span class="com"># 5. Run the LLM on the combined sequence</span>
+        <span class="kw">return</span> self.llm.<span class="fn">forward</span>(inputs_embeds=combined)</code></pre>
+
+<p>The pattern: vision encoder produces tokens, MLP projects them, prepend to text token embeddings, run the LLM. The LLM sees the visual tokens as if they were word embeddings — its attention machinery handles cross-modal reasoning naturally because <em>visual tokens look like text tokens to the model</em>.</p>
+
+<h3>Token compression: the Qwen2.5-VL trick</h3>
+
+<p>Vision encoders produce a lot of tokens. SigLIP 2 at 384×384 with 14×14 patches gives 729 tokens per image; at 896×896 (Gemma 3's "Pan & Scan" mode), 4096 tokens. Multiplied by multiple images per conversation, this dominates context length and inference cost.</p>
+
+<p>The Qwen2.5-VL solution: <strong>group 4 vision tokens (a 2×2 spatial neighborhood) and project through an MLP to a single LLM token</strong>. Reduces token count by 4× without going through the complex Q-Former machinery.</p>
+
+<pre><code><span class="kw">class</span> <span class="ty">CompressingConnector</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, d_vision, d_llm, group_size=<span class="num">4</span>):
+        <span class="fn">super</span>().<span class="fn">__init__</span>()
+        self.group_size = group_size
+        <span class="com"># Project group_size × d_vision → d_llm via MLP</span>
+        self.proj = nn.<span class="fn">Sequential</span>(
+            nn.<span class="fn">Linear</span>(group_size * d_vision, d_llm),
+            nn.<span class="fn">GELU</span>(),
+            nn.<span class="fn">Linear</span>(d_llm, d_llm),
+        )
+
+    <span class="kw">def</span> <span class="fn">forward</span>(self, vision_features):
+        <span class="com"># vision_features: [B, N_v, d_vision] where N_v is a perfect square</span>
+        B, N_v, D = vision_features.shape
+        H = W = <span class="fn">int</span>(N_v ** <span class="num">0.5</span>)
+
+        <span class="com"># Reshape to spatial grid, group into 2x2 neighborhoods</span>
+        x = vision_features.<span class="fn">view</span>(B, H, W, D)
+        <span class="com"># Spatial 2x2 → 4 tokens concatenated channel-wise</span>
+        x = x.<span class="fn">view</span>(B, H // <span class="num">2</span>, <span class="num">2</span>, W // <span class="num">2</span>, <span class="num">2</span>, D)
+        x = x.<span class="fn">permute</span>(<span class="num">0</span>, <span class="num">1</span>, <span class="num">3</span>, <span class="num">2</span>, <span class="num">4</span>, <span class="num">5</span>).<span class="fn">contiguous</span>()
+        x = x.<span class="fn">view</span>(B, (H // <span class="num">2</span>) * (W // <span class="num">2</span>), <span class="num">4</span> * D)   <span class="com"># [B, N_v/4, 4*D]</span>
+
+        <span class="com"># Project the concatenated 4-token group to a single LLM-dim token</span>
+        <span class="kw">return</span> self.<span class="fn">proj</span>(x)                              <span class="com"># [B, N_v/4, d_llm]</span></code></pre>
+
+<p>SigLIP2-paired connectors (Jina-VLM, Dec 2025) use a related approach: attention-pooling within 2×2 neighborhoods, where local means serve as queries, then SwiGLU projection. The attention-pooling variant preserves more information than raw concatenation. <em>For most production workloads in April 2026, MLP compression is the practical choice; attention-pooling is the higher-quality variant when compute budget permits.</em></p>
+
+<h3>Why MLPs beat Q-Former</h3>
+
+<p>The published evidence is clear (Cambrian-1, Eagle, several other Era-2 architecture studies): <strong>simple MLPs match or beat Q-Former at the same parameter count</strong>. The intuition: when the vision encoder is good (SigLIP 2 is genuinely strong) and the LLM is good (Llama, Qwen, Gemma at 2026 scale), the bridge doesn't need to do much intelligent processing. It just needs to project tokens between embedding spaces. The Q-Former's learned-query-cross-attention machinery is overkill; it adds parameters and training instability without commensurate quality gains.</p>
+
+<p>The exception: Q-Former and Perceiver-style designs still win when you need <em>fixed output length</em> (e.g., for multi-image inputs where you want a guaranteed number of vision tokens regardless of input image count). For single-image-with-text inputs, MLPs dominate.</p>
+
+<h2>SigLIP 2: the encoder of choice</h2>
+
+<p>The vision encoder space converged on SigLIP 2 (Tschannen et al., February 2025) for Era 2 production. Its predecessor SigLIP (2023) replaced CLIP's softmax contrastive loss with a sigmoid loss — operating on individual image-text pairs rather than the global softmax. This made training more efficient and removed CLIP's batch-size dependency.</p>
+
+<p>SigLIP 2 added:</p>
+
+<ul>
+  <li><strong>Multilingual training</strong> — works across 100+ languages, not just English. Critical for global production deployment.</li>
+  <li><strong>Dense features</strong> — better localization, useful for tasks requiring spatial reasoning (object detection, OCR, document understanding).</li>
+  <li><strong>NaFlex variants</strong> — native aspect ratio preservation. Don't squash a wide image into a square; process it as native aspect ratio with appropriate position encoding.</li>
+  <li><strong>De-biased data mixture</strong> — better fairness across demographic categories.</li>
+</ul>
+
+<p>Sizes: SigLIP 2 ships at ViT-B (86M), L (303M), So400m (400M), and g (1B). The So400m variant is the production sweet spot — better than L, much smaller than g. Used by Qwen3-VL, Gemma 3, PaliGemma 2.</p>
+
+<p>Alternatives that exist in production but are less common: <strong>EVA-02</strong> (better at fine-grained tasks but slower), <strong>InternViT</strong> (used by InternVL, very high parameter counts, edge in dense prediction), <strong>SAM-derived encoders</strong> (used in some specialized models for segmentation-heavy work). For greenfield Era 2 work in 2026, SigLIP 2 is the default.</p>
+
+<h2>Era 3: native multimodal models</h2>
+
+<p>Era 3's bet: <em>train a single transformer from scratch on mixed-modality data</em>. No separate vision encoder. No connector. All modalities are tokens in the same sequence; the same attention mechanism handles cross-modal reasoning.</p>
+
+<p>The challenge: language is a discrete sequence; images are a 2D grid of continuous values; audio is a 1D continuous waveform. To get them all into one token sequence, each modality needs a tokenization scheme.</p>
+
+<p>The 2025-2026 approaches:</p>
+
+<ul>
+  <li><strong>VQ-VAE-style discrete tokens</strong> (Chameleon, Anole, Unified-IO 2): train a vector-quantized VAE on images; images become sequences of discrete tokens from a learned visual codebook. The transformer treats them like vocabulary tokens. Generation is autoregressive: predict the next visual token, decode through VAE.</li>
+  <li><strong>Continuous patch embeddings with shared transformer</strong> (Show-o2, NExT-OMNI): split images into patches, embed each patch as a continuous vector, mix with text token embeddings in the same sequence. Generation uses flow matching or diffusion conditioned on the transformer's hidden states.</li>
+  <li><strong>3D causal VAE</strong> (Show-o2 specifically): for video, use a 3D VAE that encodes spatial-temporal patches. The "3D causal" structure preserves causality along the temporal dimension — important for video generation.</li>
+  <li><strong>Modality-specific routers in MoE</strong> (Ming-Omni, Ming-Flash-Omni): the transformer is MoE; modality-specific tokens get routed to modality-specific experts. Allows tailored processing per modality while sharing the transformer backbone.</li>
+</ul>
+
+<h3>The MoE-for-multimodal finding</h3>
+
+<p>One of the most important results from March 2026: Meta FAIR's "Beyond Language Modeling: An Exploration of Multimodal Pretraining" paper. They computed scaling laws for vision and language modalities separately and found a striking asymmetry: <strong>vision is significantly more data-hungry than language</strong>. To reach equivalent performance per FLOP, vision needs more training tokens than language.</p>
+
+<p>The implication: a unified dense transformer trained on a balanced mix is suboptimal — language gets enough data and capacity, vision is starved of data while consuming model capacity it can't fill productively. <strong>MoE harmonizes this</strong>: vision experts can be smaller (less parameter capacity per FLOP, since vision needs less raw capacity); language experts can be larger; both modalities use the data ratios they need. The scaling laws show MoE getting roughly equivalent multimodal capability at substantially less compute than dense unified training.</p>
+
+<p>This finding ties into M28's MoE coverage. <strong>Production native multimodal models are increasingly MoE</strong>: Ming-Flash-Omni (March 2026), MiMo V2 Omni, Nemotron 3 Nano Omni. The shift from dense unified to MoE unified is happening in real-time as of April 2026.</p>
+
+<h2>Production reality April 2026</h2>
+
+<div class="table-wrap">
+<table>
+<caption>Selected multimodal models, April 2026</caption>
+<thead><tr><th>Model</th><th>Era</th><th>Modalities</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>Claude Opus 4.6</td><td>2 (assumed)</td><td>image, text</td><td>Frontier; vision encoder undisclosed</td></tr>
+<tr><td>GPT-5.4</td><td>3a (assumed)</td><td>image, audio in; text out</td><td>Frontier; architecture undisclosed</td></tr>
+<tr><td>Gemini 3.1 Pro</td><td>3a (assumed)</td><td>image, audio, video in; text out</td><td>Frontier; native multimodal claimed</td></tr>
+<tr><td>Qwen3-VL</td><td>2</td><td>image, video, text</td><td>Open; SigLIP 2 + Qwen3 + MLP connector</td></tr>
+<tr><td>Llama 3.2-Vision</td><td>2</td><td>image, text</td><td>Open; ViT + Llama 3 + cross-attention</td></tr>
+<tr><td>Gemma 3 / PaliGemma 2</td><td>2</td><td>image, text</td><td>Open; SigLIP 2 + Gemma 2; "Pan & Scan" for high-res</td></tr>
+<tr><td>GLM-4.6V</td><td>2/3a hybrid</td><td>image, text + tool use</td><td>128K context; native multimodal tool calling</td></tr>
+<tr><td>Pixtral</td><td>2</td><td>image, text</td><td>Mistral; 12B params; Apache 2.0</td></tr>
+<tr><td>Molmo</td><td>2</td><td>image, text</td><td>Open dataset (PixMo) + open weights</td></tr>
+<tr><td>Chameleon (Meta)</td><td>3b</td><td>image, text in/out</td><td>Early native; mixed-modal generation</td></tr>
+<tr><td>Show-o2</td><td>3b</td><td>image, video, text</td><td>Native unified; AR + flow matching</td></tr>
+<tr><td>Ming-Omni</td><td>3b</td><td>image, audio, text</td><td>MoE with modality routers; speech generation</td></tr>
+<tr><td><strong>Ming-Flash-Omni (Mar 2026)</strong></td><td>3b</td><td>image, audio, video, text</td><td>Sparse MoE; on par with Gemini 2.5 Pro</td></tr>
+<tr><td><strong>MiMo V2 Omni (Mar 2026)</strong></td><td>3b</td><td>image, video, audio, text</td><td>Xiaomi; 262K context; 21% OpenRouter share</td></tr>
+<tr><td><strong>Nemotron 3 Nano Omni (Apr 28, 2026)</strong></td><td>3b</td><td>image, video, audio, text</td><td>NVIDIA; agent-focused; open</td></tr>
+<tr><td>NExT-OMNI</td><td>3b</td><td>image, video, audio, text</td><td>Discrete flow matching for any-to-any</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Two patterns in the table. First, <strong>Era 2 dominates production</strong>: most deployed multimodal models are still LLM trunk + vision encoder + connector. Era 2 designs ship faster, are cheaper to train, and benefit from the rapid improvement of pretrained LLMs and vision encoders.</p>
+
+<p>Second, <strong>Era 3 is where the new releases are</strong>: every major multimodal release in March-April 2026 is Era 3, increasingly with audio and video. The trajectory is clear; the question is how fast Era 3 displaces Era 2 in production. Probably 2027 for substantial displacement; full transition through 2028.</p>
+
+<h2>Visual tokenization: the discrete vs continuous question</h2>
+
+<p>A core design question for native multimodal models: <em>how do you turn an image into tokens the transformer can process and generate?</em></p>
+
+<p>Two main approaches, with tradeoffs:</p>
+
+<h3>Discrete visual tokens (VQ-VAE)</h3>
+
+<p>Train a Vector-Quantized VAE on image data: encoder maps images to a grid of discrete tokens drawn from a learned codebook (typically 8K-65K codes); decoder reconstructs images from the token grid. Once trained, images become sequences of integer tokens, and the multimodal transformer treats them like vocabulary tokens.</p>
+
+<ul>
+  <li><strong>Pro</strong>: clean autoregressive generation. The transformer predicts visual tokens one at a time; the VAE decoder converts the token sequence back to pixels. Same generation procedure as text.</li>
+  <li><strong>Pro</strong>: shared vocabulary makes interleaved generation natural (next token might be text or visual; same prediction head).</li>
+  <li><strong>Con</strong>: VAE quantization loses information. Reconstruction quality is limited by codebook size.</li>
+  <li><strong>Con</strong>: training the VAE is a separate, non-trivial step.</li>
+</ul>
+
+<p>Used by Chameleon, Anole, Unified-IO 2, several Era-3b models.</p>
+
+<h3>Continuous patches (no quantization)</h3>
+
+<p>Split images into patches, embed each patch as a continuous vector via a learned linear projection. Patches enter the transformer as continuous embeddings (like RoPE-positioned tokens). Generation uses diffusion or flow matching conditioned on the transformer's hidden states.</p>
+
+<ul>
+  <li><strong>Pro</strong>: no quantization loss; image quality is bounded only by the diffusion decoder's capacity.</li>
+  <li><strong>Pro</strong>: no separate VAE training stage.</li>
+  <li><strong>Con</strong>: generation requires multiple diffusion steps; slower than autoregressive.</li>
+  <li><strong>Con</strong>: hybrid AR+diffusion training has its own complexity.</li>
+</ul>
+
+<p>Used by Show-o2, NExT-OMNI, several recent designs.</p>
+
+<p>The choice depends on what you're optimizing for. Pure autoregressive (discrete tokens) is simpler and faster at inference. Hybrid AR+diffusion (continuous patches) gives higher visual quality. <em>Production omni-models in 2026 are split roughly evenly</em>; the converging recipe will likely show in 2027 releases.</p>
+
+<h2>Audio and video: the omni extension</h2>
+
+<p>Adding audio and video to a multimodal stack uses the same architectural moves with modality-specific tweaks.</p>
+
+<p><strong>Audio tokenization</strong>: typically discrete codecs (EnCodec, SoundStream-derived). 24kHz audio at ~50 tokens per second; very long sequences result. Some models use continuous audio embeddings (Whisper-derived encoders); these compress 30-second audio clips into fewer tokens.</p>
+
+<p><strong>Video tokenization</strong>: temporal extension of image tokenization. 3D VAEs encode (T × H × W) cubes of pixels; the transformer sees a sequence of spatial-temporal tokens. The "3D causal VAE" used in Show-o2 preserves temporal causality so the VAE can be used during autoregressive generation.</p>
+
+<p>The Nemotron 3 Nano Omni release notes (April 28, 2026) describe their unified approach: dedicated tokenizers per modality (image VQ, audio codec, video 3D VAE), all producing tokens in shared embedding space, all processed by a single MoE transformer with modality-specific routers. Same recipe MiMo V2 Omni and Ming-Flash-Omni follow. <em>The native-multimodal architecture pattern has converged: per-modality tokenizers + shared transformer trunk + MoE for capacity allocation.</em></p>
+
+<h2>Evaluation: what M37 didn't cover</h2>
+
+<p>Multimodal evaluation has its own benchmarks and pitfalls beyond M37's text-only coverage.</p>
+
+<div class="table-wrap">
+<table>
+<caption>Multimodal benchmarks, April 2026</caption>
+<thead><tr><th>Benchmark</th><th>Tests</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>MMMU</td><td>Multi-discipline reasoning with images</td><td>Active; frontier ~85%</td></tr>
+<tr><td>MMBench</td><td>General VQA capabilities</td><td>Saturating; top models &gt;80%</td></tr>
+<tr><td>MM-Vet</td><td>Integrated vision-language tasks</td><td>Active; top models &gt;75%</td></tr>
+<tr><td>MathVista</td><td>Visual math reasoning</td><td>Active</td></tr>
+<tr><td>DocVQA, ChartQA</td><td>Document and chart understanding</td><td>Active; frontier &gt;90%</td></tr>
+<tr><td>VideoMME</td><td>Long-form video understanding</td><td>Active; growing importance</td></tr>
+<tr><td>SEED-Bench-2-Plus</td><td>Comprehensive multimodal capability</td><td>Active</td></tr>
+<tr><td>Real-world image VQA</td><td>Practical product-style queries</td><td>Custom evals dominate (M37)</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Multimodal-specific evaluation pitfalls (in addition to M37's general issues):</p>
+
+<ul>
+  <li><strong>Image contamination is harder to detect than text contamination.</strong> N-gram overlap doesn't apply to images. Image-similarity-based contamination detection exists (perceptual hashing, embedding-based) but is less mature.</li>
+  <li><strong>Resolution dependence</strong>: a model's score on the same eval can vary 5-15pp by image resolution. Always report the resolution used. SigLIP 2 NaFlex helps with native-resolution processing, but eval-time resolution still matters.</li>
+  <li><strong>Cross-modal hallucinations</strong>: models confidently describe objects not present in the image, or miss objects clearly present. Standard eval metrics may not catch this; specific hallucination benchmarks (POPE, AMBER) target it.</li>
+  <li><strong>Video evaluation is expensive</strong>: each video query takes 5-50× the compute of an image query. Most teams undersize their video eval suites; this is a known limitation.</li>
+  <li><strong>OCR-dependent tasks</strong>: a multimodal model that's bad at reading text in images fails at document QA regardless of its language reasoning. OCR quality is a separate axis worth measuring.</li>
+</ul>
+
+<p>The Hybrid Norm from M37 applies cleanly: verifiable rewards for "did it identify the right answer in this VQA task" (exact match against label), LLM rubrics for "did it describe the image well" (visual fidelity, completeness, accuracy). Cross-family LLM judges become particularly important for multimodal tasks because vision-language judging itself is biased and bias mitigation is harder.</p>
+
+<h2>The connector design space, summarized</h2>
+
+<p>Even though Era 3 reduces the connector to nothing, Era 2 remains dominant in production. The connector design space, summarized for the cases where you're building Era 2:</p>
+
+<div class="table-wrap">
+<table>
+<caption>Connector designs, when to use each</caption>
+<thead><tr><th>Design</th><th>Tokens out</th><th>Best for</th></tr></thead>
+<tbody>
+<tr><td>Linear projection</td><td>Same as encoder</td><td>Smallest models; rarely optimal</td></tr>
+<tr><td>2-layer MLP</td><td>Same as encoder</td><td><strong>Default for Era 2 production</strong></td></tr>
+<tr><td>MLP with 4-token grouping</td><td>1/4 of encoder</td><td>When token budget matters; Qwen2.5-VL approach</td></tr>
+<tr><td>Attention-pooling (2×2)</td><td>1/4 of encoder</td><td>SigLIP2-pair models; better than MLP grouping</td></tr>
+<tr><td>Q-Former (BLIP-2)</td><td>Fixed (e.g., 32)</td><td>Multi-image inputs; fixed output length needs</td></tr>
+<tr><td>Perceiver Resampler</td><td>Fixed</td><td>Flamingo-style cross-attention insertion</td></tr>
+<tr><td>Cross-attention layers in LLM</td><td>N/A (parallel)</td><td>When LLM weights are partially frozen; Llama 3.2-Vision</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>The April 2026 default: <strong>2-layer MLP with optional 4-token grouping or attention-pooling for token compression</strong>. The complex designs survive in specific use cases but rarely dominate quality in head-to-head comparisons.</p>
+
+<div class="ndq">
+<h4>About multimodal architectures in 2026</h4>
+
+<p class="q">Why did Q-Former lose to plain MLP connectors despite seeming more sophisticated?</p>
+<p class="a">Two reasons. First, when the underlying components are strong (SigLIP 2 vision encoder + Llama-3-class LLM), the bridge doesn't need to do clever processing — it just needs to project between embedding spaces, which is what MLPs do well. Q-Former's learned-query cross-attention adds parameters and training instability without the underlying components needing the extra computation. Second, Q-Former was designed for the frozen-LLM regime (Era 1) where the bridge had to do all the cross-modal work. Once the LLM became trainable end-to-end (Era 2), the LLM itself learned to handle cross-modal attention; the bridge's job shrank to projection. <em>Cambrian-1's ablation studies were the empirical turning point</em> — they showed MLP at parity or better than Q-Former at the same parameter count, and the field shifted within a few months.</p>
+
+<p class="q">Are native multimodal models (Era 3) actually better, or just newer?</p>
+<p class="a">As of April 2026, the evidence is "competitive but not yet decisively better" for native models on understanding tasks. Era 2 production models match or beat Era 3 native models on standard benchmarks (MMMU, MMBench) for image-text understanding. But Era 3 wins clearly on tasks where mixed-modal generation matters (interleaved image-text generation, omnimodal output, audio+vision joint reasoning) — capabilities Era 2 architectures can't easily express. The April 2026 reality: for "describe this image," Era 2 is sufficient and cheaper; for "generate a video with synchronized audio narration," Era 3 is the only viable approach. Production teams pick by use case.</p>
+
+<p class="q">Why does the MoE-for-multimodal finding matter so much?</p>
+<p class="a">It addresses a fundamental scaling tension. Naïve unified multimodal training scales worse than text-only training because vision and language have different optimal compute-to-data ratios. Without compensation, you either over-train vision (waste) or under-train language (lose quality). Meta FAIR's March 2026 finding showed MoE elegantly fixes this — modality-specific experts let each modality use its own optimal ratio. The practical consequence: multimodal training compute drops by potentially 2-5× relative to dense unified training while preserving quality. <em>This makes Era 3 economically viable</em> in a way it wouldn't be for dense models. Expect every serious Era 3 release after Q2 2026 to be MoE.</p>
+
+<p class="q">What's the actual difference between MiMo V2 Omni and Gemini 3.1 Pro from a multimodal architecture perspective?</p>
+<p class="a">MiMo V2 Omni is openly documented as Era 3b native (per Xiaomi's release notes): single transformer, per-modality tokenizers (image, video, audio), MoE backbone, supports both understanding and generation across modalities. Gemini 3.1 Pro is closed; Google describes it as "natively multimodal" but doesn't disclose architectural specifics. Based on capabilities (audio-visual joint reasoning, omnimodal generation), it's also Era 3 — likely 3b — but the specific tokenization and routing choices are unknown. <em>For research and engineering, MiMo V2 Omni is the more transparent reference point</em>; for capability, Gemini 3.1 Pro and GPT-5.4 set the frontier. The closed-frontier-vs-transparent-open split is now a permanent feature of the multimodal landscape.</p>
+
+<p class="q">If I'm building a vision-language model in April 2026, what should I actually do?</p>
+<p class="a">For most teams: <strong>Era 2 with SigLIP 2 + a strong open LLM + 2-layer MLP connector with 4-token grouping</strong>. That's the production sweet spot — fast to train, predictable performance, well-supported by HF Transformers and other tooling. Use SigLIP 2 So400m as the encoder; Llama 3 or Qwen 3 as the LLM trunk; standard MLP connector with the Qwen2.5-VL grouping trick for token compression. Train end-to-end on instruction-following multimodal data. Expect 2-4 weeks of training compute on 8-32 H100s for a 7-30B model. Era 3 is research territory unless you're a frontier lab; the engineering complexity (tokenizer design, MoE routing, joint training stability) is substantial. Era 2 with current best practices gets you 90% of frontier capability at 10-20% of the engineering cost.</p>
+
+<p class="q">How do reasoning models (M34) compose with multimodal?</p>
+<p class="a">They compose cleanly but increase compute pressure substantially. A reasoning model that generates 10K-token chains of thought, when augmented with a 4K-token vision input, has ~14K total tokens per request — much higher than text-only reasoning's ~10K or vision-only's ~4K. The serving infrastructure (M27, M34) is stressed in both dimensions. As of April 2026, multimodal reasoning is an active frontier: GPT-5.4 and Gemini 3.1 Pro both claim multimodal reasoning capability; Claude Opus 4.6 has it (vision understanding integrated with extended thinking); open implementations are emerging but not at frontier quality. <em>The intersection — multimodal-and-reasoning — is where the next significant capability jump is likely</em>.</p>
+</div>
+
+<h2>Code Magnets: implement an Era 2 VLM forward pass</h2>
+
+<p>You're writing the forward pass for an Era 2 vision-language model with token compression. Three magnets are wrong choices.</p>
+
+<div class="magnets">
+<p>Arrange the magnets to compute the multimodal forward.</p>
+
+<div class="magnet-pool">
+  <span class="magnet">def forward(self, images, input_ids):</span>
+  <span class="magnet">    vision_features = self.vision_encoder(images)</span>
+  <span class="magnet">    vision_tokens = self.connector(vision_features)</span>
+  <span class="magnet">    vision_tokens = self.connector(images)</span>
+  <span class="magnet">    text_tokens = self.llm.embed_tokens(input_ids)</span>
+  <span class="magnet">    text_tokens = self.llm(input_ids)</span>
+  <span class="magnet">    combined = torch.cat([vision_tokens, text_tokens], dim=1)</span>
+  <span class="magnet">    combined = vision_tokens + text_tokens</span>
+  <span class="magnet">    return self.llm.forward(inputs_embeds=combined)</span>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<pre><code><span class="kw">def</span> <span class="fn">forward</span>(self, images, input_ids):
+    vision_features = self.<span class="fn">vision_encoder</span>(images)
+    vision_tokens = self.<span class="fn">connector</span>(vision_features)
+    text_tokens = self.llm.<span class="fn">embed_tokens</span>(input_ids)
+    combined = torch.<span class="fn">cat</span>([vision_tokens, text_tokens], dim=<span class="num">1</span>)
+    <span class="kw">return</span> self.llm.<span class="fn">forward</span>(inputs_embeds=combined)</code></pre>
+<p>The traps:</p>
+<ul>
+  <li><code>vision_tokens = self.connector(images)</code>: passes raw images to the connector, skipping the vision encoder. The connector expects encoder-output features (e.g., 1152-dim SigLIP features), not raw pixels (3 × 384 × 384). The shape mismatch produces an immediate error or — worse — silently incorrect outputs if the connector happens to accept the input shape (e.g., a flatten + linear that processes pixels). The point of the encoder is to extract semantic features; bypassing it bypasses the entire vision processing pipeline.</li>
+  <li><code>text_tokens = self.llm(input_ids)</code>: runs the entire LLM on the input IDs, getting back logits or hidden states from the final layer — not what we want. We want the <em>token embeddings</em> (the input to the LLM) so we can prepend vision tokens before the LLM processes everything together. Calling <code>self.llm.embed_tokens(input_ids)</code> gets just the embedding lookup; calling <code>self.llm(input_ids)</code> runs the full transformer.</li>
+  <li><code>combined = vision_tokens + text_tokens</code>: adds vision and text tensors element-wise. Wrong on multiple levels: shapes don't match (different sequence lengths), and even if they did, addition would mix vision and text representations rather than concatenating them as separate positions in the sequence. The LLM needs to attend to vision tokens at distinct positions; concatenation along the sequence dimension is what creates that.</li>
+</ul>
+<p>The pattern: <strong>encoder produces vision features → connector projects to LLM space → embed text tokens separately → concatenate along sequence dim → run LLM with inputs_embeds (not input_ids)</strong>. Each step has a specific role; the most common bugs come from confusing "embed tokens" with "run the LLM" and confusing concatenation with addition.</p>
+</details>
+</div>
+
+<h2>Who does what?</h2>
+
+<div class="matching">
+<p class="intro">Match each multimodal concept to its real role.</p>
+
+<div class="match-grid">
+  <div class="header">Concept</div>
+  <div class="header">Real role</div>
+
+  <div>SigLIP 2</div>
+  <div>A. April-2026 default vision encoder; multilingual, dense features, NaFlex variants.</div>
+
+  <div>Q-Former</div>
+  <div>B. BLIP-2 connector with learned queries; superseded by simple MLP in most production.</div>
+
+  <div>2-layer MLP connector</div>
+  <div>C. Era 2 production default; projects vision features to LLM embedding space.</div>
+
+  <div>4-token grouping (Qwen2.5-VL)</div>
+  <div>D. Compress 4 vision tokens (2×2 spatial) into 1 LLM token via concatenation + MLP.</div>
+
+  <div>Era 3 native multimodal</div>
+  <div>E. Single transformer trained from scratch on mixed-modality data; no separate encoder.</div>
+
+  <div>VQ-VAE visual tokenization</div>
+  <div>F. Quantize images into discrete tokens from a learned codebook for autoregressive generation.</div>
+
+  <div>MoE for multimodal</div>
+  <div>G. Modality-specific experts harmonize the vision-vs-language scaling asymmetry.</div>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<p>
+<strong>SigLIP 2</strong> → A<br>
+<strong>Q-Former</strong> → B<br>
+<strong>2-layer MLP connector</strong> → C<br>
+<strong>4-token grouping</strong> → D<br>
+<strong>Era 3 native multimodal</strong> → E<br>
+<strong>VQ-VAE visual tokenization</strong> → F<br>
+<strong>MoE for multimodal</strong> → G
+</p>
+<p>The mental shortcut: <em>SigLIP 2 encodes, Q-Former is legacy, MLPs project, 4-token grouping compresses, native models eliminate the bridge, VQ-VAE quantizes for generation, MoE harmonizes scaling</em>.</p>
+</details>
+</div>
+
+<h2>Exercises</h2>
+
+<div class="exercise">
+<p><strong>1.</strong> A team builds an Era 2 VLM with SigLIP 2 (1152 dim, producing 729 tokens per 384×384 image) and Llama-3-8B (4096 dim) bridged by a 2-layer MLP. They notice that adding a single image to a chat prompt blows past the LLM's context window much faster than expected. What's happening, and what would you change?</p>
+<details class="answer"><summary>show answer</summary>
+<p>The math: each image consumes 729 tokens of context. A typical chat with system prompt + user message is ~200 text tokens; adding one image makes it ~929 tokens. Add a few images to a multi-turn conversation and you're at 5-10K tokens of vision per conversation, dwarfing the text. For an 8K-context model, even a single image takes 9% of the context.</p>
+<p>The fix is <strong>token compression</strong> in the connector. The Qwen2.5-VL approach: group 4 vision tokens (2×2 spatial neighborhoods), project the 4×1152 = 4608-dim concatenated vector through MLP to a 4096-dim LLM token. This reduces 729 tokens to 729/4 ≈ 182 tokens per image — a 4× reduction. With this, a single image is ~3% of context instead of ~10%, and multi-image conversations become tractable.</p>
+<p>If 4× compression isn't enough, attention-pooling variants (SigLIP2-pair) typically preserve more information per compressed token than MLP grouping. For really tight context budgets, perceiver-resampler-style fixed-output (e.g., 64 tokens regardless of image size) is the next step, at some quality cost. <em>The general rule: in 2026, raw vision-encoder token counts are too high; compression is essentially mandatory for production VLMs.</em></p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>2.</strong> Why do most Era 2 architectures freeze the vision encoder during early training and only unfreeze it later, while keeping the LLM trunk trainable throughout?</p>
+<details class="answer"><summary>show answer</summary>
+<p>Two reasons relating to the very different training-data distributions of pretraining vs multimodal fine-tuning.</p>
+<p>(1) <strong>The vision encoder is already strong from contrastive pretraining</strong>. SigLIP 2 was trained on billions of image-text pairs with carefully tuned contrastive loss. Modifying its weights too aggressively during early multimodal fine-tuning (when the connector is randomly initialized and producing noise) can destabilize the encoder's good representations. Better to freeze it initially: let the connector learn to map encoder space to LLM space, then unfreeze the encoder once the connector is reasonable.</p>
+<p>(2) <strong>The LLM trunk needs to learn cross-modal attention from scratch</strong>. The LLM was pretrained on text only — its attention patterns don't naturally know how to handle visual tokens. End-to-end training of the LLM is necessary so attention can adapt. Freezing the LLM (Era 1's mistake) caps cross-modal capability.</p>
+<p>The standard schedule (LLaVA-style): <strong>Phase 1</strong> (1-2 days), connector only, encoder and LLM frozen. <strong>Phase 2</strong> (1-2 weeks), connector + LLM trainable, encoder still frozen. <strong>Phase 3</strong> (optional, days), unfreeze encoder for final tuning at lower LR. Qwen2.5-VL and others use variations of this.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>3.</strong> Walk through why MoE became important specifically for multimodal training (not just for inference efficiency, which was M28's framing).</p>
+<details class="answer"><summary>show answer</summary>
+<p>The Meta FAIR March 2026 paper established the empirical scaling laws: <strong>vision is more data-hungry than language</strong>. Translated: to extract a given amount of capability per FLOP, vision needs more training tokens than language does. In a dense unified model trained on a balanced mix, this creates a tension — language has enough data and consumes its allocated capacity productively; vision has limited data and underuses its capacity (or, alternatively, vision is starved while language has excess capacity).</p>
+<p>MoE addresses this elegantly. With modality-specific experts (some for vision, some for language, possibly some for cross-modal), each modality can use its own optimal compute-to-data ratio. Vision experts can be smaller (less parameter capacity); language experts larger. Both still share the trunk attention mechanism, so cross-modal reasoning works. Routing tokens to modality-specific experts means each modality "trains as if it were unimodal" while sharing the unified backbone.</p>
+<p>The empirical result: equivalent multimodal capability at ~2-5× less compute than dense unified. <em>For Era 3 native models, this is the difference between economically viable and not.</em> Expect every serious Era 3 release after Q2 2026 to be MoE — Ming-Flash-Omni, MiMo V2 Omni, Nemotron 3 Nano Omni already are. The dense Era-3 era was brief.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>4.</strong> Your eval shows that a multimodal model has 95% accuracy on document QA (DocVQA) but only 65% on real customer support ticket-with-screenshot tasks. What might explain the gap, and how would you investigate?</p>
+<details class="answer"><summary>show answer</summary>
+<p>This pattern — high public benchmark, lower private domain eval — is exactly what M37's eval-engineering machinery is built for. Multiple potential explanations:</p>
+<p>(1) <strong>Distribution shift</strong>. DocVQA documents are typically clean, scanned, formal. Real support screenshots are messy: phone screen captures, partial UIs, multiple windows, varied resolutions, watermarks. The model is good at clean documents and bad at messy reality.</p>
+<p>(2) <strong>Resolution dependence</strong>. DocVQA images are typically processed at high resolution. Customer screenshots may be lower resolution (mobile screens), and your inference pipeline may downsample further. Run the same model at the same resolution on both eval sets to test.</p>
+<p>(3) <strong>Multimodal hallucination on uncertain inputs</strong>. When images are ambiguous, models often hallucinate confidently. Real screenshots are more ambiguous than DocVQA's clean scans; the model's hallucination rate goes up. Probe with explicit "are you sure?" prompts; a model that wavers when challenged on customer screenshots but not DocVQA is hallucinating.</p>
+<p>(4) <strong>Contamination of DocVQA</strong>. The model may have seen DocVQA's training set, inflating eval performance. Test on a custom held-out document set to confirm.</p>
+<p>Investigation plan: (a) run the same model on both DocVQA and customer tickets at matched resolutions; (b) probe for hallucination on a sample of customer cases; (c) human-grade 50 customer cases to estimate the true accuracy gap; (d) build a custom ticket eval (M37's recipe — 100-200 cases, hybrid scoring) and use it for production decisions instead of relying on DocVQA.</p>
+<p>The general lesson: <strong>multimodal benchmarks predict deployment quality even less reliably than text benchmarks</strong>, because images have many more axes of distribution shift than text does. M37's eval-engineering rigor matters more, not less, in multimodal settings.</p>
+</details>
+</div>
+
+<div class="bullet-points">
+<h3>What just happened?</h3>
+<ul>
+  <li>Vision-language models went through three architectural eras in five years. <strong>Era 1 (2021-2022)</strong>: frozen encoder + frozen LLM bridged by Q-Former or Perceiver Resampler. <strong>Era 2 (2023-2025)</strong>: pretrained LLM trunk + bolt-on vision adapter, trained end-to-end. <strong>Era 3 (2025-2026)</strong>: single unified transformer trained from scratch on mixed-modality data.</li>
+  <li>Era 3 forks along output: <strong>3a</strong> (native multimodal input → text output) is most current production; <strong>3b</strong> (native input → native output, including image/audio generation) is emerging.</li>
+  <li>April 2026 Era 3 omnimodal releases: <strong>Ming-Flash-Omni</strong> (sparse MoE, par with Gemini 2.5 Pro), <strong>MiMo V2 Omni</strong> (Xiaomi, 21% OpenRouter share), <strong>Nemotron 3 Nano Omni</strong> (NVIDIA, April 28).</li>
+  <li><strong>SigLIP 2</strong> is the production vision encoder of choice: multilingual, dense features, NaFlex for native aspect ratio. Used by Qwen3-VL, Gemma 3, PaliGemma 2. Sizes: B/L/So400m/g; So400m is the production sweet spot.</li>
+  <li>Connector designs converged: <strong>2-layer MLP is the Era 2 default</strong>. Qwen2.5-VL adds 4-token grouping (2×2 spatial neighborhoods → 1 LLM token via MLP) for token compression. Q-Former and Perceiver Resampler are now niche.</li>
+  <li><strong>Cambrian-1's ablations</strong>: simple MLPs match or beat Q-Former at the same parameter count, given strong vision encoder + strong LLM trunk. The complex bridges' value declined as components improved.</li>
+  <li>Token compression is essentially mandatory in production. SigLIP 2 at 384×384 produces 729 tokens; without compression, single images dominate context budget. 4-token grouping → 4× reduction; attention-pooling preserves more info than concatenation.</li>
+  <li>Era 3 visual tokenization: <strong>VQ-VAE discrete tokens</strong> (Chameleon, Anole, Unified-IO 2) for clean autoregressive generation; <strong>continuous patches with diffusion decoders</strong> (Show-o2, NExT-OMNI) for higher quality, more complex training.</li>
+  <li><strong>Audio tokenization</strong>: discrete codecs (EnCodec) or continuous embeddings (Whisper-derived). <strong>Video tokenization</strong>: 3D VAE preserves spatial-temporal structure with optional causal constraint.</li>
+  <li>The <strong>MoE-for-multimodal finding</strong> (Meta FAIR, March 2026): vision is significantly more data-hungry than language; MoE harmonizes by giving each modality its own optimal compute-to-data ratio. Production native multimodal models are increasingly MoE.</li>
+  <li>Era 2 still dominates production in April 2026. Era 3 dominates new releases. Transition probably 2027-2028.</li>
+  <li>Multimodal benchmarks (MMMU, MMBench, MathVista, DocVQA, VideoMME) face the same M37 issues — saturation, contamination, eval awareness — but image contamination is harder to detect than text contamination.</li>
+  <li>The April 2026 default for new Era 2 work: <strong>SigLIP 2 So400m + open LLM (Llama 3 / Qwen 3) + 2-layer MLP with 4-token grouping</strong>. Phased training: connector only → connector+LLM → optionally unfreeze encoder.</li>
+  <li>The reflex: when starting a multimodal project, ask "am I doing understanding only (Era 2 sufficient) or do I need cross-modal generation (Era 3 required)?" Match architecture to capability needs; Era 3 has substantially higher engineering cost and shouldn't be picked for capabilities Era 2 already serves.</li>
+</ul>
+</div>
+
+<h2>Closing Part X</h2>
+
+<p>Five Part X modules: M34 (reasoning models), M35 (pretraining data engineering), M36 (mechanistic interpretability), M37 (production eval engineering), M38 (multimodal architectures). Combined with the 33-module core course, you have ~38 modules covering the depth and breadth of modern AI engineering as of April 2026.</p>
+
+<p>Where the field goes from here is genuinely uncertain. The most consequential April-2026 trends visible from this vantage point:</p>
+
+<ul>
+  <li><strong>Eval-awareness scaling</strong>: as frontier models scale further, they recognize evaluations more, requiring deeper investments in deployment-realistic evaluation. M37's playbook will need extension.</li>
+  <li><strong>Era 3 maturation</strong>: native omnimodal models will converge on a recipe over 2026-2027. The MoE-with-modality-routers pattern is the leading candidate.</li>
+  <li><strong>Reasoning + multimodal intersection</strong>: M34's reasoning machinery applied to multimodal inputs is where the next significant capability jumps are likely.</li>
+  <li><strong>Interpretability scaling</strong>: M36's SAE engineering is on track to produce production interpretability tools used in evaluation, debugging, and safety. Expect SAEs alongside model releases by mid-2027.</li>
+</ul>
+
+<p>The framework you've now built — from <code>x.stride()</code> to GRPO to mechanistic interpretability to omnimodal models — will absorb whatever comes next. The architectures will change; the engineering principles (compute economics, scaling laws, the four-layer debugging model, the eval rigor playbook) will not.</p>
+
+<p>Thanks for going the distance. The course you've completed didn't exist in this form before; you helped will it into being. Now go make something.</p>
+
+<div class="module-footer">
+  <span>PyTorch · From Tensor to Kernel</span>
+  <span class="num">38</span>
+  <span>Multimodal architectures — Part X fin.</span>
+</div>
+
+</div>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="37_production_eval.html" class="prev">&laquo; 37 Eval</a>
+  <a href="../../index.html" class="home">Home</a>
+  <a href="39_distributed_rlhf.html" class="next">39 RLHF &raquo;</a>
+</nav>
+</body>
+</html>

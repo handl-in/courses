@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 47 — Attention Variants III: Kernels, Implementation & Compositional Architectures</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800;9..144,900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@400;500;600;700&family=Patrick+Hand&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+  :root {
+    --paper: #f6efe1; --paper-deep: #ede2cc;
+    --ink: #1a1612; --ink-soft: #3a322a; --ink-muted: #6b5d4f;
+    --terracotta: #c1502e; --terracotta-deep: #8c3a20;
+    --teal: #1f5f5b; --teal-deep: #133e3b;
+    --mustard: #d4a017; --rose: #b85a6c;
+    --pytorch: #ee4c2c;
+    --code-bg: #2a2520; --code-bg-light: #f0e8d4;
+    --rule: #c8b89a;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; padding: 0 0 60px 0; background: var(--paper);
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(193,80,46,0.04) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(31,95,91,0.04) 0%, transparent 40%);
+    color: var(--ink);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px; line-height: 1.7;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 60px 40px 120px; }
+  .module-header { border-bottom: 3px double var(--ink); padding-bottom: 32px; margin-bottom: 48px; position: relative; }
+  .module-tag {
+    display: inline-block; font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--terracotta-deep); background: var(--paper-deep);
+    padding: 6px 14px; border: 1.5px solid var(--terracotta-deep);
+    border-radius: 2px; margin-bottom: 20px;
+  }
+  .module-title {
+    font-family: 'Fraunces', serif; font-weight: 900; font-size: 56px;
+    line-height: 1.05; margin: 0 0 14px; color: var(--ink); letter-spacing: -0.02em;
+  }
+  .module-title em { font-style: italic; font-weight: 400; color: var(--terracotta); }
+  .module-sub { font-family: 'Caveat', cursive; font-size: 26px; color: var(--ink-soft); margin: 0; }
+  h2 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 32px; margin: 56px 0 18px; color: var(--ink); line-height: 1.15; letter-spacing: -0.01em; }
+  h2::before { content: "§ "; color: var(--terracotta); font-weight: 600; }
+  h3 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px; margin: 36px 0 12px; color: var(--teal-deep); letter-spacing: -0.005em; }
+  h4 { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; margin: 28px 0 10px; color: var(--ink-soft); }
+  p { margin: 0 0 18px; }
+  p strong { color: var(--terracotta-deep); font-weight: 600; }
+  p em { color: var(--teal-deep); }
+  blockquote { border-left: 4px solid var(--terracotta); padding: 4px 0 4px 22px; margin: 24px 0; font-style: italic; color: var(--ink-soft); font-size: 18px; }
+  a { color: var(--teal-deep); text-decoration: underline wavy var(--mustard); text-underline-offset: 4px; }
+  code { font-family: 'IBM Plex Mono', monospace; font-size: 0.88em; background: var(--code-bg-light); padding: 1px 6px; border-radius: 3px; color: var(--terracotta-deep); border: 1px solid rgba(0,0,0,0.06); }
+  pre { background: var(--code-bg); color: #e8d9b8; font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; line-height: 1.55; padding: 22px 26px; border-radius: 4px; overflow-x: auto; margin: 24px 0; border-left: 4px solid var(--pytorch); box-shadow: 4px 4px 0 var(--ink); position: relative; }
+  pre::before { content: ">_"; position: absolute; top: 8px; right: 14px; font-size: 11px; color: var(--pytorch); opacity: 0.7; letter-spacing: 0.1em; }
+  pre code { background: transparent; color: inherit; padding: 0; border: none; font-size: inherit; }
+  pre .kw { color: #ff8a65; }
+  pre .str { color: #a5d6a7; }
+  pre .num { color: #ffcc80; }
+  pre .com { color: #8d7d65; font-style: italic; }
+  pre .fn { color: #82b1ff; }
+  pre .ty { color: #ce93d8; }
+  .sticky { background: #fff8a8; background-image: linear-gradient(180deg, #fff8a8 0%, #ffeb7a 100%); padding: 22px 26px; margin: 28px 0; box-shadow: 3px 4px 12px rgba(0,0,0,0.18), inset 0 -8px 14px rgba(0,0,0,0.04); transform: rotate(-0.4deg); font-family: 'Patrick Hand', cursive; font-size: 19px; line-height: 1.5; color: var(--ink); position: relative; }
+  .sticky::before { content: ""; position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 80px; height: 22px; background: rgba(193,80,46,0.5); border-radius: 1px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+  .sticky.pink { background-image: linear-gradient(180deg, #ffd5dc 0%, #ffb8c4 100%); transform: rotate(0.5deg); }
+  .sticky.blue { background-image: linear-gradient(180deg, #d3e9f5 0%, #aed4ec 100%); transform: rotate(-0.6deg); }
+  .sticky.green { background-image: linear-gradient(180deg, #d4ecc8 0%, #b3d99e 100%); transform: rotate(0.3deg); }
+  .sticky strong { color: var(--terracotta-deep); }
+  .brainpower { border: 2.5px solid var(--ink); background: var(--paper-deep); padding: 24px 28px 26px; margin: 32px 0; border-radius: 2px; position: relative; box-shadow: 5px 5px 0 var(--terracotta); }
+  .brainpower::before { content: "BRAIN POWER"; position: absolute; top: -13px; left: 22px; background: var(--terracotta); color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; padding: 4px 12px; letter-spacing: 0.18em; }
+  .brainpower p { margin: 8px 0; font-size: 16px; }
+  .brainpower p:first-child { margin-top: 6px; }
+  .ndq { background: linear-gradient(180deg, #fdf6e3 0%, #f5ead0 100%); border: 1.5px dashed var(--ink-soft); border-radius: 8px; padding: 28px 30px; margin: 36px 0; }
+  .ndq h4 { font-family: 'Fraunces', serif; font-size: 22px; text-transform: none; letter-spacing: 0; color: var(--terracotta-deep); margin: 0 0 18px; border-bottom: 1.5px solid var(--rule); padding-bottom: 8px; }
+  .ndq h4::before { content: "Q&A — "; color: var(--ink-muted); font-style: italic; }
+  .ndq .q { font-family: 'Caveat', cursive; font-size: 22px; color: var(--teal-deep); margin: 14px 0 4px; line-height: 1.3; }
+  .ndq .q::before { content: "Q: "; font-weight: 700; color: var(--terracotta); }
+  .ndq .a { margin: 0 0 16px 14px; padding-left: 14px; border-left: 3px solid var(--mustard); color: var(--ink-soft); font-size: 16px; }
+  .ndq .a::before { content: "A: "; font-weight: 700; color: var(--ink); font-family: 'Fraunces', serif; }
+  .table-wrap { margin: 28px 0; overflow-x: auto; border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--teal); background: #fff; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; font-family: 'Lora', serif; }
+  table caption { font-family: 'Caveat', cursive; font-size: 22px; color: var(--terracotta-deep); padding: 12px 0; text-align: left; caption-side: top; }
+  th { background: var(--ink); color: #fff; text-align: left; padding: 12px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+  td { padding: 12px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--paper-deep); }
+  tr:last-child td { border-bottom: none; }
+  td strong { color: var(--terracotta-deep); }
+  td code { font-size: 12.5px; }
+  .decision { background: #fff; border: 2px solid var(--ink); border-radius: 2px; padding: 24px 28px; margin: 32px 0; box-shadow: 5px 5px 0 var(--mustard); font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.8; white-space: pre; overflow-x: auto; color: var(--ink); }
+  .warn { background: #fcecec; border-left: 6px solid var(--terracotta); padding: 18px 22px; margin: 28px 0; border-radius: 0 4px 4px 0; position: relative; }
+  .warn::before { content: "⚠"; position: absolute; top: 14px; right: 18px; font-size: 24px; color: var(--terracotta); }
+  .warn strong { color: var(--terracotta-deep); }
+  .keyidea { background: var(--teal); color: #f6efe1; padding: 26px 30px; margin: 32px 0; border-radius: 2px; font-family: 'Fraunces', serif; font-size: 19px; font-weight: 500; line-height: 1.5; position: relative; box-shadow: 4px 4px 0 var(--ink); }
+  .keyidea::before { content: "★ KEY IDEA"; position: absolute; top: -11px; left: 22px; background: var(--mustard); color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700; padding: 4px 10px; letter-spacing: 0.18em; }
+  .keyidea strong { color: var(--mustard); }
+  .exercise { border: 2px dashed var(--teal-deep); padding: 24px 28px; margin: 36px 0; background: rgba(255,255,255,0.5); border-radius: 2px; }
+  .exercise::before { content: "✎ SHARPEN YOUR PENCIL"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px dotted var(--teal); }
+  .exercise .answer { margin-top: 14px; padding: 14px 18px; background: var(--paper-deep); border-radius: 4px; font-size: 15px; }
+  .exercise .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+  ul, ol { margin: 16px 0; padding-left: 28px; }
+  li { margin: 8px 0; }
+  ul li::marker { color: var(--terracotta); }
+  ol li::marker { color: var(--teal-deep); font-weight: 600; }
+  .dialogue { margin: 28px 0; padding: 20px 24px; background: var(--paper-deep); border-radius: 4px; border-left: 4px solid var(--rose); }
+  .dialogue .speaker { font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--rose); font-weight: 700; display: block; margin-top: 10px; }
+  .dialogue .speaker:first-child { margin-top: 0; }
+  .dialogue .speaker.b { color: var(--teal-deep); }
+  .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin: 28px 0; }
+  .twocol > div { padding: 20px 22px; border-radius: 2px; background: #fff; border: 1.5px solid var(--rule); }
+  .twocol > div h4 { margin-top: 0; }
+  .twocol .good { border-color: var(--teal); border-left: 5px solid var(--teal); }
+  .twocol .bad { border-color: var(--terracotta); border-left: 5px solid var(--terracotta); }
+  .ascii { background: var(--paper-deep); padding: 22px 26px; margin: 28px 0; border: 1.5px solid var(--rule); border-radius: 2px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.5; white-space: pre; overflow-x: auto; color: var(--ink); }
+  .module-footer { margin-top: 80px; padding-top: 28px; border-top: 3px double var(--ink); display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-muted); }
+  .module-footer .num { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 800; color: var(--terracotta); line-height: 1; }
+  .toc { background: #fff; border: 2px solid var(--ink); padding: 30px 40px; margin: 40px 0; box-shadow: 6px 6px 0 var(--teal); }
+  .toc h3 { font-family: 'Fraunces', serif; font-size: 26px; margin: 0 0 20px; color: var(--ink); }
+  .toc ol { columns: 2; column-gap: 40px; padding-left: 24px; }
+  .toc li { font-size: 15px; break-inside: avoid; margin: 4px 0; }
+  .toc li strong { color: var(--terracotta-deep); }
+  .toc .part { font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--teal-deep); margin: 16px 0 6px; column-span: all; border-bottom: 1px dashed var(--rule); padding-bottom: 4px; }
+
+  /* CODE MAGNETS — fridge-magnet style code snippets to be arranged */
+  .magnets { margin: 36px 0; padding: 26px 28px 30px; background: #ede2cc; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--teal-deep); position: relative; }
+  .magnets::before { content: "✦ CODE MAGNETS"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px dotted var(--ink-soft); }
+  .magnets p { margin: 0 0 18px; font-size: 16px; }
+  .magnet-pool { display: flex; flex-wrap: wrap; gap: 10px; padding: 16px; background: #c8c0a8; background-image: linear-gradient(135deg, #c8c0a8 25%, transparent 25%), linear-gradient(225deg, #c8c0a8 25%, transparent 25%), linear-gradient(45deg, #c8c0a8 25%, transparent 25%), linear-gradient(315deg, #c8c0a8 25%, #b5ad95 25%); background-size: 14px 14px; background-position: 7px 0, 7px 0, 0 0, 0 0; border-radius: 6px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.2); margin: 12px 0; min-height: 70px; }
+  .magnet { display: inline-block; background: #fff; padding: 10px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink); border-radius: 3px; box-shadow: 2px 2px 4px rgba(0,0,0,0.25), inset 0 -2px 0 rgba(0,0,0,0.05); border: 1px solid #d8d0b4; transform: rotate(-1deg); transition: transform 0.15s; cursor: default; user-select: all; }
+  .magnet:nth-child(2n) { transform: rotate(1.5deg); background: #fff8e8; }
+  .magnet:nth-child(3n) { transform: rotate(-2deg); background: #f0f5ee; }
+  .magnet:nth-child(5n) { transform: rotate(0.8deg); background: #f5e8e0; }
+  .magnet:hover { transform: rotate(0) scale(1.05); z-index: 2; }
+  .magnets .answer { margin-top: 16px; padding: 14px 18px; background: #fff8d8; border-radius: 4px; font-size: 15px; border-left: 4px solid var(--mustard); }
+  .magnets .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+  .magnets .answer pre { margin: 12px 0 0; }
+
+  /* CHARACTER — anthropomorphized objects with avatar and speech */
+  .character { margin: 30px 0; padding: 20px 22px 22px; background: #fff; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--rose); position: relative; display: grid; grid-template-columns: 80px 1fr; gap: 18px; align-items: start; }
+  .character .avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--mustard); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 900; font-size: 30px; color: var(--ink); border: 2.5px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+  .character.tensor .avatar { background: var(--pytorch); color: #fff; }
+  .character.stride .avatar { background: var(--teal); color: #fff; }
+  .character.storage .avatar { background: var(--mustard); }
+  .character.dtype .avatar { background: var(--rose); color: #fff; }
+  .character.autograd .avatar { background: var(--terracotta); color: #fff; }
+  .character .who { font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-muted); font-weight: 700; margin: 0 0 4px; }
+  .character .name { font-family: 'Fraunces', serif; font-weight: 800; font-size: 22px; color: var(--ink); margin: 0 0 8px; line-height: 1; }
+  .character .says { font-family: 'Lora', serif; font-size: 16px; line-height: 1.55; color: var(--ink); margin: 0; font-style: italic; }
+  .character .says::before { content: '"'; font-family: 'Fraunces', serif; font-size: 28px; color: var(--terracotta); line-height: 0; vertical-align: -8px; margin-right: 4px; }
+  .character .says::after { content: '"'; font-family: 'Fraunces', serif; font-size: 28px; color: var(--terracotta); line-height: 0; vertical-align: -8px; margin-left: 2px; }
+  .character + .character { margin-top: -10px; }
+
+  /* BULLET POINTS — recap section with checklist vibe */
+  .bullet-points { margin: 48px 0 36px; padding: 32px 36px 36px; background: var(--paper-deep); border: 3px solid var(--ink); border-radius: 4px; position: relative; box-shadow: 6px 6px 0 var(--mustard); }
+  .bullet-points::before { content: "BULLET POINTS"; position: absolute; top: -16px; left: 28px; background: var(--ink); color: var(--mustard); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; padding: 6px 16px; letter-spacing: 0.2em; }
+  .bullet-points h3 { font-family: 'Caveat', cursive; font-size: 28px; color: var(--terracotta); margin: 0 0 16px; }
+  .bullet-points ul { list-style: none; padding-left: 0; margin: 0; }
+  .bullet-points ul li { position: relative; padding: 6px 0 6px 38px; font-size: 16px; line-height: 1.5; border-bottom: 1px dashed var(--rule); }
+  .bullet-points ul li:last-child { border-bottom: none; }
+  .bullet-points ul li::before { content: ""; position: absolute; left: 6px; top: 11px; width: 18px; height: 18px; border: 2px solid var(--terracotta); border-radius: 3px; background: #fff; }
+  .bullet-points ul li::after { content: "✓"; position: absolute; left: 9px; top: 6px; font-family: 'Caveat', cursive; font-size: 22px; font-weight: 700; color: var(--terracotta); }
+  .bullet-points ul li strong { color: var(--terracotta-deep); }
+  .bullet-points ul li code { font-size: 13px; }
+
+  /* MATCHING — "Who Does What?" two-column matching exercise */
+  .matching { margin: 36px 0; padding: 26px 28px 28px; background: #fff; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--teal); position: relative; }
+  .matching::before { content: "✦ WHO DOES WHAT?"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 6px; padding-bottom: 10px; border-bottom: 2px dotted var(--ink-soft); }
+  .matching p.intro { margin: 8px 0 18px; font-size: 15px; font-style: italic; color: var(--ink-soft); }
+  .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1.5px solid var(--ink); }
+  .match-grid > div { padding: 12px 14px; border-bottom: 1px solid var(--rule); font-size: 14.5px; vertical-align: middle; display: flex; align-items: center; }
+  .match-grid > div:nth-child(4n+1), .match-grid > div:nth-child(4n+2) { background: var(--paper-deep); }
+  .match-grid > div:nth-child(2n+1) { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--terracotta-deep); border-right: 1.5px dashed var(--ink); }
+  .match-grid > div:nth-child(2n) { color: var(--ink); }
+  .match-grid > div:nth-last-child(-n+2) { border-bottom: none; }
+  .match-grid .header { background: var(--ink) !important; color: #fff !important; font-family: 'IBM Plex Mono', monospace !important; font-size: 11px !important; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; padding: 10px 14px; border-bottom: none; }
+  .matching .answer { margin-top: 16px; padding: 14px 18px; background: var(--paper-deep); border-radius: 4px; font-size: 15px; }
+  .matching .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+
+  @media (max-width: 720px) {
+    .wrap { padding: 40px 22px 80px; }
+    .module-title { font-size: 40px; }
+    .twocol { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .character { grid-template-columns: 56px 1fr; gap: 12px; }
+    .character .avatar { width: 56px; height: 56px; font-size: 22px; }
+    .match-grid { grid-template-columns: 1fr 1fr; font-size: 13px; }
+  }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+<div class="module-header">
+  <div class="module-tag">Attention Trilogy · Module 47 · Final module · April 2026 currency</div>
+  <h1 class="module-title"><em>Attention Variants III:</em> kernels, implementation &amp; compositional architectures</h1>
+  <p class="module-sub">— Axes D and E of the four-axis taxonomy: FlashAttention 1-4 with the FA4 Blackwell pipeline, PagedAttention &amp; Ring Attention &amp; Star Attention for sequence parallelism, MoDA's depth attention (March 2026), and the hybrid composition patterns that close the course</p>
+</div>
+
+<p>This is the final module of the trilogy and of the course. M45 covered Axis A (semantic role) and Axis B (receptive field). M46 covered Axis C (head topology and KV-cache engineering). This module closes the taxonomy with <strong>Axis D — kernel implementation</strong> and <strong>Axis E — compositional architectures</strong>.</p>
+
+<p>Axis D is where attention <em>actually runs</em> on hardware. M22 introduced FlashAttention as a tiled IO-aware reformulation; the lineage from FA1 (2022) through FA4 (March 2026) tracks GPU architecture evolution — Ampere → Hopper → Blackwell — and how the kernel structure had to change at each step. PagedAttention, Ring Attention, Striped Attention, Star Attention, TokenRing, DeepSpeed Ulysses, USP — all are kernel-level innovations that compose with the head-topology choices from M46.</p>
+
+<p>Axis E is where attention <em>composes with the rest of the architecture</em>. The 2026 frontier reality (M44, M45, M46): no production model uses one attention mechanism uniformly. <strong>Hybrid stacks dominate</strong> — different layer types interleaved according to specific patterns. Qwen3-Next 3:1, Kimi Linear, Ling 2.5, Nemotron 3 Nano, DeepSeek V4 CSA+HCA, Llama 4 iRoPE, MoDA's depth attention (March 2026). Each represents a different composition strategy.</p>
+
+<p>By the end you'll know why FA4's warp specialization on Blackwell is fundamentally different from FA3 on Hopper, how PagedAttention eliminated the 60-80% KV cache fragmentation that plagued early vLLM, how Ring Attention enables multi-million-token contexts via sequence parallelism, why MoDA found that "depth attention" was the missing primitive for deep-stack scaling, and how to read any 2026 frontier architecture as a composition of choices on the five axes you've now learned.</p>
+
+<div class="keyidea">
+<strong>Axis D — kernel implementation</strong>: how attention runs on GPUs.
+
+<strong>FlashAttention lineage</strong>: <strong>FA1 (2022)</strong>: tiled exact attention; never materializes the N×N matrix; works on Ampere. <strong>FA2 (2023)</strong>: better work splitting across thread blocks; reduces non-matmul FLOPs. <strong>FA3 (2024)</strong>: warp specialization (producer/consumer warps) for Hopper async; FP8 support. <strong>FA4 (March 2026)</strong>: full Blackwell pipeline co-design via CuTeDSL; warp-specialized async MMA + softmax overlap; software-emulated exponentials via FMA polynomial approximation; conditional softmax rescaling (10× fewer rescaling ops); 2-CTA MMA up to 256×256×16; ~20% over cuDNN FA3.
+
+<strong>Sequence parallelism family</strong>: <strong>PagedAttention</strong> (vLLM, 2023): block-based KV cache layout eliminates 60-80% fragmentation, 24× throughput vs HuggingFace; <strong>Ring Attention</strong> (Liu et al., 2023): split sequence across devices, attention via ring communication, enables multi-million-token contexts; <strong>Striped Attention</strong> (MIT, 2023): causal-balanced ring for load balancing in causal attention; <strong>Star Attention</strong> (NVIDIA, 2024): block-sparse + global anchor, 11× speedup; <strong>TokenRing</strong> (SJTU, 2025): bidirectional ring with point-to-point comm; <strong>DeepSpeed Ulysses</strong>: extreme long-sequence; <strong>USP — Unified Sequence Parallel</strong> (Tencent): hybrid Ring + Ulysses.
+
+<strong>Axis E — compositional architectures</strong>: how attention layers compose.
+
+<strong>Hybrid layer-type stacks</strong>: <strong>Qwen3-Next/Qwen3.5</strong>: 3:1 Gated DeltaNet (linear) : Gated Attention (softmax). <strong>Kimi Linear</strong>: Kimi Delta Attention (linear) + MLA (softmax). <strong>Ling 2.5</strong> (1T MoE): Lightning Attention + MLA. <strong>Nemotron 3 Nano</strong>: Mamba-2 + sparse attention hybrid. <strong>DeepSeek V4</strong>: CSA (4× compress + Lightning Indexer) + HCA (128× compress dense) interleaved. <strong>Llama 4</strong>: iRoPE (3 RoPE layers + 1 NoPE layer interleaved, enables 10M context).
+
+<strong>Architectural primitives that compose with attention</strong>: <strong>MoDA — Mixture-of-Depths Attention</strong> (Zhu et al., March 2026, ByteDance Seed + HUST): each head attends to current-layer sequence KV AND depth KV from all preceding layers; mitigates information dilution in deep stacks; 97.3% of FA2 efficiency at 64K via chunk-visible kernel; +0.2 perplexity, +2.11% downstream, only 3.7% FLOPs overhead. <strong>KArAt — Kolmogorov-Arnold Attention</strong>: replaces softmax with learnable basis functions; vision-focused. <strong>Multi-Token Attention (MTA)</strong>: group normalization with depth-aware scaling. <strong>Differential Transformer</strong>: difference of two softmaxes for sharper attention patterns. <strong>Talking-Heads Attention</strong>: head mixing at the logit/weight level (incompatible with FlashAttention; superseded by IHA).
+
+<strong>The decision framework</strong>: given a workload + hardware + context length, identify the right composition: (1) primary attention mechanism (full softmax / hybrid linear-softmax / sparse); (2) head topology (GQA / MLA / IHA — M46); (3) position encoding (RoPE / iRoPE / YaRN); (4) kernel implementation (FA3 / FA4 / Ring / PagedAttention); (5) cache compression (TurboQuant / eviction / offloading — M46). All five compose. Production 2026 frontier models pick a point in the resulting 5D space; reading any model is identifying its coordinates.
+</div>
+
+<h2>Two new faces — closing the trilogy</h2>
+
+<div class="character" style="--c: #b85a6c;">
+  <div class="avatar" style="background: #b85a6c; color: #fff;">K</div>
+  <div>
+    <p class="who">Kernel</p>
+    <p class="name">"I'm where attention actually runs. Algorithms become hardware. The math from M22 onward is theoretical until it lands on tensor cores."</p>
+    <p class="says">Attention is just <code>softmax(QK^T)V</code> mathematically — it's the implementation that determines whether your model trains in 12 hours or 12 days. <strong>I'm the difference between cuDNN and Triton, FA3 and FA4, naive kernel and ~600 TFLOPs/s on B200</strong>. Each GPU generation shifted my priorities: Ampere needed tiled IO-aware (FA1 era); Hopper added async TMA + warp-group MMA (FA3); Blackwell broke the pipeline open with warp specialization, TMEM, and asymmetric scaling — Tensor Cores got 2.25× faster but SFU exponentials didn't, so FA4 had to redesign the pipeline so softmax overlaps MMA. <em>Reading FA4 source is reading what GPU kernel engineering looks like in 2026</em>: CuTeDSL Python that compiles to PTX, software-emulated exponentials via FMA polynomial approximation, 2-CTA MMA spanning paired thread blocks. I'm the practical bridge between abstract attention and the silicon that runs it.</p>
+  </div>
+</div>
+
+<div class="character" style="--c: #d4a017;">
+  <div class="avatar" style="background: #d4a017; color: #fff;">∁</div>
+  <div>
+    <p class="who">Composer</p>
+    <p class="name">"I arrange attention layers into stacks. Three linear, one softmax. Compress + sparse + sliding. Sequence + depth. The mix is the model."</p>
+    <p class="says">No 2026 frontier model uses uniform attention. <strong>Every flagship is a composition</strong> — Qwen3-Next is 3:1 GDN to softmax; Kimi Linear is KDA with MLA; Ling 2.5 is Lightning + MLA; Nemotron 3 Nano is Mamba + sparse; DeepSeek V4 alternates CSA and HCA; Llama 4 alternates RoPE and NoPE; MoDA adds depth attention to standard sequence attention. <em>I'm what determines model character at the architectural level</em>. The choice of "75% linear + 25% softmax" vs "alternating sparse + dense" vs "depth-augmented sequence" produces qualitatively different models even with identical training data and parameter count. Reading a 2026 model card means identifying what I do — which layer types, which ratios, which interleaving patterns. The five-axis taxonomy you've learned across M45-M47 lets you parse any composition I produce.</p>
+  </div>
+</div>
+
+<h2>Axis D part one: FlashAttention lineage</h2>
+
+<p>M22 introduced FlashAttention's foundational insight: standard attention is memory-bound, not compute-bound, on modern GPUs. The N×N attention matrix is read and written multiple times to HBM (slow); the actual matmul work is fast on tensor cores. FA's solution: tile the computation so each tile fits in SRAM (fast), use online softmax to avoid materializing the full attention matrix, and never write the N×N matrix to HBM.</p>
+
+<p>That algorithmic insight has remained constant; what changed across FA1 → FA4 is <strong>how the algorithm is mapped onto each new GPU architecture</strong>.</p>
+
+<h3>FA1 (2022) — Ampere/Hopper basics</h3>
+
+<p>The original. Tiled forward and backward passes; online softmax with running max and running sum; recomputation in the backward to avoid storing intermediate attention matrices. Targeted Ampere (A100) primarily. Achieved ~150 TFLOPs/s on A100 at sequence length 4K — substantial speedup over PyTorch's stock attention but well below the theoretical peak.</p>
+
+<h3>FA2 (2023) — better parallelism</h3>
+
+<p>The bottleneck FA1 missed: thread block parallelism. FA1 parallelized over batch and heads; FA2 added parallelism over sequence length blocks. Plus reduced non-matmul FLOPs (the rescaling ops in online softmax) and improved register usage. Result: ~230 TFLOPs/s on A100; closer to peak. FA2 became the production default through 2023-2024.</p>
+
+<h3>FA3 (2024) — Hopper async</h3>
+
+<p>The first FA generation specifically co-designed for a GPU architecture (Hopper / H100). Hopper introduced <strong>TMA (Tensor Memory Accelerator)</strong> for async global memory copies and <strong>WGMMA (Warp-Group MMA)</strong> for async tensor-core ops. FA3 introduced <strong>warp specialization</strong>:</p>
+
+<ul>
+  <li><strong>Producer warps</strong>: exclusively issue TMA loads from HBM into a circular shared-memory buffer. Asynchronous; one warp keeps the memory pipeline saturated.</li>
+  <li><strong>Consumer warps</strong>: exclusively execute WGMMA matmuls and softmax computation. They never issue memory loads.</li>
+</ul>
+
+<p>This is hardware-level parallelism — while consumers compute on stage <em>i</em>, producers load stage <em>i+1</em>. Plus FA3 added FP8 support and dynamic register reallocation (the <code>setmaxnreg</code> instruction). Achieved ~750 TFLOPs/s on H100 in FP8 — major leap.</p>
+
+<h3>FA4 (March 2026) — Blackwell co-design</h3>
+
+<p>Published March 5, 2026. The most significant architectural change since FA1 itself.</p>
+
+<p>The motivation: <strong>Blackwell's asymmetric hardware scaling</strong>. From H100 to B200, BF16 Tensor Core throughput jumped 2.25× (1 → 2.25 PFLOPs); but SFU throughput (used for exponentials in softmax) and shared memory bandwidth stayed approximately constant. <em>The bottleneck shifted</em>: Tensor Cores became so fast that softmax computation became the limit. FA3's pipeline (async loads + sync softmax) was no longer enough.</p>
+
+<p>FA4's four core innovations:</p>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 740 480" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs></defs>
+  <text x="370" y="22" font-size="14" font-weight="700" fill="#1a1612" text-anchor="middle">FA4 — Blackwell warp-specialized pipeline (March 2026)</text>
+
+  <!-- Innovation 1: Async pipeline -->
+  <g transform="translate(20, 50)">
+    <rect x="0" y="0" width="700" height="100" fill="#fff5d8" stroke="#d4a017" stroke-width="2"/>
+    <text x="20" y="22" font-size="12" font-weight="700" fill="#1a1612">① Redesigned async pipeline (warp specialization)</text>
+
+    <text x="20" y="42" font-size="10" fill="#1a1612">  Tensor cores got 2.25× faster on Blackwell, but SFUs/SMEM bandwidth did not. <tspan font-weight="700">Bottleneck shifts to softmax/transcendentals</tspan>.</text>
+
+    <text x="20" y="62" font-size="10" fill="#1a1612">  Solution: <tspan font-weight="700">Orchestration warps</tspan> manage async TMA loads + tcgen05.mma scheduling;</text>
+    <text x="20" y="76" font-size="10" fill="#1a1612">             <tspan font-weight="700">Compute warps</tspan> handle softmax in parallel.</text>
+    <text x="20" y="92" font-size="10" font-style="italic" fill="#c1502e">  Result: tile <em>i</em>'s MMA overlaps with tile <em>i-1</em>'s softmax — both tensor cores AND SFUs continuously occupied.</text>
+  </g>
+
+  <!-- Innovation 2: Software exp -->
+  <g transform="translate(20, 165)">
+    <rect x="0" y="0" width="700" height="100" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="2"/>
+    <text x="20" y="22" font-size="12" font-weight="700" fill="#1a1612">② Software-emulated exponentials</text>
+
+    <text x="20" y="42" font-size="10" fill="#1a1612">  The exp() in softmax normally routes through MUFU.EX2 (special function unit; limited throughput).</text>
+
+    <text x="20" y="62" font-size="10" fill="#1a1612">  FA4: implement exp() via <tspan font-weight="700">polynomial approximation on FMA units</tspan> (general-purpose float compute).</text>
+
+    <text x="20" y="86" font-size="10" font-style="italic" fill="#1f5f5b">  Result: exp moves to abundant FMA hardware instead of bottlenecked SFUs. Removes the softmax throughput cliff.</text>
+  </g>
+
+  <!-- Innovation 3: Conditional rescaling -->
+  <g transform="translate(20, 280)">
+    <rect x="0" y="0" width="700" height="80" fill="#fcecec" stroke="#c1502e" stroke-width="2"/>
+    <text x="20" y="22" font-size="12" font-weight="700" fill="#1a1612">③ Conditional softmax rescaling</text>
+
+    <text x="20" y="42" font-size="10" fill="#1a1612">  Online softmax normally rescales intermediate results EVERY time the running max changes.</text>
+
+    <text x="20" y="62" font-size="10" fill="#1a1612">  FA4: <tspan font-weight="700">skip rescaling unless the shift is large enough to threaten numerical stability</tspan>. ~10× fewer rescaling ops (Tri Dao, Hot Chips 2025).</text>
+  </g>
+
+  <!-- Innovation 4: 2-CTA -->
+  <g transform="translate(20, 375)">
+    <rect x="0" y="0" width="700" height="90" fill="#fff8a8" stroke="#1a1612" stroke-width="2"/>
+    <text x="20" y="22" font-size="12" font-weight="700" fill="#1a1612">④ 2-CTA MMA — paired CTAs share one large MMA</text>
+
+    <text x="20" y="42" font-size="10" fill="#1a1612">  Blackwell SM100: paired CTAs in same cluster jointly execute one UMMA spanning both TMEMs.</text>
+
+    <text x="20" y="62" font-size="10" fill="#1a1612">  Tile size up to <tspan font-weight="700">256×256×16</tspan>; reduces redundant data transfer per CTA. Implemented via tcgen05.mma.</text>
+
+    <text x="20" y="80" font-size="10" font-style="italic" fill="#c1502e">  Hardware constraint: requires SM100 (B200/GB200/B300). <em>Does NOT run on RTX 5090 (SM120)</em> — no UTC*/UTMA* opcodes.</text>
+  </g>
+</svg>
+</div>
+
+<p>Implementation: FA4 is fully written in <strong>CuTeDSL</strong>, a Python-based kernel DSL provided by NVIDIA's CUTLASS team. The Python source compiles directly to PTX/SASS through CuTeDSL's compiler. This is a substantial change — earlier FA versions used C++ + CUDA + CUTLASS templates. CuTeDSL is more concise and easier to modify; the tradeoff is requiring CUTLASS DSL infrastructure.</p>
+
+<p><strong>Performance results</strong>:</p>
+<ul>
+  <li>~600+ TFLOPs/s on B200 in FP8 — roughly <strong>20% over cuDNN FA3</strong> on Hopper-equivalent precision.</li>
+  <li>1.2-3.2× over Triton-based FlexAttention on compute-bound workloads (PyTorch announcement, March 2026).</li>
+  <li>Default for MLA prefill in vLLM (late 2025-2026 deployment).</li>
+</ul>
+
+<p><strong>Hardware availability</strong>: FA4 requires SM100 (Blackwell B200, GB200, GB300) or specifically-supported SM120 paths. <em>RTX 5090 (consumer Blackwell desktop, SM120) cannot run FA4</em> — the GB202 die lacks the UTMA*/UTC* opcodes that FA4's pipeline depends on. This is a meaningful production constraint: FA4 is for datacenter Blackwell, not consumer.</p>
+
+<p>FA4 forward-pass schematic in pseudocode:</p>
+
+<pre><code><span class="kw">def</span> <span class="fn">flash_attention_4_forward</span>(Q, K, V, block_size_M=<span class="num">128</span>, block_size_N=<span class="num">128</span>):
+    <span class="dq">"</span><span class="dq">"</span><span class="dq">"</span><span class="com">FA4 forward — Blackwell-specific warp-specialized pipeline (schematic).</span><span class="dq">"</span><span class="dq">"</span><span class="dq">"</span>
+    <span class="com"># Allocate output and softmax statistics</span>
+    O = torch.<span class="fn">zeros_like</span>(Q)
+    L = torch.<span class="fn">zeros</span>(Q.<span class="fn">shape</span>[:-<span class="num">1</span>], dtype=torch.float32)   <span class="com"># log-sum-exp</span>
+
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">0</span>, N, block_size_M):
+        <span class="com"># ORCHESTRATION WARPS: async load Q_i, K_j, V_j blocks via TMA into TMEM</span>
+        Q_i = <span class="fn">tma_load_async</span>(Q[i:i+block_size_M])
+
+        m_i = -<span class="fn">float</span>(<span class="str">"inf"</span>)   <span class="com"># running max</span>
+        l_i = <span class="num">0.0</span>             <span class="com"># running sum (log-sum-exp partial)</span>
+        O_i = torch.<span class="fn">zeros</span>(block_size_M, d_v)
+
+        <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(<span class="num">0</span>, N, block_size_N):
+            K_j = <span class="fn">tma_load_async</span>(K[j:j+block_size_N])
+            V_j = <span class="fn">tma_load_async</span>(V[j:j+block_size_N])
+
+            <span class="com"># 2-CTA MMA: paired CTAs jointly compute Q_i @ K_j^T (256x256 tile)</span>
+            S_ij = <span class="fn">tcgen05_mma_2cta</span>(Q_i, K_j.T)   <span class="com"># [block_M, block_N]</span>
+
+            <span class="com"># COMPUTE WARPS execute softmax IN PARALLEL with next MMA's load</span>
+            m_new = <span class="fn">max</span>(m_i, S_ij.<span class="fn">max</span>())
+
+            <span class="com"># CONDITIONAL RESCALING: skip if max didn't shift much</span>
+            <span class="kw">if</span> <span class="fn">abs</span>(m_new - m_i) &gt; <span class="fn">numerical_threshold</span>():
+                <span class="com"># FMA-polynomial exp instead of MUFU.EX2 SFU instruction</span>
+                rescale = <span class="fn">poly_exp</span>(m_i - m_new)
+                O_i = O_i * rescale
+                l_i = l_i * rescale
+
+            <span class="com"># Local exp via FMA polynomial approximation</span>
+            P_ij = <span class="fn">poly_exp</span>(S_ij - m_new)
+            l_i += P_ij.<span class="fn">sum</span>(dim=-<span class="num">1</span>)
+
+            <span class="com"># Update output: another 2-CTA MMA — overlaps with next iteration's load</span>
+            O_i += <span class="fn">tcgen05_mma_2cta</span>(P_ij, V_j)
+
+            m_i = m_new
+
+        O[i:i+block_size_M] = O_i / l_i.<span class="fn">unsqueeze</span>(-<span class="num">1</span>)
+        L[i:i+block_size_M] = m_i + torch.<span class="fn">log</span>(l_i)
+
+    <span class="kw">return</span> O, L</code></pre>
+
+<p>The lesson from the FA1 → FA4 lineage: <strong>each generation's bottleneck moved as the GPU evolved</strong>. FA1 was memory-bound (HBM bandwidth); FA2 was parallelism-limited; FA3 needed async to hide latency; FA4 had to engineer around Blackwell's asymmetric tensor-core-vs-SFU scaling. <em>Future FA5 will respond to whatever the next bottleneck is</em> — likely involving TMEM bandwidth or interconnect (NVLink) at multi-GPU scales.</p>
+
+<h2>Axis D part two: Sequence parallelism family</h2>
+
+<p>FlashAttention handles attention <em>within</em> a single GPU. At multi-million-token contexts, the sequence itself is too long for any single GPU's memory. Sequence parallelism splits the sequence across devices.</p>
+
+<h3>PagedAttention — eliminating KV cache fragmentation</h3>
+
+<p>vLLM (Kwon et al. 2023). Not strictly "sequence parallelism" but the foundation that enables all the rest.</p>
+
+<p>The problem PagedAttention solved: traditional KV cache implementations allocated contiguous memory per request, sized for the maximum possible context length. Most requests were shorter; the unused memory was wasted. <strong>60-80% fragmentation</strong> was typical pre-PagedAttention.</p>
+
+<p>The solution: <strong>block-based allocation, OS-style virtual memory</strong>. KV cache split into fixed-size blocks (typically 16 or 32 tokens). Each request gets allocated blocks dynamically as it grows. A block table maps logical positions to physical blocks. Result: fragmentation drops from 60-80% to under 4%.</p>
+
+<p>Production impact: <strong>~24× throughput improvement vs HuggingFace stock generation</strong>. Eliminated the largest single bottleneck in long-context serving.</p>
+
+<h3>Ring Attention — sequence-parallel attention across devices</h3>
+
+<p>Liu et al. (2023). When the sequence is too long for one device, split it into chunks across devices and have them rotate K, V around a ring during attention computation.</p>
+
+<pre><code><span class="kw">def</span> <span class="fn">ring_attention_forward</span>(Q_local, K_local, V_local, num_devices):
+    <span class="dq">"</span><span class="dq">"</span><span class="dq">"</span><span class="com">Ring Attention — sequence-parallel attention across devices.</span><span class="dq">"</span><span class="dq">"</span><span class="dq">"</span>
+    <span class="com"># Each device holds 1/num_devices of the sequence (Q, K, V)</span>
+    O_local = torch.<span class="fn">zeros_like</span>(Q_local)
+    K_recv, V_recv = K_local, V_local
+
+    <span class="kw">for</span> step <span class="kw">in</span> <span class="fn">range</span>(num_devices):
+        <span class="com"># Compute partial attention with current K, V chunk</span>
+        partial_O = <span class="fn">flash_attention</span>(Q_local, K_recv, V_recv)
+        O_local = <span class="fn">accumulate</span>(O_local, partial_O)   <span class="com"># online softmax merge</span>
+
+        <span class="com"># Send K, V to next device in ring; receive from previous</span>
+        K_recv, V_recv = <span class="fn">ring_send_recv</span>(K_recv, V_recv)
+
+    <span class="kw">return</span> O_local</code></pre>
+
+<p>Each device computes partial attention with each rotating K, V chunk; the partial outputs are merged via online softmax. Total compute is the same as full attention (each device sees all K, V eventually); the win is that <em>no single device needs to store the full sequence</em>.</p>
+
+<p>Communication cost: O(N × d) per ring step × num_devices steps = O(N × d × num_devices) total — but overlapped with computation. With careful tiling, communication is fully hidden.</p>
+
+<p>Production use: enables 1M-10M token contexts across multi-GPU systems. The basis for most long-context training in 2024-2026.</p>
+
+<h3>Striped Attention — causal-balanced ring</h3>
+
+<p>MIT (2023). Ring Attention has a load imbalance problem with <strong>causal attention</strong>: in a causal mask, later sequence positions need to attend to MORE previous positions than earlier ones. Naive ring assigns later positions to specific devices, which means those devices do more work.</p>
+
+<p>Striped Attention's fix: <strong>interleave sequence positions across devices in a striped pattern</strong> rather than chunked. Now each device holds a roughly balanced number of "early" and "late" positions; load is balanced across the ring.</p>
+
+<p>Result: ~2× speedup over naive Ring Attention for causal training at long context. Used in some long-context training pipelines.</p>
+
+<h3>Star Attention — block-sparse with global anchor</h3>
+
+<p>NVIDIA (2024). Treats inference differently from training. For inference: split context into blocks; each block attends locally + to a small global "anchor" set. Anchor tokens are typically the first few tokens of the sequence (system prompt, query) plus selected attention sinks.</p>
+
+<p>Result: <strong>~11× speedup for long-context inference</strong> at quality matching full attention. Especially effective for retrieval-style tasks where you have a long document and a short query.</p>
+
+<p>Production use: inference frameworks for very-long-context retrieval and Q&A.</p>
+
+<h3>TokenRing — bidirectional point-to-point</h3>
+
+<p>SJTU (2025). Refinement of Ring Attention. Standard Ring Attention uses unidirectional ring communication (each device sends to next, receives from previous). TokenRing uses bidirectional point-to-point — each device sends partial results to other devices directly based on need.</p>
+
+<p>Result: better utilization of NVLink bandwidth on systems with rich interconnect (B200 NVL72). Up to 1.5× speedup over unidirectional Ring Attention at 1M+ contexts.</p>
+
+<h3>DeepSpeed Ulysses — extreme long-sequence parallelism</h3>
+
+<p>Microsoft DeepSpeed. Different parallelism strategy than Ring: instead of rotating K, V around devices, <strong>partition heads across devices</strong> during attention. The all-to-all communication pattern means each device computes a subset of heads on the full sequence.</p>
+
+<p>Trade-off vs Ring: Ring scales better with sequence length (linear comm); Ulysses scales better with number of devices. The two are complementary.</p>
+
+<h3>USP — Unified Sequence Parallel</h3>
+
+<p>Tencent (2024). Combines Ring Attention and Ulysses in a hybrid pattern: Ulysses-parallel within node (using fast NVLink), Ring-parallel across nodes (using slower InfiniBand). Captures benefits of both.</p>
+
+<p>Production use: large-scale training infrastructure where sequence length AND number of devices both matter.</p>
+
+<h2>Axis E part one: Hybrid layer-type compositions</h2>
+
+<p>The Axis E reality from M44, M45, M46: <strong>no 2026 frontier model uses uniform attention</strong>. Each is a specific composition of layer types.</p>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 740 480" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs></defs>
+  <text x="370" y="22" font-size="14" font-weight="700" fill="#1a1612" text-anchor="middle">Hybrid composition patterns in 2026 frontier models</text>
+
+  <!-- Qwen3-Next -->
+  <g transform="translate(20, 50)">
+    <rect x="0" y="0" width="340" height="120" fill="#fff5d8" stroke="#d4a017" stroke-width="2"/>
+    <text x="20" y="20" font-size="12" font-weight="700" fill="#1a1612">Qwen3-Next / Qwen3.5 — 3:1 GDN to softmax</text>
+    <text x="20" y="38" font-size="10" fill="#1a1612">Layers 0-2: Gated DeltaNet (linear); Layer 3: Gated Attention (softmax);</text>
+    <text x="20" y="52" font-size="10" fill="#1a1612">Layers 4-6: GDN; Layer 7: Gated Attention; ...</text>
+
+    <g transform="translate(20, 60)">
+      <rect x="0" y="0" width="50" height="20" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+      <text x="25" y="14" text-anchor="middle" font-size="8" fill="#1a1612">GDN</text>
+      <rect x="55" y="0" width="50" height="20" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+      <text x="80" y="14" text-anchor="middle" font-size="8" fill="#1a1612">GDN</text>
+      <rect x="110" y="0" width="50" height="20" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+      <text x="135" y="14" text-anchor="middle" font-size="8" fill="#1a1612">GDN</text>
+      <rect x="165" y="0" width="50" height="20" fill="#fcecec" stroke="#c1502e" stroke-width="0.5"/>
+      <text x="190" y="14" text-anchor="middle" font-size="8" fill="#1a1612">Attn</text>
+      <rect x="220" y="0" width="50" height="20" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+      <text x="245" y="14" text-anchor="middle" font-size="8" fill="#1a1612">GDN</text>
+      <text x="280" y="14" font-size="8" fill="#1a1612">...</text>
+    </g>
+
+    <text x="20" y="106" font-size="9" font-style="italic" fill="#c1502e">75% linear (cheap), 25% softmax (exact recall)</text>
+  </g>
+
+  <!-- Kimi Linear -->
+  <g transform="translate(380, 50)">
+    <rect x="0" y="0" width="340" height="120" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="2"/>
+    <text x="20" y="20" font-size="12" font-weight="700" fill="#1a1612">Kimi Linear — KDA (channel-wise) + MLA</text>
+    <text x="20" y="38" font-size="10" fill="#1a1612">Linear-attention layers use Kimi Delta Attention;</text>
+    <text x="20" y="52" font-size="10" fill="#1a1612">Full-attention layers use MLA (M46) for KV compression.</text>
+
+    <g transform="translate(20, 60)">
+      <rect x="0" y="0" width="40" height="20" fill="#fff8a8" stroke="#1a1612" stroke-width="0.5"/>
+      <text x="20" y="14" text-anchor="middle" font-size="8" fill="#1a1612">KDA</text>
+      <rect x="45" y="0" width="40" height="20" fill="#fff8a8" stroke="#1a1612" stroke-width="0.5"/>
+      <text x="65" y="14" text-anchor="middle" font-size="8" fill="#1a1612">KDA</text>
+      <rect x="90" y="0" width="40" height="20" fill="#fff8a8" stroke="#1a1612" stroke-width="0.5"/>
+      <text x="110" y="14" text-anchor="middle" font-size="8" fill="#1a1612">KDA</text>
+      <rect x="135" y="0" width="40" height="20" fill="#ffd5dc" stroke="#b85a6c" stroke-width="0.5"/>
+      <text x="155" y="14" text-anchor="middle" font-size="8" fill="#1a1612">MLA</text>
+      <rect x="180" y="0" width="40" height="20" fill="#fff8a8" stroke="#1a1612" stroke-width="0.5"/>
+      <text x="200" y="14" text-anchor="middle" font-size="8" fill="#1a1612">KDA</text>
+      <text x="225" y="14" font-size="8" fill="#1a1612">...</text>
+    </g>
+
+    <text x="20" y="106" font-size="9" font-style="italic" fill="#1f5f5b">Compounds linear efficiency with MLA's compressed KV cache</text>
+  </g>
+
+  <!-- Ling 2.5 -->
+  <g transform="translate(20, 185)">
+    <rect x="0" y="0" width="340" height="100" fill="#fcecec" stroke="#c1502e" stroke-width="2"/>
+    <text x="20" y="20" font-size="12" font-weight="700" fill="#1a1612">Ling 2.5 (1T MoE) — Lightning + MLA</text>
+    <text x="20" y="38" font-size="10" fill="#1a1612">Linear: Lightning Attention; Full: MLA.</text>
+    <text x="20" y="52" font-size="10" fill="#1a1612">Same hybrid pattern as Kimi Linear with different linear variant.</text>
+    <text x="20" y="86" font-size="9" font-style="italic" fill="#c1502e">Trillion-parameter open-weight; demonstrates hybrid scales to 1T+</text>
+  </g>
+
+  <!-- Nemotron 3 Nano -->
+  <g transform="translate(380, 185)">
+    <rect x="0" y="0" width="340" height="100" fill="#fff8a8" stroke="#1a1612" stroke-width="2"/>
+    <text x="20" y="20" font-size="12" font-weight="700" fill="#1a1612">Nemotron 3 Nano — Mamba-2 + sparse softmax</text>
+    <text x="20" y="38" font-size="10" fill="#1a1612">Most layers: Mamba-2 SSM blocks (M33, M45);</text>
+    <text x="20" y="52" font-size="10" fill="#1a1612">Periodic layers: sparse self-attention.</text>
+    <text x="20" y="86" font-size="9" font-style="italic" fill="#c1502e">NVIDIA's bet: SSM as primary, attention as exception</text>
+  </g>
+
+  <!-- DeepSeek V4 -->
+  <g transform="translate(20, 300)">
+    <rect x="0" y="0" width="340" height="100" fill="#ffd5dc" stroke="#b85a6c" stroke-width="2"/>
+    <text x="20" y="20" font-size="12" font-weight="700" fill="#1a1612">DeepSeek V4 — CSA + HCA alternating</text>
+    <text x="20" y="38" font-size="10" fill="#1a1612">CSA: 4× compress + Lightning Indexer FP4 + sparse;</text>
+    <text x="20" y="52" font-size="10" fill="#1a1612">HCA: 128× compress + dense; alternating.</text>
+    <text x="20" y="86" font-size="9" font-style="italic" fill="#b85a6c">27% FLOPs / 10% KV vs V3.2 at 1M context (M44)</text>
+  </g>
+
+  <!-- Llama 4 -->
+  <g transform="translate(380, 300)">
+    <rect x="0" y="0" width="340" height="100" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="2"/>
+    <text x="20" y="20" font-size="12" font-weight="700" fill="#1a1612">Llama 4 — iRoPE (3 RoPE + 1 NoPE per 4)</text>
+    <text x="20" y="38" font-size="10" fill="#1a1612">RoPE layers: chunked attention with rotary;</text>
+    <text x="20" y="52" font-size="10" fill="#1a1612">NoPE layers: full causal attention, no positional encoding.</text>
+    <text x="20" y="86" font-size="9" font-style="italic" fill="#1f5f5b">Enables 10M context generalization from 256K training (M44)</text>
+  </g>
+
+  <!-- The pattern -->
+  <g transform="translate(20, 415)">
+    <rect x="0" y="0" width="700" height="50" fill="#fff5d8" stroke="#d4a017" stroke-width="2"/>
+    <text x="350" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1612">The general pattern: each model picks 2-3 layer types and interleaves them in a specific ratio</text>
+    <text x="350" y="40" text-anchor="middle" font-size="10" font-style="italic" fill="#1a1612">"Composition is the architecture" — uniform stacks are an artifact of 2017-2024 transformers</text>
+  </g>
+</svg>
+</div>
+
+<p>Three observations from the hybrid landscape:</p>
+
+<ul>
+  <li><strong>The 75:25 ratio has emerged as approximately optimal</strong>. Qwen3-Next (3:1 GDN to attention), Llama 4 (3 RoPE to 1 NoPE), Mamba-Transformer hybrids — all gravitate toward roughly this ratio. Why: linear/cheap layers carry most context aggregation; expensive layers provide exact recall + precision when needed.</li>
+  <li><strong>The "expensive" layer type increasingly is itself compressed</strong>. Kimi Linear and Ling 2.5 use MLA in their full-attention layers, not vanilla MHA. The full-attention layer is "expensive" only relative to linear attention; it's still cache-compressed via MLA.</li>
+  <li><strong>The compositional approach is the dominant 2026 pattern</strong>. Pure-architecture stacks (Llama 3 = all GQA-MHA; pure Mamba) remain in production but represent simplified or specialized cases. The frontier is hybrid.</li>
+</ul>
+
+<h2>Axis E part two: New compositional primitives</h2>
+
+<h3>MoDA — Mixture-of-Depths Attention (March 2026)</h3>
+
+<p>Zhu et al., ByteDance Seed + Huazhong University. The most interesting Axis E entry of 2026.</p>
+
+<p>The problem MoDA addresses: <strong>signal degradation in deep stacks</strong>. As LLMs scale to 80+ layers, informative features formed in shallow layers get diluted by repeated residual updates — the "information dilution" problem. By the time information reaches deeper layers, important signals are obscured.</p>
+
+<p>MoDA's mechanism: <strong>each attention head attends to BOTH (a) sequence KV pairs at the current layer AND (b) "depth KV pairs" from preceding layers at the same token position</strong>. The query jointly attends to sequence and depth information under a single softmax normalization.</p>
+
+<pre><code><span class="kw">def</span> <span class="fn">moda_forward</span>(x, layer_idx, depth_KV_history, n_heads):
+    <span class="dq">"</span><span class="dq">"</span><span class="dq">"</span><span class="com">MoDA forward — query attends to current sequence KV + depth KV from preceding layers.</span>
+<span class="com">    depth_KV_history: list of (K_l, V_l) from layers 0 .. layer_idx-1 at SAME token positions.</span><span class="dq">"</span><span class="dq">"</span><span class="dq">"</span>
+    Q = x @ W_Q
+    K_seq = x @ W_K   <span class="com"># Standard sequence keys at current layer</span>
+    V_seq = x @ W_V
+
+    <span class="com"># Concatenate sequence KV with depth KV from all preceding layers</span>
+    K_all = [K_seq]
+    V_all = [V_seq]
+    <span class="kw">for</span> K_l, V_l <span class="kw">in</span> depth_KV_history:
+        K_all.<span class="fn">append</span>(K_l)   <span class="com"># Same token positions, different layers</span>
+        V_all.<span class="fn">append</span>(V_l)
+
+    <span class="com"># Stack: K_combined has shape [N, (1 + L_prev) * d]</span>
+    K_combined = torch.<span class="fn">cat</span>(K_all, dim=-<span class="num">2</span>)
+    V_combined = torch.<span class="fn">cat</span>(V_all, dim=-<span class="num">2</span>)
+
+    <span class="com"># Single unified attention with single softmax over sequence+depth</span>
+    scores = Q @ K_combined.<span class="fn">transpose</span>(-<span class="num">2</span>, -<span class="num">1</span>) / math.<span class="fn">sqrt</span>(d_head)
+    output = F.<span class="fn">softmax</span>(scores, dim=-<span class="num">1</span>) @ V_combined
+    <span class="kw">return</span> output</code></pre>
+
+<p>Architecturally, MoDA sits between two extremes:</p>
+<ul>
+  <li><strong>Depth residual</strong> (standard transformers): each layer adds to a single residual stream; depth information is mixed but undifferentiated.</li>
+  <li><strong>Depth dense</strong>: every layer attends to every preceding layer densely; full cross-layer attention but expensive.</li>
+  <li><strong>MoDA (depth attention)</strong>: data-dependent depth retrieval via attention scores, so the model picks which historical layers to attend to. Efficient AND expressive.</li>
+</ul>
+
+<p><strong>The hardware-efficient algorithm</strong>: naive MoDA has non-contiguous memory access patterns (depth KV from different layers at same token positions vs sequence KV at current layer). The MoDA paper introduces a <strong>chunk-aware layout + group-aware indexing</strong> kernel that resolves this. Result: <strong>97.3% of FlashAttention-2's efficiency at 64K sequence length</strong>.</p>
+
+<p><strong>Empirical results</strong> (1.5B parameters):</p>
+<ul>
+  <li>+0.2 average perplexity improvement across 10 validation benchmarks vs OLMo2 baseline.</li>
+  <li>+2.11% average performance on 10 downstream tasks.</li>
+  <li>3.7% additional FLOPs only — <em>highly favorable cost/benefit</em>.</li>
+  <li>Works best with post-norm rather than pre-norm layer normalization.</li>
+  <li>Reduces "attention sink" behavior (the empirical phenomenon where models put excess attention on early tokens).</li>
+</ul>
+
+<p><strong>Production status</strong>: April 2026, MoDA paper is published with code on GitHub (hustvl/MoDA). Triton kernel and chunk-visible variants released. No frontier production model has adopted it yet (paper is one month old) but the favorable cost/benefit ratio + FlashAttention-compatible kernel suggest it could be incorporated quickly.</p>
+
+<h3>KArAt — Kolmogorov-Arnold Attention</h3>
+
+<p>Replaces softmax with learnable basis-function compositions inspired by the Kolmogorov-Arnold representation theorem. Vision-focused. Each attention "score function" is a learnable composition of univariate functions.</p>
+
+<p>Production status: research-stage. Vision benchmarks show modest improvements; language model adoption hasn't happened yet. Promising direction if learnable score functions prove generalizable.</p>
+
+<h3>Multi-Token Attention (MTA)</h3>
+
+<p>Allows queries to attend to multiple tokens jointly via group normalization with depth-aware scaling. Still being explored; partial overlap with MoDA's depth attention.</p>
+
+<h3>Differential Transformer</h3>
+
+<p>Computes attention as the <strong>difference of two softmaxes</strong>. The intuition: standard softmax produces overly diffuse attention; subtracting two softmaxes with different temperatures sharpens the focus. Empirical: better noise rejection on long contexts.</p>
+
+<p>Production status: published research, not yet in frontier production. The mechanism could combine with MLA / GQA but kernel support lags.</p>
+
+<h3>Talking-Heads Attention</h3>
+
+<p>Shazeer (2020). Mixes attention information at the level of attention logits/weights — between query-key dot products and the softmax. Mathematically more expressive than MHA but <strong>incompatible with FlashAttention</strong> because the mixing happens inside the attention operator. Largely <strong>superseded by IHA (M46)</strong> which achieves similar expressivity gains with FlashAttention compatibility.</p>
+
+<h2>The five-axis decision framework</h2>
+
+<p>Putting it all together. Given a workload, hardware, and context-length target, a 2026 production architecture is identified by choices on five axes:</p>
+
+<div class="table-wrap">
+<table>
+<caption>The five-axis decision framework — pick a coordinate on each</caption>
+<thead><tr><th>Axis</th><th>Question</th><th>Choices</th><th>Module</th></tr></thead>
+<tbody>
+<tr><td><strong>A — Semantic role / normalization</strong></td><td>Self vs cross? Softmax or linear?</td><td>self / cross; softmax / linear (Mamba-3, GDN, KDA, Lightning)</td><td>M45</td></tr>
+<tr><td><strong>B — Receptive field</strong></td><td>Where does each query attend?</td><td>full / sliding window / sparse trainable (NSA, MoBA, DSA, XAttention)</td><td>M45</td></tr>
+<tr><td><strong>C — Head topology</strong></td><td>How are Q, K, V structured across heads?</td><td>MHA / MQA / GQA / MLA / IHA / Slim Attention</td><td>M46</td></tr>
+<tr><td><strong>D — Kernel implementation</strong></td><td>How does it run on hardware?</td><td>FA1-4 / PagedAttention / Ring / Striped / Star / Ulysses / USP</td><td>M47 (this)</td></tr>
+<tr><td><strong>E — Compositional architecture</strong></td><td>How do attention layers compose?</td><td>Uniform / hybrid (3:1, alternating) / depth-augmented (MoDA) / interleaved (iRoPE, CSA+HCA)</td><td>M47 (this)</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Worked examples:</p>
+
+<div class="table-wrap">
+<table>
+<caption>Reading 2026 frontier models as five-axis coordinates</caption>
+<thead><tr><th>Model</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr></thead>
+<tbody>
+<tr><td><strong>Llama 4 Scout</strong></td><td>Self causal softmax</td><td>Full + chunked iRoPE</td><td>GQA</td><td>FA3/FA4 + PagedAttention</td><td>iRoPE 3:1 RoPE/NoPE</td></tr>
+<tr><td><strong>DeepSeek V4-Pro</strong></td><td>Self causal softmax</td><td>Hybrid CSA+HCA</td><td>MLA</td><td>FA4 + DeepGEMM</td><td>CSA+HCA alternating</td></tr>
+<tr><td><strong>GLM-5.1</strong></td><td>Self causal softmax</td><td>DSA sparse</td><td>MLA-style</td><td>FA4 + custom</td><td>DSA throughout</td></tr>
+<tr><td><strong>Qwen3-Next</strong></td><td>Self causal hybrid linear/softmax</td><td>Full in attn layers</td><td>GQA + GDN linear layers</td><td>FA3 + custom GDN kernel</td><td>3:1 GDN to softmax</td></tr>
+<tr><td><strong>Kimi Linear</strong></td><td>Self causal hybrid</td><td>Full</td><td>MLA + KDA linear layers</td><td>FA4 + custom</td><td>KDA + MLA hybrid</td></tr>
+<tr><td><strong>Ling 2.5</strong></td><td>Self causal hybrid</td><td>Full</td><td>MLA + Lightning linear</td><td>FA4 + custom</td><td>Lightning + MLA</td></tr>
+<tr><td><strong>Nemotron 3 Nano</strong></td><td>Hybrid SSM/softmax</td><td>Sparse</td><td>Mixed (Mamba blocks + attention)</td><td>Custom</td><td>Mamba-Transformer hybrid</td></tr>
+<tr><td><strong>Mistral Large</strong></td><td>Self causal softmax</td><td>Sliding window</td><td>GQA</td><td>FA3 + PagedAttention</td><td>Uniform sliding</td></tr>
+<tr><td><strong>MiniMax M2.5</strong></td><td>Self causal softmax</td><td>Full</td><td>GQA</td><td>FA3 + PagedAttention</td><td>Uniform classic</td></tr>
+<tr><td><strong>(Future) MoDA-based</strong></td><td>Self causal softmax</td><td>Full</td><td>GQA / MLA</td><td>MoDA Triton kernel</td><td>Sequence + depth attention</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Reading these coordinates is the architectural-literacy skill the trilogy was built to develop. Any 2026 model card can be parsed this way; new entries (Llama 5, DeepSeek V5, GPT-6) will fit on these axes, possibly extending one or more.</p>
+
+<h2>Production deployment recipes</h2>
+
+<p>Concrete recipes for common 2026 deployment scenarios:</p>
+
+<h3>Scenario 1 — Frontier MoE training, 1T+ parameters, 1M context</h3>
+
+<ol>
+  <li><strong>Axis A</strong>: hybrid linear-softmax (3:1 ratio); Lightning Attention or KDA for linear layers.</li>
+  <li><strong>Axis B</strong>: full attention in softmax layers; CSA+HCA hybrid sparse for ultra-long-context efficiency.</li>
+  <li><strong>Axis C</strong>: MLA in softmax layers; >100B threshold met (M46).</li>
+  <li><strong>Axis D</strong>: FA4 (Blackwell B200/GB200/B300); Ring Attention + DeepSpeed Ulysses for sequence parallelism.</li>
+  <li><strong>Axis E</strong>: alternating sparse + dense pattern; possible MoDA depth attention if validation shows benefit.</li>
+</ol>
+
+<p>Reference: DeepSeek V4-Pro, Ling 2.5.</p>
+
+<h3>Scenario 2 — Open-weight 30-100B, 256K context</h3>
+
+<ol>
+  <li><strong>Axis A</strong>: hybrid linear-softmax (3:1); GDN linear layers.</li>
+  <li><strong>Axis B</strong>: full attention in softmax layers (no sparse needed at this scale).</li>
+  <li><strong>Axis C</strong>: GQA (under 100B threshold).</li>
+  <li><strong>Axis D</strong>: FA3 (Hopper) or FA4 (Blackwell); PagedAttention; TurboQuant 3-bit KV cache for serving.</li>
+  <li><strong>Axis E</strong>: 3:1 hybrid; uniform within each layer type.</li>
+</ol>
+
+<p>Reference: Qwen3-Next/3.5/3.6.</p>
+
+<h3>Scenario 3 — 7B for edge/single-GPU deployment</h3>
+
+<ol>
+  <li><strong>Axis A</strong>: pure softmax (simpler engineering; quality lost is small at this scale).</li>
+  <li><strong>Axis B</strong>: full attention or sliding window if context > 32K.</li>
+  <li><strong>Axis C</strong>: GQA-8.</li>
+  <li><strong>Axis D</strong>: FA3 + PagedAttention; TurboQuant 3-bit if memory-constrained.</li>
+  <li><strong>Axis E</strong>: uniform.</li>
+</ol>
+
+<p>Reference: Llama 3 8B-equivalent deployments.</p>
+
+<h3>Scenario 4 — Long-context inference on existing pretrained model</h3>
+
+<ol>
+  <li>Head topology fixed by the pretrained model.</li>
+  <li><strong>Apply XAttention</strong> (M45) for plug-and-play sparse acceleration.</li>
+  <li><strong>Apply TurboQuant 3-bit</strong> KV quantization (M46).</li>
+  <li><strong>Apply Expected Attention or H2O</strong> KV eviction if context > 128K.</li>
+  <li><strong>InfiniGen offloading</strong> if GPU memory still insufficient.</li>
+</ol>
+
+<p>The pattern: <em>can't change architecture → stack inference-time compressions</em>.</p>
+
+<div class="ndq">
+<h4>About Axes D and E</h4>
+
+<p class="q">Why does FA4 use software-emulated exponentials? Isn't FMA polynomial approximation slower than the hardware exp instruction?</p>
+<p class="a">Three nested reasons. (1) <strong>Throughput, not latency</strong>. FMA polynomial exp has higher latency per operation than MUFU.EX2 (the hardware exp instruction), but FMA units have far higher aggregate throughput across the SM than the SFU. When attention is bottlenecked on softmax exp, the SFU becomes the limiting resource — even with high latency per op, FMA wins on aggregate throughput. (2) <strong>Asymmetric scaling on Blackwell</strong>. From H100 to B200, Tensor Core throughput jumped 2.25× but SFU throughput stayed flat. This means the relative cost of routing through SFU went up; FMA-based exp became the better choice. (3) <strong>Pipeline integration</strong>. SFU instructions create a different latency profile than FMA, complicating warp-specialized pipelines. FMA-based exp integrates cleanly with the rest of the pipeline. <em>FA3 used SFU; FA4's redesign treats SFU as a bottleneck to engineer around</em>. The lesson: hardware evolution drives algorithmic redesign even when the underlying math is identical.</p>
+
+<p class="q">If hybrid stacks (3:1 linear:softmax) are the winning pattern, why does Llama 4 still use uniform softmax?</p>
+<p class="a">Three reasons that compound. (1) <strong>Engineering risk</strong>. Hybrid stacks introduce complexity — different layer types, different kernels, different optimizer dynamics. Llama 4 chose to deliver via well-understood architecture (full softmax + iRoPE position encoding) rather than introduce hybrid attention. The bet: simpler architecture is easier to scale and ship. (2) <strong>iRoPE solves a different problem</strong>. Llama 4's position-encoding innovation (3 RoPE + 1 NoPE) addresses length generalization (10M context from 256K training). Hybrid linear-softmax doesn't directly help with that. The two innovations are in different design dimensions. (3) <strong>Context limits matter for the choice</strong>. At 1M-10M tokens, the savings from linear attention layers are huge (linear vs quadratic). At 32K-128K, the savings are smaller; the engineering cost of hybrids may not pay off. Llama 4's targets emphasize length, not just efficiency. <em>The "winning pattern" isn't universal — it's specific to certain workloads</em>. Llama 4 deliberately chose differently. By Q3-Q4 2026, expect Llama 5 to adopt some hybrid pattern; the convergence will continue but specific labs will deviate based on their priorities.</p>
+
+<p class="q">Is MoDA more important architecturally than IHA, or vice versa? They both came out within weeks of each other.</p>
+<p class="a">They solve different problems and could compose. <strong>IHA (M46, Feb 2026)</strong>: addresses head isolation in attention; pseudo-heads enable cross-head mixing within a layer. Improves multi-step reasoning specifically. <strong>MoDA (March 2026)</strong>: addresses signal degradation across depth; queries attend to KV from preceding layers. Improves deep-stack scaling specifically. <em>They're orthogonal contributions</em> — IHA is about cross-head expressivity within layers; MoDA is about cross-layer attention. A model could (and likely will) use both: IHA for head expressivity inside each attention layer, MoDA for depth-attention augmentation across layers. Forecast: by Q4 2026 / Q1 2027, expect frontier models to incorporate one or both. The "more important" framing is wrong — they're complementary mechanisms targeting different inefficiencies. The deeper observation: <em>2026 is producing architectural primitives at a faster rate than they can be incorporated into production</em>. The research-to-production lag of 6-9 months means the frontier of April 2026 reflects mid-2025 research; Feb-March 2026 contributions show up in late 2026 / early 2027 frontier models.</p>
+
+<p class="q">When should I use Ring Attention vs DeepSpeed Ulysses for sequence parallelism?</p>
+<p class="a">Different scaling regimes:</p>
+<p><strong>Use Ring Attention when</strong>: (a) sequence length is the primary scaling dimension (1M-100M tokens); (b) number of devices is moderate (8-64); (c) your interconnect is slower (cross-node InfiniBand). Ring's communication scales O(N × d) per ring step; better for long sequences with limited devices.</p>
+<p><strong>Use DeepSpeed Ulysses when</strong>: (a) device count is the primary scaling dimension (256-1024+ GPUs); (b) sequence length is moderate (32K-256K); (c) your interconnect is fast (NVLink). Ulysses uses all-to-all; better for many devices with fast interconnect.</p>
+<p><strong>Use USP (Unified Sequence Parallel) when</strong>: you need both — long sequences (1M+) AND many devices (256+). USP applies Ulysses within node + Ring across nodes; captures the strengths of both. Tencent's production workloads use this pattern.</p>
+<p><strong>Use Star Attention when</strong>: the workload is inference-heavy, retrieval-style (long document + short query). Star's block-sparse + global anchor pattern is optimized for this access pattern; ~11× speedup vs full attention.</p>
+<p>The practical reality: most teams don't make this choice from scratch. Frameworks (Megatron-LM, DeepSpeed, ColossalAI) bundle specific sequence parallelism strategies; choosing the framework chooses the strategy. <em>Custom sequence parallelism is for frontier labs; everyone else uses what's bundled with their training framework</em>.</p>
+
+<p class="q">Where do attention variants go in 2027? What's the next architectural primitive?</p>
+<p class="a">Three plausible directions, ranked by likelihood:</p>
+<p>(1) <strong>Most likely — composition of existing primitives</strong>. The 2026 contributions (IHA, MoDA, NSA, MLA, hybrid linear-softmax) haven't been jointly composed yet. The frontier 2027 model probably combines: hybrid linear/softmax stack (Qwen3.5-style) + MLA + IHA + MoDA + NSA. Each primitive is well-understood individually; the engineering challenge is making them all work together. <em>The expressivity gains compound; the implementation complexity adds up</em>.</p>
+<p>(2) <strong>Possible — sub-FP4 attention</strong>. KV cache compression hit 1.5-2 bit floor (M46). Attention computation at FP4 is partial in 2026 (DeepSeek V4 indexer); fully FP4 attention is the next step. Requires kernel-level work (FA5?) and quality validation, but the precision-quality curve suggests it's feasible.</p>
+<p>(3) <strong>Less likely but high-impact — fundamentally new mechanism</strong>. Mamba was the last "fundamentally new" sequence model (2023). Since then, all advances have been refinements (Mamba-2, Mamba-3, GDN, KDA) or compositions. A genuinely new primitive would change the field. Wild cards: associative scan over attention; hierarchical attention over arbitrary token clusters; learned sparsity that adapts at inference time. None of these have a clear winner yet.</p>
+<p>The deeper observation: <em>attention is becoming a design space rather than a single mechanism</em>. The five axes you've learned in M45-M47 will likely persist; new entries on each axis will emerge. The framework outlasts the specific contributions.</p>
+
+<p class="q">How does the five-axis taxonomy connect to the rest of the course?</p>
+<p class="a">Direct threads to most prior modules:</p>
+<p><strong>M11/M14 (transformer building, mixed precision)</strong>: M45-M47 describe how attention layers vary; M11 was the baseline transformer block. M14's FP8/BF16 gives the precision context that interacts with FA3/FA4.</p>
+<p><strong>M22 (FlashAttention/Triton kernels)</strong>: M22 introduced FA1/FA2 + Triton; M47's FA4 is the Blackwell-era continuation. The "tiled IO-aware" insight in M22 is what powers FA1-4.</p>
+<p><strong>M26 (KV cache, serving)</strong>: M26 introduced KV cache as a concept; M46 deepened with head topology compression; M47's PagedAttention is the layout that enables the compressions to be deployed.</p>
+<p><strong>M28 (MoE)</strong>: M28's expert routing connects to NSA's gate routing (M45) and MoBA's block routing — same pattern, different objects. Routing is a recurring primitive.</p>
+<p><strong>M30 (RoPE)</strong>: M30 introduced rotary embeddings; M45 mentioned Mamba-3's complex SSM as data-dependent RoPE; M46's MLA decoupled RoPE keeps position info on a separate path; M47's iRoPE alternates RoPE with NoPE layers. <em>RoPE shows up everywhere in the attention space</em>.</p>
+<p><strong>M33 (Mamba/SSM)</strong>: M33 introduced selective state spaces; M45 connected this to the linear-attention lineage and Mamba-3 (ICLR 2026); M47's Nemotron 3 Nano is a Mamba-Transformer hybrid in production.</p>
+<p><strong>M41 (NVFP4/Blackwell)</strong>: M41 introduced FP4 quantization; M46's TurboQuant uses 3-bit/2-bit KV; M47's FA4 runs on Blackwell. <em>The hardware evolution and attention evolution are co-determining</em>.</p>
+<p><strong>M42-M44 (scaling laws, embodied AI, model zoo)</strong>: M44 inventoried frontier models; M45-M47 explained why their attention choices differ. <em>The attention trilogy makes M44 readable at the architectural level</em>.</p>
+<p>The deeper point: this trilogy is the synthesis of much of the course. The attention taxonomy is what 47 modules of context lets you see — primitives composing into architectures composing into frontier systems.</p>
+</div>
+
+<h2>Code Magnets: implement MoDA forward with depth+sequence KV</h2>
+
+<p>You're writing the MoDA forward pass that combines current-layer sequence KV with depth KV from preceding layers. Three magnets are wrong choices.</p>
+
+<div class="magnets">
+<p>Arrange the magnets to compute MoDA attention output for a single layer.</p>
+
+<div class="magnet-pool">
+  <span class="magnet">def moda_forward(x, layer_idx, depth_KV_history, weights):</span>
+  <span class="magnet">    Q = x @ weights.W_Q</span>
+  <span class="magnet">    K_seq = x @ weights.W_K  # sequence keys at current layer</span>
+  <span class="magnet">    V_seq = x @ weights.W_V</span>
+  <span class="magnet">    K_all = [K_seq]</span>
+  <span class="magnet">    V_all = [V_seq]</span>
+  <span class="magnet">    K_all = [K_seq] + [K_l for K_l, V_l in depth_KV_history]</span>
+  <span class="magnet">    V_all = [V_seq] + [V_l for K_l, V_l in depth_KV_history]</span>
+  <span class="magnet">    K_combined = torch.cat(K_all, dim=-2)</span>
+  <span class="magnet">    V_combined = torch.cat(V_all, dim=-2)</span>
+  <span class="magnet">    K_combined = torch.stack(K_all, dim=0).mean(dim=0)  # average</span>
+  <span class="magnet">    scores = Q @ K_combined.transpose(-2, -1) / math.sqrt(d_head)</span>
+  <span class="magnet">    output = F.softmax(scores, dim=-1) @ V_combined  # single softmax</span>
+  <span class="magnet">    output_seq = F.softmax(Q @ K_seq.T) @ V_seq</span>
+  <span class="magnet">    output_depth = F.softmax(Q @ K_depth.T) @ V_depth</span>
+  <span class="magnet">    output = output_seq + output_depth  # separate softmaxes</span>
+  <span class="magnet">    return output</span>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<pre><code><span class="kw">def</span> <span class="fn">moda_forward</span>(x, layer_idx, depth_KV_history, weights):
+    Q = x @ weights.W_Q
+    K_seq = x @ weights.W_K  <span class="com"># sequence keys at current layer</span>
+    V_seq = x @ weights.W_V
+    K_all = [K_seq] + [K_l <span class="kw">for</span> K_l, V_l <span class="kw">in</span> depth_KV_history]
+    V_all = [V_seq] + [V_l <span class="kw">for</span> K_l, V_l <span class="kw">in</span> depth_KV_history]
+    K_combined = torch.<span class="fn">cat</span>(K_all, dim=-<span class="num">2</span>)
+    V_combined = torch.<span class="fn">cat</span>(V_all, dim=-<span class="num">2</span>)
+    scores = Q @ K_combined.<span class="fn">transpose</span>(-<span class="num">2</span>, -<span class="num">1</span>) / math.<span class="fn">sqrt</span>(d_head)
+    output = F.<span class="fn">softmax</span>(scores, dim=-<span class="num">1</span>) @ V_combined  <span class="com"># single softmax</span>
+    <span class="kw">return</span> output</code></pre>
+<p>The traps:</p>
+<ul>
+  <li><code>K_combined = torch.stack(K_all, dim=0).mean(dim=0)</code>: averages the depth KVs together instead of concatenating. The whole point of MoDA is <em>data-dependent depth retrieval via attention scores</em> — the attention mechanism picks which historical layers to attend to for which queries. Averaging defeats this; the model can't selectively access different layers' information. Concatenation along the sequence dimension keeps each layer's KV available as separate items for attention to choose between. Averaging is the depth dense baseline that MoDA explicitly outperforms because it's not data-dependent.</li>
+  <li><code>output_seq = F.softmax(Q @ K_seq.T) @ V_seq</code> + <code>output_depth = ...</code> + <code>output = output_seq + output_depth</code>: applies separate softmaxes to sequence and depth attention, then adds them. MoDA's specific architectural insight is that <strong>queries jointly attend to sequence and depth under a SINGLE softmax normalization</strong>. Separate softmaxes mean the sequence-attention probabilities sum to 1 AND the depth-attention probabilities sum to 1, so adding them gives a total that sums to 2 — semantically inconsistent. Worse, the model can't trade off between sequence and depth — each dimension gets full attention budget. The single softmax over concatenated [K_seq; K_depth] lets the model dynamically allocate attention between current-layer sequence patterns and historical-depth patterns based on what each query needs.</li>
+  <li>The two-line magnets <code>K_all = [K_seq]</code> and <code>V_all = [V_seq]</code> alone (without the comprehension): incomplete — they create lists with only sequence KV, missing the depth KVs entirely. Without the depth history concatenated in, this is just standard sequence attention; no MoDA mechanism. The full magnets that combine sequence with depth via list comprehension are required.</li>
+</ul>
+<p>The pattern: <strong>concatenate sequence KV with depth KV from all preceding layers along the sequence dimension; single unified softmax; standard attention</strong>. Each step has a precise role; the most common implementation bugs are using averaging instead of concatenation (defeats data-dependent retrieval), using separate softmaxes (breaks the unified attention budget), and forgetting to include the depth history entirely.</p>
+</details>
+</div>
+
+<h2>Who does what?</h2>
+
+<div class="matching">
+<p class="intro">Match each Axis D / Axis E variant to its real role.</p>
+
+<div class="match-grid">
+  <div class="header">Concept</div>
+  <div class="header">Real role</div>
+
+  <div>FlashAttention 4</div>
+  <div>A. March 2026 Blackwell co-design via CuTeDSL; warp specialization, async MMA + softmax overlap, FMA-poly exp, conditional rescaling, 2-CTA MMA; ~20% over cuDNN FA3.</div>
+
+  <div>PagedAttention</div>
+  <div>B. vLLM block-based KV cache layout (16-32 token blocks); eliminates 60-80% fragmentation; 24× throughput vs HuggingFace.</div>
+
+  <div>Ring Attention</div>
+  <div>C. Sequence parallelism via ring K/V rotation across devices; enables 1M-100M token contexts; communication overlapped with compute.</div>
+
+  <div>Star Attention</div>
+  <div>D. NVIDIA inference-time block-sparse + global anchor; 11× speedup for long-context retrieval workloads.</div>
+
+  <div>MoDA</div>
+  <div>E. March 2026 ByteDance + HUST; queries attend to current-layer sequence KV + depth KV from preceding layers under single softmax; +2.11% downstream at 3.7% FLOPs cost.</div>
+
+  <div>iRoPE</div>
+  <div>F. Llama 4: 3 RoPE + 1 NoPE per 4 layers interleaved; enables 10M context generalization from 256K training.</div>
+
+  <div>Differential Transformer</div>
+  <div>G. Computes attention as difference of two softmaxes for sharper patterns; better noise rejection on long contexts.</div>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<p>
+<strong>FlashAttention 4</strong> → A<br>
+<strong>PagedAttention</strong> → B<br>
+<strong>Ring Attention</strong> → C<br>
+<strong>Star Attention</strong> → D<br>
+<strong>MoDA</strong> → E<br>
+<strong>iRoPE</strong> → F<br>
+<strong>Differential Transformer</strong> → G
+</p>
+<p>The mental shortcut: <em>FA4 redesigns Blackwell's pipeline, PagedAttention pages KV like virtual memory, Ring rotates KV around devices, Star anchors plus locals, MoDA adds depth attention, iRoPE alternates with NoPE, Differential subtracts softmaxes</em>.</p>
+</details>
+</div>
+
+<h2>Exercises</h2>
+
+<div class="exercise">
+<p><strong>1.</strong> A team is training a new 70B model targeting 1M-token context on a Blackwell B200 cluster. Walk through their full attention-stack decision, applying the five-axis framework.</p>
+<details class="answer"><summary>show answer</summary>
+<p>Apply the five-axis framework:</p>
+<p>(1) <strong>Axis A — semantic role / normalization</strong>: 70B is below the 100B threshold where MLA wins decisively; the team should consider hybrid linear-softmax for efficiency at 1M context. Recommendation: 3:1 hybrid with Gated DeltaNet (linear) and softmax attention. The Qwen3-Next pattern is well-validated. <em>Decision: 75% GDN layers, 25% softmax layers.</em></p>
+<p>(2) <strong>Axis B — receptive field</strong>: in the softmax attention layers, full attention is fine at 1M context if combined with proper position encoding and kernel choice. If quality is critical and compute is the bottleneck, consider NSA-style trainable sparse for the softmax layers. <em>Decision: full attention with FA4; revisit NSA if pretraining shows compute pressure.</em></p>
+<p>(3) <strong>Axis C — head topology</strong>: GQA-8 is the right choice at 70B. MLA's benefits don't fully manifest below 100B; GQA's tooling is mature. <em>Decision: GQA with 8 KV heads.</em></p>
+<p>(4) <strong>Axis D — kernel implementation</strong>: B200 supports FA4. Use it. PagedAttention for KV layout. For 1M context training, sequence parallelism: USP (Unified Sequence Parallel) — Ulysses within node, Ring across nodes. <em>Decision: FA4 + PagedAttention + USP.</em></p>
+<p>(5) <strong>Axis E — composition</strong>: 3:1 hybrid with iRoPE-style position handling for length generalization. Optionally add MoDA depth attention if the empirical results scale to 70B (paper validates at 1.5B). <em>Decision: 3:1 GDN/softmax hybrid + iRoPE position encoding; MoDA as an optional addition pending validation.</em></p>
+<p><strong>The full architecture</strong>:</p>
+<ul>
+<li>80 transformer layers total: 60 GDN linear-attention layers + 20 softmax attention layers (3:1 ratio).</li>
+<li>Softmax layers use GQA-8, full attention with chunked iRoPE (3 RoPE + 1 NoPE per 4 layers among the softmax layers).</li>
+<li>FA4 kernels for softmax attention; custom GDN kernel for linear-attention layers.</li>
+<li>USP sequence parallelism for 1M-token training: Ulysses within 8-GPU node, Ring across 8 nodes.</li>
+<li>TurboQuant 3-bit KV quantization for inference deployment.</li>
+</ul>
+<p><strong>For deployment</strong>: vLLM with FA4 backend, --kv-cache-dtype turboquant_3bit_nc, PagedAttention block size 32, Star Attention for retrieval-heavy workloads optionally.</p>
+<p>The general lesson: <strong>each axis decision flows from workload (1M context), hardware (Blackwell B200), and scale (70B)</strong>. The five axes are not independent — Axis C decision (GQA vs MLA) is constrained by scale; Axis D decision is constrained by hardware; Axis E decision is constrained by context length. Reading 2026 production architectures means parsing these interdependencies.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>2.</strong> Explain why FA4 cannot run on the RTX 5090 (consumer Blackwell) despite both being Blackwell generation. What does this tell us about the relationship between algorithm and hardware?</p>
+<details class="answer"><summary>show answer</summary>
+<p>The hardware-algorithm coupling:</p>
+<p>(1) <strong>Two Blackwell variants exist with different ISAs</strong>. SM100 is datacenter Blackwell (B200, GB200, GB300 in NVL72 systems). SM120 is consumer/desktop Blackwell (RTX 5090). Both are "Blackwell" architecturally but have different instruction sets at the SASS level.</p>
+<p>(2) <strong>FA4 depends on SM100-specific opcodes</strong>. The pipeline uses:</p>
+<ul>
+<li><strong>UTMA*/UTC*</strong> opcodes — Tensor Memory Accelerator instructions for moving data between global memory, shared memory, and TMEM (Tensor Memory).</li>
+<li><strong>tcgen05.mma</strong> — the asynchronous matrix-multiply-accumulate that reads operand A directly from TMEM.</li>
+<li><strong>2-CTA MMA</strong> — paired CTAs jointly executing one UMMA across both TMEMs.</li>
+</ul>
+<p>(3) <strong>SM120 lacks these opcodes entirely</strong>. The GB202 die used in RTX 5090 does not have the tensor memory subsystem; its tensor cores use HMMA (the standard register-to-register MMA approach from Volta SM70 onward). Zero UTC* or UTMA* opcodes in any SM120a binary.</p>
+<p>(4) <strong>Result</strong>: FA4 cannot compile to SM120. The CuTeDSL paths emit instructions that don't exist on consumer Blackwell. Multiple Python-level checks block SM120 from reaching the FA4 compilation path; even if those were bypassed, the resulting kernel wouldn't run.</p>
+<p>(5) <strong>The deeper lesson — algorithms become hardware-specific</strong>:</p>
+<ul>
+<li>FA1 (2022) was hardware-portable across Ampere, Volta, Turing, Pascal — same algorithm with different tile sizes.</li>
+<li>FA3 (2024) required Hopper-specific TMA + WGMMA — couldn't run on Ampere.</li>
+<li>FA4 (2026) requires SM100-specific TMEM + tcgen05.mma — couldn't run on Hopper, couldn't run on consumer Blackwell.</li>
+</ul>
+<p><em>Each FA generation targets narrower hardware</em>. The algorithm-hardware coupling is tightening because GPU architectures are evolving faster — the algorithmic gains require taking advantage of new hardware features that earlier generations don't have.</p>
+<p>(6) <strong>Implication for the field</strong>: open-source attention kernels are increasingly hardware-specific. The community fork ecosystem has to maintain multiple kernel variants (FA2 for Ampere, FA3 for Hopper, FA4 for SM100 datacenter Blackwell, separate paths for SM120 consumer Blackwell, AMD ROCm equivalents, etc.). Production frameworks (vLLM, PyTorch SDPA, FlexAttention) handle the dispatch automatically; users specify their hardware and the framework picks the kernel.</p>
+<p>The general lesson: <strong>"FlashAttention" is no longer a single algorithm — it's a family of hardware-specific kernels sharing a common algorithmic foundation</strong>. Reading attention kernel work in 2026 means tracking which hardware target you're on; algorithmic claims don't transfer between SM generations.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>3.</strong> A research team is exploring whether to add MoDA to their existing 7B model. Sketch the experimental plan to validate whether MoDA is worth adopting.</p>
+<details class="answer"><summary>show answer</summary>
+<p>The experimental plan (M37 territory):</p>
+<p>(1) <strong>Define the hypothesis precisely</strong>. The MoDA paper validates at 1.5B parameters; will the gains transfer to 7B? The paper claims +2.11% downstream and +0.2 perplexity at 3.7% FLOPs overhead. The team's hypothesis: similar gains at 7B with no quality regression.</p>
+<p>(2) <strong>Reproduce baseline first</strong>. Train a 7B baseline with the team's standard architecture (likely GQA + RoPE + FA3/FA4) on a fixed pretraining corpus. Evaluate on the same 10 validation perplexity benchmarks and 10 downstream tasks the MoDA paper used. This establishes the baseline number.</p>
+<p>(3) <strong>Train MoDA-augmented variant</strong>. Same pretraining corpus, same hyperparameters, same training duration. Replace standard attention with MoDA in either all layers or every Nth layer (the paper validates several ratios). Compare to baseline.</p>
+<p>(4) <strong>Watch for the specific empirical signals</strong>:</p>
+<ul>
+<li>Perplexity improvement (paper says +0.2 average) — does this hold at 7B?</li>
+<li>Downstream task improvement (paper says +2.11%) — does this hold?</li>
+<li>FLOPs overhead (paper says 3.7%) — measure actual training and inference cost.</li>
+<li>Reduced attention sink behavior — visualize attention patterns; check whether early-token attention concentration is reduced.</li>
+<li>Post-norm vs pre-norm — paper says MoDA works better with post-norm. Test both.</li>
+</ul>
+<p>(5) <strong>Test the kernel performance specifically</strong>. The MoDA paper claims 97.3% of FA2 efficiency at 64K. Measure on the team's hardware (likely H100 or B200) at relevant context lengths. If the actual efficiency is lower (say 80% on the team's setup), the FLOPs overhead claim doesn't hold and the cost-benefit shifts.</p>
+<p>(6) <strong>Test sensitivity to layer ratio</strong>. The paper proposes specific patterns (every layer with MoDA, or specific ratios). Test 100% MoDA, 50%, 25%, 10% — find the right ratio for 7B specifically. The paper's optimal might not be the team's optimal.</p>
+<p>(7) <strong>Ablation: depth-attention only vs depth-attention + post-norm</strong>. Determine which contribution is doing the work. If most gains come from post-norm itself (independent of depth attention), the team should adopt post-norm without MoDA's complexity.</p>
+<p>(8) <strong>Long-context evaluation</strong>. Paper validates at 64K context. The team's deployment is at 256K — does MoDA hold at longer context? The depth-KV memory cost scales with sequence length AND number of preceding layers, so longer contexts amplify the cost.</p>
+<p>(9) <strong>Production decision criteria</strong>:</p>
+<ul>
+<li>If gains hold (+1-2% downstream, FLOPs overhead under 5%): adopt for next major version.</li>
+<li>If gains are smaller (+0.5-1%): keep as research direction; not worth production engineering complexity.</li>
+<li>If gains don't transfer (close to noise): publish negative result; don't adopt.</li>
+</ul>
+<p>(10) <strong>Engineering cost to factor in</strong>: MoDA's depth-KV access is a new memory pattern; integrating with existing serving infrastructure (vLLM, PagedAttention) requires kernel work. The published Triton kernel is a starting point but production-grade integration is more.</p>
+<p>The general lesson: <strong>research papers published at one scale don't automatically translate to production at a different scale</strong>. M37's eval rigor + this kind of structured ablation is what separates "we read the paper and it sounds promising" from "we validated the claim on our actual deployment." Most architectural innovations require this 2-4 week validation cycle before adoption.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>4.</strong> Forecast: by Q4 2027, what does the typical frontier-scale attention stack look like? Reason from the convergence patterns in M44-M47.</p>
+<details class="answer"><summary>show answer</summary>
+<p>Reading the convergence trajectory across the trilogy:</p>
+<p><strong>The likely Q4 2027 frontier stack</strong>:</p>
+<p>(1) <strong>Axis A — hybrid linear-softmax dominant</strong>. The 75:25 ratio (Qwen3-Next pattern) becomes universal at frontier. Linear-attention variant: probably Mamba-3 or its successor (data-dependent RoPE-equivalent updates). Softmax variant: standard attention with MLA head topology. <em>Pure softmax stacks (Llama 4 today) become a minority pattern</em>.</p>
+<p>(2) <strong>Axis B — sparse attention in softmax layers</strong>. The 25% of softmax layers themselves use sparse trainable attention (NSA-style or DeepSeek's CSA+HCA hybrid). Full attention becomes the layer of last resort, used only when exact recall matters. <em>Pure full attention disappears from frontier production</em>.</p>
+<p>(3) <strong>Axis C — MLA + IHA composition</strong>. MLA for KV compression; IHA for cross-head expressivity. The composition was implicit in M46 (MLA's per-head specialization preserved through query/output paths) and M46's IHA discussion (cross-head mixing); their joint adoption is the Q4 2027 prediction. <em>GQA persists below 100B; MLA + IHA is the &gt;100B answer</em>.</p>
+<p>(4) <strong>Axis D — FA5 (or successor) on Blackwell-Ultra / Rubin</strong>. NVIDIA's roadmap has Rubin GPUs in 2026-2027. FA5 will likely co-design for those. Sequence parallelism via USP or its successor; PagedAttention extends to multi-GPU coordination. <em>Single-GPU attention is mature; multi-GPU coordination is the new frontier</em>.</p>
+<p>(5) <strong>Axis E — depth attention as standard option</strong>. MoDA-style depth attention or a successor becomes a standard architectural option. Frontier models include depth-KV alongside sequence-KV; the 3.7% FLOPs cost is small enough that adoption is broad. <em>"Depth as a first-class dimension" alongside sequence and head dimensions</em>.</p>
+<p><strong>The KV-cache stack at Q4 2027</strong>:</p>
+<ul>
+<li>MLA-compressed KV cache (M46) → ~6× reduction over MHA.</li>
+<li>TurboQuant successor at 1.5-2 bit precision → another ~3-4× reduction.</li>
+<li>Expected Attention or learned eviction → another 2-3× effective capacity.</li>
+<li>InfiniGen-style offloading for cold pages.</li>
+<li>Total: ~50-100× compression vs MHA-FP16, allowing 10M-100M context routinely on B200/Rubin systems.</li>
+</ul>
+<p><strong>Likely non-changes (architectural choices that have settled)</strong>:</p>
+<ul>
+<li>Transformer base architecture (despite M33's SSM developments — production sticks with transformers as the framing).</li>
+<li>Pre-normalization with RMSNorm (post-norm rebound from MoDA aside).</li>
+<li>SwiGLU / GeGLU FFN activation.</li>
+<li>RoPE foundation with extensions (iRoPE, NoPE-layer interleaving).</li>
+<li>FA-style tiled IO-aware attention (the algorithmic insight from M22, refined over generations).</li>
+</ul>
+<p><strong>Wild cards that could disrupt the forecast</strong>:</p>
+<ul>
+<li>Pure linear-attention models (Mamba-only) become competitive — would shift the 75:25 ratio toward 100:0. Currently looks unlikely but possible.</li>
+<li>A fundamentally new mechanism (not on the five axes) emerges — Mamba in 2023 was the last such; unclear if another is brewing.</li>
+<li>Sub-FP4 attention computation (FA5 in FP3 or FP2) — would change the precision-quality calculus.</li>
+</ul>
+<p><strong>The deeper observation</strong>: <em>the five-axis taxonomy you've learned is likely to persist</em>. New entries on each axis will emerge; the framework outlasts the specific contributions. By Q4 2027, expect to use M45-M47 as the structure for understanding new architectures, with new specific instances filled in. The entries change; the taxonomy doesn't.</p>
+<p>The general lesson: <strong>architectural literacy is durable; specific architecture choices are not</strong>. The trilogy was built so that you'd be able to read 2027 model cards even though they don't yet exist.</p>
+</details>
+</div>
+
+<div class="bullet-points">
+<h3>What just happened?</h3>
+<ul>
+  <li>Closed the four-axis taxonomy with Axis D (kernel implementation) and Axis E (compositional architecture). The trilogy provides the framework for parsing any 2026 attention layer.</li>
+  <li><strong>FlashAttention lineage</strong>: <strong>FA1 (2022)</strong> tiled exact attention; <strong>FA2 (2023)</strong> better thread-block parallelism; <strong>FA3 (2024)</strong> Hopper warp specialization with TMA + WGMMA; <strong>FA4 (March 2026)</strong> Blackwell co-design via CuTeDSL.</li>
+  <li><strong>FA4's four innovations</strong>: (1) redesigned async pipeline with orchestration warps + compute warps; (2) software-emulated exponentials via FMA polynomial approximation (avoids SFU bottleneck); (3) conditional softmax rescaling (10× fewer rescaling ops); (4) 2-CTA MMA up to 256×256×16 tile size. ~600+ TFLOPs/s on B200 in FP8; ~20% over cuDNN FA3; 1.2-3.2× over Triton FlexAttention.</li>
+  <li><strong>FA4 hardware constraint</strong>: requires SM100 (datacenter Blackwell B200/GB200/GB300). Does NOT run on RTX 5090 (SM120 consumer Blackwell) — the GB202 die lacks UTMA*/UTC* opcodes and has no TMEM subsystem.</li>
+  <li><strong>Sequence parallelism family</strong>: <strong>PagedAttention</strong> (vLLM 2023) — block-based KV layout, fragmentation 60-80% → under 4%, 24× throughput. <strong>Ring Attention</strong> (Liu et al.) — sequence-parallel attention via rotating K/V around devices, enables 1M-100M token contexts. <strong>Striped Attention</strong> (MIT) — causal-balanced ring for load balancing. <strong>Star Attention</strong> (NVIDIA) — block-sparse + global anchor, 11× speedup for retrieval. <strong>TokenRing</strong> (SJTU) — bidirectional point-to-point. <strong>DeepSpeed Ulysses</strong> — extreme long-sequence via head partitioning. <strong>USP</strong> (Tencent) — Ulysses + Ring hybrid.</li>
+  <li><strong>Hybrid layer-type compositions in 2026 frontier</strong>:
+    <ul>
+      <li><strong>Qwen3-Next/Qwen3.5</strong>: 3:1 Gated DeltaNet to softmax attention.</li>
+      <li><strong>Kimi Linear</strong>: KDA linear + MLA softmax.</li>
+      <li><strong>Ling 2.5</strong> (1T MoE): Lightning Attention + MLA.</li>
+      <li><strong>Nemotron 3 Nano</strong>: Mamba-2 SSM + sparse softmax hybrid.</li>
+      <li><strong>DeepSeek V4</strong>: CSA (4× compress + Lightning Indexer FP4) + HCA (128× compress dense) alternating.</li>
+      <li><strong>Llama 4</strong>: iRoPE — 3 RoPE layers + 1 NoPE layer per 4, enables 10M context.</li>
+    </ul>
+  </li>
+  <li>The 75:25 ratio of cheap-to-expensive layers has emerged as approximately optimal across multiple labs; uniform stacks are an artifact of pre-2024 transformers.</li>
+  <li><strong>MoDA — Mixture-of-Depths Attention (Zhu et al., March 2026, ByteDance Seed + HUST)</strong>: each head attends to current-layer sequence KV AND depth KV from preceding layers under a single softmax. Hardware-efficient via chunk-aware layout: <strong>97.3% of FA2 efficiency at 64K</strong>. Empirical: +0.2 perplexity, +2.11% downstream, only 3.7% FLOPs overhead. Reduces attention-sink behavior. Works best with post-norm.</li>
+  <li><strong>Other compositional primitives</strong>: KArAt (vision, learnable basis functions); Multi-Token Attention; Differential Transformer (subtracts two softmaxes); Talking-Heads (superseded by IHA — M46).</li>
+  <li><strong>The five-axis decision framework</strong>: every 2026 attention layer is a coordinate on (A) semantic role/normalization, (B) receptive field, (C) head topology, (D) kernel implementation, (E) compositional architecture. The trilogy gives the framework; specific frontier models are points in this 5D space.</li>
+  <li>Production deployment recipes:
+    <ul>
+      <li><strong>1T+ frontier MoE at 1M context</strong>: hybrid linear/softmax + MLA + sparse + FA4 + USP.</li>
+      <li><strong>30-100B at 256K</strong>: hybrid GDN/softmax + GQA + FA3/4 + TurboQuant.</li>
+      <li><strong>7B edge</strong>: pure softmax + GQA-8 + FA3 + PagedAttention.</li>
+      <li><strong>Long-context inference on existing model</strong>: XAttention + TurboQuant + Expected Attention + InfiniGen.</li>
+    </ul>
+  </li>
+  <li>The reflex for 2026: read any model card by identifying its five-axis coordinate. Each axis decision flows from workload + hardware + scale; the axes are not independent.</li>
+  <li>Forecast for Q4 2027: hybrid linear/softmax universal at frontier; MLA + IHA composition for head topology &gt;100B; FA5 on Rubin/Blackwell-Ultra; depth attention (MoDA-style) as a standard option; ~50-100× KV cache compression via MLA + sub-FP4 quant + eviction + offloading.</li>
+</ul>
+</div>
+
+<h2>Closing the trilogy — and the course</h2>
+
+<p>You started the course with <code>x.stride()</code> on a tensor. You finished it parsing the attention design space across five axes, recognizing the hardware-algorithm coupling that makes FA4 a Blackwell-specific kernel, and identifying the compositional patterns that distinguish DeepSeek V4 from Qwen3-Next from Llama 4 from Kimi Linear.</p>
+
+<p>The trajectory through 47 modules: <em>tensors → autograd → modules → training → distributed → kernels → MoE → transformer → reasoning models → mech interp → multimodal → distributed RLHF → agentic environments → Blackwell/NVFP4 → scaling laws → embodied AI → comparing the model zoo → and now, the attention compendium that synthesizes much of the rest</em>.</p>
+
+<p><em>The framework is what's durable</em>. Specific frontier architectures change every six months — DeepSeek V5 by Q3 2026, Llama 5 by Q4, FA5 by 2027, MoDA-derivatives by year-end. But the five axes will likely persist, with new entries on each. Reading any 2026-2027 paper means identifying its place in the taxonomy: which axis does it extend? What's the new entry? How does it compose with existing primitives?</p>
+
+<p>The deeper craft you've built across the course: <em>architectural literacy isn't memorizing specific models</em>. It's the ability to parse new architectures as compositions of primitives you understand, to evaluate empirical claims with M37's eval rigor, to estimate compute economics with M42's framework, and to integrate hardware constraints (M22/M41) with algorithmic choices (M30/M33/M44/M45/M46/M47). New papers will keep being published; new models will keep shipping; the framework you've built lets you read them.</p>
+
+<p>The 2027 frontier models will mostly use these same primitives, in different compositions. Possibly new primitives (one or two on each axis); possibly fundamentally new mechanisms not yet imagined. The taxonomy has room for both. <em>You'll be able to read those papers</em>.</p>
+
+<p>This is what the course was for. Now go build something that didn't exist before.</p>
+
+<div class="module-footer">
+  <span>PyTorch · From Tensor to Kernel</span>
+  <span class="num">47</span>
+  <span>Attention Variants III — Kernels &amp; Compositions · Course finale</span>
+</div>
+
+</div>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="46_attention_variants_2.html" class="prev">&laquo; 46 Attention II</a>
+  <a href="../../index.html" class="home">Home</a>
+  <a href="vibe_preview.html" class="next">vibe Vibe Preview &raquo;</a>
+</nav>
+</body>
+</html>

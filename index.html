@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Head First Agentic AI — Workflows, Agents, and Multi-Agent Systems</title>
+<title>Courses — handl.in</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&display=swap');
 
 :root {
   --bg: #fdfbf3;
@@ -15,6 +15,8 @@
   --marker: #fef3a4;
   --paper: #ffffff;
   --softline: #d4cfb8;
+  --teal: #1f5f5b;
+  --pytorch: #ee4c2c;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,7 +25,7 @@ body {
   font-family: 'Bitter', Georgia, serif;
   background: var(--bg);
   color: var(--ink);
-  max-width: 960px;
+  max-width: 1060px;
   margin: 0 auto;
   padding: 36px 28px 80px 28px;
   line-height: 1.65;
@@ -41,10 +43,7 @@ body {
   font-family: 'Architects Daughter', cursive;
   font-size: 2.8em;
   line-height: 1.15;
-  margin-bottom: 12px;
-}
-.hero h1 span {
-  color: var(--accent);
+  margin-bottom: 8px;
 }
 .hero .subtitle {
   font-family: 'Caveat', cursive;
@@ -52,38 +51,47 @@ body {
   color: var(--highlight);
   margin-top: 8px;
 }
-.hero .meta {
-  font-family: 'Patrick Hand', cursive;
-  color: #888;
-  font-size: 1.05em;
-  margin-top: 14px;
-}
 
-/* SECTION HEADERS */
-.section-title {
+/* COURSE SECTION */
+.course-section {
+  margin-top: 3em;
+  padding-top: 0.5em;
+}
+.course-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 1em;
+}
+.course-header h2 {
   font-family: 'Architects Daughter', cursive;
   font-size: 1.65em;
   background: var(--marker);
   padding: 6px 14px;
   display: inline-block;
   border-bottom: 3px solid var(--ink);
-  margin-top: 2em;
-  margin-bottom: 1em;
+  margin: 0;
+}
+.course-header .course-meta {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1.05em;
 }
 
 /* MODULE GRID */
 .modules {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 18px;
-  margin-top: 1em;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 0.5em;
 }
 
 .module-card {
   background: var(--paper);
   border: 2.5px solid var(--ink);
   border-radius: 10px;
-  padding: 20px 22px;
+  padding: 18px 20px;
   text-decoration: none;
   color: var(--ink);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -95,47 +103,70 @@ body {
   transform: translateY(-3px);
   box-shadow: 4px 4px 0 var(--ink);
 }
-
 .module-card .num {
   font-family: 'Permanent Marker', cursive;
-  font-size: 0.9em;
-  color: var(--accent);
+  font-size: 0.85em;
   letter-spacing: 2px;
   margin-bottom: 4px;
 }
 .module-card .title {
   font-family: 'Architects Daughter', cursive;
-  font-size: 1.25em;
+  font-size: 1.15em;
   line-height: 1.2;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
-.module-card .words {
+
+/* COURSE-SPECIFIC ACCENT COLORS */
+.course-agentic .module-card .num { color: var(--accent); }
+.course-agentic .module-card:hover { box-shadow: 4px 4px 0 var(--accent); }
+.course-pytorch .module-card .num { color: var(--pytorch); }
+.course-pytorch .module-card:hover { box-shadow: 4px 4px 0 var(--pytorch); }
+.course-systems .module-card .num { color: var(--teal); }
+.course-systems .module-card:hover { box-shadow: 4px 4px 0 var(--teal); }
+
+/* COLLAPSIBLE */
+.course-toggle {
+  display: none;
+}
+.toggle-label {
   font-family: 'Patrick Hand', cursive;
-  color: #999;
-  font-size: 0.95em;
-  margin-top: auto;
+  font-size: 1.1em;
+  color: var(--accent);
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 12px;
+  user-select: none;
+}
+.toggle-label::before { content: "Show all modules \u25BC"; }
+.course-toggle:checked ~ .toggle-label::before { content: "Collapse \u25B2"; }
+.modules-collapsible {
+  display: none;
+}
+.course-toggle:checked ~ .modules-collapsible {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
 }
 
 /* READING PATHS */
-.paths {
-  margin-top: 1em;
-}
+.paths { margin-top: 1.2em; }
 .path {
   background: var(--paper);
   border: 2px solid var(--softline);
   border-radius: 8px;
-  padding: 14px 20px;
-  margin-bottom: 12px;
+  padding: 12px 18px;
+  margin-bottom: 10px;
 }
 .path .label {
   font-family: 'Patrick Hand', cursive;
-  font-size: 1.15em;
+  font-size: 1.1em;
   color: var(--accent);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 .path .route {
   font-family: 'Bitter', Georgia, serif;
-  font-size: 0.95em;
+  font-size: 0.92em;
   color: #555;
 }
 
@@ -156,7 +187,7 @@ footer a:hover { text-decoration: underline; }
 @media (max-width: 600px) {
   .hero h1 { font-size: 2em; }
   .hero .subtitle { font-size: 1.25em; }
-  .modules { grid-template-columns: 1fr; }
+  .modules, .course-toggle:checked ~ .modules-collapsible { grid-template-columns: 1fr; }
   body { padding: 20px 16px 60px; }
 }
 </style>
@@ -164,149 +195,421 @@ footer a:hover { text-decoration: underline; }
 <body>
 
 <div class="hero">
-  <h1>Head First <span>Agentic AI</span></h1>
-  <div class="subtitle">Workflows, Agents, and Multi-Agent Systems</div>
-  <div class="meta">18 modules &middot; ~139,520 words &middot; ~700 pages &middot; Head First style</div>
+  <h1>Courses</h1>
+  <div class="subtitle">Deep-dive, Head First style courses on AI, PyTorch, and Systems</div>
 </div>
 
-<div class="section-title">Modules</div>
+<!-- ============================================================
+     COURSE 1: HEAD FIRST AGENTIC AI
+     ============================================================ -->
+<div class="course-section course-agentic" id="agentic-ai">
+  <div class="course-header">
+    <h2>Head First Agentic AI</h2>
+    <span class="course-meta">18 modules &middot; ~139,520 words &middot; ~700 pages</span>
+  </div>
+  <p style="margin-bottom:1em; color:#555;">Workflows, Agents, and Multi-Agent Systems &mdash; from reframing to production capstone.</p>
 
-<div class="modules">
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_01/01_reframing.html">
-    <div class="num">MODULE 01</div>
-    <div class="title">Reframing: Workflows in a Trench Coat</div>
-    <div class="words">5,391 words</div>
-  </a>
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_02/02_agent_loop.html">
-    <div class="num">MODULE 02</div>
-    <div class="title">The Agent Loop, Hardened</div>
-    <div class="words">7,545 words</div>
-  </a>
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_03/03_workflow_patterns.html">
-    <div class="num">MODULE 03</div>
-    <div class="title">Workflow Patterns You Should Reach for First</div>
-    <div class="words">8,572 words</div>
-  </a>
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_04/04_tools.html">
-    <div class="num">MODULE 04</div>
-    <div class="title">Tools: Design, Description, and Disaster</div>
-    <div class="words">7,236 words</div>
-  </a>
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_05/05_mcp.html">
-    <div class="num">MODULE 05</div>
-    <div class="title">MCP Deep Dive</div>
-    <div class="words">6,381 words</div>
-  </a>
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_06/06_choosing_models.html">
-    <div class="num">MODULE 06</div>
-    <div class="title">Choosing Models / Routing as Architecture</div>
-    <div class="words">6,408 words</div>
-  </a>
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_07/07_context_engineering.html">
-    <div class="num">MODULE 07</div>
-    <div class="title">Context Engineering Principles</div>
-    <div class="words">6,733 words</div>
-  </a>
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_08/08_compaction.html">
-    <div class="num">MODULE 08</div>
-    <div class="title">Compaction and Summarization</div>
-    <div class="words">7,330 words</div>
-  </a>
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_09/09_memory.html">
-    <div class="num">MODULE 09</div>
-    <div class="title">Memory Across Runs</div>
-    <div class="words">7,533 words</div>
-  </a>
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_10/10_hallucinations.html">
-    <div class="num">MODULE 10</div>
-    <div class="title">Hallucinations</div>
-    <div class="words">8,046 words</div>
-  </a>
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_11/11_reflection.html">
-    <div class="num">MODULE 11</div>
-    <div class="title">Reflection and Self-Correction</div>
-    <div class="words">8,319 words</div>
-  </a>
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_12/12_guardrails.html">
-    <div class="num">MODULE 12</div>
-    <div class="title">Guardrails</div>
-    <div class="words">9,517 words</div>
-  </a>
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_13/13_multi_agent_when.html">
-    <div class="num">MODULE 13</div>
-    <div class="title">When Multi-Agent Earns Complexity</div>
-    <div class="words">8,015 words</div>
-  </a>
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_14/14_multi_agent_architectures.html">
-    <div class="num">MODULE 14</div>
-    <div class="title">Multi-Agent Architectures</div>
-    <div class="words">8,070 words</div>
-  </a>
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_15/15_inter_agent_communication.html">
-    <div class="num">MODULE 15</div>
-    <div class="title">Inter-Agent Communication</div>
-    <div class="words">9,153 words</div>
-  </a>
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_16/16_sagas.html">
-    <div class="num">MODULE 16</div>
-    <div class="title">Sagas: Transactional Safety for Agent Actions</div>
-    <div class="words">8,853 words</div>
-  </a>
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_17/17_observability.html">
-    <div class="num">MODULE 17</div>
-    <div class="title">Observability for Production Agents</div>
-    <div class="words">8,423 words</div>
-  </a>
-  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_18/18_capstone.html">
-    <div class="num">MODULE 18</div>
-    <div class="title">The Capstone</div>
-    <div class="words">7,995 words</div>
-  </a>
+  <div class="modules">
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_01/01_reframing.html">
+      <div class="num">MODULE 01</div>
+      <div class="title">Reframing: Workflows in a Trench Coat</div>
+    </a>
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_02/02_agent_loop.html">
+      <div class="num">MODULE 02</div>
+      <div class="title">The Agent Loop, Hardened</div>
+    </a>
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_03/03_workflow_patterns.html">
+      <div class="num">MODULE 03</div>
+      <div class="title">Workflow Patterns You Should Reach for First</div>
+    </a>
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_04/04_tools.html">
+      <div class="num">MODULE 04</div>
+      <div class="title">Tools: Design, Description, and Disaster</div>
+    </a>
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_05/05_mcp.html">
+      <div class="num">MODULE 05</div>
+      <div class="title">MCP Deep Dive</div>
+    </a>
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_06/06_choosing_models.html">
+      <div class="num">MODULE 06</div>
+      <div class="title">Choosing Models / Routing as Architecture</div>
+    </a>
+  </div>
+
+  <input type="checkbox" id="agentic-toggle" class="course-toggle">
+  <label for="agentic-toggle" class="toggle-label"></label>
+  <div class="modules-collapsible">
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_07/07_context_engineering.html">
+      <div class="num">MODULE 07</div>
+      <div class="title">Context Engineering Principles</div>
+    </a>
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_08/08_compaction.html">
+      <div class="num">MODULE 08</div>
+      <div class="title">Compaction and Summarization</div>
+    </a>
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_09/09_memory.html">
+      <div class="num">MODULE 09</div>
+      <div class="title">Memory Across Runs</div>
+    </a>
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_10/10_hallucinations.html">
+      <div class="num">MODULE 10</div>
+      <div class="title">Hallucinations</div>
+    </a>
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_11/11_reflection.html">
+      <div class="num">MODULE 11</div>
+      <div class="title">Reflection and Self-Correction</div>
+    </a>
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_12/12_guardrails.html">
+      <div class="num">MODULE 12</div>
+      <div class="title">Guardrails</div>
+    </a>
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_13/13_multi_agent_when.html">
+      <div class="num">MODULE 13</div>
+      <div class="title">When Multi-Agent Earns Complexity</div>
+    </a>
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_14/14_multi_agent_architectures.html">
+      <div class="num">MODULE 14</div>
+      <div class="title">Multi-Agent Architectures</div>
+    </a>
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_15/15_inter_agent_communication.html">
+      <div class="num">MODULE 15</div>
+      <div class="title">Inter-Agent Communication</div>
+    </a>
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_16/16_sagas.html">
+      <div class="num">MODULE 16</div>
+      <div class="title">Sagas: Transactional Safety for Agent Actions</div>
+    </a>
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_17/17_observability.html">
+      <div class="num">MODULE 17</div>
+      <div class="title">Observability for Production Agents</div>
+    </a>
+    <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_18/18_capstone.html">
+      <div class="num">MODULE 18</div>
+      <div class="title">The Capstone</div>
+    </a>
+  </div>
 </div>
 
-<div class="section-title">Reading Paths</div>
+<!-- ============================================================
+     COURSE 2: PYTORCH — FROM TENSOR TO KERNEL
+     ============================================================ -->
+<div class="course-section course-pytorch" id="pytorch">
+  <div class="course-header">
+    <h2>PyTorch: From Tensor to Kernel</h2>
+    <span class="course-meta">48 modules &middot; Cover to Capstone</span>
+  </div>
+  <p style="margin-bottom:1em; color:#555;">Tensors, autograd, distributed training, GPU kernels, and frontier architectures.</p>
 
-<div class="paths">
-  <div class="path">
-    <div class="label">New project</div>
-    <div class="route">M1 &rarr; M2-M3, then M13 to determine if multi-agent applies</div>
+  <div class="modules">
+    <a class="module-card" href="pytorch_course_release/html/00_cover.html">
+      <div class="num">COVER</div>
+      <div class="title">Course Overview</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/01_tensors_from_scratch.html">
+      <div class="num">MODULE 01</div>
+      <div class="title">Tensors, from Scratch</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/02_indexing_broadcasting.html">
+      <div class="num">MODULE 02</div>
+      <div class="title">Indexing, Broadcasting &amp; Shape Gymnastics</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/03_devices_dtypes_numerics.html">
+      <div class="num">MODULE 03</div>
+      <div class="title">Devices, Dtypes &amp; Numerics</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/04_what_backward_does.html">
+      <div class="num">MODULE 04</div>
+      <div class="title">What .backward() Actually Does</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/05_autograd_in_practice.html">
+      <div class="num">MODULE 05</div>
+      <div class="title">Autograd in Practice</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/06_custom_autograd_function.html">
+      <div class="num">MODULE 06</div>
+      <div class="title">Custom Autograd: torch.autograd.Function</div>
+    </a>
   </div>
-  <div class="path">
-    <div class="label">Struggling project</div>
-    <div class="route">M11-M12 + M16-M17 (the layers most often missing)</div>
+
+  <input type="checkbox" id="pytorch-toggle" class="course-toggle">
+  <label for="pytorch-toggle" class="toggle-label"></label>
+  <div class="modules-collapsible">
+    <a class="module-card" href="pytorch_course_release/html/07_nn_module_deeply.html">
+      <div class="num">MODULE 07</div>
+      <div class="title">nn.Module Deeply</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/08_init_layers_norms.html">
+      <div class="num">MODULE 08</div>
+      <div class="title">Initialization, Layers &amp; Norms</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/09_losses_optimizers_schedulers.html">
+      <div class="num">MODULE 09</div>
+      <div class="title">Losses, Optimizers &amp; Schedulers</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/10_datasets_dataloaders.html">
+      <div class="num">MODULE 10</div>
+      <div class="title">Datasets &amp; DataLoaders Done Right</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/11_training_loops.html">
+      <div class="num">MODULE 11</div>
+      <div class="title">Training Loops You Can Trust</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/12_memory.html">
+      <div class="num">MODULE 12</div>
+      <div class="title">Memory: Where Does It All Go?</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/13_profiling.html">
+      <div class="num">MODULE 13</div>
+      <div class="title">Profiling: Where Does the Time Go?</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/14_mixed_precision.html">
+      <div class="num">MODULE 14</div>
+      <div class="title">Mixed Precision: Autocast &amp; GradScaler</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/15_communication_primitives.html">
+      <div class="num">MODULE 15</div>
+      <div class="title">Communication Primitives</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/16_ddp.html">
+      <div class="num">MODULE 16</div>
+      <div class="title">Distributed Data Parallel (DDP)</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/17_zero_fsdp.html">
+      <div class="num">MODULE 17</div>
+      <div class="title">ZeRO &amp; FSDP</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/18_tensor_pipeline_parallel.html">
+      <div class="num">MODULE 18</div>
+      <div class="title">Tensor &amp; Pipeline Parallelism</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/19_dispatcher_aten.html">
+      <div class="num">MODULE 19</div>
+      <div class="title">Dispatcher, ATen &amp; Storage Internals</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/20_cuda_semantics.html">
+      <div class="num">MODULE 20</div>
+      <div class="title">CUDA Semantics &amp; the Caching Allocator</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/21_torch_compile.html">
+      <div class="num">MODULE 21</div>
+      <div class="title">torch.compile: Tracing, Fusing, Generating</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/22_gpu_programming_model.html">
+      <div class="num">MODULE 22</div>
+      <div class="title">GPU Programming Model</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/23_cpp_cuda_extensions.html">
+      <div class="num">MODULE 23</div>
+      <div class="title">C++/CUDA Extensions</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/24_triton.html">
+      <div class="num">MODULE 24</div>
+      <div class="title">Triton: Python Kernels at CUDA Speed</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/25_flashattention.html">
+      <div class="num">MODULE 25</div>
+      <div class="title">FlashAttention: A Case Study</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/26_quantization.html">
+      <div class="num">MODULE 26</div>
+      <div class="title">Quantization: int8, int4, GPTQ, AWQ &amp; fp8</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/27_inference_systems.html">
+      <div class="num">MODULE 27</div>
+      <div class="title">Inference Systems</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/28_moe_capstone.html">
+      <div class="num">MODULE 28</div>
+      <div class="title">MoE &amp; Frontier Capstone</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/29_build_transformer.html">
+      <div class="num">MODULE 29</div>
+      <div class="title">Building a Transformer from Scratch</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/30_rope.html">
+      <div class="num">MODULE 30</div>
+      <div class="title">RoPE and Positional Encodings</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/31_post_training.html">
+      <div class="num">MODULE 31</div>
+      <div class="title">Post-Training: SFT, RM, PPO &amp; DPO</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/32_debugging.html">
+      <div class="num">MODULE 32</div>
+      <div class="title">Debugging Training Runs</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/33_mamba.html">
+      <div class="num">MODULE 33</div>
+      <div class="title">Mamba and State-Space Models</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/34_reasoning_models.html">
+      <div class="num">MODULE 34</div>
+      <div class="title">Reasoning Models</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/35_data_engineering.html">
+      <div class="num">MODULE 35</div>
+      <div class="title">Pretraining Data Engineering at Scale</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/36_mech_interp.html">
+      <div class="num">MODULE 36</div>
+      <div class="title">Mechanistic Interpretability</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/37_production_eval.html">
+      <div class="num">MODULE 37</div>
+      <div class="title">Production Eval Engineering</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/38_multimodal.html">
+      <div class="num">MODULE 38</div>
+      <div class="title">Multimodal Architectures</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/39_distributed_rlhf.html">
+      <div class="num">MODULE 39</div>
+      <div class="title">Distributed RLHF &amp; GRPO Infrastructure</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/40_agentic_rl.html">
+      <div class="num">MODULE 40</div>
+      <div class="title">Agentic RL &amp; RL Environments</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/41_blackwell_nvfp4.html">
+      <div class="num">MODULE 41</div>
+      <div class="title">Blackwell &amp; NVFP4 Training</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/42_scaling_laws.html">
+      <div class="num">MODULE 42</div>
+      <div class="title">Scaling Laws &amp; Compute Economics</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/43_embodied_ai.html">
+      <div class="num">MODULE 43</div>
+      <div class="title">Embodied AI &amp; Robotics RL</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/44_architecture_comparison.html">
+      <div class="num">MODULE 44</div>
+      <div class="title">Comparing Latest LLM &amp; VLM Architectures</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/45_attention_variants_1.html">
+      <div class="num">MODULE 45</div>
+      <div class="title">Attention Variants I: Roles, Receptive Fields &amp; Sparsity</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/46_attention_variants_2.html">
+      <div class="num">MODULE 46</div>
+      <div class="title">Attention Variants II: Head Topology &amp; KV-Cache</div>
+    </a>
+    <a class="module-card" href="pytorch_course_release/html/47_attention_variants_3.html">
+      <div class="num">MODULE 47</div>
+      <div class="title">Attention Variants III: Kernels &amp; Compositional Architectures</div>
+    </a>
   </div>
-  <div class="path">
-    <div class="label">Multi-agent design</div>
-    <div class="route">M13 &rarr; M14 &rarr; M15</div>
+</div>
+
+<!-- ============================================================
+     COURSE 3: SENIOR SYSTEMS CRASH COURSE
+     ============================================================ -->
+<div class="course-section course-systems" id="systems">
+  <div class="course-header">
+    <h2>Senior Systems Crash Course</h2>
+    <span class="course-meta">22 modules &middot; Head First style</span>
   </div>
-  <div class="path">
-    <div class="label">Operational issues</div>
-    <div class="route">M16 + M17</div>
+  <p style="margin-bottom:1em; color:#555;">Storage engines to multi-region &mdash; the systems knowledge senior engineers actually need.</p>
+
+  <div class="modules">
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/01_storage_engines.html">
+      <div class="num">MODULE 01</div>
+      <div class="title">Storage Engines</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/02_bloom_wal_checkpoint.html">
+      <div class="num">MODULE 02</div>
+      <div class="title">Bloom Filters, WAL &amp; Checkpointing</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/03_row_vs_columnar.html">
+      <div class="num">MODULE 03</div>
+      <div class="title">Row vs Columnar Storage</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/04_indexes.html">
+      <div class="num">MODULE 04</div>
+      <div class="title">Indexes</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/05_materialized_views_denorm.html">
+      <div class="num">MODULE 05</div>
+      <div class="title">Materialized Views &amp; Denormalization</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/06_query_planner.html">
+      <div class="num">MODULE 06</div>
+      <div class="title">Query Planners &amp; Cost-Based Optimizers</div>
+    </a>
   </div>
-  <div class="path">
-    <div class="label">Tool design problems</div>
-    <div class="route">M4 &rarr; M5</div>
-  </div>
-  <div class="path">
-    <div class="label">Context bloat / cost issues</div>
-    <div class="route">M7 &rarr; M8</div>
-  </div>
-  <div class="path">
-    <div class="label">Hallucination issues</div>
-    <div class="route">M10 &rarr; M11</div>
-  </div>
-  <div class="path">
-    <div class="label">"Agent does the wrong thing"</div>
-    <div class="route">M12 first</div>
-  </div>
-  <div class="path">
-    <div class="label">"Agent gets stuck or fails weirdly"</div>
-    <div class="route">M2 + M17</div>
+
+  <input type="checkbox" id="systems-toggle" class="course-toggle">
+  <label for="systems-toggle" class="toggle-label"></label>
+  <div class="modules-collapsible">
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/07_acid_base_isolation.html">
+      <div class="num">MODULE 07</div>
+      <div class="title">ACID, BASE &amp; Isolation Levels</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/08_mvcc_snapshot_skew.html">
+      <div class="num">MODULE 08</div>
+      <div class="title">MVCC, Snapshot Isolation &amp; Skew</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/09_locking.html">
+      <div class="num">MODULE 09</div>
+      <div class="title">Locking</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/10_replication.html">
+      <div class="num">MODULE 10</div>
+      <div class="title">Replication</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/11_cdc_logical_geo.html">
+      <div class="num">MODULE 11</div>
+      <div class="title">CDC, Logical &amp; Geo-Replication</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/12_cap_consensus.html">
+      <div class="num">MODULE 12</div>
+      <div class="title">CAP, Quorum &amp; Consensus</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/13_distributed_txns_sagas.html">
+      <div class="num">MODULE 13</div>
+      <div class="title">Distributed Transactions, Sagas &amp; Idempotency</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/14_schema_evolution.html">
+      <div class="num">MODULE 14</div>
+      <div class="title">Schema Evolution &amp; Schema Registry</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/15_partitioning_consistent_hashing.html">
+      <div class="num">MODULE 15</div>
+      <div class="title">Partitioning &amp; Consistent Hashing</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/16_hot_partitions_resharding.html">
+      <div class="num">MODULE 16</div>
+      <div class="title">Hot Partitions, Resharding &amp; Rebalancing</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/17_ha_scaling_caching.html">
+      <div class="num">MODULE 17</div>
+      <div class="title">High Availability, Scaling, Caching &amp; Backpressure</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/18_rate_limiting.html">
+      <div class="num">MODULE 18</div>
+      <div class="title">Rate Limiting</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/19_bottlenecks_observability.html">
+      <div class="num">MODULE 19</div>
+      <div class="title">Bottleneck Identification &amp; Observability</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/20_capacity_planning.html">
+      <div class="num">MODULE 20</div>
+      <div class="title">Capacity Planning &amp; When to Scale</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/21_multi_region.html">
+      <div class="num">MODULE 21</div>
+      <div class="title">Multi-Region Architecture</div>
+    </a>
+    <a class="module-card" href="Senior_Systems_Crash_Course_v2_HTML/22_networking_fundamentals.html">
+      <div class="num">MODULE 22</div>
+      <div class="title">Networking Fundamentals</div>
+    </a>
   </div>
 </div>
 
 <footer>
-  <p>The disciplines that turn AI agent development from an art into an engineering practice.</p>
+  <p>Deep-dive courses on the skills that matter.</p>
   <p style="margin-top: 8px;"><a href="https://github.com/handl-in/courses">GitHub</a></p>
 </footer>
 

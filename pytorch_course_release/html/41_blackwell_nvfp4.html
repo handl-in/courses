@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 41 — Blackwell & NVFP4 training</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800;9..144,900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@400;500;600;700&family=Patrick+Hand&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+  :root {
+    --paper: #f6efe1; --paper-deep: #ede2cc;
+    --ink: #1a1612; --ink-soft: #3a322a; --ink-muted: #6b5d4f;
+    --terracotta: #c1502e; --terracotta-deep: #8c3a20;
+    --teal: #1f5f5b; --teal-deep: #133e3b;
+    --mustard: #d4a017; --rose: #b85a6c;
+    --pytorch: #ee4c2c;
+    --code-bg: #2a2520; --code-bg-light: #f0e8d4;
+    --rule: #c8b89a;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; padding: 0 0 60px 0; background: var(--paper);
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(193,80,46,0.04) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(31,95,91,0.04) 0%, transparent 40%);
+    color: var(--ink);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px; line-height: 1.7;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 60px 40px 120px; }
+  .module-header { border-bottom: 3px double var(--ink); padding-bottom: 32px; margin-bottom: 48px; position: relative; }
+  .module-tag {
+    display: inline-block; font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--terracotta-deep); background: var(--paper-deep);
+    padding: 6px 14px; border: 1.5px solid var(--terracotta-deep);
+    border-radius: 2px; margin-bottom: 20px;
+  }
+  .module-title {
+    font-family: 'Fraunces', serif; font-weight: 900; font-size: 56px;
+    line-height: 1.05; margin: 0 0 14px; color: var(--ink); letter-spacing: -0.02em;
+  }
+  .module-title em { font-style: italic; font-weight: 400; color: var(--terracotta); }
+  .module-sub { font-family: 'Caveat', cursive; font-size: 26px; color: var(--ink-soft); margin: 0; }
+  h2 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 32px; margin: 56px 0 18px; color: var(--ink); line-height: 1.15; letter-spacing: -0.01em; }
+  h2::before { content: "§ "; color: var(--terracotta); font-weight: 600; }
+  h3 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px; margin: 36px 0 12px; color: var(--teal-deep); letter-spacing: -0.005em; }
+  h4 { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; margin: 28px 0 10px; color: var(--ink-soft); }
+  p { margin: 0 0 18px; }
+  p strong { color: var(--terracotta-deep); font-weight: 600; }
+  p em { color: var(--teal-deep); }
+  blockquote { border-left: 4px solid var(--terracotta); padding: 4px 0 4px 22px; margin: 24px 0; font-style: italic; color: var(--ink-soft); font-size: 18px; }
+  a { color: var(--teal-deep); text-decoration: underline wavy var(--mustard); text-underline-offset: 4px; }
+  code { font-family: 'IBM Plex Mono', monospace; font-size: 0.88em; background: var(--code-bg-light); padding: 1px 6px; border-radius: 3px; color: var(--terracotta-deep); border: 1px solid rgba(0,0,0,0.06); }
+  pre { background: var(--code-bg); color: #e8d9b8; font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; line-height: 1.55; padding: 22px 26px; border-radius: 4px; overflow-x: auto; margin: 24px 0; border-left: 4px solid var(--pytorch); box-shadow: 4px 4px 0 var(--ink); position: relative; }
+  pre::before { content: ">_"; position: absolute; top: 8px; right: 14px; font-size: 11px; color: var(--pytorch); opacity: 0.7; letter-spacing: 0.1em; }
+  pre code { background: transparent; color: inherit; padding: 0; border: none; font-size: inherit; }
+  pre .kw { color: #ff8a65; }
+  pre .str { color: #a5d6a7; }
+  pre .num { color: #ffcc80; }
+  pre .com { color: #8d7d65; font-style: italic; }
+  pre .fn { color: #82b1ff; }
+  pre .ty { color: #ce93d8; }
+  .sticky { background: #fff8a8; background-image: linear-gradient(180deg, #fff8a8 0%, #ffeb7a 100%); padding: 22px 26px; margin: 28px 0; box-shadow: 3px 4px 12px rgba(0,0,0,0.18), inset 0 -8px 14px rgba(0,0,0,0.04); transform: rotate(-0.4deg); font-family: 'Patrick Hand', cursive; font-size: 19px; line-height: 1.5; color: var(--ink); position: relative; }
+  .sticky::before { content: ""; position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 80px; height: 22px; background: rgba(193,80,46,0.5); border-radius: 1px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+  .sticky.pink { background-image: linear-gradient(180deg, #ffd5dc 0%, #ffb8c4 100%); transform: rotate(0.5deg); }
+  .sticky.blue { background-image: linear-gradient(180deg, #d3e9f5 0%, #aed4ec 100%); transform: rotate(-0.6deg); }
+  .sticky.green { background-image: linear-gradient(180deg, #d4ecc8 0%, #b3d99e 100%); transform: rotate(0.3deg); }
+  .sticky strong { color: var(--terracotta-deep); }
+  .brainpower { border: 2.5px solid var(--ink); background: var(--paper-deep); padding: 24px 28px 26px; margin: 32px 0; border-radius: 2px; position: relative; box-shadow: 5px 5px 0 var(--terracotta); }
+  .brainpower::before { content: "BRAIN POWER"; position: absolute; top: -13px; left: 22px; background: var(--terracotta); color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; padding: 4px 12px; letter-spacing: 0.18em; }
+  .brainpower p { margin: 8px 0; font-size: 16px; }
+  .brainpower p:first-child { margin-top: 6px; }
+  .ndq { background: linear-gradient(180deg, #fdf6e3 0%, #f5ead0 100%); border: 1.5px dashed var(--ink-soft); border-radius: 8px; padding: 28px 30px; margin: 36px 0; }
+  .ndq h4 { font-family: 'Fraunces', serif; font-size: 22px; text-transform: none; letter-spacing: 0; color: var(--terracotta-deep); margin: 0 0 18px; border-bottom: 1.5px solid var(--rule); padding-bottom: 8px; }
+  .ndq h4::before { content: "Q&A — "; color: var(--ink-muted); font-style: italic; }
+  .ndq .q { font-family: 'Caveat', cursive; font-size: 22px; color: var(--teal-deep); margin: 14px 0 4px; line-height: 1.3; }
+  .ndq .q::before { content: "Q: "; font-weight: 700; color: var(--terracotta); }
+  .ndq .a { margin: 0 0 16px 14px; padding-left: 14px; border-left: 3px solid var(--mustard); color: var(--ink-soft); font-size: 16px; }
+  .ndq .a::before { content: "A: "; font-weight: 700; color: var(--ink); font-family: 'Fraunces', serif; }
+  .table-wrap { margin: 28px 0; overflow-x: auto; border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--teal); background: #fff; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; font-family: 'Lora', serif; }
+  table caption { font-family: 'Caveat', cursive; font-size: 22px; color: var(--terracotta-deep); padding: 12px 0; text-align: left; caption-side: top; }
+  th { background: var(--ink); color: #fff; text-align: left; padding: 12px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+  td { padding: 12px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--paper-deep); }
+  tr:last-child td { border-bottom: none; }
+  td strong { color: var(--terracotta-deep); }
+  td code { font-size: 12.5px; }
+  .decision { background: #fff; border: 2px solid var(--ink); border-radius: 2px; padding: 24px 28px; margin: 32px 0; box-shadow: 5px 5px 0 var(--mustard); font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.8; white-space: pre; overflow-x: auto; color: var(--ink); }
+  .warn { background: #fcecec; border-left: 6px solid var(--terracotta); padding: 18px 22px; margin: 28px 0; border-radius: 0 4px 4px 0; position: relative; }
+  .warn::before { content: "⚠"; position: absolute; top: 14px; right: 18px; font-size: 24px; color: var(--terracotta); }
+  .warn strong { color: var(--terracotta-deep); }
+  .keyidea { background: var(--teal); color: #f6efe1; padding: 26px 30px; margin: 32px 0; border-radius: 2px; font-family: 'Fraunces', serif; font-size: 19px; font-weight: 500; line-height: 1.5; position: relative; box-shadow: 4px 4px 0 var(--ink); }
+  .keyidea::before { content: "★ KEY IDEA"; position: absolute; top: -11px; left: 22px; background: var(--mustard); color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700; padding: 4px 10px; letter-spacing: 0.18em; }
+  .keyidea strong { color: var(--mustard); }
+  .exercise { border: 2px dashed var(--teal-deep); padding: 24px 28px; margin: 36px 0; background: rgba(255,255,255,0.5); border-radius: 2px; }
+  .exercise::before { content: "✎ SHARPEN YOUR PENCIL"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px dotted var(--teal); }
+  .exercise .answer { margin-top: 14px; padding: 14px 18px; background: var(--paper-deep); border-radius: 4px; font-size: 15px; }
+  .exercise .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+  ul, ol { margin: 16px 0; padding-left: 28px; }
+  li { margin: 8px 0; }
+  ul li::marker { color: var(--terracotta); }
+  ol li::marker { color: var(--teal-deep); font-weight: 600; }
+  .dialogue { margin: 28px 0; padding: 20px 24px; background: var(--paper-deep); border-radius: 4px; border-left: 4px solid var(--rose); }
+  .dialogue .speaker { font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--rose); font-weight: 700; display: block; margin-top: 10px; }
+  .dialogue .speaker:first-child { margin-top: 0; }
+  .dialogue .speaker.b { color: var(--teal-deep); }
+  .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin: 28px 0; }
+  .twocol > div { padding: 20px 22px; border-radius: 2px; background: #fff; border: 1.5px solid var(--rule); }
+  .twocol > div h4 { margin-top: 0; }
+  .twocol .good { border-color: var(--teal); border-left: 5px solid var(--teal); }
+  .twocol .bad { border-color: var(--terracotta); border-left: 5px solid var(--terracotta); }
+  .ascii { background: var(--paper-deep); padding: 22px 26px; margin: 28px 0; border: 1.5px solid var(--rule); border-radius: 2px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.5; white-space: pre; overflow-x: auto; color: var(--ink); }
+  .module-footer { margin-top: 80px; padding-top: 28px; border-top: 3px double var(--ink); display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-muted); }
+  .module-footer .num { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 800; color: var(--terracotta); line-height: 1; }
+  .toc { background: #fff; border: 2px solid var(--ink); padding: 30px 40px; margin: 40px 0; box-shadow: 6px 6px 0 var(--teal); }
+  .toc h3 { font-family: 'Fraunces', serif; font-size: 26px; margin: 0 0 20px; color: var(--ink); }
+  .toc ol { columns: 2; column-gap: 40px; padding-left: 24px; }
+  .toc li { font-size: 15px; break-inside: avoid; margin: 4px 0; }
+  .toc li strong { color: var(--terracotta-deep); }
+  .toc .part { font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--teal-deep); margin: 16px 0 6px; column-span: all; border-bottom: 1px dashed var(--rule); padding-bottom: 4px; }
+
+  /* CODE MAGNETS — fridge-magnet style code snippets to be arranged */
+  .magnets { margin: 36px 0; padding: 26px 28px 30px; background: #ede2cc; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--teal-deep); position: relative; }
+  .magnets::before { content: "✦ CODE MAGNETS"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px dotted var(--ink-soft); }
+  .magnets p { margin: 0 0 18px; font-size: 16px; }
+  .magnet-pool { display: flex; flex-wrap: wrap; gap: 10px; padding: 16px; background: #c8c0a8; background-image: linear-gradient(135deg, #c8c0a8 25%, transparent 25%), linear-gradient(225deg, #c8c0a8 25%, transparent 25%), linear-gradient(45deg, #c8c0a8 25%, transparent 25%), linear-gradient(315deg, #c8c0a8 25%, #b5ad95 25%); background-size: 14px 14px; background-position: 7px 0, 7px 0, 0 0, 0 0; border-radius: 6px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.2); margin: 12px 0; min-height: 70px; }
+  .magnet { display: inline-block; background: #fff; padding: 10px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink); border-radius: 3px; box-shadow: 2px 2px 4px rgba(0,0,0,0.25), inset 0 -2px 0 rgba(0,0,0,0.05); border: 1px solid #d8d0b4; transform: rotate(-1deg); transition: transform 0.15s; cursor: default; user-select: all; }
+  .magnet:nth-child(2n) { transform: rotate(1.5deg); background: #fff8e8; }
+  .magnet:nth-child(3n) { transform: rotate(-2deg); background: #f0f5ee; }
+  .magnet:nth-child(5n) { transform: rotate(0.8deg); background: #f5e8e0; }
+  .magnet:hover { transform: rotate(0) scale(1.05); z-index: 2; }
+  .magnets .answer { margin-top: 16px; padding: 14px 18px; background: #fff8d8; border-radius: 4px; font-size: 15px; border-left: 4px solid var(--mustard); }
+  .magnets .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+  .magnets .answer pre { margin: 12px 0 0; }
+
+  /* CHARACTER — anthropomorphized objects with avatar and speech */
+  .character { margin: 30px 0; padding: 20px 22px 22px; background: #fff; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--rose); position: relative; display: grid; grid-template-columns: 80px 1fr; gap: 18px; align-items: start; }
+  .character .avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--mustard); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 900; font-size: 30px; color: var(--ink); border: 2.5px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+  .character.tensor .avatar { background: var(--pytorch); color: #fff; }
+  .character.stride .avatar { background: var(--teal); color: #fff; }
+  .character.storage .avatar { background: var(--mustard); }
+  .character.dtype .avatar { background: var(--rose); color: #fff; }
+  .character.autograd .avatar { background: var(--terracotta); color: #fff; }
+  .character .who { font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-muted); font-weight: 700; margin: 0 0 4px; }
+  .character .name { font-family: 'Fraunces', serif; font-weight: 800; font-size: 22px; color: var(--ink); margin: 0 0 8px; line-height: 1; }
+  .character .says { font-family: 'Lora', serif; font-size: 16px; line-height: 1.55; color: var(--ink); margin: 0; font-style: italic; }
+  .character .says::before { content: '"'; font-family: 'Fraunces', serif; font-size: 28px; color: var(--terracotta); line-height: 0; vertical-align: -8px; margin-right: 4px; }
+  .character .says::after { content: '"'; font-family: 'Fraunces', serif; font-size: 28px; color: var(--terracotta); line-height: 0; vertical-align: -8px; margin-left: 2px; }
+  .character + .character { margin-top: -10px; }
+
+  /* BULLET POINTS — recap section with checklist vibe */
+  .bullet-points { margin: 48px 0 36px; padding: 32px 36px 36px; background: var(--paper-deep); border: 3px solid var(--ink); border-radius: 4px; position: relative; box-shadow: 6px 6px 0 var(--mustard); }
+  .bullet-points::before { content: "BULLET POINTS"; position: absolute; top: -16px; left: 28px; background: var(--ink); color: var(--mustard); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; padding: 6px 16px; letter-spacing: 0.2em; }
+  .bullet-points h3 { font-family: 'Caveat', cursive; font-size: 28px; color: var(--terracotta); margin: 0 0 16px; }
+  .bullet-points ul { list-style: none; padding-left: 0; margin: 0; }
+  .bullet-points ul li { position: relative; padding: 6px 0 6px 38px; font-size: 16px; line-height: 1.5; border-bottom: 1px dashed var(--rule); }
+  .bullet-points ul li:last-child { border-bottom: none; }
+  .bullet-points ul li::before { content: ""; position: absolute; left: 6px; top: 11px; width: 18px; height: 18px; border: 2px solid var(--terracotta); border-radius: 3px; background: #fff; }
+  .bullet-points ul li::after { content: "✓"; position: absolute; left: 9px; top: 6px; font-family: 'Caveat', cursive; font-size: 22px; font-weight: 700; color: var(--terracotta); }
+  .bullet-points ul li strong { color: var(--terracotta-deep); }
+  .bullet-points ul li code { font-size: 13px; }
+
+  /* MATCHING — "Who Does What?" two-column matching exercise */
+  .matching { margin: 36px 0; padding: 26px 28px 28px; background: #fff; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--teal); position: relative; }
+  .matching::before { content: "✦ WHO DOES WHAT?"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 6px; padding-bottom: 10px; border-bottom: 2px dotted var(--ink-soft); }
+  .matching p.intro { margin: 8px 0 18px; font-size: 15px; font-style: italic; color: var(--ink-soft); }
+  .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1.5px solid var(--ink); }
+  .match-grid > div { padding: 12px 14px; border-bottom: 1px solid var(--rule); font-size: 14.5px; vertical-align: middle; display: flex; align-items: center; }
+  .match-grid > div:nth-child(4n+1), .match-grid > div:nth-child(4n+2) { background: var(--paper-deep); }
+  .match-grid > div:nth-child(2n+1) { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--terracotta-deep); border-right: 1.5px dashed var(--ink); }
+  .match-grid > div:nth-child(2n) { color: var(--ink); }
+  .match-grid > div:nth-last-child(-n+2) { border-bottom: none; }
+  .match-grid .header { background: var(--ink) !important; color: #fff !important; font-family: 'IBM Plex Mono', monospace !important; font-size: 11px !important; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; padding: 10px 14px; border-bottom: none; }
+  .matching .answer { margin-top: 16px; padding: 14px 18px; background: var(--paper-deep); border-radius: 4px; font-size: 15px; }
+  .matching .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+
+  @media (max-width: 720px) {
+    .wrap { padding: 40px 22px 80px; }
+    .module-title { font-size: 40px; }
+    .twocol { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .character { grid-template-columns: 56px 1fr; gap: 12px; }
+    .character .avatar { width: 56px; height: 56px; font-size: 22px; }
+    .match-grid { grid-template-columns: 1fr 1fr; font-size: 13px; }
+  }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+<div class="module-header">
+  <div class="module-tag">Part XI · Module 41 · April 2026 currency</div>
+  <h1 class="module-title"><em>Blackwell &amp; NVFP4 training:</em> when 4 bits is enough</h1>
+  <p class="module-sub">— from FP8 in M14 to NVFP4 with two-level scaling, why MLPerf Training v5.1 swept on FP4, the recipe ingredients (Hadamard transforms, stochastic rounding, healing), and what Tensor Memory + CTA pairs change in CUTLASS</p>
+</div>
+
+<p>M14 covered mixed precision through FP8. The hardware moved. Two generations later — Blackwell (B200, B300, GB200/GB300 NVL72) and Blackwell Ultra (B300 with the second-gen Transformer Engine) — bring native FP4 acceleration. The early skeptical question ("can you actually train at 4 bits without quality loss?") got an answer in late 2025: yes, with the right recipe. NVIDIA's MLPerf Training v5.1 submission (November 2025) swept all seven benchmarks using NVFP4; Llama 3.1 405B trained in 10 minutes on 5,120 Blackwell GPUs. The recipe is now public and reproducible.</p>
+
+<p>This module is the hardware-and-numerics update for 2026. It assumes M14's mixed-precision foundations and pushes them down: <strong>what changes when you go from FP8 to FP4, what NVFP4 specifically does that distinguishes it from MXFP4, what the production training recipe looks like (Random Hadamard transforms, stochastic rounding, two-dimensional quantization, healing in FP8), and what's new in Blackwell that CUTLASS exposes</strong> (Tensor Memory, CTA pairs, 5th-gen Tensor Cores, TMA multicast). By the end you'll know whether to use FP4 for your next training run, what infrastructure changes that implies, and what the Rubin generation arriving in 2026-2027 will likely change again.</p>
+
+<div class="keyidea">
+The hardware has two generational updates since M14. <strong>Blackwell (B200, GB200 NVL72)</strong>: 5th-gen Tensor Cores with native FP4, 192GB HBM3e at 8 TB/s, NVLink 5 at 1.8 TB/s, 192GB Tensor Memory (TMEM), CTA-pair MMA. <strong>Blackwell Ultra (B300, GB300 NVL72)</strong>: refresh with 270GB memory per GPU and 1.5× NVFP4 throughput vs B200 (15 PFLOPS dense NVFP4 per GPU). <strong>NVFP4 format</strong>: 16-value micro-blocks, each with FP8 (E4M3) scale, plus per-tensor FP32 scale. Two-level scaling beats MXFP4's E8M0 single-level by enabling fine-grained dynamic range adaptation; near-FP8 accuracy with 2× memory reduction. <strong>The training recipe</strong> (NVIDIA NVFP4 pretraining paper, Sep 2025; FP4 All the Way, May 2025; Quartet II, 2026): Random Hadamard transforms (RHT) to disperse outliers, stochastic rounding (SR) for unbiased gradient estimation, split rounding (SR backward / RtN forward), two-dimensional quantization for forward-backward consistency, selective high-precision layers (embedding, output head stay FP8/BF16), <strong>healing</strong> (last few iterations in FP8 to recover final accuracy). Validated at 12B/10T tokens matching FP8 baseline; 7B/200T tokens (FP4 All the Way) matching BF16 baseline. <strong>MLPerf Training v5.1</strong>: NVIDIA swept all 7 benchmarks; Llama 3.1 405B in 10 minutes on 5,120 Blackwell GPUs; 3.2× over Hopper FP8 at same count; 1.4× over FP8 on same Blackwell rack; GB300 NVL72 1.9× over GB200 NVL72. <strong>CUTLASS 3.8+</strong>: Tensor Memory (TMEM) replaces registers for MMA accumulators; CTA pairs (two SMs share operands, 2-SM UMMA); TMA multicast; single-thread MMA launch; <code>tcgen05.mma</code> instruction. <strong>CuTile (late 2025)</strong>: Python tile-centric DSL abstracting warps/registers/SMEM. <strong>Rubin (2026-2027 lookahead)</strong>: 35 PFLOPS NVFP4 training, 50 PFLOPS NVFP4 inference — 3.5×/5× over Blackwell.
+</div>
+
+<h2>Two new faces — Part XI continued</h2>
+
+<div class="character" style="--c: #c1502e;">
+  <div class="avatar" style="background: #c1502e; color: #fff;">N</div>
+  <div>
+    <p class="who">NVFP4</p>
+    <p class="name">"I'm 4 bits per value with two-level scaling. Near-FP8 accuracy at half the memory and double the speed."</p>
+    <p class="says">Each of my values is E2M1 — 1 sign bit, 2 exponent bits, 1 mantissa bit. That's not enough by itself; FP4 alone is too coarse for serious training. <strong>The trick is two-level scaling</strong>. I group values into <em>micro-blocks of 16</em>; each block shares an FP8 (E4M3) scaling factor; on top of that, the entire tensor has a single FP32 scalar. The two-level approach beats MXFP4's E8M0 single-level scaling because my 16-value blocks adapt to local dynamic range better, and my E4M3 block scales are fine-grained where MXFP4's power-of-two E8M0 is coarse. <strong>I'm what enabled MLPerf Training v5.1's clean sweep</strong>. With the right recipe — Hadamard transforms, stochastic rounding, healing — I match FP8 quality on 12B/10T-token training. I'm what M14's FP8 graduates to.</p>
+  </div>
+</div>
+
+<div class="character" style="--c: #1f5f5b;">
+  <div class="avatar" style="background: #1f5f5b; color: #fff;">T</div>
+  <div>
+    <p class="who">TMEM</p>
+    <p class="name">"I'm Tensor Memory — Blackwell's new on-chip tier between SMEM and registers, designed for MMA accumulators."</p>
+    <p class="says">In Hopper, MMA accumulators sat in registers. That meant register pressure scaled with tile size; large tiles starved threads. In Blackwell, I'm a new on-chip memory tier (192KB per SM) specifically for MMA accumulators and operands. <em>UMMA — Universal MMA, the 5th-gen Tensor Core instruction <code>tcgen05.mma</code> — uses me directly</em>; no registers needed for matrix data, no register pressure tied to tile size. Combined with CTA pairs (two SMs sharing operands), I let single-thread MMA launches run with massive tile sizes the previous generation couldn't fit. The CUTLASS 3.8 Blackwell GEMM examples are organized around me. <strong>I'm why Blackwell GEMM throughput is 7× over Hopper</strong>; the silicon has more FP4 FLOPs, but I'm what lets kernels actually use them.</p>
+  </div>
+</div>
+
+<h2>The hardware progression: H100 → B200 → B300</h2>
+
+<p>Walking through the relevant specs to anchor the rest of the module. The Hopper generation (M14's home turf) and the two Blackwell variants:</p>
+
+<div class="table-wrap">
+<table>
+<caption>Datacenter GPU progression for AI training, April 2026</caption>
+<thead><tr><th>Spec</th><th>H100 (Hopper, 2022)</th><th>H200 (Hopper, 2024)</th><th>B200 (Blackwell, 2024)</th><th>B300 (Blackwell Ultra, 2025)</th></tr></thead>
+<tbody>
+<tr><td>Memory</td><td>80GB HBM3</td><td>141GB HBM3e</td><td>192GB HBM3e</td><td>270GB HBM3e</td></tr>
+<tr><td>Mem bandwidth</td><td>3.4 TB/s</td><td>4.8 TB/s</td><td>8 TB/s</td><td>~8 TB/s</td></tr>
+<tr><td>NVLink</td><td>NVLink 4 (900 GB/s)</td><td>NVLink 4 (900 GB/s)</td><td>NVLink 5 (1.8 TB/s)</td><td>NVLink 5 (1.8 TB/s)</td></tr>
+<tr><td>FP8 dense</td><td>~2 PFLOPS</td><td>~2 PFLOPS</td><td>4.5 PFLOPS</td><td>~5 PFLOPS</td></tr>
+<tr><td>FP4 dense</td><td>—</td><td>—</td><td>9-10 PFLOPS</td><td>15 PFLOPS (Ultra)</td></tr>
+<tr><td>Tensor Memory</td><td>—</td><td>—</td><td>192KB / SM</td><td>192KB / SM</td></tr>
+<tr><td>5th-gen Tensor Core</td><td>—</td><td>—</td><td><code>tcgen05.mma</code></td><td><code>tcgen05.mma</code></td></tr>
+<tr><td>Rack-scale unit</td><td>HGX H100 (8 GPU)</td><td>HGX H200 (8 GPU)</td><td><strong>GB200 NVL72</strong> (72 GPU + 36 Grace)</td><td><strong>GB300 NVL72</strong> (72 GPU + 36 Grace)</td></tr>
+<tr><td>Per-rack FP4 compute</td><td>—</td><td>—</td><td>~720 PFLOPS</td><td>~1.1 EFLOPS</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Three things matter most for training:</p>
+
+<ol>
+  <li><strong>FP4 native compute</strong>. Blackwell Tensor Cores execute NVFP4 GEMMs at 2× the FP8 rate; Blackwell Ultra at 3×. This is the headline performance gain — if your training pipeline is GEMM-bound and you can train in FP4, you halve (or third) compute time.</li>
+  <li><strong>Memory and bandwidth</strong>. 192GB → 270GB and 4.8 → 8 TB/s remove memory pressure on large models. A 70B model fits in a single B300 with comfortable headroom for KV cache; a 405B model fits across 8 B300s. M16-M17's distributed parallelism still applies but at a different scale.</li>
+  <li><strong>Rack-scale interconnect</strong>. GB200/GB300 NVL72: 72 GPUs in one NVLink 5 domain. Communication patterns that were "across-node" on HGX become "within-rack" on NVL72. Tensor parallelism, expert parallelism for MoE, sequence parallelism — all benefit substantially.</li>
+</ol>
+
+<p>The economic implication is concrete. NVIDIA's published numbers (December 2025 blog): <strong>GB200 NVL72 delivered 3.2× faster Llama 3.1 405B training than Hopper FP8 at same GPU count, and ~2× the performance per dollar at GPU rental prices</strong>. Blackwell Ultra adds another ~12% on average over Blackwell. Inference deltas are larger (15× per-system in some cases) but training is what matters here.</p>
+
+<h2>NVFP4: the format itself</h2>
+
+<p>The headline question of any narrow-precision format: <em>where do you put the bits?</em> NVFP4 is 4 bits per value (1 sign, 2 exponent, 1 mantissa = E2M1) plus a multi-level scaling scheme that recovers dynamic range without spending bits per value.</p>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 740 380" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs></defs>
+  <text x="370" y="22" font-size="14" font-weight="700" fill="#1a1612" text-anchor="middle">NVFP4 two-level scaling: 16-value micro-blocks with E4M3 scales + tensor-level FP32</text>
+
+  <!-- Tensor with multiple blocks -->
+  <g transform="translate(20, 50)">
+    <text x="0" y="14" font-size="11" font-weight="700" fill="#1a1612">Tensor (e.g., a weight matrix tile)</text>
+
+    <!-- Block 0 -->
+    <rect x="0" y="25" width="170" height="50" fill="#fff5d8" stroke="#1a1612" stroke-width="1.5"/>
+    <text x="5" y="40" font-size="9" font-weight="700" fill="#1a1612">Block 0: 16 values</text>
+    <g transform="translate(5, 47)">
+      <rect x="0" y="0" width="9" height="22" fill="#fcecec" stroke="#c1502e" stroke-width="0.5"/>
+      <rect x="10" y="0" width="9" height="22" fill="#fcecec" stroke="#c1502e" stroke-width="0.5"/>
+      <rect x="20" y="0" width="9" height="22" fill="#fcecec" stroke="#c1502e" stroke-width="0.5"/>
+      <rect x="30" y="0" width="9" height="22" fill="#fcecec" stroke="#c1502e" stroke-width="0.5"/>
+      <rect x="40" y="0" width="9" height="22" fill="#fcecec" stroke="#c1502e" stroke-width="0.5"/>
+      <rect x="50" y="0" width="9" height="22" fill="#fcecec" stroke="#c1502e" stroke-width="0.5"/>
+      <rect x="60" y="0" width="9" height="22" fill="#fcecec" stroke="#c1502e" stroke-width="0.5"/>
+      <rect x="70" y="0" width="9" height="22" fill="#fcecec" stroke="#c1502e" stroke-width="0.5"/>
+      <text x="83" y="14" font-size="9" fill="#1a1612">…</text>
+      <rect x="100" y="0" width="9" height="22" fill="#fcecec" stroke="#c1502e" stroke-width="0.5"/>
+      <rect x="110" y="0" width="9" height="22" fill="#fcecec" stroke="#c1502e" stroke-width="0.5"/>
+      <rect x="120" y="0" width="9" height="22" fill="#fcecec" stroke="#c1502e" stroke-width="0.5"/>
+      <rect x="130" y="0" width="9" height="22" fill="#fcecec" stroke="#c1502e" stroke-width="0.5"/>
+      <text x="65" y="36" font-size="8" fill="#1a1612" text-anchor="middle">each = E2M1 (4 bits)</text>
+    </g>
+
+    <!-- Block 1 -->
+    <rect x="180" y="25" width="170" height="50" fill="#fff5d8" stroke="#1a1612" stroke-width="1.5"/>
+    <text x="185" y="40" font-size="9" font-weight="700" fill="#1a1612">Block 1: 16 values</text>
+    <g transform="translate(185, 47)">
+      <rect x="0" y="0" width="9" height="22" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+      <rect x="10" y="0" width="9" height="22" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+      <rect x="20" y="0" width="9" height="22" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+      <text x="40" y="14" font-size="9" fill="#1a1612">…</text>
+      <rect x="60" y="0" width="9" height="22" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+      <rect x="70" y="0" width="9" height="22" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+      <rect x="80" y="0" width="9" height="22" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+      <rect x="100" y="0" width="9" height="22" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+      <rect x="110" y="0" width="9" height="22" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+      <rect x="120" y="0" width="9" height="22" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+      <rect x="130" y="0" width="9" height="22" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="0.5"/>
+    </g>
+
+    <!-- Block 2 -->
+    <rect x="360" y="25" width="170" height="50" fill="#fff5d8" stroke="#1a1612" stroke-width="1.5"/>
+    <text x="365" y="40" font-size="9" font-weight="700" fill="#1a1612">Block 2: 16 values</text>
+    <g transform="translate(365, 47)">
+      <rect x="0" y="0" width="9" height="22" fill="#ffd5dc" stroke="#b85a6c" stroke-width="0.5"/>
+      <rect x="10" y="0" width="9" height="22" fill="#ffd5dc" stroke="#b85a6c" stroke-width="0.5"/>
+      <text x="35" y="14" font-size="9" fill="#1a1612">…</text>
+      <rect x="60" y="0" width="9" height="22" fill="#ffd5dc" stroke="#b85a6c" stroke-width="0.5"/>
+      <rect x="70" y="0" width="9" height="22" fill="#ffd5dc" stroke="#b85a6c" stroke-width="0.5"/>
+      <rect x="100" y="0" width="9" height="22" fill="#ffd5dc" stroke="#b85a6c" stroke-width="0.5"/>
+      <rect x="110" y="0" width="9" height="22" fill="#ffd5dc" stroke="#b85a6c" stroke-width="0.5"/>
+      <rect x="130" y="0" width="9" height="22" fill="#ffd5dc" stroke="#b85a6c" stroke-width="0.5"/>
+    </g>
+
+    <text x="540" y="60" font-size="9" fill="#1a1612">… many blocks …</text>
+
+    <text x="0" y="90" font-size="9" fill="#1a1612">Each value is 4 bits — total tensor uses ½ bytes per element of stored data</text>
+  </g>
+
+  <!-- Per-block scales -->
+  <g transform="translate(20, 160)">
+    <text x="0" y="14" font-size="11" font-weight="700" fill="#1a1612">Level 1: Per-block scales (one per micro-block of 16)</text>
+
+    <rect x="0" y="25" width="50" height="30" fill="#fcecec" stroke="#c1502e" stroke-width="1.5"/>
+    <text x="25" y="42" text-anchor="middle" font-size="9" font-weight="700" fill="#c1502e">FP8</text>
+    <text x="25" y="55" text-anchor="middle" font-size="8" fill="#1a1612">E4M3</text>
+
+    <text x="60" y="42" font-size="9" fill="#1a1612">scale₀</text>
+
+    <rect x="100" y="25" width="50" height="30" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="1.5"/>
+    <text x="125" y="42" text-anchor="middle" font-size="9" font-weight="700" fill="#1f5f5b">FP8</text>
+    <text x="125" y="55" text-anchor="middle" font-size="8" fill="#1a1612">E4M3</text>
+
+    <text x="160" y="42" font-size="9" fill="#1a1612">scale₁</text>
+
+    <rect x="200" y="25" width="50" height="30" fill="#ffd5dc" stroke="#b85a6c" stroke-width="1.5"/>
+    <text x="225" y="42" text-anchor="middle" font-size="9" font-weight="700" fill="#b85a6c">FP8</text>
+    <text x="225" y="55" text-anchor="middle" font-size="8" fill="#1a1612">E4M3</text>
+
+    <text x="260" y="42" font-size="9" fill="#1a1612">scale₂  …</text>
+
+    <text x="0" y="80" font-size="9" fill="#1a1612">8 bits per block, fine-grained, adapts to local dynamic range; vs MXFP4's 8-bit E8M0 (power-of-two only)</text>
+  </g>
+
+  <!-- Per-tensor scale -->
+  <g transform="translate(20, 270)">
+    <text x="0" y="14" font-size="11" font-weight="700" fill="#1a1612">Level 2: Per-tensor scale</text>
+    <rect x="0" y="25" width="100" height="30" fill="#fff8a8" stroke="#1a1612" stroke-width="2"/>
+    <text x="50" y="42" text-anchor="middle" font-size="10" font-weight="700" fill="#1a1612">FP32 scalar</text>
+    <text x="50" y="55" text-anchor="middle" font-size="8" fill="#1a1612">tensor-wide</text>
+    <text x="120" y="42" font-size="10" fill="#1a1612">→ Provides global dynamic range; computed once per tensor</text>
+  </g>
+
+  <!-- Reconstruction -->
+  <g transform="translate(20, 340)">
+    <rect x="0" y="0" width="700" height="30" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="2"/>
+    <text x="350" y="20" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1612">Effective value = E2M1_value × FP8_block_scale × FP32_tensor_scale</text>
+  </g>
+</svg>
+</div>
+
+<p>The two-level scaling matters because of the dynamic range problem. A weight tensor in a transformer has values ranging from ~10⁻⁵ to ~10¹; FP4 (E2M1) has ~4 unique non-zero magnitudes per sign. Without scaling, almost everything underflows or saturates. With <em>per-tensor</em> scaling alone (single scalar), you can shift the whole range but can't adapt to local variation — some blocks will have extreme values that swamp the rest, losing precision elsewhere. With <em>per-block</em> scaling alone, you handle local variation but can't represent the tensor's overall scale efficiently.</p>
+
+<p>Two-level scaling does both: per-tensor FP32 captures the global magnitude; per-block FP8 (E4M3) captures local variation across 16-value micro-blocks. The block size of 16 is empirically validated (FP4 All the Way, May 2025): below 16 elements, accuracy gains are diminishing; above 32 (MXFP4's choice), important local information is lost.</p>
+
+<h3>NVFP4 vs MXFP4</h3>
+
+<p>The Open Compute Project's MXFP4 format predated NVFP4 and uses a different design:</p>
+
+<div class="table-wrap">
+<table>
+<caption>NVFP4 vs MXFP4 design choices</caption>
+<thead><tr><th>Choice</th><th>NVFP4 (NVIDIA)</th><th>MXFP4 (OCP)</th></tr></thead>
+<tbody>
+<tr><td>Block size</td><td>16 values</td><td>32 values</td></tr>
+<tr><td>Block scale format</td><td>FP8 (E4M3)</td><td>E8M0 (power-of-two)</td></tr>
+<tr><td>Tensor-level scale</td><td>FP32 scalar</td><td>None</td></tr>
+<tr><td>Element format</td><td>FP4 (E2M1)</td><td>FP4 (E2M1)</td></tr>
+<tr><td>Native HW support</td><td>Blackwell Tensor Cores</td><td>Blackwell Tensor Cores (also)</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>The empirical comparison (NVIDIA NVFP4 paper, FP4 All the Way): NVFP4 produces lower quantization error and better training stability than MXFP4 at the same compute cost. The reasons: smaller blocks (16 vs 32) capture local variation better; E4M3 scales are fine-grained where E8M0 is power-of-two only; the per-tensor FP32 captures global range MXFP4 lacks. <em>Blackwell hardware accelerates both formats; NVFP4 is the production default for new training in 2026.</em></p>
+
+<h2>The training recipe: what makes NVFP4 actually work</h2>
+
+<p>FP4 training fails naively. Just casting weights and activations to NVFP4 produces unstable training, with loss curves diverging in the first few thousand steps. The recipe that makes it work is a stack of techniques developed through 2024-2026:</p>
+
+<h3>1. Random Hadamard transforms (RHT)</h3>
+
+<p>The problem: weight and activation tensors have outliers — a small number of extreme values that dominate block-level scaling. With outliers present, the FP8 block scale gets pulled toward the outlier, and the other 15 values in the block lose precision.</p>
+
+<p>The fix: <strong>apply a random Hadamard transform before quantization</strong>. The Hadamard transform is a structured orthogonal transform (constructable from ±1 matrices); it's its own inverse. Multiplying a vector by a random Hadamard matrix produces a transformed vector whose values have similar magnitude — outliers get distributed across all positions. After GEMM, you transform back.</p>
+
+<pre><code><span class="kw">def</span> <span class="fn">nvfp4_quantize_with_rht</span>(tensor, hadamard_seed):
+    <span class="com"># Step 1: apply random Hadamard transform to disperse outliers</span>
+    H = <span class="fn">random_hadamard_matrix</span>(tensor.shape[-<span class="num">1</span>], seed=hadamard_seed)
+    transformed = tensor @ H
+
+    <span class="com"># Step 2: quantize to NVFP4 (now with bounded block-level outliers)</span>
+    nvfp4_values, block_scales, tensor_scale = <span class="fn">quantize_nvfp4</span>(transformed)
+
+    <span class="kw">return</span> nvfp4_values, block_scales, tensor_scale, H
+
+<span class="com"># During GEMM:</span>
+<span class="com">#   y = (W @ H) @ (H^T @ x) = W @ x   (since H @ H^T = I)</span>
+<span class="com"># Both operands quantized in their RHT-transformed space</span>
+<span class="com"># The two H's cancel mathematically; in practice, you absorb them into adjacent layers</span></code></pre>
+
+<p>The Hadamard transform is cheap (O(n log n) and structured), reversible (orthogonal), and provably bounds the variance of stochastic rounding. <em>RHT is the single most important technique for FP4 training stability</em>; the published recipes (NVIDIA's, FP4 All the Way's, Quartet's) all use some variant.</p>
+
+<h3>2. Stochastic rounding (SR) for unbiased gradients</h3>
+
+<p>Round-to-nearest (RtN) is the default rounding mode and the obvious choice. For training, it has a problem: it's <em>biased</em>. When you average many quantized gradients, the rounding errors accumulate non-zero — small biases compound across millions of steps.</p>
+
+<p><strong>Stochastic rounding</strong> replaces deterministic rounding with probabilistic rounding: a value lying 0.3 between two representable quantization levels rounds up with probability 0.3, down with probability 0.7. The expected value equals the original; quantization is unbiased.</p>
+
+<p>The empirical finding (FP4 All the Way, May 2025; Chmiel et al.): <strong>split rounding strategy — SR backward / RtN forward — beats both pure-SR and pure-RtN</strong>. Forward pass uses RtN for stability (deterministic forward outputs, no extra noise during inference); backward pass uses SR for unbiased gradient estimates. Combining them gives the best of both.</p>
+
+<pre><code><span class="kw">def</span> <span class="fn">stochastic_round_to_nvfp4</span>(value, block_scale, tensor_scale):
+    <span class="com"># Effective scale = block_scale * tensor_scale</span>
+    <span class="com"># Quantize value into FP4 levels [-6, -4, -3, -2, -1, -0.5, -0, 0, 0.5, 1, 2, 3, 4, 6, 8, 12]</span>
+    <span class="com"># (the 16 representable magnitudes of E2M1 with sign)</span>
+    scaled = value / (block_scale * tensor_scale)
+    floor_level = <span class="fn">find_lower_level</span>(scaled)
+    ceil_level = <span class="fn">find_upper_level</span>(scaled)
+    p = (scaled - floor_level) / (ceil_level - floor_level)
+
+    <span class="com"># Probabilistic rounding</span>
+    <span class="kw">if</span> torch.<span class="fn">rand</span>(<span class="num">1</span>).<span class="fn">item</span>() &lt; p:
+        <span class="kw">return</span> ceil_level   <span class="com"># round up with probability p</span>
+    <span class="kw">else</span>:
+        <span class="kw">return</span> floor_level <span class="com"># round down with probability 1-p</span></code></pre>
+
+<p>Blackwell Tensor Cores support stochastic rounding natively for FP4 conversion instructions; the recipe doesn't pay extra latency for SR. <em>Without SR, FP4 training diverges; with SR, it converges to FP8-equivalent quality.</em></p>
+
+<h3>3. Two-dimensional quantization</h3>
+
+<p>For a GEMM <code>C = A @ B</code>, both A and B need to be quantized. The naive approach quantizes each independently: A's blocks are along its rows, B's blocks are along its columns. The problem: forward (<code>C = A @ B</code>) and backward (<code>dA = dC @ B^T</code>, <code>dB = A^T @ dC</code>) passes use the operands in different orientations, and per-row quantization for forward doesn't match per-column quantization for backward — the same tensor has two different quantization representations.</p>
+
+<p><strong>Two-dimensional quantization</strong>: quantize A along both dimensions (block-scaled rows AND block-scaled columns), keep both representations. Forward uses one; backward uses the other. The cost is 2× the scale storage; the benefit is consistency between forward and backward, which substantially improves convergence.</p>
+
+<p>This is implementation-heavy — most production NVFP4 training stacks ship with 2D quantization built into the linear layer. Megatron-Core, NVIDIA Transformer Engine, and the open-source FP4 training repositories all support it as of April 2026.</p>
+
+<h3>4. Selective high-precision layers</h3>
+
+<p>Not every layer benefits from FP4. The published recipes keep specific layers in higher precision:</p>
+
+<ul>
+  <li><strong>Embedding layer</strong>: token embeddings often have high dynamic range and are looked up sparsely; FP4 quantization hurts. Keep in FP8 or BF16.</li>
+  <li><strong>Output (LM head)</strong>: the final linear projection to vocabulary logits is sensitive to small errors in unlikely tokens. Keep in FP8.</li>
+  <li><strong>LayerNorm / RMSNorm</strong>: normalization statistics need higher precision; the multiply by gain is fine in FP4 but the actual normalization should be in FP32.</li>
+  <li><strong>Optimizer state</strong>: Adam moments and master weights stay in FP32 always.</li>
+  <li><strong>Loss computation</strong>: cross-entropy and softmax in FP32 to preserve numerical stability.</li>
+</ul>
+
+<p>The bulk of the GEMMs (attention QKV projections, attention output, MLP up/down) all run in NVFP4. That's where the FLOP savings are.</p>
+
+<h3>5. Healing</h3>
+
+<p>NVIDIA's MLPerf v5.1 submission introduced <strong>healing</strong>: <em>keep the last few iterations of training in FP8 precision rather than NVFP4</em>. The intuition: by the end of training, gradients are small and quantization noise (relative to gradient magnitude) becomes more harmful. Switching to higher precision for the final iterations recovers the last fraction of accuracy that pure FP4 would leave behind.</p>
+
+<p>Concretely: train ~95% of total iterations in NVFP4; switch to FP8 for the final ~5%. The cost is small (5% of compute is roughly 1.7× more expensive in FP8 vs FP4); the accuracy gain is meaningful — typically 0.2-0.5% on downstream evals, sometimes more for sensitive tasks.</p>
+
+<p>Healing was a key ingredient in NVIDIA's MLPerf v5.1 sweep. Production training runs increasingly include a healing phase as standard.</p>
+
+<h3>The combined recipe at a glance</h3>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 740 280" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs>
+    <marker id="arrFP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f5f5b"/>
+    </marker>
+  </defs>
+  <text x="370" y="22" font-size="14" font-weight="700" fill="#1a1612" text-anchor="middle">The NVFP4 training recipe — five techniques compose to FP8-equivalent quality</text>
+
+  <!-- Pipeline boxes -->
+  <g transform="translate(20, 50)">
+    <rect x="0" y="0" width="120" height="60" fill="#fff5d8" stroke="#d4a017" stroke-width="1.5"/>
+    <text x="60" y="20" text-anchor="middle" font-size="10" font-weight="700" fill="#1a1612">1. RHT</text>
+    <text x="60" y="35" text-anchor="middle" font-size="8" fill="#1a1612">disperse outliers</text>
+    <text x="60" y="48" text-anchor="middle" font-size="8" fill="#1a1612">before quantize</text>
+  </g>
+
+  <line x1="140" y1="80" x2="158" y2="80" stroke="#1f5f5b" stroke-width="1.5" marker-end="url(#arrFP)"/>
+
+  <g transform="translate(160, 50)">
+    <rect x="0" y="0" width="120" height="60" fill="#fcecec" stroke="#c1502e" stroke-width="1.5"/>
+    <text x="60" y="20" text-anchor="middle" font-size="10" font-weight="700" fill="#1a1612">2. Split rounding</text>
+    <text x="60" y="35" text-anchor="middle" font-size="8" fill="#1a1612">SR backward,</text>
+    <text x="60" y="48" text-anchor="middle" font-size="8" fill="#1a1612">RtN forward</text>
+  </g>
+
+  <line x1="280" y1="80" x2="298" y2="80" stroke="#1f5f5b" stroke-width="1.5" marker-end="url(#arrFP)"/>
+
+  <g transform="translate(300, 50)">
+    <rect x="0" y="0" width="120" height="60" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="1.5"/>
+    <text x="60" y="20" text-anchor="middle" font-size="10" font-weight="700" fill="#1a1612">3. 2D quant</text>
+    <text x="60" y="35" text-anchor="middle" font-size="8" fill="#1a1612">consistent fwd/bwd</text>
+    <text x="60" y="48" text-anchor="middle" font-size="8" fill="#1a1612">representations</text>
+  </g>
+
+  <line x1="420" y1="80" x2="438" y2="80" stroke="#1f5f5b" stroke-width="1.5" marker-end="url(#arrFP)"/>
+
+  <g transform="translate(440, 50)">
+    <rect x="0" y="0" width="120" height="60" fill="#ffd5dc" stroke="#b85a6c" stroke-width="1.5"/>
+    <text x="60" y="20" text-anchor="middle" font-size="10" font-weight="700" fill="#1a1612">4. Selective</text>
+    <text x="60" y="35" text-anchor="middle" font-size="8" fill="#1a1612">embed/head/norm</text>
+    <text x="60" y="48" text-anchor="middle" font-size="8" fill="#1a1612">stay FP8/BF16</text>
+  </g>
+
+  <line x1="560" y1="80" x2="578" y2="80" stroke="#1f5f5b" stroke-width="1.5" marker-end="url(#arrFP)"/>
+
+  <g transform="translate(580, 50)">
+    <rect x="0" y="0" width="120" height="60" fill="#fff8a8" stroke="#1a1612" stroke-width="2"/>
+    <text x="60" y="20" text-anchor="middle" font-size="10" font-weight="700" fill="#1a1612">5. Healing</text>
+    <text x="60" y="35" text-anchor="middle" font-size="8" fill="#1a1612">last 5% in FP8</text>
+    <text x="60" y="48" text-anchor="middle" font-size="8" fill="#1a1612">final accuracy</text>
+  </g>
+
+  <!-- Validation results -->
+  <g transform="translate(20, 145)">
+    <rect x="0" y="0" width="700" height="120" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="2"/>
+    <text x="350" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1612">Validation: published results matching higher-precision baselines</text>
+
+    <text x="20" y="48" font-size="10" fill="#1a1612">  • <tspan font-weight="700">NVIDIA NVFP4 paper (Sep 2025, refined Mar 2026)</tspan>: 12B model on 10T tokens, NVFP4 matches FP8 baseline on loss + downstream evals</text>
+    <text x="20" y="65" font-size="10" fill="#1a1612">  • <tspan font-weight="700">FP4 All the Way (May 2025)</tspan>: 7B model on 200T tokens, fully quantized FP4 weights+activations+gradients matches BF16</text>
+    <text x="20" y="82" font-size="10" fill="#1a1612">  • <tspan font-weight="700">MLPerf Training v5.1 (Nov 2025)</tspan>: NVIDIA swept all 7 benchmarks with NVFP4 (LLM tests included)</text>
+    <text x="20" y="99" font-size="10" fill="#1a1612">  • <tspan font-weight="700">Quartet II / MS-EDEN (2026)</tspan>: stochasticity moved to microscale factors, further improving convergence</text>
+    <text x="20" y="113" font-size="10" font-weight="700" fill="#1f5f5b">  → As of April 2026, NVFP4 is production-grade for pretraining with the right recipe.</text>
+  </g>
+</svg>
+</div>
+
+<h2>MLPerf Training v5.1: the proof point</h2>
+
+<p>NVIDIA's MLPerf Training v5.1 submission (November 2025) was the public validation that NVFP4 training works at scale:</p>
+
+<ul>
+  <li><strong>Sweep of all 7 benchmarks</strong>. NVIDIA was the only platform to submit on every test; Blackwell-based systems delivered fastest time-to-train across LLM, image generation, recommender systems, computer vision, and graph neural networks.</li>
+  <li><strong>Llama 3.1 405B in 10 minutes</strong> on 5,120 Blackwell GPUs (640 GB200 NVL72 systems). This is the headline number — pretraining a 405B model in single-digit minutes was unthinkable a year earlier.</li>
+  <li><strong>3.2× faster than Hopper FP8</strong> at the same GPU count on Llama 3.1 405B. Pure hardware-software combination of NVFP4 + Blackwell Tensor Cores + improved cuBLAS / Transformer Engine / Megatron-Core.</li>
+  <li><strong>1.4× higher than FP8 on the same Blackwell rack</strong>. Apples-to-apples improvement from FP8 → NVFP4 on identical hardware.</li>
+  <li><strong>Llama 3.1 405B at 5,120 Blackwell GPUs is 1.9× faster than at 512 across multiple GB200 NVL72 systems using FP8 in the prior round</strong>.</li>
+  <li><strong>GB300 NVL72 vs GB200 NVL72</strong>: ~12% reduction in training time on Llama-2-70B LoRA and Llama-3.1-8B (Nebius's submission), representing the Blackwell Ultra refresh.</li>
+</ul>
+
+<p>NVIDIA's submission used: <strong>NVFP4 for the bulk of training</strong>; <strong>FP8 for attention BMM inputs</strong>; <strong>fused RoPE kernels</strong>; <strong>healing in FP8 for the final iterations</strong>; <strong>device-to-device memory copy avoidance</strong>; and the underlying CUTLASS, Transformer Engine, and Megatron-Core infrastructure. <em>The recipe is now public; the same components are available open-source for production training.</em></p>
+
+<h2>What's new in Blackwell silicon</h2>
+
+<p>Beyond raw FLOPs, Blackwell introduces architectural changes that CUTLASS and other kernel libraries must use to extract performance. Three matter most:</p>
+
+<h3>Tensor Memory (TMEM)</h3>
+
+<p>A new on-chip memory tier between SMEM and registers, dedicated to MMA accumulators and operands. 192KB per SM. Replaces the old Hopper pattern where MMA accumulators sat in registers.</p>
+
+<p>The implication: <strong>MMA operations don't need register space for matrix data</strong>. UMMA (Universal MMA, the 5th-gen Tensor Core instruction <code>tcgen05.mma</code>) takes both inputs from SMEM (or one from SMEM, one from TMEM); the accumulator lives in TMEM. With no register pressure tied to tile size, you can run massive tiles that wouldn't fit on Hopper. Blackwell GEMM throughput is ~7× over Hopper for the same algorithm partly because of TMEM-enabled larger tiles.</p>
+
+<h3>CTA pairs and 2-SM UMMA</h3>
+
+<p>Two CTAs (Cooperative Thread Arrays — Blackwell's term for thread blocks) in a thread block cluster form a "CTA pair" if their ranks differ in only the last bit (0/1, 4/5, etc.). A CTA pair maps to a Texture Processing Cluster (TPC) — two physically adjacent SMs.</p>
+
+<p>The 5th-gen Tensor Core's <strong>2-SM UMMA</strong> instruction operates at CTA-pair granularity: the two CTAs share input operands. One CTA loads operand A, the other loads operand B; both compute partial outputs; the result is combined. Memory bandwidth for shared operands is halved (each operand loaded once across the pair instead of twice).</p>
+
+<p>The CUTLASS 3.8 Blackwell tutorials walk through implementing 2-SM UMMA: TMA multicast loads operand into both CTAs; tile sizes increase to 256×256 or larger; the synchronization primitives are different from Hopper's WGMMA. <em>Production GEMM kernels for Blackwell increasingly use 2-SM UMMA</em>; the CUTLASS examples are organized around it as the default Blackwell pattern.</p>
+
+<h3>Single-thread MMA launch</h3>
+
+<p>On Hopper, MMA instructions required all threads in a warp to participate; on Blackwell, <strong>UMMA is launched by a single thread</strong>. The MMA executes asynchronously; other threads in the CTA can do other work simultaneously.</p>
+
+<p>The implication: <strong>warp specialization becomes more flexible</strong>. The traditional pattern (one warp does TMA loads, one warp does MMA, one warp does epilogue) extends to fine-grained per-thread specialization. Combined with the no-register MMA from TMEM, the CTA's main execution can decouple substantially from MMA work — MMA "fires and forgets" while other threads handle pre/post-processing.</p>
+
+<h3>CUTLASS 3.8 and CuTile</h3>
+
+<p>The software side of Blackwell's hardware features. <strong>CUTLASS 3.8</strong> (released through 2025-2026) added Blackwell support — TMEM, CTA pairs, 2-SM UMMA, TMA multicast, native NVFP4 and MXFP4 GEMMs with hardware block-scaling. The CUTLASS team's Blackwell tutorials (Colfax Research, late 2025 / early 2026) walk through writing GEMM kernels from scratch using these features.</p>
+
+<p><strong>CuTile (NVIDIA, late 2025)</strong>: a Python-based tile-centric DSL that abstracts warps, registers, and SMEM behind high-level primitives (<code>ct.load</code>, <code>ct.mma</code>, <code>ct.store</code>). Targets the same hardware features (Tensor Cores, TMA) but reduces the engineering burden of writing CUTLASS kernels. Closer to Triton in usability; closer to CUTLASS in performance ceiling.</p>
+
+<p>For most production training in 2026: <strong>use Megatron-Core or Transformer Engine</strong> (which use CUTLASS underneath); the kernel-level details are abstracted. CuTile and CUTLASS are for kernel authors and performance specialists; the typical training engineer writes high-level PyTorch.</p>
+
+<h2>The economics: why this matters</h2>
+
+<p>The hardware/format generation jumps compound on training cost. Concrete published numbers as of December 2025 / early 2026:</p>
+
+<ul>
+  <li><strong>~2× performance-per-dollar of H100</strong>: GB200 NVL72 vs HGX H100 on Llama 3.1 405B at GPU rental prices.</li>
+  <li><strong>~3.2× per-GPU training speedup</strong>: GB200 NVL72 with NVFP4 vs HGX H100 with FP8 at same GPU count.</li>
+  <li><strong>Inference: $0.02 per million tokens</strong> on GPT-OSS-120B with Blackwell + FP4 + TensorRT-LLM (SemiAnalysis InferenceX, Q1 2026); ~4.5× cheaper than Hopper-vLLM.</li>
+  <li><strong>~50% memory reduction</strong> per parameter going from FP8 to NVFP4. A 70B model needs ~140GB in FP8; ~70GB in NVFP4. Single-GPU training of 70B-class models becomes practical.</li>
+</ul>
+
+<p>The implication for project planning: <strong>same training budget produces 2-3× the model quality, or the same model 2-3× cheaper</strong>. Training that cost $10M on Hopper costs ~$3-5M on Blackwell. Training that cost $1M scales up to $1M of more capable training. The economic shift is substantial enough to reshape who can train frontier models.</p>
+
+<h2>Lookahead: Rubin (2026-2027)</h2>
+
+<p>NVIDIA has publicly committed to Rubin as Blackwell's successor. The published projections (Feb 2026 NVIDIA developer blog):</p>
+
+<ul>
+  <li><strong>35 PFLOPS NVFP4 training compute per GPU</strong> — 3.5× over Blackwell.</li>
+  <li><strong>50 PFLOPS NVFP4 Transformer Engine inference</strong> — 5× over Blackwell.</li>
+  <li>Larger HBM (likely HBM4) at higher bandwidth.</li>
+  <li>NVLink 6 with substantial inter-GPU bandwidth gains.</li>
+  <li>Likely additional precision modes — narrower than FP4 is theoretically possible (FP3, custom logarithmic formats); industry watching for what the Rubin Tensor Cores will support.</li>
+</ul>
+
+<p>The expected production timeline: Rubin sampling 2026, broad availability 2027. <em>The training recipe established for NVFP4 on Blackwell will likely transfer to Rubin's supported formats with minor adjustments</em> — the techniques (Hadamard transforms, stochastic rounding, two-dimensional quantization, healing) generalize. Whether sub-FP4 training (3-bit, 2-bit) becomes practical is the open question; published research suggests difficult below 4 bits without substantial accuracy loss.</p>
+
+<h2>Failure modes specific to NVFP4 training</h2>
+
+<p>FP4 training has its own characteristic failures, distinct from FP8 training:</p>
+
+<ul>
+  <li><strong>Loss divergence at small gradients</strong>. The FP4 All the Way paper identified a theoretical threshold: when gradient norm falls below ~√3 × quantization noise, FP4 training stops being effective. Symptom: loss plateaus or oscillates in late training. Mitigation: healing (switch to FP8) before crossing this threshold; monitor gradient-noise ratio.</li>
+  <li><strong>Outlier sensitivity</strong>. Some layers (particularly attention) develop large activation outliers that overwhelm block-level scaling. Symptom: spiky loss curves with occasional explosions. Mitigation: ensure RHT is applied; consider keeping attention outputs in FP8.</li>
+  <li><strong>Forward-backward mismatch</strong>. Without two-dimensional quantization, the same tensor has different representations in forward and backward, causing gradient inconsistency. Symptom: slow convergence, accuracy plateaus below FP8 baseline. Mitigation: ensure 2D quantization is enabled in your training stack.</li>
+  <li><strong>Optimizer state corruption</strong>. If Adam moments are quantized to FP4 (mistakenly or aggressively), they accumulate noise across millions of steps. Symptom: training instability that emerges after many steps, not during early training. Mitigation: keep optimizer states in FP32 always; only the GEMM operands are FP4.</li>
+  <li><strong>Embedding collapse</strong>. If embedding tables are FP4, rare tokens have too few representable values. Symptom: rare-token perplexity poor; tail of vocabulary degrades. Mitigation: embeddings in FP8/BF16 (selective high precision).</li>
+  <li><strong>Hardware-software mismatch</strong>. Not every framework version supports NVFP4 well. Symptom: training works on B200 with one PyTorch version, fails or performs poorly with another. Mitigation: use Transformer Engine ≥ 1.x with documented Blackwell support; cross-check Megatron-Core / DeepSpeed versions.</li>
+</ul>
+
+<p>The general defense: <strong>monitor more carefully than for FP8 training</strong>. Per-layer activation statistics, gradient-noise ratios, and per-iteration loss should all be tracked. FP4 training has less margin than FP8; problems compound faster.</p>
+
+<h2>The April 2026 production stack</h2>
+
+<p>Putting M14 + M41 together — what a frontier-class training pipeline looks like as of April 2026:</p>
+
+<ol>
+  <li><strong>Hardware</strong>: GB200 NVL72 or GB300 NVL72 racks (72 GPUs in a single NVLink 5 domain). For smaller training, HGX B200 / HGX B300 8-GPU systems.</li>
+  <li><strong>Numerics</strong>: NVFP4 for all linear layer GEMMs (QKV projections, attention output, MLP up/down). FP8 for attention BMM inputs (the matmul inside attention itself). FP8 or BF16 for embedding, output head, normalization, optimizer state, loss computation.</li>
+  <li><strong>Recipe</strong>: Random Hadamard transform before quantization; split rounding (SR backward, RtN forward); two-dimensional quantization for forward-backward consistency; selective high-precision layers; healing in FP8 for final ~5% of iterations.</li>
+  <li><strong>Software stack</strong>: NVIDIA Transformer Engine for the precision-aware operators; Megatron-Core for distributed training (pipeline + tensor + sequence parallelism); CUTLASS 3.8+ underlying the GEMMs; PyTorch 2.x as the framework.</li>
+  <li><strong>Distributed training</strong>: tensor parallelism within rack (NVLink 5 domain — high bandwidth); pipeline parallelism across racks; sequence parallelism for long contexts; FSDP/ZeRO-3 if needed.</li>
+  <li><strong>Monitoring</strong>: MLPerf-style metrics — time-to-train to target loss, FLOPs achieved vs theoretical peak, communication efficiency. Plus precision-specific: gradient-noise ratio, outlier statistics per layer, FP4 vs FP8 healing-phase overlap.</li>
+</ol>
+
+<p>This stack is concretely available — Megatron-Core + Transformer Engine + Blackwell hardware ships as a coherent package. The published recipes are reproducible; the MLPerf v5.1 results are independently verified. <em>FP4 training is no longer experimental in 2026; it's the production default for new pretraining runs on Blackwell hardware.</em></p>
+
+<div class="ndq">
+<h4>About Blackwell and NVFP4 training</h4>
+
+<p class="q">When should I NOT use FP4 training?</p>
+<p class="a">Three cases. (1) <strong>Models below ~1B parameters</strong>: at small scales, the engineering overhead of FP4 (recipe complexity, monitoring) outweighs the speedup. FP8 is mature enough and the differences are small. (2) <strong>Highly noise-sensitive tasks</strong>: some specialized training (e.g., scientific computing models, certain RL settings with very small effective gradients) hits the √3 threshold from FP4 All the Way faster than general LLM training. Use FP8 if you see plateauing that doesn't respond to healing. (3) <strong>You don't have Blackwell hardware</strong>: FP4 acceleration is Blackwell-native; on Hopper it's emulated and slower than FP8. The hardware-software pairing matters. <em>For new LLM pretraining in 2026 on Blackwell, FP4 is the default; for fine-tuning, FP8 is often sufficient and simpler.</em></p>
+
+<p class="q">How is NVFP4 different from quantization-aware training (QAT) for inference?</p>
+<p class="a">Different problem entirely. QAT trains a model with simulated quantization (forward pass uses quantized weights, backward uses higher precision) so the final weights are robust to quantization at inference. The training itself runs in BF16 or FP8 — the quantization is "for the model's benefit at deployment time." NVFP4 training is the opposite: <em>the actual training compute happens in FP4</em>. Forward and backward GEMMs both use FP4; the goal is faster training, not better post-training quantization. The two are complementary: you might train in NVFP4 for speed, then do QAT in NVFP4 for further inference robustness, then deploy in NVFP4 for inference. As of April 2026, the lines are blurring — natively-FP4-trained models are already FP4-friendly at inference, reducing the need for separate QAT.</p>
+
+<p class="q">Why does the block size of 16 specifically matter?</p>
+<p class="a">Empirical and analytical reasons converge. The FP4 All the Way ablation (May 2025) tested block sizes from 4 to 64; below 16 elements, accuracy gains from smaller blocks plateau (the per-block scale captures most local variation already at 16); above 32 (MXFP4's choice), important local information is lost — block-level outliers pull the scale toward themselves and hurt the other 31 values. 16 is the sweet spot. The hardware design (Blackwell Tensor Cores) is built around 16-value blocks for NVFP4 specifically; supporting smaller blocks would multiply scaling-factor storage (8 bits per 16 values is reasonable; 8 bits per 4 values would dominate). <em>The number 16 is a hardware-software co-design optimum, not arbitrary.</em></p>
+
+<p class="q">What's the relationship between Hadamard transforms and the rotation-based jailbreak / interpretability literature?</p>
+<p class="a">Same mathematical machinery, very different applications. Hadamard transforms are structured orthogonal transforms with the property that they spread information across all dimensions. In NVFP4 training: spread outliers across positions to avoid block-scale dominance. In interpretability (M36): rotate activation space to align with sparse features (random rotations are a baseline for SAE training). In some jailbreak research: random rotations of the input embeddings to find adversarial directions. The connection is that orthogonal transforms preserve dot products and norms — they don't change the "meaning" of data, just its representation. <em>Hadamard transforms specifically are popular because they're cheap (O(n log n) and structured), invertible, and have provable variance-bounding properties.</em></p>
+
+<p class="q">If FP4 is so much faster, why isn't every training run using it?</p>
+<p class="a">Three frictions. (1) <strong>Engineering investment</strong>: the recipe (RHT, SR, 2D quant, selective precision, healing) requires careful integration. Most existing training stacks default to FP8 or BF16 because that's what's been mature longer. The migration cost is real. (2) <strong>Hardware availability</strong>: Blackwell GPUs are new and expensive; the installed base of Hopper is much larger. Most teams still train on H100/H200 where FP4 doesn't help. (3) <strong>Risk tolerance</strong>: pretraining a frontier model is a $10M-100M investment; teams are conservative about adopting numerics changes that could destabilize the run. NVIDIA's MLPerf v5.1 sweep (Nov 2025) and the open recipes (Sep 2025-Mar 2026) substantially derisked this; production adoption is accelerating through 2026. <em>By Q4 2026, expect FP4 to be the default for new Blackwell-based training runs; legacy Hopper continues with FP8.</em></p>
+
+<p class="q">What's the most practical path to learn NVFP4 training hands-on without GB200 access?</p>
+<p class="a">Three options. (1) <strong>Cloud GPU rental</strong>: B200 instances available on Lambda, RunPod, CoreWeave, Modal, Lambda Labs, and others. ~$3-6/hour as of April 2026; affordable for learning experiments. (2) <strong>Open-source NVFP4 training repos</strong>: NVIDIA's Megatron-Core has Blackwell-targeted examples; Hugging Face's TRL has support; community projects like the FP4-All-the-Way repo and Quartet are reproducible. Run on rented B200s for a few hours. (3) <strong>Read the recipes</strong>: NVIDIA's NVFP4 pretraining paper (Sep 2025, refined Mar 2026), FP4 All the Way (May 2025), Quartet II (2026), the CUTLASS Blackwell tutorials (Colfax Research) — together cover the full landscape. Reading + small B200-rental experiments gets you working knowledge in 1-2 weeks; production deployment is a longer commitment but builds on the same foundation. <em>The barrier to entry is lower than for previous numerics shifts (FP16, FP8); the recipes are publicly documented and the hardware is rentable.</em></p>
+</div>
+
+<h2>Code Magnets: implement the NVFP4 quantization step</h2>
+
+<p>You're writing the per-tensor NVFP4 quantization step with RHT and split rounding. Three magnets are wrong choices.</p>
+
+<div class="magnets">
+<p>Arrange the magnets to compute NVFP4 quantization for a GEMM operand.</p>
+
+<div class="magnet-pool">
+  <span class="magnet">def nvfp4_quantize(tensor, hadamard_seed, is_backward):</span>
+  <span class="magnet">    H = random_hadamard_matrix(tensor.shape[-1], seed=hadamard_seed)</span>
+  <span class="magnet">    transformed = tensor @ H</span>
+  <span class="magnet">    transformed = tensor</span>
+  <span class="magnet">    tensor_scale = transformed.abs().amax() / FP4_MAX_VALUE</span>
+  <span class="magnet">    blocks = transformed.reshape(-1, 16)</span>
+  <span class="magnet">    block_scales = blocks.abs().amax(dim=-1, keepdim=True) / FP4_MAX_VALUE</span>
+  <span class="magnet">    rounding = stochastic_round if is_backward else round_to_nearest</span>
+  <span class="magnet">    rounding = round_to_nearest</span>
+  <span class="magnet">    fp4_values = rounding(blocks / (block_scales * tensor_scale))</span>
+  <span class="magnet">    fp4_values = rounding(blocks / block_scales)</span>
+  <span class="magnet">    return fp4_values, block_scales, tensor_scale, H</span>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<pre><code><span class="kw">def</span> <span class="fn">nvfp4_quantize</span>(tensor, hadamard_seed, is_backward):
+    H = <span class="fn">random_hadamard_matrix</span>(tensor.shape[-<span class="num">1</span>], seed=hadamard_seed)
+    transformed = tensor @ H
+    tensor_scale = transformed.<span class="fn">abs</span>().<span class="fn">amax</span>() / FP4_MAX_VALUE
+    blocks = transformed.<span class="fn">reshape</span>(-<span class="num">1</span>, <span class="num">16</span>)
+    block_scales = blocks.<span class="fn">abs</span>().<span class="fn">amax</span>(dim=-<span class="num">1</span>, keepdim=<span class="kw">True</span>) / FP4_MAX_VALUE
+    rounding = stochastic_round <span class="kw">if</span> is_backward <span class="kw">else</span> round_to_nearest
+    fp4_values = <span class="fn">rounding</span>(blocks / (block_scales * tensor_scale))
+    <span class="kw">return</span> fp4_values, block_scales, tensor_scale, H</code></pre>
+<p>The traps:</p>
+<ul>
+  <li><code>transformed = tensor</code>: skips the Hadamard transform entirely. Without RHT, block-level outliers dominate the per-block scale; the other 15 values in each block lose precision; training quality degrades substantially. RHT is the most important single technique in the FP4 recipe — every published successful training run includes it. Skipping it means accepting MXFP4-level quality at NVFP4 cost; you get the worst of both formats.</li>
+  <li><code>rounding = round_to_nearest</code> (always RtN, no split rounding): uses RtN for both forward and backward passes. Forward in RtN is correct; backward needs SR for unbiased gradient estimation. Pure-RtN backward produces biased gradient estimates; the bias compounds across millions of training steps and pulls the model toward systematic errors. The published findings (FP4 All the Way and others) are clear: split rounding (SR backward, RtN forward) substantially beats pure-RtN. The <code>is_backward</code> parameter exists precisely to enable this; ignoring it defeats the purpose.</li>
+  <li><code>fp4_values = rounding(blocks / block_scales)</code>: divides only by the block scale, not by both block scale AND tensor scale. The two-level scaling means each value's effective magnitude is divided by both: block-level for local variation, tensor-level for global range. Dividing by only the block scale leaves the tensor-level dynamic range unaccounted for; values either underflow or saturate FP4's narrow range. Both scales must be applied in quantization (and reconstructed when computing the GEMM result).</li>
+</ul>
+<p>The pattern: <strong>random Hadamard transform → compute tensor scale → reshape into 16-value blocks → compute per-block scales → choose rounding mode based on forward/backward → quantize using BOTH scales</strong>. Each step has a specific role; the most common production bugs are skipping RHT (silent quality loss) and using a single scale level (silent precision loss).</p>
+</details>
+</div>
+
+<h2>Who does what?</h2>
+
+<div class="matching">
+<p class="intro">Match each Blackwell/NVFP4 concept to its real role.</p>
+
+<div class="match-grid">
+  <div class="header">Concept</div>
+  <div class="header">Real role</div>
+
+  <div>NVFP4</div>
+  <div>A. 4-bit format with 16-value blocks, FP8 (E4M3) block scales, FP32 tensor scale; near-FP8 accuracy.</div>
+
+  <div>Random Hadamard transform</div>
+  <div>B. Disperses block-level outliers before quantization; bounds variance of stochastic rounding.</div>
+
+  <div>Split rounding</div>
+  <div>C. Stochastic rounding in backward pass for unbiased gradients; RtN in forward for stability.</div>
+
+  <div>2D quantization</div>
+  <div>D. Quantize tensor along both row and column dimensions for forward-backward consistency.</div>
+
+  <div>Healing</div>
+  <div>E. Last 5% of training in FP8 to recover accuracy that pure FP4 would leave behind.</div>
+
+  <div>Tensor Memory (TMEM)</div>
+  <div>F. Blackwell on-chip memory tier between SMEM and registers; eliminates register pressure for MMA.</div>
+
+  <div>CTA pair / 2-SM UMMA</div>
+  <div>G. Two SMs share input operands via the 5th-gen Tensor Core; halves operand memory bandwidth.</div>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<p>
+<strong>NVFP4</strong> → A<br>
+<strong>Random Hadamard transform</strong> → B<br>
+<strong>Split rounding</strong> → C<br>
+<strong>2D quantization</strong> → D<br>
+<strong>Healing</strong> → E<br>
+<strong>Tensor Memory (TMEM)</strong> → F<br>
+<strong>CTA pair / 2-SM UMMA</strong> → G
+</p>
+<p>The mental shortcut: <em>NVFP4 packs values, Hadamard disperses outliers, split rounding handles fwd/bwd asymmetry, 2D quant handles tensor orientation, healing recovers final accuracy, TMEM holds accumulators, CTA pairs share operands</em>.</p>
+</details>
+</div>
+
+<h2>Exercises</h2>
+
+<div class="exercise">
+<p><strong>1.</strong> Your team is training a 30B model on 32× B200 GPUs. Initial NVFP4 training works for 2K steps, then loss starts spiking, then diverges by step 4K. Walk through the diagnosis.</p>
+<details class="answer"><summary>show answer</summary>
+<p>FP4 training divergence has a few characteristic causes. Walk through them in order:</p>
+<p>(1) <strong>Verify Hadamard transform is enabled</strong>. The most common cause of FP4 instability is missing or misapplied RHT. Check the linear layer config; ensure RHT is on for both forward and backward passes. Without RHT, block-level outliers cause occasional gradient spikes that diverge the policy. <em>Easiest first thing to check.</em></p>
+<p>(2) <strong>Check stochastic rounding configuration</strong>. Verify backward passes use SR, not RtN. Pure-RtN backward produces biased gradients that compound; biased compounding doesn't show up immediately, but emerges as instability in late training (consistent with your 2K-step onset). <em>The split rounding strategy is mandatory.</em></p>
+<p>(3) <strong>Check 2D quantization</strong>. If the same tensor has different representations in forward and backward (because only one dimension is quantized), gradient estimates are inconsistent. Symptom: slow convergence followed by instability. Verify the linear layer uses 2D quantization (most production stacks do by default in 2026; older versions might not).</p>
+<p>(4) <strong>Examine which layers are in NVFP4</strong>. If embedding or LM head is in NVFP4, that's a problem — they need higher precision (FP8 or BF16). Check the precision config; ensure selective high-precision layers are configured.</p>
+<p>(5) <strong>Plot per-layer gradient norms</strong>. If specific layers (commonly attention output projection or specific MLP layers) have spiky gradient norms, those layers may need to stay in FP8 even if RHT is on. NVIDIA's MLPerf submissions kept "attention BMM inputs" specifically in FP8 — there's a reason.</p>
+<p>(6) <strong>Check Transformer Engine / Megatron-Core version</strong>. Older versions had bugs in NVFP4 paths. Update to current versions; check the release notes for FP4 training stability fixes.</p>
+<p>(7) <strong>If all else fails, switch the problematic layers to FP8</strong>. The heterogeneous-precision approach (most layers NVFP4, some FP8) is sometimes necessary. Costs some throughput but recovers stability. Often a small number of layers are the source of all instability.</p>
+<p>The general lesson: <em>FP4 training has less margin than FP8</em>. Each technique in the recipe matters; missing one often leads to divergence. The published recipes are recipes for a reason — they encode hard-won lessons.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>2.</strong> Why does the per-tensor FP32 scale matter when you already have per-block FP8 (E4M3) scales? Couldn't you just use larger block scales?</p>
+<details class="answer"><summary>show answer</summary>
+<p>Two reasons that compound:</p>
+<p>(1) <strong>FP8 (E4M3) has limited dynamic range</strong>. E4M3 has 4 exponent bits — its range is roughly 2⁻⁶ to 2⁸ ≈ 256 in magnitude. A weight tensor in a transformer can have values ranging from 10⁻⁵ (small initialized weights) to 10¹ (after some training). That's 6 orders of magnitude. If the per-block scale itself is in FP8, the block scale can't cover both extremes — some blocks would have scales that overflow E4M3.</p>
+<p>(2) <strong>Globally normalizing first</strong>. The per-tensor FP32 scale captures the tensor's global magnitude (its max absolute value, scaled to fit in the format). Once you've divided by the per-tensor scale, all values are roughly within 0-1 (or so). The per-block FP8 scale then captures the local variation within each 16-value block — and FP8 has enough range for that.</p>
+<p>The two-level decomposition matches the actual structure of weight tensors: <em>large global magnitude (handled by FP32 scalar) plus moderate local variation within blocks (handled by FP8 per-block scales)</em>. Without the FP32 layer, you'd need much wider per-block scales (e.g., FP16 instead of FP8), doubling the scale storage and reducing the format's compression benefit.</p>
+<p>The MXFP4 design uses E8M0 single-level scaling — power-of-two-only block scales without a tensor-level FP32. This works but loses precision because E8M0 is coarse (only powers of 2 are representable as scale factors). NVFP4's two-level approach with E4M3 (fine-grained, fractional) plus FP32 (global) outperforms it empirically by ~5-15% on training quality at the same compute cost.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>3.</strong> Walk through what changes when porting a Hopper FP8 GEMM kernel to Blackwell NVFP4 in CUTLASS. What new concepts does the kernel author face?</p>
+<details class="answer"><summary>show answer</summary>
+<p>Six substantive changes to the kernel structure:</p>
+<p>(1) <strong>MMA instruction</strong>. Hopper used WGMMA (Warp-Group MMA, <code>wgmma.mma_async</code>) where a warp group of 4 warps cooperatively executed an MMA. Blackwell uses UMMA (Universal MMA, <code>tcgen05.mma</code>) launched from a single thread. The kernel structure changes from "issue WGMMA from warp group" to "elect one thread, issue UMMA from it." Synchronization is different.</p>
+<p>(2) <strong>Accumulator location</strong>. Hopper accumulators sat in registers; tile sizes were limited by register pressure. Blackwell accumulators sit in TMEM; tile sizes can be much larger (256×256 instead of 128×128 typically). The kernel allocates TMEM for accumulators using <code>tmem_allocator_sm100.hpp</code>; no register allocation needed for accumulators.</p>
+<p>(3) <strong>2-SM UMMA / CTA pairs</strong>. Blackwell offers 2-SM UMMA where two CTAs share input operands. The kernel can use 1-SM (simpler, like Hopper) or 2-SM (faster, requires CTA-pair coordination). Most production GEMMs use 2-SM. The TMA loads need to use multicast for the shared operand.</p>
+<p>(4) <strong>Block-scaled FP4 GEMMs</strong>. NVFP4 has hardware-supported block scaling, but the SMEM data layout must match the format's expected shape. The TMA tensor map type changes (<code>CU_TENSOR_MAP_DATA_TYPE_16U4_ALIGN8B</code> for sub-byte types). Scale factors are loaded separately via additional TMA atoms (e.g., <code>sfa_op</code> and <code>sfb_op</code> in the CUTLASS examples).</p>
+<p>(5) <strong>Tile size constraints</strong>. For block-scaled FP4 GEMMs, the M dimension must be 128 for 1-CTA MMA or 128/256 for 2-CTA MMA. The K dimension has its own constraints based on block size (16 for NVFP4). Tile shape selection is more constrained than on Hopper.</p>
+<p>(6) <strong>Synchronization</strong>. Hopper used <code>mbarrier</code> for fine-grained sync between TMA loads and WGMMA computes; Blackwell extends this with new primitives (different multicast TMA atoms, TMEM allocator synchronization). The CUTLASS Blackwell examples use these directly.</p>
+<p>The general lesson: <strong>Hopper-to-Blackwell isn't a drop-in port</strong>. Kernel authors face a substantial rewrite. The CUTLASS Blackwell tutorials (Colfax Research) walk through the changes; CUDA Tile / CuTile (NVIDIA, late 2025) abstracts much of this for kernel authors who don't want to deal with the low-level details. Most production training engineers don't write CUTLASS kernels directly — they use Megatron-Core / Transformer Engine, which abstract the kernels away.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>4.</strong> A team is training a 70B reasoning model with M39's distributed RLHF stack (REINFORCE++ baseline, Hybrid Engine, OpenRLHF) on 32× B200. Should they use NVFP4? Walk through the analysis.</p>
+<details class="answer"><summary>show answer</summary>
+<p>RLHF on Blackwell with NVFP4 is interesting because of the asymmetric workload. Walk through the considerations:</p>
+<p>(1) <strong>Rollout phase (~80% of compute, M39's framing)</strong>: vLLM-served inference. NVFP4 inference is well-supported on Blackwell — the published numbers ($0.02 per million tokens for GPT-OSS-120B) demonstrate substantial inference speedups in FP4. <strong>Yes, use NVFP4 for rollout</strong>. Memory savings (1.8× over FP8) also matter for KV cache, enabling larger batch sizes.</p>
+<p>(2) <strong>Training step (~20% of compute)</strong>: Actor backward pass. This is where FP4 training recipe applies. <strong>Probably yes, but check stability carefully</strong>. RL training has different gradient characteristics than pretraining — sparse rewards, off-policy correction, KL terms. The RLHF gradient signal can be smaller than pretraining gradients, potentially hitting the √3 threshold from FP4 All the Way faster. Test on a small run first; monitor gradient-noise ratio.</p>
+<p>(3) <strong>Reference model forward</strong>: pure inference, used to compute KL term. Same as rollout; <strong>NVFP4 inference is the right choice</strong>.</p>
+<p>(4) <strong>Reward model</strong>: pure inference, used to score rollouts. Same as rollout; <strong>NVFP4 inference</strong>.</p>
+<p>(5) <strong>Critical paths in RLHF</strong>: KL penalty computation, advantage computation, log-prob computation. These are mostly elementwise operations done in FP32 anyway; precision changes don't help.</p>
+<p>(6) <strong>Hybrid Engine implications</strong>: vLLM sleep/wake transitions handle weight conversion. The trainer's NVFP4-quantized weights need to be converted to the inference engine's expected format on each wake. This conversion is fast on Blackwell (native hardware support) but is an extra step the framework must handle. Verify your OpenRLHF / veRL version handles NVFP4 cleanly in Hybrid Engine mode.</p>
+<p>(7) <strong>Practical recommendation</strong>: <strong>start with NVFP4 inference (rollout, reference, reward) + FP8 training</strong>. This captures most of the speedup (rollout dominates) with minimal stability risk. Once that's stable, optionally migrate training to NVFP4 with healing. Total expected speedup: 2-3× over the same RLHF pipeline on Hopper FP8.</p>
+<p>The general lesson: <strong>NVFP4 wins decisively for inference workloads</strong> (which RLHF rollout largely is) and is reasonable but slightly riskier for training. RLHF specifically benefits asymmetrically because rollout is so dominant.</p>
+</details>
+</div>
+
+<div class="bullet-points">
+<h3>What just happened?</h3>
+<ul>
+  <li>The hardware moved twice since M14: <strong>Blackwell (B200, GB200 NVL72)</strong> introduced 5th-gen Tensor Cores with native FP4, 192GB HBM3e, NVLink 5, Tensor Memory (TMEM), CTA-pair MMA. <strong>Blackwell Ultra (B300, GB300 NVL72)</strong> refreshed with 270GB memory, 1.5× NVFP4 throughput.</li>
+  <li><strong>NVFP4 format</strong>: 4-bit values (E2M1) in 16-value micro-blocks, each with FP8 (E4M3) block scale, plus per-tensor FP32 scale. Two-level scaling beats MXFP4's single-level by enabling fine-grained dynamic range adaptation.</li>
+  <li><strong>The training recipe</strong> (NVIDIA NVFP4 paper Sep 2025-Mar 2026; FP4 All the Way May 2025; Quartet II 2026): five techniques compose to FP8-equivalent quality. <strong>Random Hadamard transforms (RHT)</strong> disperse block-level outliers; <strong>stochastic rounding (SR)</strong> for unbiased gradient estimation; <strong>split rounding</strong> (SR backward, RtN forward); <strong>two-dimensional quantization</strong> for forward-backward consistency; <strong>selective high-precision layers</strong> (embedding, output head, normalization, optimizer state stay FP8/BF16); <strong>healing</strong> (last 5% in FP8).</li>
+  <li><strong>MLPerf Training v5.1 (Nov 2025)</strong>: NVIDIA swept all 7 benchmarks with NVFP4. <strong>Llama 3.1 405B in 10 minutes on 5,120 Blackwell GPUs</strong>. 3.2× over Hopper FP8 at same count; 1.4× over FP8 on same Blackwell rack.</li>
+  <li>Validated at scale: NVIDIA 12B/10T tokens matching FP8; FP4 All the Way 7B/200T tokens matching BF16; Quartet II / MS-EDEN improving stochasticity placement.</li>
+  <li><strong>Block size of 16</strong> is empirically optimal — below 16 diminishing returns; above 32 (MXFP4) loses local information.</li>
+  <li><strong>Theoretical threshold</strong> (FP4 All the Way): training becomes ineffective when gradient norm falls below ~√3 × quantization noise. Healing addresses this for late training.</li>
+  <li><strong>Tensor Memory (TMEM)</strong>: new on-chip memory tier (192KB/SM) for MMA accumulators. Replaces register-based accumulation; enables larger tile sizes; 7× GEMM throughput gain over Hopper.</li>
+  <li><strong>CTA pairs / 2-SM UMMA</strong>: two adjacent SMs share input operands via the 5th-gen Tensor Core; halves operand memory bandwidth; <code>tcgen05.mma</code> instruction. Single-thread MMA launch enables fine-grained warp specialization.</li>
+  <li><strong>CUTLASS 3.8+</strong>: Blackwell support — TMEM, CTA pairs, 2-SM UMMA, TMA multicast, native NVFP4/MXFP4 GEMMs with hardware block-scaling. <strong>CuTile (late 2025)</strong>: Python tile-centric DSL abstracting warps/registers/SMEM.</li>
+  <li><strong>Economics</strong>: GB200 NVL72 ~2× perf/dollar of H100 on Llama 3.1 405B; ~3.2× per-GPU speedup vs Hopper FP8; inference at $0.02 per million tokens (4.5× cheaper than Hopper). Memory: 50% reduction per parameter (FP8 → NVFP4).</li>
+  <li><strong>Failure modes specific to NVFP4</strong>: outlier sensitivity (without RHT), forward-backward mismatch (without 2D quant), √3 threshold late-training (mitigated by healing), embedding collapse (mitigated by selective precision), optimizer state corruption (Adam stays FP32 always).</li>
+  <li><strong>Rubin (2026-2027 lookahead)</strong>: 35 PFLOPS NVFP4 training, 50 PFLOPS NVFP4 inference — 3.5×/5× over Blackwell. Recipe likely transfers with minor adjustments.</li>
+  <li>The reflex: when planning a new pretraining run on Blackwell hardware in 2026, <strong>default to NVFP4 with the standard recipe</strong>; for fine-tuning or smaller models, FP8 is often simpler; for Hopper, stay with FP8.</li>
+</ul>
+</div>
+
+<p>Module 42 (next, if Part XI continues) would tackle <strong>scaling laws &amp; compute economics</strong> — Chinchilla and successors, the train-time vs test-time compute tradeoff (M34 territory generalized), FLOP-to-quality curves for different architectures, the economics of choosing where to spend FLOPs. Foundational; threads through every previous module.</p>
+
+<div class="module-footer">
+  <span>PyTorch · From Tensor to Kernel</span>
+  <span class="num">41</span>
+  <span>Blackwell &amp; NVFP4 training</span>
+</div>
+
+</div>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="40_agentic_rl.html" class="prev">&laquo; 40 Agentic RL</a>
+  <a href="../../index.html" class="home">Home</a>
+  <a href="42_scaling_laws.html" class="next">42 Scaling &raquo;</a>
+</nav>
+</body>
+</html>

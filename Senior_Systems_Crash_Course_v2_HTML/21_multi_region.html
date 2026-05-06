@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam wants to "just put a server in Tokyo"</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 21</p>
+</div>
+<div class="module-title">
+<p>Multi-Region Architecture</p>
+</div>
+<div class="subtitle">
+<p>Latency budgets, edge POPs, anycast, regional data residency, and the patterns for active-active across continents</p>
+</div>
+</div>
+<div class="opener">
+<p>Your CEO says: "We just landed a customer in Tokyo. They say our app is slow. Can we put a server in Tokyo?"</p>
+<p>That sentence triggers six months of engineering work, three architectural decisions that can't be undone, and a permanent increase in operational complexity. Or, done well, three weeks of work and a clean activation.</p>
+<p>The difference is whether you understand the multi-region landscape <em>before</em> the question gets asked. Latency physics, data residency law, consistency vs availability tradeoffs at planet scale, the difference between a CDN, an edge POP, and a region — these aren't optional knowledge for senior engineers. They're the conversation you'll have at every growth stage from "first international customer" to "we serve 40 countries."</p>
+<p>This chapter is that landscape, the patterns that work, and the failure modes that have brought down companies you've heard of.</p>
+</div>
+<h1>Sam wants to "just put a server in Tokyo"</h1>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+The Tokyo customer is complaining. Latency is 250ms. We need to put a server there. I'll spin up an EC2 instance in ap-northeast-1, deploy our service, and route Tokyo users to it. Done by Friday?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Done by Friday means broken by Monday. What does that Tokyo server <em>talk to</em>? Your database is in us-east-1. Every database query from Tokyo to us-east-1 is 150ms round trip. If your service makes 5 DB queries per request, you've turned 250ms into 750ms. Worse.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+OK so we replicate the database to Tokyo too.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Read replica or write master? If it's a read replica, what happens when the Tokyo customer <em>writes</em>? Reads from Tokyo, writes to us-east-1, see your own write back from Tokyo's stale replica? Hello, customer escalation.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+So multi-master?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Now you have write conflicts to resolve, distributed transactions to invent, and possible data divergence. And Japan has data residency laws — some customer data is allowed to leave Japan, some isn't. You haven't even started thinking about that. So no, we are not putting a server in Tokyo by Friday. We're going to spend two days figuring out <em>what kind</em> of multi-region architecture matches our actual constraints.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+What kinds are there?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Five patterns, increasing in complexity and decreasing in latency. Most companies start at pattern two and never need pattern five. Let me walk you through them.</p>
+</div>
+</div>
+<div class="keyidea">
+<p><strong>There is no "just add a region" operation.</strong> Multi-region architecture is a <em>spectrum</em> of patterns trading complexity for latency. The senior skill is choosing the right pattern for your actual constraints — read/write ratios, consistency needs, data residency requirements, and customer SLA tolerance — and resisting the urge to over-engineer.</p>
+</div>
+<h1>The physics: latency floors you cannot beat</h1>
+<p>Everything in multi-region design starts with the speed of light. You cannot make light travel faster. You can only put computation closer to users. This is the foundational reality.</p>
+<div class="workout">
+<p><strong>Real-world inter-region latencies (round-trip).</strong></p>
+<p>These are typical AWS / GCP / Azure values. Other clouds and on-prem are similar within ~20%.</p>
+<table>
+<thead>
+<tr>
+<th>From</th>
+<th>To</th>
+<th>Distance</th>
+<th>RTT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>us-east-1 (Virginia)</td>
+<td>us-west-2 (Oregon)</td>
+<td>3,800 km</td>
+<td>60-70ms</td>
+</tr>
+<tr>
+<td>us-east-1</td>
+<td>eu-west-1 (Ireland)</td>
+<td>5,500 km</td>
+<td>75-90ms</td>
+</tr>
+<tr>
+<td>us-east-1</td>
+<td>ap-northeast-1 (Tokyo)</td>
+<td>11,000 km</td>
+<td>140-160ms</td>
+</tr>
+<tr>
+<td>us-east-1</td>
+<td>ap-southeast-1 (Singapore)</td>
+<td>15,500 km</td>
+<td>200-230ms</td>
+</tr>
+<tr>
+<td>eu-west-1</td>
+<td>ap-northeast-1</td>
+<td>9,500 km</td>
+<td>220-260ms</td>
+</tr>
+<tr>
+<td>Same region, cross-AZ</td>
+<td>—</td>
+<td>50-100 km</td>
+<td>0.5-2ms</td>
+</tr>
+<tr>
+<td>Same AZ</td>
+<td>—</td>
+<td>&lt;10 km</td>
+<td>0.1-0.5ms</td>
+</tr>
+</tbody>
+</table>
+<p>Theoretical minimum (light in fiber): roughly <strong>5ms per 1,000 km round-trip</strong>. Real networks add ~30-50% overhead from routing, equipment, and TCP retransmits. So 11,000 km = 110ms theoretical floor, 140-160ms typical reality.</p>
+</div>
+<div class="keyidea">
+<p><strong>The latency budget is fixed by physics, not engineering effort.</strong> You cannot reduce Tokyo↔Virginia from 150ms to 50ms by buying better servers, hiring better engineers, or paying AWS more money. You can only put compute and data closer to users.</p>
+</div>
+<div class="scenario">
+<p><strong>The 5-query trap.</strong> A "simple" web request makes 5 database queries (auth check, user lookup, fetch product, fetch inventory, log analytics). Each is a fast 5ms query within a region. Total: 25ms, plus 50ms of app processing = 75ms total. Fast.</p>
+<p>Now imagine the user is in Tokyo and the database is in Virginia. Each query becomes 150ms RTT instead of 5ms. Total: 5 × 150ms + 50ms = <strong>800ms</strong>. The user sees a 10x slowdown — not because anything is broken, but because <em>physics is happening 5 times</em>.</p>
+<p>Lesson: minimize <em>cross-region round trips per request</em>, not just total latency. Batching queries, denormalizing data, using async patterns — these become survival techniques across regions.</p>
+</div>
+<div class="insider">
+<p><strong>Senior framing.</strong> Latency budgets are like a financial budget. You have ~200ms total to keep customers happy. Cross-region RTT eats 150ms of that. You have 50ms left for everything — database lookups, business logic, serialization, network within the region. If your app makes synchronous cross-region calls, you've already overspent and can't afford the rest. The architecture must <em>eliminate</em> synchronous cross-region calls on the hot path, not just minimize them.</p>
+</div>
+<h1>The five patterns of multi-region architecture</h1>
+<p>Understand these five. Know which one fits which problem. Senior interviews ask you to name them, contrast them, and pick the right one for a scenario.</p>
+<h2>Pattern 1: Single region with CDN</h2>
+<div class="keyidea">
+<p><strong>Pattern 1 — Single region with CDN.</strong> Your application lives in <em>one region</em> (e.g., us-east-1). Static assets (images, CSS, JS, video) are served from a CDN with edge POPs worldwide. Dynamic API calls all go to the single region.</p>
+</div>
+<div class="compare">
+<div class="left">
+<p><strong>Strengths</strong>
+- Simplest possible architecture.
+- No data consistency challenges — single source of truth.
+- CDN handles 80% of byte-volume traffic at the edge for free.
+- Static-asset latency drops from 200ms to 20ms globally.</p>
+</div>
+<div class="right">
+<p><strong>Weaknesses</strong>
+- API/dynamic latency still suffers globally.
+- Single region failure = global outage.
+- Limited compliance flexibility.</p>
+</div>
+</div>
+<div class="workout">
+<p><strong>When to use Pattern 1:</strong> when your app is mostly static (content sites, marketing pages, video streaming, e-commerce browsing). When dynamic API calls are infrequent or tolerant of 100-300ms latency. When all your customers are in one continent. <strong>Most startups should start here.</strong> Don't over-engineer.</p>
+<p><strong>Tools:</strong> CloudFront, Cloudflare, Fastly, Akamai, Cloudflare Workers (for edge compute).</p>
+</div>
+<h2>Pattern 2: Single-region writes, multi-region reads</h2>
+<div class="keyidea">
+<p><strong>Pattern 2 — Single-region writes, multi-region reads.</strong> All writes go to one primary region. Read-only replicas live in other regions. Most user requests hit local replicas; writes pay the cross-region latency cost.</p>
+</div>
+<div class="diagram">
+<pre><code>                ┌─────────────────────┐
+                │   us-east-1 PRIMARY │
+                │   (writes go here)  │
+                │                     │
+                │   ┌──────────────┐  │
+                │   │  PostgreSQL  │  │
+                │   │   PRIMARY    │  │
+                │   └───────┬──────┘  │
+                └───────────┼─────────┘
+                            │ async replication
+              ┌─────────────┼──────────────┐
+              ▼                            ▼
+    ┌─────────────────┐         ┌─────────────────┐
+    │   eu-west-1     │         │ ap-northeast-1  │
+    │   READ REPLICA  │         │   READ REPLICA  │
+    │   (Ireland)     │         │   (Tokyo)       │
+    │                 │         │                 │
+    │   reads local   │         │   reads local   │
+    │   writes → US   │         │   writes → US   │
+    └─────────────────┘         └─────────────────┘
+</code></pre>
+</div>
+<div class="compare">
+<div class="left">
+<p><strong>Strengths</strong>
+- Reads are fast everywhere (~5-20ms).
+- Single writer = no conflict resolution.
+- Simple operational model.
+- Works well for read-heavy workloads (95%+ reads, like most consumer products).</p>
+</div>
+<div class="right">
+<p><strong>Weaknesses</strong>
+- Writes are slow for non-primary-region users (150ms+).
+- Read-after-write inconsistency: user writes in Tokyo, replica is 100ms behind, user re-reads, sees stale data.
+- Primary region failure = no writes globally.</p>
+</div>
+</div>
+<div class="workout">
+<p><strong>When to use Pattern 2:</strong> read-heavy workloads (95%+ reads), users tolerate occasional slow writes, single-writer is OK from a business perspective. Most SaaS products fit here for years.</p>
+<p><strong>Common implementations:</strong>
+- <strong>PostgreSQL</strong> with read replicas across regions (logical or physical replication).
+- <strong>MySQL</strong> with read replicas via async replication.
+- <strong>Aurora Global Database</strong> — managed AWS solution with cross-region replicas, ~1 second lag.
+- <strong>Spanner</strong> if you need stronger consistency on reads (but it's a different beast — see Pattern 5).</p>
+</div>
+<div class="gotcha">
+<p><strong>Read-after-write inconsistency in Pattern 2.</strong> User in Tokyo writes "update profile photo" → goes to us-east-1 primary → succeeds → user immediately reloads → request goes to Tokyo replica → replica hasn't received the change yet → user sees old photo.</p>
+<p>Mitigations:
+1. <strong>Read-your-writes routing.</strong> After a write, route subsequent reads from that user to the primary for N seconds (typically 5-30s). Tradeoff: some reads pay cross-region cost.
+2. <strong>Sticky sessions to primary</strong> for write-heavy operations.
+3. <strong>Optimistic UI</strong> — show the new photo immediately, sync with replica eventually.
+4. <strong>Wait-for-replication</strong> — after write, return a "replication position" token; read with that token; wait until replica catches up. Postgres has <code>pg_wait_for_replay_lsn</code>.</p>
+<p>Senior teams pick mitigation per-feature, not globally.</p>
+</div>
+<h2>Pattern 3: Active-active with conflict resolution</h2>
+<div class="keyidea">
+<p><strong>Pattern 3 — Active-active multi-master.</strong> Multiple regions accept writes. Conflicts are resolved by some strategy: last-write-wins, vector clocks, CRDTs, or application-level merge.</p>
+</div>
+<div class="diagram">
+<pre><code>    ┌─────────────────┐         ┌─────────────────┐
+    │   us-east-1     │◄───────►│   eu-west-1     │
+    │   READ + WRITE  │  bidir  │   READ + WRITE  │
+    │   (Virginia)    │  sync   │   (Ireland)     │
+    │                 │         │                 │
+    └────────┬────────┘         └────────┬────────┘
+             │       conflicts           │
+             │       resolved            │
+             │       per-strategy        │
+             │                           │
+             ▼                           ▼
+       ┌─────────────────────────────────┐
+       │  Conflict resolution layer:     │
+       │  - Last-write-wins (timestamps) │
+       │  - Vector clocks                │
+       │  - CRDTs                        │
+       │  - App-level merge              │
+       └─────────────────────────────────┘
+</code></pre>
+</div>
+<div class="compare">
+<div class="left">
+<p><strong>Strengths</strong>
+- Local writes everywhere (~5-20ms).
+- Region failure tolerated (other regions keep writing).
+- Geographic load distribution.
+- Best customer-facing latency.</p>
+</div>
+<div class="right">
+<p><strong>Weaknesses</strong>
+- Conflict resolution complexity.
+- Possible data divergence if conflict resolution is buggy.
+- Harder to reason about correctness.
+- Eventual consistency, not strong.</p>
+</div>
+</div>
+<div class="workout">
+<p><strong>Conflict resolution strategies:</strong></p>
+<ol>
+<li><strong>Last-write-wins (LWW).</strong> Each write has a timestamp. The latest timestamp wins. <em>Lose-data-if-clocks-skew</em>. Simplest, weakest. Cassandra default.</li>
+<li><strong>Vector clocks.</strong> Each write tracks a version vector across nodes. Conflicts are <em>detected</em>, not auto-resolved — usually surfaced to the application. Riak, DynamoDB Streams.</li>
+<li><strong>CRDTs (Conflict-free Replicated Data Types).</strong> Data structures that <em>mathematically</em> merge without conflict (counters, sets, registers). Powerful but constraint-laden — you can't make any data type a CRDT.</li>
+<li><strong>Application-level merge.</strong> Detect conflicts, apply business logic to resolve. Most flexible, most code.</li>
+<li><strong>Operation-based replication (OT, ot.js).</strong> Used in collaborative editing (Google Docs). Operations transformed against each other. Specialized.</li>
+</ol>
+</div>
+<div class="scenario">
+<p><strong>The classic LWW disaster.</strong> Two users update the same document at "the same time" (within 100ms). User A in Tokyo, User B in London. Tokyo's write lands at timestamp 12:00:00.150, London's at 12:00:00.140. London's write is "earlier" by 10ms — but actually User B clicked save <em>after</em> seeing User A's name in the document. The wall-clock-earlier write was the <em>semantically-later</em> one. LWW silently discards User A's edits.</p>
+<p>This is why LWW is fine for caches, awful for collaboration data. Senior engineers know LWW is a <em>weak</em> conflict resolution and use it only when data loss on conflict is acceptable.</p>
+</div>
+<div class="insider">
+<p><strong>Pattern 3 in practice.</strong> Used by:
+- <strong>DynamoDB Global Tables</strong> (multi-region multi-master, LWW resolution).
+- <strong>Cassandra</strong> with multi-DC replication (LWW with timestamp-based resolution).
+- <strong>Couchbase XDCR</strong>.
+- <strong>CockroachDB</strong> in multi-region active-active mode (uses Raft for stronger consistency — a hybrid).</p>
+<p>Most companies that successfully run Pattern 3 are running it with <em>very specific</em> data shapes that conflict-resolve cleanly: append-only events, key-value caches, idempotent state. Few succeed at Pattern 3 with general relational data.</p>
+</div>
+<h2>Pattern 4: Region-pinned data (sharded by user/tenant)</h2>
+<div class="keyidea">
+<p><strong>Pattern 4 — Region-pinned data.</strong> Each user or tenant is assigned to a "home region." Their data lives there primarily. Requests are routed to the user's home region. Cross-region access is rare and explicit.</p>
+</div>
+<div class="diagram">
+<pre><code>              ┌─────────────────────────┐
+              │   Routing layer (DNS,   │
+              │   GeoDNS, or smart LB)  │
+              │   &quot;where is this user?&quot; │
+              └────────────┬────────────┘
+                           │
+        ┌──────────────────┼──────────────────┐
+        ▼                  ▼                  ▼
+  ┌──────────┐      ┌──────────┐      ┌──────────┐
+  │us-east-1 │      │eu-west-1 │      │ap-tokyo  │
+  │          │      │          │      │          │
+  │US users' │      │EU users' │      │JP users' │
+  │data lives│      │data lives│      │data lives│
+  │HERE      │      │HERE      │      │HERE      │
+  └──────────┘      └──────────┘      └──────────┘
+
+  Each region is the SOURCE OF TRUTH for its users.
+  Cross-region queries are rare/explicit.
+</code></pre>
+</div>
+<div class="compare">
+<div class="left">
+<p><strong>Strengths</strong>
+- Local reads AND writes for each user (everyone is fast).
+- Natural data residency compliance (German user's data stays in Frankfurt).
+- Regional fault isolation (US outage doesn't affect EU users).
+- No cross-region conflict resolution — each user has one home.</p>
+</div>
+<div class="right">
+<p><strong>Weaknesses</strong>
+- Cross-user queries get harder (analytics, social features).
+- "User moves to a new country" is a data migration.
+- Per-region capacity planning (one region might be hot).
+- Identity/auth services usually still need to be global.</p>
+</div>
+</div>
+<div class="workout">
+<p><strong>When to use Pattern 4:</strong> SaaS B2B (each customer is a tenant), social products (group users by primary geography), regulatory data residency requirements (GDPR, China, India, healthcare), low-write-volume "user profile" type data.</p>
+<p><strong>Implementations:</strong>
+- Application-layer routing (your service knows the user→region mapping).
+- DNS-based routing (<code>api-eu.yourapp.com</code> vs <code>api-us.yourapp.com</code>).
+- AWS Route 53 with geolocation routing.
+- Cloudflare with regional services.
+- Some databases support this directly (CockroachDB regional-by-row tables, MongoDB zone sharding).</p>
+</div>
+<div class="scenario">
+<p><strong>Real Pattern 4 example.</strong> A B2B SaaS serves companies in US, EU, and APAC. Each customer's data is fully contained in their region. Cross-customer features (admin dashboards, billing) are global services that aggregate from regional sources async. New customer signs up: their region is determined by company HQ; data lives there permanently.</p>
+<p>When the customer wants to migrate (acquired by a US parent company, moves to US), it's a planned migration: dump from EU, import to US, switch routing. Hours-to-days of work, but rare and explicit.</p>
+<p>This is the pattern that scales cleanly to 50+ regions and survives regulatory changes.</p>
+</div>
+<h2>Pattern 5: Globally consistent (Spanner / CockroachDB / FoundationDB)</h2>
+<div class="keyidea">
+<p><strong>Pattern 5 — Globally consistent active-active.</strong> Multiple regions accept writes. Strong consistency (often serializability or external consistency) is preserved across regions via consensus protocols. Achieves strong consistency at the cost of cross-region latency on writes.</p>
+</div>
+<div class="compare">
+<div class="left">
+<p><strong>Strengths</strong>
+- Strong consistency globally — no app-level conflict resolution.
+- ACID transactions across regions.
+- Reads can still be local (if using "follower reads" or "stale reads").
+- Single mental model for developers.</p>
+</div>
+<div class="right">
+<p><strong>Weaknesses</strong>
+- Cross-region writes pay full RTT cost (consensus needs majority of regions to agree).
+- Significantly more expensive than other patterns.
+- Operational complexity is real (Spanner runs on TrueTime, CockroachDB on hybrid logical clocks).
+- Regulatory compliance still requires careful zone configuration.</p>
+</div>
+</div>
+<div class="workout">
+<p><strong>When to use Pattern 5:</strong> financial systems (banking, exchanges) where strong global consistency is non-negotiable; inventory systems with global SKUs; scenarios where conflict resolution complexity is itself unacceptable. Read-after-write must be globally true.</p>
+<p><strong>Implementations:</strong>
+- <strong>Google Cloud Spanner.</strong> Uses TrueTime (atomic clocks + GPS). Five-9s SLA at multi-region.
+- <strong>CockroachDB.</strong> Uses Raft per-range; configurable consistency vs latency.
+- <strong>YugabyteDB.</strong> Postgres-compatible distributed SQL.
+- <strong>FoundationDB.</strong> Different model — single-region usually, multi-region adds complexity.
+- <strong>TiDB.</strong> MySQL-compatible distributed SQL.</p>
+</div>
+<div class="insider">
+<p><strong>Senior nuance: Spanner is <em>external consistency</em>, not just serializability.</strong> External consistency means: if transaction T1 commits before T2 starts (in real wall-clock time), then T1 will appear before T2 in the global serialization order. This is <em>stronger</em> than serializability — it's called "linearizability for transactions." Achieved via TrueTime, which provides bounded clock uncertainty (Google's claim: ε &lt; 7ms typically).</p>
+<p>Most distributed databases offer serializability but not external consistency. Spanner is unique in providing it. CockroachDB approximates it with hybrid logical clocks (HLC).</p>
+<p>If an interviewer asks about Spanner specifically, drop "external consistency via TrueTime." That's the senior signal.</p>
+</div>
+<h1>Choosing a pattern: the decision tree</h1>
+<div class="workout">
+<p><strong>Step-by-step pattern selection.</strong></p>
+<ol>
+<li>
+<p><strong>Are most of your users in one region currently?</strong> Yes → start with Pattern 1 (single region + CDN). Don't over-engineer.</p>
+</li>
+<li>
+<p><strong>Is your workload &gt;90% reads?</strong> Yes → Pattern 2 (single-region write, multi-region reads) is the right next step. Cheap, simple, effective for SaaS.</p>
+</li>
+<li>
+<p><strong>Do you have data residency requirements (GDPR, China, India)?</strong> Yes → Pattern 4 (region-pinned data) is mandatory regardless of other choices. You'll need to combine it with another pattern for cross-region features.</p>
+</li>
+<li>
+<p><strong>Do you need globally strong consistency?</strong> Yes → Pattern 5 (Spanner-class). Expensive, but necessary for finance/inventory/exchanges. Most companies don't actually need this — interrogate the requirement carefully.</p>
+</li>
+<li>
+<p><strong>Do you need writes from every region with low latency, and can your data tolerate eventual consistency?</strong> Yes → Pattern 3 (active-active with conflict resolution). Pick conflict resolution per data type — LWW for caches, CRDTs for counters, app-level for business logic.</p>
+</li>
+<li>
+<p><strong>Most likely real answer for senior teams: a hybrid.</strong> Pattern 4 for user-owned data (residency compliance), Pattern 2 for catalog/reference data (read-heavy global), Pattern 5 only for the few datasets that genuinely need global strong consistency (e.g., billing).</p>
+</li>
+</ol>
+</div>
+<div class="pullquote">
+<p>"There is no single multi-region architecture. Senior systems use different patterns for different data types — region-pinned for user data, replicated for catalog, globally consistent for billing — composed thoughtfully."</p>
+</div>
+<h1>Edge POPs vs regions vs availability zones</h1>
+<p>These three concepts are constantly conflated. Senior engineers distinguish them precisely.</p>
+<div class="compare">
+<div class="left">
+<p><strong>Availability Zone (AZ)</strong>
+A single data center (or small cluster) within a region. AZs are connected by fast, dedicated fiber (1-2ms RTT). Failures of an AZ are independent (different power, different network paths).</p>
+</div>
+<div class="right">
+<p><strong>Region</strong>
+A geographic area containing 2-6 AZs (e.g., us-east-1 has 6 AZs in northern Virginia). Regions are isolated — failures don't propagate. A region failure is rare but possible (entire AWS us-east-1 has had multi-hour outages).</p>
+</div>
+</div>
+<div class="compare">
+<div class="left">
+<p><strong>Edge POP / Edge Location</strong>
+A small presence-of-network in a city, intended for caching, TLS termination, and latency-critical compute. CDNs have hundreds (Cloudflare claims 300+ POPs). They have <em>limited</em> compute and storage — not full region capabilities.</p>
+</div>
+<div class="right">
+<p><strong>Edge compute</strong>
+Running application logic at edge POPs. Examples: Cloudflare Workers, AWS Lambda@Edge, Fastly Compute@Edge. Limited language support, limited execution time, no persistent state. Best for filtering, routing, lightweight transforms.</p>
+</div>
+</div>
+<div class="keyidea">
+<p><strong>The hierarchy</strong>: Edge POP (latency, caching, light compute) → Region (full compute and storage, most workloads live here) → Multi-region (multiple regions for residency, redundancy, geo-distribution). Each layer has different capabilities and costs. Senior architecture <em>uses each appropriately</em>: static and lightweight stuff at edge, heavyweight at region, distributed where needed.</p>
+</div>
+<div class="scenario">
+<p><strong>Edge POPs done right.</strong> Authentication: TLS terminates at edge. Token validation happens at edge (cached JWTs). Cookie inspection at edge. Result: 50-80% of unauthenticated traffic gets blocked at edge (DDoS protection, abuse blocking) before it ever hits the region. The 20% that's authenticated proceeds to the region for actual processing.</p>
+<p>Result: region traffic is reduced 5x, regions handle real work, edge handles network garbage. This is what edge POPs are good at.</p>
+</div>
+<div class="gotcha">
+<p><strong>Edge POPs are not databases.</strong> A common mistake: treating edge POPs as regional database mirrors. They're not. Edge POPs have limited storage (often KV stores with 25MB-100MB limits per key, eventually consistent across the network), no transactions, and slow writes. Use them for caching and routing, not as primary data stores.</p>
+</div>
+<h1>Routing traffic across regions</h1>
+<p>You have multiple regions. How does a user in Tokyo find the right one? Three main approaches.</p>
+<h2>DNS-based routing (GeoDNS)</h2>
+<div class="workout">
+<p><strong>How GeoDNS works.</strong> A user's resolver queries <code>api.yourapp.com</code>. The DNS server inspects the resolver's IP, infers geographic location, returns the IP of the nearest region's load balancer.</p>
+<p><strong>Strengths:</strong> simple, works everywhere, no client changes needed, supports any protocol.</p>
+<p><strong>Weaknesses:</strong> DNS caching (stale routing for minutes-to-hours), resolver IP ≠ user IP (a user in Tokyo using a DNS resolver in California gets misdirected), DNS-level routing can't react to <em>application</em>-level health (DNS doesn't know your service in Tokyo is failing).</p>
+<p><strong>Tools:</strong> AWS Route 53 (geolocation/latency-based routing), Cloudflare DNS, NS1, GCP Cloud DNS.</p>
+</div>
+<h2>Anycast routing</h2>
+<div class="keyidea">
+<p><strong>Anycast</strong> advertises the <em>same IP address</em> from multiple regions. The internet's routing protocol (BGP) automatically directs traffic to the <em>closest</em> region by network distance. No DNS lookup needed; routing is at the IP layer.</p>
+</div>
+<div class="compare">
+<div class="left">
+<p><strong>Strengths of anycast</strong>
+- Routing is automatic and reactive (BGP convergence takes seconds, not DNS TTLs).
+- No DNS-resolver-IP confusion.
+- Failover is fast — if a region disappears, BGP routes around it automatically.
+- Works under DDoS — attack traffic is distributed across all regions.</p>
+</div>
+<div class="right">
+<p><strong>Weaknesses of anycast</strong>
+- Requires owning IP space and BGP capability (cloud providers handle this for you).
+- TCP connections can break if BGP re-routes mid-connection.
+- Limited control over which region serves which user.</p>
+</div>
+</div>
+<div class="insider">
+<p><strong>Cloudflare's edge network is anycast.</strong> When you point DNS at Cloudflare, you get <em>one</em> IP that resolves to <em>the closest Cloudflare POP</em> via BGP. AWS Global Accelerator and GCP Cloud Load Balancing also use anycast. This is how modern CDNs achieve millisecond-level global routing.</p>
+</div>
+<h2>Application-layer routing</h2>
+<div class="workout">
+<p><strong>How it works.</strong> A first-tier service (could be at edge) inspects the request — JWT claim, header, cookie, query parameter — and decides which region to route to. The user's "home region" is encoded in their identity, not derived from their network location.</p>
+<p><strong>Strengths:</strong> precise control, easy to override (testing, migration, regulatory exceptions), works with stateful sessions.</p>
+<p><strong>Weaknesses:</strong> adds a hop, requires the routing layer itself to be globally distributed (often via anycast).</p>
+<p><strong>Tools:</strong> Cloudflare Workers, Fastly Compute@Edge, AWS Lambda@Edge — all of these can do app-layer routing at edge POPs.</p>
+</div>
+<div class="tip">
+<p><strong>Senior pattern: combine routing layers.</strong> Anycast or GeoDNS gets the user to <em>some</em> region's edge. Edge logic inspects the user's identity and routes to the correct <em>home</em> region for their data (Pattern 4). This combines fast network routing with precise data routing.</p>
+</div>
+<h1>Data residency: the requirement that overrides everything</h1>
+<div class="warning">
+<p><strong>Data residency laws are not negotiable.</strong> GDPR, China's PIPL, India's DPDP Act, Russia's data localization law, and many others require certain customer data to be stored <em>and processed</em> within specific jurisdictions. Senior architects know this <em>before</em> they design — retrofitting residency is expensive and slow.</p>
+</div>
+<h2>What residency means in practice</h2>
+<div class="workout">
+<p><strong>Residency requirements you might encounter:</strong></p>
+<ol>
+<li>
+<p><strong>EU GDPR.</strong> EU residents' personal data must remain in adequate jurisdictions (EU + a list of approved countries). Schrems II ruling complicated US transfers significantly. Many EU enterprises now require <em>data does not leave EU</em>.</p>
+</li>
+<li>
+<p><strong>China (PIPL).</strong> Personal information of Chinese residents must be stored in China. Cross-border transfer requires regulatory approval. Most non-Chinese cloud providers operate via partnerships (AWS via Sinnet, Microsoft via 21Vianet).</p>
+</li>
+<li>
+<p><strong>India (DPDP).</strong> Personal data must be stored in India for "significant" platforms. Sectoral rules (banking, telecom) have stricter local-only requirements.</p>
+</li>
+<li>
+<p><strong>Russia.</strong> Personal data of Russian citizens must be processed on servers in Russia.</p>
+</li>
+<li>
+<p><strong>Healthcare (HIPAA, etc).</strong> Sectoral, not geographic, but often pushes for regional compliance.</p>
+</li>
+<li>
+<p><strong>Financial services.</strong> Many regulators require core records to remain in-country.</p>
+</li>
+</ol>
+</div>
+<div class="scenario">
+<p><strong>The retrofit nightmare.</strong> A SaaS expanded into Germany without explicitly designing for GDPR. Six months later, an enterprise customer demanded data-stays-in-EU contractual guarantees. Engineering had to: stand up an EU region, migrate German customer data, modify auth and billing services to support per-region data routing, audit every log/cache/backup that might contain EU PII, and prove all of it to the customer's compliance team. Result: 9 months of engineering work to retrofit something that would have been 6 weeks if designed for from day one.</p>
+<p>Lesson: if you might serve EU customers, design Pattern 4 (region-pinned) from the start.</p>
+</div>
+<div class="insider">
+<p><strong>Senior compliance moves:</strong>
+- Tag every data store with a "residency class" (none / EU-only / US-only / customer-controlled).
+- Design auth and routing so each user is associated with a residency region from signup.
+- Log analysis: any PII in logs is "data" for residency purposes. Most companies forget this.
+- Backups: backup encryption keys and storage location are subject to residency. EU data backed up to US S3 is a residency violation regardless of encryption.
+- AI/ML pipelines: moving customer data to a model-training region is a transfer event.</p>
+<p>The compliance theme: <strong>data leaves the residency region every time it's processed</strong>, not just when it's stored. Caches, queues, function memory, log aggregators — all of these "process" data.</p>
+</div>
+<h1>Three exercises</h1>
+<div class="exercise">
+<p><strong>Exercise 1: The "we just got a Tokyo customer" question.</strong></p>
+<p>Your CEO tells you: "We just signed a Tokyo enterprise customer doing $2M ARR. They say our app is too slow. They want a 100ms p99 SLA. Right now from Tokyo, p99 is 800ms. What's your plan?"</p>
+<div class="answer-box">
+<p>There's no one right answer. The senior approach interrogates the requirement, presents options, and recommends a staged plan.</p>
+</div>
+<div class="solution">
+<p><strong>Senior answer:</strong></p>
+<p>"Three things first. (1) What does the customer actually mean by 'slow'? Page load? API call? Specific operation? (2) Is the 100ms p99 a contractual SLA or a stated preference? (3) What's the current architecture — single region, where, what's the read/write ratio for this customer's use case?</p>
+<p>Assuming this is a typical SaaS app with reads &gt;&gt; writes, here's my recommendation, staged:</p>
+<p><strong>Phase 1 (2-3 weeks): Pattern 1+ ('CDN-everything').</strong>
+- Move all static assets behind a global CDN.
+- Enable HTTP/2, compression, connection reuse, image optimization.
+- Aggressive HTTP caching where possible.
+- Move TLS termination and authentication to edge.
+- This typically gets perceived load times down 30-50%, even with API still in us-east-1. May satisfy the customer for asset-heavy operations.</p>
+<p><strong>Phase 2 (4-8 weeks): Pattern 2 ('read replicas in Tokyo').</strong>
+- Stand up read replica in ap-northeast-1.
+- Route Tokyo customer's <em>reads</em> to local replica.
+- Writes still go to us-east-1 (acceptable if customer's workload is read-heavy).
+- Implement read-your-writes routing so the Tokyo user sees their own writes immediately (route their reads to primary for 5s after a write).
+- This typically gets read p99 to &lt;50ms, write p99 to ~150-200ms.</p>
+<p><strong>Phase 3 (3-6 months) IF needed: Pattern 4 ('Tokyo home region').</strong>
+- If write latency is still unacceptable, region-pin this customer's data to Tokyo.
+- Route their full traffic (reads and writes) to a Tokyo deployment.
+- This is real engineering investment — only do it if the customer's $2M ARR justifies it.</p>
+<p><strong>My recommendation:</strong> start Phase 1 immediately. Commit to Phase 2 within 2 months. Don't promise Phase 3 in the contract — gate it on actual measured customer experience.</p>
+<p><strong>The thing I'd push back on:</strong> the 100ms p99 SLA. Across global multi-region, 100ms p99 is achievable for reads, very hard for writes. I'd negotiate to 150-200ms p99 for writes specifically, with a stronger commitment on read latency. Pretending we can hit 100ms on writes from Tokyo with a US database is a future support escalation.</p>
+<p><strong>What this signals to the CEO:</strong> I have a phased plan, I respect the customer, I'm honest about what's hard, and I'm not going to overcommit to a number we can't hit."</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2: Active-active conflict resolution.</strong></p>
+<p>You're designing a multi-region active-active deployment for a collaborative document editing product. Two users in different regions edit the same document at the same time. What conflict resolution strategy do you choose, and why?</p>
+<div class="answer-box">
+<p>LWW will be tempting. It will also be wrong here. Think about <em>what kind of data</em> this is.</p>
+</div>
+<div class="solution">
+<p><strong>Senior answer:</strong></p>
+<p>LWW is wrong for collaborative editing. If User A's cursor adds "important note" at position 100, and User B's cursor adds "delete this paragraph" at position 95, LWW based on timestamps would silently discard one of the operations. That's the worst possible outcome — silent data loss in collaboration.</p>
+<p>The right answers are <em>operation-based</em>:</p>
+<p><strong>Operational Transformation (OT)</strong>, used historically by Google Docs. Each edit is an operation (insert, delete, format). Concurrent operations are <em>transformed</em> against each other so they can be applied in any order with the same final result. Complex, well-studied, requires a server to coordinate.</p>
+<p><strong>CRDTs for text</strong> (Y.js, Automerge, RGA, LSEQ). Modern approach. Each character has a unique ID; insertions and deletions are commutative through clever ordering. Can be peer-to-peer, no central coordinator needed.</p>
+<p><strong>My recommendation for a multi-region product:</strong>
+- Use a CRDT-based text representation (Y.js or Automerge).
+- Replicate operations across regions, not state. Each region applies operations as they arrive — eventual convergence is mathematically guaranteed.
+- Persist the operation log per region; regions catch up on each other's logs asynchronously.
+- For features that aren't text (comments, share permissions, document metadata), use simpler conflict resolution: app-level merge for permissions (union of grants), LWW with audit trail for permissions (since data loss on simultaneous permission changes is recoverable from audit log).</p>
+<p><strong>What this signals:</strong> named specific algorithms (OT, CRDTs), distinguished text from non-text, picked CRDTs as the modern answer, addressed how non-text fields would resolve, and noted the recoverability tradeoff.</p>
+<p><strong>The non-senior answer is "use last-write-wins with timestamps."</strong> Do not give that answer — it shows you don't understand collaborative data.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3: The residency/compliance scenario.</strong></p>
+<p>A US-based startup grows to 50K customers. About 30% are in EU. The legal team raises GDPR concerns. The CTO wants to "add an EU region." Walk through what <em>actually</em> needs to happen.</p>
+<div class="answer-box">
+<p>"Add an EU region" is shorthand for a multi-month workstream. Senior engineers know that, name it, and scope it.</p>
+</div>
+<div class="solution">
+<p><strong>Senior breakdown of the actual work:</strong></p>
+<p><strong>Step 1: Define what data is regulated.</strong>
+- Customer PII (name, email, phone, address) — clearly regulated.
+- Customer business data (their content) — usually customer-controlled, often regulated.
+- Logs and analytics that contain user IDs or IPs — regulated.
+- ML training data derived from customer interactions — regulated.
+- Backups of all the above — regulated.</p>
+<p><strong>Step 2: Tag every data store.</strong>
+- Primary databases: which contain EU customer data?
+- Secondary stores: caches, queues, search indices, analytics warehouses.
+- Operational stores: log aggregators, APM systems, error trackers.
+- Backups: where are backups stored, and where can they be restored?</p>
+<p><strong>Step 3: Architecture decision — Pattern 4 home regions.</strong>
+- New EU customers: signup creates an "EU home region" association from day one.
+- Existing EU customers: planned migration. Communicate timeline. Migrate per-customer.
+- Routing: auth tokens carry residency claim. Edge layer routes EU customers to EU stack.</p>
+<p><strong>Step 4: Per-service compliance audit.</strong>
+- For each service in the request path, ask: does it process or store data? If yes, does it need an EU deployment? If yes, how do we ensure EU-routed traffic stays EU?
+- Common gotchas: Stripe (uses US for payment processing — Schrems II concerns), email providers (SendGrid in US), error tracking (Sentry US), analytics (Segment, Mixpanel US destinations).</p>
+<p><strong>Step 5: Backup and DR strategy.</strong>
+- EU data backed up to EU storage (EU-region S3/GCS).
+- Disaster recovery: if EU region fails, can you fail over without violating residency? (Usually no — DR must be within EU; multiple EU regions or multiple EU AZs.)</p>
+<p><strong>Step 6: Documentation and customer-facing assurances.</strong>
+- Updated DPA (Data Processing Agreement).
+- Subprocessor list (every third party that touches data).
+- Audit and ISO 27001/SOC 2 certification often required.</p>
+<p><strong>Realistic timeline:</strong> 4-9 months from "let's add EU region" to "we can sell to GDPR-strict enterprises with confidence." Engineering work is the smallest part — most time is spent on auditing the <em>full</em> data flow, including third parties.</p>
+<p><strong>What this signals:</strong> treats residency as a system property, not a region deployment. Names specific audit areas. Acknowledges third-party dependencies (Stripe, Sentry, etc.) as compliance gates. Realistic about timeline.</p>
+</div>
+</div>
+<h1>No dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p><strong>Q: How do I know if I actually need multi-region?</strong></p>
+</div>
+<div class="a">
+<p>Three real triggers: (1) a customer demands an SLA your single region can't meet, (2) regulatory residency requires it, (3) your single-region failure tolerance is unacceptable for the business. If none of these are true, multi-region is premature optimization. Most companies can serve global users from one region with a CDN for years.</p>
+</div>
+<div class="q">
+<p><strong>Q: AWS Aurora Global Database — what pattern is that?</strong></p>
+</div>
+<div class="a">
+<p>Pattern 2 with managed plumbing. One primary region, up to 5 read-only secondary regions, ~1 second replication lag. AWS handles the replication; you handle the application logic for read-your-writes. Good fit when your workload matches Pattern 2 and you don't want to operate replication yourself.</p>
+</div>
+<div class="q">
+<p><strong>Q: What about CockroachDB? Pattern 3 or Pattern 5?</strong></p>
+</div>
+<div class="a">
+<p>Pattern 5 (globally consistent) with knobs that let you tune toward Pattern 4 (regional locality). Each table can be configured: regional-by-row (data lives in user's home region), regional-by-table (whole table in one region), global (replicated everywhere). It's the most flexible — and most operationally complex — option.</p>
+</div>
+<div class="q">
+<p><strong>Q: How do I handle caching in multi-region?</strong></p>
+</div>
+<div class="a">
+<p>Per-region cache, never global. Don't try to invalidate a cache across regions synchronously — too slow. Either use TTL-based eventual consistency (stale data for 1-60 seconds) or invalidate via async messages (cache region listens for invalidation events). Senior pattern: cache-by-region, accept eventual consistency, design TTLs to match business tolerance.</p>
+</div>
+<div class="q">
+<p><strong>Q: What about session storage across regions?</strong></p>
+</div>
+<div class="a">
+<p>Three options: (1) sticky sessions to home region (user always lands in same region), (2) session in JWT/cookie (no server-side state), (3) globally replicated session store (Redis/DynamoDB Global Table). Senior teams default to option 2 (stateless via JWT) — it's the cleanest. Sticky sessions are fine for some workloads. Globally replicated session stores have all the consistency challenges of multi-region data.</p>
+</div>
+<div class="q">
+<p><strong>Q: How do I test multi-region behavior?</strong></p>
+</div>
+<div class="a">
+<p>Three layers: (1) integration tests that use <em>real</em> multi-region infrastructure (slow, expensive — run nightly, not per-PR), (2) latency injection in test environments (simulate cross-region RTT in single-region test setups), (3) chaos experiments that disable a region in production-shaped staging. The latency injection is underused — your single-region tests don't catch the "5x DB queries from Tokyo" trap.</p>
+</div>
+<div class="q">
+<p><strong>Q: When does it make sense to have more than 3 regions?</strong></p>
+</div>
+<div class="a">
+<p>When customer concentration justifies it. The marginal value of region 4-5-6 drops fast: most users are within 100ms of <em>some</em> major region already. Consider 4+ regions when: regulatory (EU + China + India + US is realistic for global SaaS), latency-critical workloads (gaming, trading), or extreme reliability requirements (telco-grade). Most products do well with 2-3 regions.</p>
+</div>
+<div class="q">
+<p><strong>Q: What's the cost premium for multi-region?</strong></p>
+</div>
+<div class="a">
+<p>Rough rule: 2 regions ≈ 1.6-1.8x single-region cost (some sharing of fixed costs). 3 regions ≈ 2.5-2.8x. 5+ regions ≈ 4-5x. The non-linear scaling comes from cross-region data transfer (egress is expensive — AWS charges $0.02-0.09/GB for inter-region transfer), redundant infrastructure, and operational overhead.</p>
+</div>
+</div>
+<h1>Three myths</h1>
+<div class="myth">
+<p><strong>MYTH: "Multi-region equals high availability."</strong></p>
+<p>Multi-region <em>enables</em> HA but doesn't guarantee it. A poorly-designed multi-region system can fail in <em>more</em> ways than a well-designed single-region one — split-brain scenarios, cross-region cascade failures, replication lag during regional outage. Companies have caused outages by <em>adding</em> a second region (e.g., a misconfigured cross-region replication amplifying load). Multi-region requires <em>more</em> operational discipline, not less.</p>
+</div>
+<div class="myth">
+<p><strong>MYTH: "We just need to put a database in each region."</strong></p>
+<p>Database is the <em>easy</em> part. The hard parts are: routing logic, cross-region transactions, identity/auth coordination, configuration consistency, deploy coordination across regions, observability across regions, and dependency management (third parties may not be multi-region). Companies that focus only on the database typically rebuild their architecture twice — once for "we have multiple databases" and once for "everything else also needs to be multi-region."</p>
+</div>
+<div class="myth">
+<p><strong>MYTH: "CDN solves all our latency problems."</strong></p>
+<p>CDN solves <em>static asset</em> latency. It does not solve API latency. Most modern apps are dynamic — interactive APIs, personalized data, real-time updates. A CDN reduces page-load time but doesn't reduce the latency of "save document" or "place order." Senior architects know what fraction of their latency budget goes to dynamic API vs static assets, and choose patterns accordingly.</p>
+</div>
+<h1>Five gotchas</h1>
+<div class="gotcha">
+<p><strong>GOTCHA 1: Replication lag amplifies during incidents.</strong></p>
+<p>Normal cross-region replication: 100-500ms lag. During a primary-region incident (load spike, failure recovery), lag can grow to seconds or minutes. Applications that ignore replication lag silently — assuming reads are fresh — show stale data during incidents, exactly when customers are most attentive to errors. Always check replication lag before serving from replica; have a "lag threshold" beyond which you fall back to primary or error.</p>
+</div>
+<div class="gotcha">
+<p><strong>GOTCHA 2: Cross-region data transfer is expensive.</strong></p>
+<p>AWS inter-region data transfer: $0.02-0.09 per GB. For a system replicating 10 TB/day cross-region, that's $200-900/day = $6K-27K/month <em>just for data transfer</em>. Senior architects: minimize cross-region traffic, use compression, batch operations, leverage cloud-provider-managed replication (which is often cheaper than DIY).</p>
+</div>
+<div class="gotcha">
+<p><strong>GOTCHA 3: DNS TTLs control your failover speed.</strong></p>
+<p>If your DNS TTL is 300 seconds (5 minutes), a regional outage means at minimum 5 minutes of broken routing for users whose DNS is cached. Most public resolvers respect TTLs reasonably; many corporate resolvers cache for hours. Senior pattern: low TTLs (60s) for routing-critical records, with the understanding that some clients ignore TTLs anyway. Anycast bypasses DNS TTL entirely — another reason to use it.</p>
+</div>
+<div class="gotcha">
+<p><strong>GOTCHA 4: Configuration drift between regions.</strong></p>
+<p>Each region's services have config files, feature flags, environment variables. Over time, regions drift. A bug fix deployed only to us-east-1, a feature flag enabled only in eu-west-1, a database tuning param adjusted only in Tokyo. Eventually, a routing change exposes the drift catastrophically. Senior teams enforce config-as-code, region-parameterized only where strictly required, and audit drift periodically.</p>
+</div>
+<div class="gotcha">
+<p><strong>GOTCHA 5: Time zones and date handling get worse multi-region.</strong></p>
+<p>A "yesterday" in Tokyo is not "yesterday" in San Francisco. Reports computed in one region show different numbers than the same query from another region. Cron jobs at "midnight" run at midnight <em>local time</em> — different times in different regions. Senior code stores everything in UTC, performs business logic in UTC, displays in user-local timezone — but cron schedules and analytics aggregations need explicit attention. This is one of the most common bug sources in multi-region systems.</p>
+</div>
+<h1>Mock interview</h1>
+<div class="mock-interview">
+<div class="turn q">
+<p><strong>Interviewer:</strong> "Walk me through how you'd architect a globally distributed e-commerce platform."</p>
+</div>
+<div class="turn a">
+<p><strong>You:</strong> "I'd decompose the data first. E-commerce has at least four distinct data domains, and each one wants a different multi-region pattern.</p>
+<p><strong>Catalog data</strong> — products, descriptions, prices, images. Read-heavy by 100:1, writes are infrequent (hourly catalog updates from suppliers). I'd use Pattern 2: single primary region for writes, replicas in every region. Cache aggressively. CDN for product images. This data benefits from being everywhere.</p>
+<p><strong>User data</strong> — accounts, addresses, payment methods. Privacy-sensitive, often regulated. Pattern 4: region-pinned. EU customers' user data in EU, US in US, etc. Authentication carries the residency claim.</p>
+<p><strong>Cart data</strong> — short-lived, per-user. Pattern 4 (in user's home region) is fine. Could also be edge-cacheable since it's user-specific and low-write-volume — Pattern 1+ with edge KV for sessions works.</p>
+<p><strong>Order data — the interesting one.</strong> Orders touch inventory (which is global) and payments (which are regulated). I'd use Pattern 5 (globally consistent) for <em>just the inventory part</em> — Spanner or CockroachDB for product inventory tracking — because over-selling is a business-critical correctness issue. The rest of the order record stays in user's home region (Pattern 4) for residency.</p>
+<p><strong>Routing layer:</strong> anycast for getting users to <em>some</em> region's edge. Edge logic inspects user identity, routes to home region for user-data operations, routes to nearest region for catalog reads.</p>
+<p><strong>Caches:</strong> per-region, never global. TTL-based for catalog. Per-user for cart.</p>
+<p><strong>Analytics:</strong> async aggregation from all regions to a central analytics warehouse — eventually consistent, hours behind, fine.</p>
+<p><strong>The senior framing:</strong> different data, different pattern. Not 'we use Pattern X for everything.' That's the senior call."</p>
+</div>
+<div class="commentary">
+<p><strong>What makes this senior:</strong> decomposed by data type before talking architecture, named specific patterns (1, 2, 4, 5) for different domains, identified the <em>one</em> place global consistency matters (inventory) rather than applying it everywhere, addressed routing/caching/analytics as separate concerns. The composition — multiple patterns in one system — is the senior signal interviewers look for.</p>
+</div>
+<div class="turn q">
+<p><strong>Interviewer:</strong> "Your active-active deployment in two regions is showing data divergence. The same record has different values in us-east and eu-west. Walk me through how you'd diagnose and fix it."</p>
+</div>
+<div class="turn a">
+<p><strong>You:</strong> "Diagnosis first, then fix. Don't reach for the fix prematurely.</p>
+<p><strong>Diagnosis steps:</strong></p>
+<ol>
+<li>
+<p><strong>Confirm divergence is real.</strong> Pull the record from both regions, compare. Check if it's actually different or if you're hitting different replicas at different replication positions. Use the <em>primary</em> of each region for the comparison.</p>
+</li>
+<li>
+<p><strong>Check replication health.</strong> Is replication actively running? What's the replication lag? Are there errors in replication logs? A replication that <em>stopped</em> a week ago is the simplest cause of divergence — a buildup of unreplicated changes.</p>
+</li>
+<li>
+<p><strong>Find the divergence timestamp.</strong> When did the values first differ? This narrows the search dramatically. Look at audit logs / change history if you have them.</p>
+</li>
+<li>
+<p><strong>Check for conflicts in the conflict resolution layer.</strong> If you're using LWW: was there a clock skew? Two writes with overlapping timestamps where the LWW arbitrator picked the 'wrong' winner? If using vector clocks: are there unreconciled conflicts surfacing as 'divergent' values that should have been resolved by app code?</p>
+</li>
+<li>
+<p><strong>Audit recent code changes.</strong> Did someone deploy a change to one region that didn't deploy to another? Configuration drift?</p>
+</li>
+</ol>
+<p><strong>Most common root causes ranked:</strong>
+- Replication paused/broken without alerting (I'd estimate 40% of cases).
+- Application bug writing different values to different regions (intentionally or not) — 25%.
+- Clock skew + LWW losing data — 15%.
+- Schema changes deployed inconsistently — 10%.
+- Multi-region transactions that partially failed — 10%.</p>
+<p><strong>Fix:</strong></p>
+<p>Once root cause is known, fix is specific. <em>General fix</em>: pick a 'source of truth' region, replicate its value to the other(s), restart any broken replication. Document why divergence happened. Add monitoring to catch <em>the next</em> divergence faster — most divergence detection is via customer reports, which is too slow.</p>
+<p><strong>The thing I'd push back on:</strong> if the team's instinct is 'just merge them somehow' without diagnosing, push back hard. Merging without understanding the cause means it'll happen again. Take the operational pain of fixing properly the first time."</p>
+</div>
+<div class="commentary">
+<p><strong>What makes this senior:</strong> structured diagnosis before fix, ranked root causes from experience (40% replication broken silently), addressed the meta-issue of detection latency ("most divergence is found via customer reports"), and explicitly pushed back on premature fixes. Interviewers love the "diagnosis-first, ranked root causes" structure — it's how staff engineers think.</p>
+</div>
+<div class="turn q">
+<p><strong>Interviewer:</strong> "Your CTO wants to put data in 'the cloud' — but a major customer is asking for SOC 2 + ISO 27001 + GDPR compliance, with data in EU only. What's your response?"</p>
+</div>
+<div class="turn a">
+<p><strong>You:</strong> "These are three orthogonal compliance vectors and I want to address them separately.</p>
+<p><strong>SOC 2</strong> is a process audit. It verifies you have appropriate security controls. SOC 2 Type II takes 6+ months to obtain (you need 6+ months of audit period). It's not architecture — it's process discipline. You can run on any cloud provider; you need security processes documented and audited.</p>
+<p><strong>ISO 27001</strong> is a similar process audit (information security management systems). Often paired with SOC 2 because the controls overlap. 6-12 months to obtain.</p>
+<p><strong>GDPR with EU data residency</strong> is the architectural one. This is what determines our cloud architecture.</p>
+<p><strong>My recommendation:</strong></p>
+<p>For the customer-blocking deal: use AWS, GCP, or Azure with EU regions (eu-west-1, europe-west, etc.). All three have full EU regions with GDPR-aligned offerings, including support for the EU Data Boundary commitment.</p>
+<p>Architecture: Pattern 4 (region-pinned). Customer's data in EU region. Authentication carries an EU claim. Routing logic enforces EU customers' traffic stays in EU services.</p>
+<p>Audit each service path: which third parties does the request touch? Stripe (yes, has EU processing), email provider (verify their EU data handling), error tracking (Sentry has EU instance), analytics (Segment can route EU events to EU destinations only). Each one is a yes/no question for residency.</p>
+<p>For SOC 2/ISO 27001: kick off the audit process now. Pick an auditor experienced in cloud-native SaaS. Plan for 9-12 months to first SOC 2 Type II report, 6-9 months for ISO 27001.</p>
+<p><strong>The thing to negotiate with the customer:</strong> in-flight assurances. SOC 2 Type II takes time; for the first 6 months we'd be in audit period. Many enterprise customers accept SOC 2 Type I (point-in-time) plus a written commitment to Type II within a defined period. ISO 27001 is harder to fast-track. The contract can include compliance-roadmap commitments.</p>
+<p><strong>What I'd avoid:</strong> promising 'we'll be SOC 2 in 30 days.' That's not how the audit works, and credibility matters with enterprise compliance teams."</p>
+</div>
+<div class="commentary">
+<p><strong>What makes this senior:</strong> distinguished compliance categories cleanly (process audits vs architectural), identified GDPR as the architectural driver, gave specific timelines for SOC 2 / ISO 27001 (9-12 months / 6-9 months), addressed third-party service compliance as a flow concern, and gave realistic negotiation guidance with the customer. The customer-facing nuance separates senior from staff.</p>
+</div>
+<div class="turn q">
+<p><strong>Interviewer:</strong> "When would you NOT use multi-region?"</p>
+</div>
+<div class="turn a">
+<p><strong>You:</strong> "More often than people think. Specifically:</p>
+<ol>
+<li>
+<p><strong>Single-continent customer base.</strong> If 95% of your users are in North America, multi-region within North America (us-east + us-west) gives you DR but not real latency improvement — it's far cheaper to be in one region with a CDN. Most B2B SaaS startups serving the US can stay single-region for years.</p>
+</li>
+<li>
+<p><strong>Read-heavy workloads where stale is OK.</strong> A content site, a marketing platform, a documentation site — CDN solves their problem. Adding regions just adds cost and complexity.</p>
+</li>
+<li>
+<p><strong>Workloads with strict consistency that don't have global users.</strong> A trading platform serving NYSE traders has zero benefit from a Tokyo region. Latency between regions would actually <em>hurt</em> if any state were replicated globally.</p>
+</li>
+<li>
+<p><strong>Pre-product-market-fit startups.</strong> Multi-region adds engineering load that can't be justified without enterprise revenue. Solve it when a customer is paying for it.</p>
+</li>
+<li>
+<p><strong>Workloads where compliance pushes the <em>opposite</em> direction.</strong> Some healthcare and financial workloads must stay in-country, single-region, with documented infrastructure. Multi-region is <em>prohibited</em>, not optional.</p>
+</li>
+</ol>
+<p><strong>The senior framing:</strong> multi-region is an architectural cost. It's only worth paying if you have a specific business need that justifies it — customer SLA, residency requirement, redundancy requirement, latency requirement. 'Best practice' is not a justification. 'Future scale' is not a justification. Specific <em>current</em> requirement is.</p>
+<p>The wrong question is 'should we go multi-region?' The right question is 'what specific problem would multi-region solve, and is there a cheaper way to solve it?'"</p>
+</div>
+<div class="commentary">
+<p><strong>What makes this senior:</strong> has the courage to recommend <em>against</em> multi-region in clear cases, distinguishes redundancy from latency benefit (multi-region within continent is mostly DR), and explicitly reframes the question from 'should we' to 'what problem does it solve.' Interviewers appreciate engineers who can argue against complexity, not just for it.</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<p><strong>THE FIVE PATTERNS</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Pattern</th>
+<th>When to use</th>
+<th>Cost / complexity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Single region + CDN</td>
+<td>Most startups, content-heavy apps</td>
+<td>$ (lowest)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Single-region writes, multi-region reads</td>
+<td>Read-heavy SaaS (95%+ reads)</td>
+<td>$$</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Active-active multi-master</td>
+<td>Local writes everywhere, eventual consistency OK</td>
+<td>$$$</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Region-pinned (per-user/tenant)</td>
+<td>Data residency, B2B SaaS, social products</td>
+<td>$$$</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Globally consistent (Spanner)</td>
+<td>Finance, inventory, must-be-strongly-consistent</td>
+<td>$$$$</td>
+</tr>
+</tbody>
+</table>
+<p><strong>LATENCY PHYSICS</strong>
+- ~5ms RTT per 1,000 km (theoretical)
+- Real RTTs: same-region &lt;2ms, cross-continent 75-160ms, half-globe 200-260ms
+- Cannot beat the speed of light — only put compute closer</p>
+<p><strong>ROUTING METHODS</strong>
+- DNS-based (GeoDNS): simple, slow failover (TTL-bound), resolver-IP issues
+- Anycast: fast failover (BGP), single IP globally, used by CDNs
+- Application-layer: precise (per-user routing), needs edge compute</p>
+<p><strong>EDGE / REGION / AZ</strong>
+- AZ: data center in region (1-2ms cross-AZ)
+- Region: 2-6 AZs, isolated from other regions
+- Edge POP: lightweight presence in cities, cache + TLS + lightweight compute</p>
+<p><strong>CONFLICT RESOLUTION (Pattern 3)</strong>
+- LWW: simple, lossy, OK for caches
+- Vector clocks: detect conflicts, app resolves
+- CRDTs: math-guaranteed merge, limited types
+- App-level merge: most flexible, most code
+- OT: collaborative editing only</p>
+<p><strong>RESIDENCY KEYS</strong>
+- GDPR: EU data, Schrems II for US transfers
+- China PIPL: data in China
+- India DPDP: data in India for "significant" platforms
+- All require: home-region routing (Pattern 4), residency-aware logging/backups, third-party compliance</p>
+<p><strong>GOTCHAS</strong>
+- Replication lag amplifies during incidents
+- Cross-region data transfer is expensive ($0.02-0.09/GB)
+- DNS TTLs control failover speed (use anycast for sub-second failover)
+- Configuration drift between regions
+- Time zones and date handling get worse multi-region</p>
+<p><strong>SENIOR DECISIONS</strong>
+- Don't over-engineer: most apps don't need multi-region
+- Compose patterns: different data, different pattern
+- Start with Pattern 1+CDN, add complexity when forced
+- Test with latency injection in single-region environments
+- Plan for residency from day one if you might serve EU/China/India</p>
+</div>
+<div class="pullquote">
+<p>"There is no 'just add a region.' Multi-region is a multi-month investment that compounds operational complexity forever. Make sure the customer is paying for it before you commit to it."</p>
+</div>
+<h1>What's next</h1>
+<p>You can now design across regions. The final operational module:</p>
+<p><strong>Module 22 — Networking Fundamentals.</strong> TCP, connection pooling internals, TLS, HTTP/2 vs HTTP/3, gRPC, L4 vs L7 load balancers, DNS-based routing — the network layer that ultimately constrains every multi-region design. Edge POPs, anycast, and load balancers all rely on this layer.</p>
+<p>After that, the operational arc — observability, capacity, multi-region, networking — is complete. You'll have the senior engineer's full operational toolkit for systems interviews.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="20_capacity_planning.html" class="prev">&laquo; 20 Capacity</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="22_networking_fundamentals.html" class="next">22 Networking &raquo;</a>
+</nav>
+</body>
+</html>

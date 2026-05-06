@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 18 — Tensor & pipeline parallelism</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800;9..144,900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@400;500;600;700&family=Patrick+Hand&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+  :root {
+    --paper: #f6efe1; --paper-deep: #ede2cc;
+    --ink: #1a1612; --ink-soft: #3a322a; --ink-muted: #6b5d4f;
+    --terracotta: #c1502e; --terracotta-deep: #8c3a20;
+    --teal: #1f5f5b; --teal-deep: #133e3b;
+    --mustard: #d4a017; --rose: #b85a6c;
+    --pytorch: #ee4c2c;
+    --code-bg: #2a2520; --code-bg-light: #f0e8d4;
+    --rule: #c8b89a;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; padding: 0 0 60px 0; background: var(--paper);
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(193,80,46,0.04) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(31,95,91,0.04) 0%, transparent 40%);
+    color: var(--ink);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px; line-height: 1.7;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 60px 40px 120px; }
+  .module-header { border-bottom: 3px double var(--ink); padding-bottom: 32px; margin-bottom: 48px; position: relative; }
+  .module-tag {
+    display: inline-block; font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--terracotta-deep); background: var(--paper-deep);
+    padding: 6px 14px; border: 1.5px solid var(--terracotta-deep);
+    border-radius: 2px; margin-bottom: 20px;
+  }
+  .module-title {
+    font-family: 'Fraunces', serif; font-weight: 900; font-size: 56px;
+    line-height: 1.05; margin: 0 0 14px; color: var(--ink); letter-spacing: -0.02em;
+  }
+  .module-title em { font-style: italic; font-weight: 400; color: var(--terracotta); }
+  .module-sub { font-family: 'Caveat', cursive; font-size: 26px; color: var(--ink-soft); margin: 0; }
+  h2 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 32px; margin: 56px 0 18px; color: var(--ink); line-height: 1.15; letter-spacing: -0.01em; }
+  h2::before { content: "§ "; color: var(--terracotta); font-weight: 600; }
+  h3 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px; margin: 36px 0 12px; color: var(--teal-deep); letter-spacing: -0.005em; }
+  h4 { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; margin: 28px 0 10px; color: var(--ink-soft); }
+  p { margin: 0 0 18px; }
+  p strong { color: var(--terracotta-deep); font-weight: 600; }
+  p em { color: var(--teal-deep); }
+  blockquote { border-left: 4px solid var(--terracotta); padding: 4px 0 4px 22px; margin: 24px 0; font-style: italic; color: var(--ink-soft); font-size: 18px; }
+  a { color: var(--teal-deep); text-decoration: underline wavy var(--mustard); text-underline-offset: 4px; }
+  code { font-family: 'IBM Plex Mono', monospace; font-size: 0.88em; background: var(--code-bg-light); padding: 1px 6px; border-radius: 3px; color: var(--terracotta-deep); border: 1px solid rgba(0,0,0,0.06); }
+  pre { background: var(--code-bg); color: #e8d9b8; font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; line-height: 1.55; padding: 22px 26px; border-radius: 4px; overflow-x: auto; margin: 24px 0; border-left: 4px solid var(--pytorch); box-shadow: 4px 4px 0 var(--ink); position: relative; }
+  pre::before { content: ">_"; position: absolute; top: 8px; right: 14px; font-size: 11px; color: var(--pytorch); opacity: 0.7; letter-spacing: 0.1em; }
+  pre code { background: transparent; color: inherit; padding: 0; border: none; font-size: inherit; }
+  pre .kw { color: #ff8a65; }
+  pre .str { color: #a5d6a7; }
+  pre .num { color: #ffcc80; }
+  pre .com { color: #8d7d65; font-style: italic; }
+  pre .fn { color: #82b1ff; }
+  pre .ty { color: #ce93d8; }
+  .sticky { background: #fff8a8; background-image: linear-gradient(180deg, #fff8a8 0%, #ffeb7a 100%); padding: 22px 26px; margin: 28px 0; box-shadow: 3px 4px 12px rgba(0,0,0,0.18), inset 0 -8px 14px rgba(0,0,0,0.04); transform: rotate(-0.4deg); font-family: 'Patrick Hand', cursive; font-size: 19px; line-height: 1.5; color: var(--ink); position: relative; }
+  .sticky::before { content: ""; position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 80px; height: 22px; background: rgba(193,80,46,0.5); border-radius: 1px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+  .sticky.pink { background-image: linear-gradient(180deg, #ffd5dc 0%, #ffb8c4 100%); transform: rotate(0.5deg); }
+  .sticky.blue { background-image: linear-gradient(180deg, #d3e9f5 0%, #aed4ec 100%); transform: rotate(-0.6deg); }
+  .sticky.green { background-image: linear-gradient(180deg, #d4ecc8 0%, #b3d99e 100%); transform: rotate(0.3deg); }
+  .sticky strong { color: var(--terracotta-deep); }
+  .brainpower { border: 2.5px solid var(--ink); background: var(--paper-deep); padding: 24px 28px 26px; margin: 32px 0; border-radius: 2px; position: relative; box-shadow: 5px 5px 0 var(--terracotta); }
+  .brainpower::before { content: "BRAIN POWER"; position: absolute; top: -13px; left: 22px; background: var(--terracotta); color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; padding: 4px 12px; letter-spacing: 0.18em; }
+  .brainpower p { margin: 8px 0; font-size: 16px; }
+  .brainpower p:first-child { margin-top: 6px; }
+  .ndq { background: linear-gradient(180deg, #fdf6e3 0%, #f5ead0 100%); border: 1.5px dashed var(--ink-soft); border-radius: 8px; padding: 28px 30px; margin: 36px 0; }
+  .ndq h4 { font-family: 'Fraunces', serif; font-size: 22px; text-transform: none; letter-spacing: 0; color: var(--terracotta-deep); margin: 0 0 18px; border-bottom: 1.5px solid var(--rule); padding-bottom: 8px; }
+  .ndq h4::before { content: "Q&A — "; color: var(--ink-muted); font-style: italic; }
+  .ndq .q { font-family: 'Caveat', cursive; font-size: 22px; color: var(--teal-deep); margin: 14px 0 4px; line-height: 1.3; }
+  .ndq .q::before { content: "Q: "; font-weight: 700; color: var(--terracotta); }
+  .ndq .a { margin: 0 0 16px 14px; padding-left: 14px; border-left: 3px solid var(--mustard); color: var(--ink-soft); font-size: 16px; }
+  .ndq .a::before { content: "A: "; font-weight: 700; color: var(--ink); font-family: 'Fraunces', serif; }
+  .table-wrap { margin: 28px 0; overflow-x: auto; border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--teal); background: #fff; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; font-family: 'Lora', serif; }
+  table caption { font-family: 'Caveat', cursive; font-size: 22px; color: var(--terracotta-deep); padding: 12px 0; text-align: left; caption-side: top; }
+  th { background: var(--ink); color: #fff; text-align: left; padding: 12px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+  td { padding: 12px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--paper-deep); }
+  tr:last-child td { border-bottom: none; }
+  td strong { color: var(--terracotta-deep); }
+  td code { font-size: 12.5px; }
+  .decision { background: #fff; border: 2px solid var(--ink); border-radius: 2px; padding: 24px 28px; margin: 32px 0; box-shadow: 5px 5px 0 var(--mustard); font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.8; white-space: pre; overflow-x: auto; color: var(--ink); }
+  .warn { background: #fcecec; border-left: 6px solid var(--terracotta); padding: 18px 22px; margin: 28px 0; border-radius: 0 4px 4px 0; position: relative; }
+  .warn::before { content: "⚠"; position: absolute; top: 14px; right: 18px; font-size: 24px; color: var(--terracotta); }
+  .warn strong { color: var(--terracotta-deep); }
+  .keyidea { background: var(--teal); color: #f6efe1; padding: 26px 30px; margin: 32px 0; border-radius: 2px; font-family: 'Fraunces', serif; font-size: 19px; font-weight: 500; line-height: 1.5; position: relative; box-shadow: 4px 4px 0 var(--ink); }
+  .keyidea::before { content: "★ KEY IDEA"; position: absolute; top: -11px; left: 22px; background: var(--mustard); color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700; padding: 4px 10px; letter-spacing: 0.18em; }
+  .keyidea strong { color: var(--mustard); }
+  .exercise { border: 2px dashed var(--teal-deep); padding: 24px 28px; margin: 36px 0; background: rgba(255,255,255,0.5); border-radius: 2px; }
+  .exercise::before { content: "✎ SHARPEN YOUR PENCIL"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px dotted var(--teal); }
+  .exercise .answer { margin-top: 14px; padding: 14px 18px; background: var(--paper-deep); border-radius: 4px; font-size: 15px; }
+  .exercise .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+  ul, ol { margin: 16px 0; padding-left: 28px; }
+  li { margin: 8px 0; }
+  ul li::marker { color: var(--terracotta); }
+  ol li::marker { color: var(--teal-deep); font-weight: 600; }
+  .dialogue { margin: 28px 0; padding: 20px 24px; background: var(--paper-deep); border-radius: 4px; border-left: 4px solid var(--rose); }
+  .dialogue .speaker { font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--rose); font-weight: 700; display: block; margin-top: 10px; }
+  .dialogue .speaker:first-child { margin-top: 0; }
+  .dialogue .speaker.b { color: var(--teal-deep); }
+  .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin: 28px 0; }
+  .twocol > div { padding: 20px 22px; border-radius: 2px; background: #fff; border: 1.5px solid var(--rule); }
+  .twocol > div h4 { margin-top: 0; }
+  .twocol .good { border-color: var(--teal); border-left: 5px solid var(--teal); }
+  .twocol .bad { border-color: var(--terracotta); border-left: 5px solid var(--terracotta); }
+  .ascii { background: var(--paper-deep); padding: 22px 26px; margin: 28px 0; border: 1.5px solid var(--rule); border-radius: 2px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.5; white-space: pre; overflow-x: auto; color: var(--ink); }
+  .module-footer { margin-top: 80px; padding-top: 28px; border-top: 3px double var(--ink); display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-muted); }
+  .module-footer .num { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 800; color: var(--terracotta); line-height: 1; }
+  .toc { background: #fff; border: 2px solid var(--ink); padding: 30px 40px; margin: 40px 0; box-shadow: 6px 6px 0 var(--teal); }
+  .toc h3 { font-family: 'Fraunces', serif; font-size: 26px; margin: 0 0 20px; color: var(--ink); }
+  .toc ol { columns: 2; column-gap: 40px; padding-left: 24px; }
+  .toc li { font-size: 15px; break-inside: avoid; margin: 4px 0; }
+  .toc li strong { color: var(--terracotta-deep); }
+  .toc .part { font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--teal-deep); margin: 16px 0 6px; column-span: all; border-bottom: 1px dashed var(--rule); padding-bottom: 4px; }
+
+  /* CODE MAGNETS — fridge-magnet style code snippets to be arranged */
+  .magnets { margin: 36px 0; padding: 26px 28px 30px; background: #ede2cc; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--teal-deep); position: relative; }
+  .magnets::before { content: "✦ CODE MAGNETS"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px dotted var(--ink-soft); }
+  .magnets p { margin: 0 0 18px; font-size: 16px; }
+  .magnet-pool { display: flex; flex-wrap: wrap; gap: 10px; padding: 16px; background: #c8c0a8; background-image: linear-gradient(135deg, #c8c0a8 25%, transparent 25%), linear-gradient(225deg, #c8c0a8 25%, transparent 25%), linear-gradient(45deg, #c8c0a8 25%, transparent 25%), linear-gradient(315deg, #c8c0a8 25%, #b5ad95 25%); background-size: 14px 14px; background-position: 7px 0, 7px 0, 0 0, 0 0; border-radius: 6px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.2); margin: 12px 0; min-height: 70px; }
+  .magnet { display: inline-block; background: #fff; padding: 10px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink); border-radius: 3px; box-shadow: 2px 2px 4px rgba(0,0,0,0.25), inset 0 -2px 0 rgba(0,0,0,0.05); border: 1px solid #d8d0b4; transform: rotate(-1deg); transition: transform 0.15s; cursor: default; user-select: all; }
+  .magnet:nth-child(2n) { transform: rotate(1.5deg); background: #fff8e8; }
+  .magnet:nth-child(3n) { transform: rotate(-2deg); background: #f0f5ee; }
+  .magnet:nth-child(5n) { transform: rotate(0.8deg); background: #f5e8e0; }
+  .magnet:hover { transform: rotate(0) scale(1.05); z-index: 2; }
+  .magnets .answer { margin-top: 16px; padding: 14px 18px; background: #fff8d8; border-radius: 4px; font-size: 15px; border-left: 4px solid var(--mustard); }
+  .magnets .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+  .magnets .answer pre { margin: 12px 0 0; }
+
+  /* CHARACTER — anthropomorphized objects with avatar and speech */
+  .character { margin: 30px 0; padding: 20px 22px 22px; background: #fff; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--rose); position: relative; display: grid; grid-template-columns: 80px 1fr; gap: 18px; align-items: start; }
+  .character .avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--mustard); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 900; font-size: 30px; color: var(--ink); border: 2.5px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+  .character.tensor .avatar { background: var(--pytorch); color: #fff; }
+  .character.stride .avatar { background: var(--teal); color: #fff; }
+  .character.storage .avatar { background: var(--mustard); }
+  .character.dtype .avatar { background: var(--rose); color: #fff; }
+  .character.autograd .avatar { background: var(--terracotta); color: #fff; }
+  .character .who { font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-muted); font-weight: 700; margin: 0 0 4px; }
+  .character .name { font-family: 'Fraunces', serif; font-weight: 800; font-size: 22px; color: var(--ink); margin: 0 0 8px; line-height: 1; }
+  .character .says { font-family: 'Lora', serif; font-size: 16px; line-height: 1.55; color: var(--ink); margin: 0; font-style: italic; }
+  .character .says::before { content: '"'; font-family: 'Fraunces', serif; font-size: 28px; color: var(--terracotta); line-height: 0; vertical-align: -8px; margin-right: 4px; }
+  .character .says::after { content: '"'; font-family: 'Fraunces', serif; font-size: 28px; color: var(--terracotta); line-height: 0; vertical-align: -8px; margin-left: 2px; }
+  .character + .character { margin-top: -10px; }
+
+  /* BULLET POINTS — recap section with checklist vibe */
+  .bullet-points { margin: 48px 0 36px; padding: 32px 36px 36px; background: var(--paper-deep); border: 3px solid var(--ink); border-radius: 4px; position: relative; box-shadow: 6px 6px 0 var(--mustard); }
+  .bullet-points::before { content: "BULLET POINTS"; position: absolute; top: -16px; left: 28px; background: var(--ink); color: var(--mustard); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; padding: 6px 16px; letter-spacing: 0.2em; }
+  .bullet-points h3 { font-family: 'Caveat', cursive; font-size: 28px; color: var(--terracotta); margin: 0 0 16px; }
+  .bullet-points ul { list-style: none; padding-left: 0; margin: 0; }
+  .bullet-points ul li { position: relative; padding: 6px 0 6px 38px; font-size: 16px; line-height: 1.5; border-bottom: 1px dashed var(--rule); }
+  .bullet-points ul li:last-child { border-bottom: none; }
+  .bullet-points ul li::before { content: ""; position: absolute; left: 6px; top: 11px; width: 18px; height: 18px; border: 2px solid var(--terracotta); border-radius: 3px; background: #fff; }
+  .bullet-points ul li::after { content: "✓"; position: absolute; left: 9px; top: 6px; font-family: 'Caveat', cursive; font-size: 22px; font-weight: 700; color: var(--terracotta); }
+  .bullet-points ul li strong { color: var(--terracotta-deep); }
+  .bullet-points ul li code { font-size: 13px; }
+
+  /* MATCHING — "Who Does What?" two-column matching exercise */
+  .matching { margin: 36px 0; padding: 26px 28px 28px; background: #fff; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--teal); position: relative; }
+  .matching::before { content: "✦ WHO DOES WHAT?"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 6px; padding-bottom: 10px; border-bottom: 2px dotted var(--ink-soft); }
+  .matching p.intro { margin: 8px 0 18px; font-size: 15px; font-style: italic; color: var(--ink-soft); }
+  .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1.5px solid var(--ink); }
+  .match-grid > div { padding: 12px 14px; border-bottom: 1px solid var(--rule); font-size: 14.5px; vertical-align: middle; display: flex; align-items: center; }
+  .match-grid > div:nth-child(4n+1), .match-grid > div:nth-child(4n+2) { background: var(--paper-deep); }
+  .match-grid > div:nth-child(2n+1) { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--terracotta-deep); border-right: 1.5px dashed var(--ink); }
+  .match-grid > div:nth-child(2n) { color: var(--ink); }
+  .match-grid > div:nth-last-child(-n+2) { border-bottom: none; }
+  .match-grid .header { background: var(--ink) !important; color: #fff !important; font-family: 'IBM Plex Mono', monospace !important; font-size: 11px !important; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; padding: 10px 14px; border-bottom: none; }
+  .matching .answer { margin-top: 16px; padding: 14px 18px; background: var(--paper-deep); border-radius: 4px; font-size: 15px; }
+  .matching .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+
+  @media (max-width: 720px) {
+    .wrap { padding: 40px 22px 80px; }
+    .module-title { font-size: 40px; }
+    .twocol { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .character { grid-template-columns: 56px 1fr; gap: 12px; }
+    .character .avatar { width: 56px; height: 56px; font-size: 22px; }
+    .match-grid { grid-template-columns: 1fr 1fr; font-size: 13px; }
+  }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+<div class="module-header">
+  <div class="module-tag">Part VI · Module 18</div>
+  <h1 class="module-title">Tensor &amp; <em>pipeline parallelism</em></h1>
+  <p class="module-sub">— splitting a single matmul across ranks (tensor parallel), splitting the model into stages with micro-batches (pipeline parallel), and stacking these axes for the largest models</p>
+</div>
+
+<p>DDP scaled data. FSDP scaled fixed-cost memory. There are two more axes of parallelism that show up at the very largest scale, and they're qualitatively different from sharding-then-reassembling: they actually <em>split work</em>. Tensor parallel splits a matmul across ranks. Pipeline parallel splits the model into stages, each on a different rank, with micro-batches flowing through.</p>
+
+<p>You probably won't write tensor or pipeline parallel code from scratch — modern training stacks (Megatron-LM, DeepSpeed, NVIDIA's NeMo, PyTorch's <code>torch.distributed.tensor.parallel</code> and <code>pipeline_parallel</code>) handle the wiring. But you absolutely need to understand <em>what these schemes do</em>, because hybrid setups (4D parallelism: data + tensor + pipeline + sequence) are the standard for frontier-scale models and the choice of which axis goes where determines whether your training runs in 30 days or 3 months.</p>
+
+<div class="keyidea">
+<strong>Tensor parallel (TP)</strong> splits one operation across ranks — column-parallel splits a linear layer's output dim, row-parallel splits its input dim. An all-reduce stitches results back together at the end of each layer. Best <em>within a node</em> (NVLink), where the all-reduce is cheap. <strong>Pipeline parallel (PP)</strong> splits the layer stack into stages, one stage per rank, with activations flowing rank-to-rank. Micro-batches keep all stages busy concurrently, minimizing the "bubble" of idle time. Best <em>across nodes</em>, where bandwidth is scarce. <strong>Sequence parallel (SP)</strong> splits along the sequence dim — handles long contexts. Modern frontier training stacks all four: data + tensor + pipeline + sequence.
+</div>
+
+<h2>One new face</h2>
+
+<div class="character" style="--c: #133e3b;">
+  <div class="avatar" style="background: #133e3b; color: #fff;">St</div>
+  <div>
+    <p class="who">Stage</p>
+    <p class="name">"I'm a slice of layers. Activations come in from the previous stage; outputs go to the next."</p>
+    <p class="says">Pipeline parallelism turns the model into a relay race: stage 0 holds layers 0-7, stage 1 holds 8-15, and so on. I receive activations from the rank ahead of me, run my layers' forward, and send activations to the rank behind. In backward, the gradient flows the other way: I receive grad-of-output from behind, run backward through my layers, send grad-of-input ahead. <strong>While my forward is running on micro-batch i, the rank ahead is on micro-batch i+1.</strong> That's how the whole pipeline stays busy.</p>
+  </div>
+</div>
+
+<h2>Tensor parallelism: splitting a matmul</h2>
+
+<p>Inside a transformer block, the dominant compute is matrix multiplication. Two matmuls in attention (QKV projection, output projection) and two in the MLP (up, down). Each is a <code>(B, T, D) × (D, D')</code> matmul. Tensor parallel splits these across W ranks.</p>
+
+<p>The trick is choosing <em>which dimension</em> of which weight to split. For an MLP <code>x → W₁(linear, D→4D) → activation → W₂(linear, 4D→D) → y</code>, the canonical Megatron pattern:</p>
+
+<ul>
+  <li>Split <code>W₁</code> along its <em>output</em> dim — each rank computes 1/W of the columns. <em>Column-parallel.</em></li>
+  <li>Apply the activation function (per-element, no communication needed).</li>
+  <li>Split <code>W₂</code> along its <em>input</em> dim — each rank holds one slice of rows. <em>Row-parallel.</em></li>
+  <li>All-reduce the partial outputs at the end. Done.</li>
+</ul>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 740 360" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs>
+    <marker id="arrTP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f5f5b"/>
+    </marker>
+  </defs>
+  <text x="370" y="22" font-size="14" font-weight="700" fill="#1a1612" text-anchor="middle">Tensor parallel MLP: column-parallel W₁ + row-parallel W₂</text>
+
+  <!-- Input x -->
+  <g transform="translate(20, 65)">
+    <rect x="0" y="0" width="80" height="40" fill="#fff8a8" stroke="#1a1612" stroke-width="1.5"/>
+    <text x="40" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1612">x</text>
+    <text x="40" y="33" text-anchor="middle" font-size="9" fill="#1a1612">(B, T, D)</text>
+    <text x="40" y="58" text-anchor="middle" font-size="9" fill="#6b5d4f" font-style="italic">replicated</text>
+  </g>
+
+  <!-- arrow to W1 -->
+  <path d="M 100 85 L 130 85" stroke="#1f5f5b" stroke-width="1.5" fill="none" marker-end="url(#arrTP)"/>
+
+  <!-- W1 split by columns -->
+  <g transform="translate(140, 50)">
+    <rect x="0"  y="0" width="40" height="70" fill="#fcecec" stroke="#c1502e" stroke-width="1.5"/>
+    <text x="20" y="40" text-anchor="middle" font-size="10" font-weight="700" fill="#1a1612">W₁⁰</text>
+    <rect x="40" y="0" width="40" height="70" fill="#fcecec" stroke="#c1502e" stroke-width="1.5"/>
+    <text x="60" y="40" text-anchor="middle" font-size="10" font-weight="700" fill="#1a1612">W₁¹</text>
+    <rect x="80" y="0" width="40" height="70" fill="#fcecec" stroke="#c1502e" stroke-width="1.5"/>
+    <text x="100" y="40" text-anchor="middle" font-size="10" font-weight="700" fill="#1a1612">W₁²</text>
+    <rect x="120" y="0" width="40" height="70" fill="#fcecec" stroke="#c1502e" stroke-width="1.5"/>
+    <text x="140" y="40" text-anchor="middle" font-size="10" font-weight="700" fill="#1a1612">W₁³</text>
+    <text x="80" y="88" text-anchor="middle" font-size="10" fill="#1a1612">W₁ split by columns (D→4D, each rank gets 4D/4)</text>
+    <text x="80" y="100" text-anchor="middle" font-size="9" fill="#6b5d4f" font-style="italic">column-parallel — each rank: x @ W₁ⁱ → h_i (B, T, 4D/4)</text>
+  </g>
+
+  <!-- arrow -->
+  <path d="M 310 85 L 340 85" stroke="#1f5f5b" stroke-width="1.5" fill="none" marker-end="url(#arrTP)"/>
+
+  <!-- intermediate h: each rank has its own slice -->
+  <g transform="translate(350, 50)">
+    <rect x="0" y="0" width="120" height="70" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="1.5"/>
+    <text x="60" y="35" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1612">σ(h_i)</text>
+    <text x="60" y="50" text-anchor="middle" font-size="9" fill="#1a1612">(B, T, 4D/4)</text>
+    <text x="60" y="88" text-anchor="middle" font-size="10" fill="#1a1612">activation per-element,</text>
+    <text x="60" y="100" text-anchor="middle" font-size="10" fill="#1a1612">no communication</text>
+  </g>
+
+  <!-- arrow -->
+  <path d="M 480 85 L 510 85" stroke="#1f5f5b" stroke-width="1.5" fill="none" marker-end="url(#arrTP)"/>
+
+  <!-- W2 split by rows -->
+  <g transform="translate(520, 50)">
+    <rect x="0" y="0" width="80" height="17" fill="#ffd5dc" stroke="#b85a6c" stroke-width="1.5"/>
+    <text x="40" y="13" text-anchor="middle" font-size="9" font-weight="700" fill="#1a1612">W₂⁰</text>
+    <rect x="0" y="17" width="80" height="17" fill="#ffd5dc" stroke="#b85a6c" stroke-width="1.5"/>
+    <text x="40" y="30" text-anchor="middle" font-size="9" font-weight="700" fill="#1a1612">W₂¹</text>
+    <rect x="0" y="34" width="80" height="17" fill="#ffd5dc" stroke="#b85a6c" stroke-width="1.5"/>
+    <text x="40" y="47" text-anchor="middle" font-size="9" font-weight="700" fill="#1a1612">W₂²</text>
+    <rect x="0" y="51" width="80" height="17" fill="#ffd5dc" stroke="#b85a6c" stroke-width="1.5"/>
+    <text x="40" y="64" text-anchor="middle" font-size="9" font-weight="700" fill="#1a1612">W₂³</text>
+    <text x="40" y="88" text-anchor="middle" font-size="10" fill="#1a1612">W₂ split by rows</text>
+    <text x="40" y="100" text-anchor="middle" font-size="9" fill="#6b5d4f" font-style="italic">row-parallel</text>
+  </g>
+
+  <!-- arrow + all_reduce -->
+  <path d="M 600 85 L 640 85" stroke="#c1502e" stroke-width="2" fill="none" marker-end="url(#arrTP)"/>
+  <text x="620" y="78" text-anchor="middle" font-size="9" fill="#c1502e" font-weight="700">all_reduce</text>
+
+  <!-- output y -->
+  <g transform="translate(650, 65)">
+    <rect x="0" y="0" width="70" height="40" fill="#fff8a8" stroke="#1a1612" stroke-width="1.5"/>
+    <text x="35" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1612">y</text>
+    <text x="35" y="33" text-anchor="middle" font-size="9" fill="#1a1612">(B, T, D)</text>
+    <text x="35" y="58" text-anchor="middle" font-size="9" fill="#6b5d4f" font-style="italic">replicated</text>
+  </g>
+
+  <!-- bottom annotations -->
+  <text x="370" y="220" font-family="'Caveat', cursive" font-size="20" fill="#1a1612" text-anchor="middle">column-parallel: split OUTPUT dim → each rank gets 1/W slice of output</text>
+  <text x="370" y="245" font-family="'Caveat', cursive" font-size="20" fill="#1a1612" text-anchor="middle">row-parallel: split INPUT dim → partial sums on each rank</text>
+  <text x="370" y="270" font-family="'Caveat', cursive" font-size="20" fill="#c1502e" text-anchor="middle">"col-then-row" pattern needs ONE all-reduce per MLP — bandwidth-cheap on NVLink</text>
+
+  <!-- f and g notation -->
+  <text x="370" y="320" font-family="'Caveat', cursive" font-size="20" fill="#1f5f5b" text-anchor="middle">in autograd terms: f = identity-fwd / all-reduce-bwd</text>
+  <text x="370" y="345" font-family="'Caveat', cursive" font-size="20" fill="#1f5f5b" text-anchor="middle">g = all-reduce-fwd / identity-bwd</text>
+</svg>
+</div>
+
+<p>The clever part is the dimension choice. Each rank computes <code>x @ W₁ⁱ</code> independently (no communication — <code>x</code> is replicated, <code>W₁ⁱ</code> is local). The activation runs element-wise, no communication. Then <code>h_i @ W₂ⁱ</code> on each rank produces a <em>partial</em> output (the full sum requires all ranks' contributions). One all-reduce stitches them together.</p>
+
+<p>One all-reduce per MLP block — and another for the attention block (the QKV column-split + output-row-split has the same shape). For a transformer with N layers, that's 2N all-reduces per forward, plus the same for backward. <em>This is why TP is best within a node</em>: NVLink can absorb that many all-reduces; cross-node ethernet can't.</p>
+
+<h3>The f/g operator notation</h3>
+
+<p>In Megatron's literature you'll see operators called <code>f</code> and <code>g</code>:</p>
+
+<ul>
+  <li><strong>f</strong>: identity in forward, all-reduce in backward. Goes at the input boundary of a TP region.</li>
+  <li><strong>g</strong>: all-reduce in forward, identity in backward. Goes at the output boundary.</li>
+</ul>
+
+<p>The MLP becomes <code>y = g(σ(f(x) @ W₁) @ W₂)</code>. The <code>f</code> at the input is a no-op in forward (we already have <code>x</code> on every rank); but in backward, the gradient through it is the sum of all ranks' contributions, requiring an all-reduce. The <code>g</code> at the output is the all-reduce we drew above; in backward, it's a no-op (the gradient flows independently into each rank's row-parallel slice).</p>
+
+<p>You don't write <code>f</code> and <code>g</code> by hand — modern PyTorch's <code>torch.distributed.tensor.parallel</code> module wires this for you via <code>parallelize_module</code> and column/row plans:</p>
+
+<pre><code><span class="kw">from</span> torch.distributed.tensor.parallel <span class="kw">import</span> (
+    parallelize_module, ColwiseParallel, RowwiseParallel,
+)
+
+mp_plan = {
+    <span class="str">"mlp.W1"</span>: <span class="fn">ColwiseParallel</span>(),
+    <span class="str">"mlp.W2"</span>: <span class="fn">RowwiseParallel</span>(),
+}
+<span class="fn">parallelize_module</span>(model, tp_mesh, mp_plan)</code></pre>
+
+<p>The framework figures out the f and g insertions, hooks them into autograd, and you get a correctly TP'd model. Same idea for attention: column-parallel on QKV proj, row-parallel on the output proj, no other plumbing required.</p>
+
+<h2>Pipeline parallelism: layers as stages</h2>
+
+<p>The other axis. Tensor parallel splits a single op across ranks; pipeline parallel splits the layer stack <em>sequentially</em>: ranks 0-3 hold layers 0-7, ranks 4-7 hold layers 8-15, etc. Each rank only stores its own stage's parameters and only computes its own stage.</p>
+
+<p>The naïve schedule is bad. If you just run forward through stage 0, then stage 1, then stage 2, etc., only one stage is busy at a time — you've gone from "1 GPU does the whole forward" to "8 GPUs do the whole forward, but serially." Same total time, more hardware. Useless.</p>
+
+<p>The fix is <strong>micro-batches</strong>. Split the batch into M micro-batches and pipeline them through:</p>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 740 380" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs></defs>
+  <text x="370" y="22" font-size="14" font-weight="700" fill="#1a1612" text-anchor="middle">Pipeline parallelism: micro-batches keep all stages busy</text>
+
+  <!-- ====== Naïve schedule ====== -->
+  <text x="20" y="55" font-size="12" font-weight="700" fill="#c1502e">① Naïve: one batch, sequential stages</text>
+  <g transform="translate(20, 65)">
+    <text x="-5" y="14" font-size="10" fill="#6b5d4f" text-anchor="end">St 0</text>
+    <text x="-5" y="34" font-size="10" fill="#6b5d4f" text-anchor="end">St 1</text>
+    <text x="-5" y="54" font-size="10" fill="#6b5d4f" text-anchor="end">St 2</text>
+    <text x="-5" y="74" font-size="10" fill="#6b5d4f" text-anchor="end">St 3</text>
+    <!-- Forward: each stage runs in turn -->
+    <rect x="0"   y="3" width="120" height="14" fill="#1f5f5b"/><text x="60" y="13" text-anchor="middle" font-size="9" fill="#fff">F</text>
+    <rect x="120" y="23" width="120" height="14" fill="#1f5f5b"/><text x="180" y="33" text-anchor="middle" font-size="9" fill="#fff">F</text>
+    <rect x="240" y="43" width="120" height="14" fill="#1f5f5b"/><text x="300" y="53" text-anchor="middle" font-size="9" fill="#fff">F</text>
+    <rect x="360" y="63" width="120" height="14" fill="#1f5f5b"/><text x="420" y="73" text-anchor="middle" font-size="9" fill="#fff">F</text>
+    <!-- Backward: reverse -->
+    <rect x="480" y="63" width="120" height="14" fill="#c1502e"/><text x="540" y="73" text-anchor="middle" font-size="9" fill="#fff">B</text>
+    <rect x="600" y="43" width="120" height="14" fill="#c1502e"/><text x="660" y="53" text-anchor="middle" font-size="9" fill="#fff">B</text>
+    <rect x="0"   y="103" width="120" height="14" fill="#c1502e"/>  <!-- placeholder for cont -->
+  </g>
+  <!-- bubble shading -->
+  <text x="120" y="65" font-style="italic" font-size="11" fill="#c1502e">←  3 stages idle  →</text>
+  <text x="280" y="160" font-size="11" font-weight="700" fill="#c1502e">total time ≈ N_stages × forward + N_stages × backward — most stages idle most of the time</text>
+
+  <!-- ====== 1F1B schedule ====== -->
+  <text x="20" y="200" font-size="12" font-weight="700" fill="#1f5f5b">② 1F1B: micro-batches keep all stages busy</text>
+  <g transform="translate(20, 210)">
+    <text x="-5" y="14" font-size="10" fill="#6b5d4f" text-anchor="end">St 0</text>
+    <text x="-5" y="34" font-size="10" fill="#6b5d4f" text-anchor="end">St 1</text>
+    <text x="-5" y="54" font-size="10" fill="#6b5d4f" text-anchor="end">St 2</text>
+    <text x="-5" y="74" font-size="10" fill="#6b5d4f" text-anchor="end">St 3</text>
+
+    <!-- Stage 0: forwards followed by 1F1B alternation -->
+    <rect x="0"   y="3" width="20" height="14" fill="#1f5f5b"/><text x="10" y="13" text-anchor="middle" font-size="8" fill="#fff">F1</text>
+    <rect x="22"  y="3" width="20" height="14" fill="#1f5f5b"/><text x="32" y="13" text-anchor="middle" font-size="8" fill="#fff">F2</text>
+    <rect x="44"  y="3" width="20" height="14" fill="#1f5f5b"/><text x="54" y="13" text-anchor="middle" font-size="8" fill="#fff">F3</text>
+    <rect x="66"  y="3" width="20" height="14" fill="#1f5f5b"/><text x="76" y="13" text-anchor="middle" font-size="8" fill="#fff">F4</text>
+    <rect x="88"  y="3" width="20" height="14" fill="#c1502e"/><text x="98" y="13" text-anchor="middle" font-size="8" fill="#fff">B1</text>
+    <rect x="110" y="3" width="20" height="14" fill="#1f5f5b"/><text x="120" y="13" text-anchor="middle" font-size="8" fill="#fff">F5</text>
+    <rect x="132" y="3" width="20" height="14" fill="#c1502e"/><text x="142" y="13" text-anchor="middle" font-size="8" fill="#fff">B2</text>
+    <rect x="154" y="3" width="20" height="14" fill="#1f5f5b"/><text x="164" y="13" text-anchor="middle" font-size="8" fill="#fff">F6</text>
+    <rect x="176" y="3" width="20" height="14" fill="#c1502e"/><text x="186" y="13" text-anchor="middle" font-size="8" fill="#fff">B3</text>
+    <rect x="198" y="3" width="20" height="14" fill="#c1502e"/><text x="208" y="13" text-anchor="middle" font-size="8" fill="#fff">B4</text>
+    <rect x="220" y="3" width="20" height="14" fill="#c1502e"/><text x="230" y="13" text-anchor="middle" font-size="8" fill="#fff">B5</text>
+    <rect x="242" y="3" width="20" height="14" fill="#c1502e"/><text x="252" y="13" text-anchor="middle" font-size="8" fill="#fff">B6</text>
+
+    <!-- Stage 1 -->
+    <rect x="22"  y="23" width="20" height="14" fill="#1f5f5b"/><text x="32" y="33" text-anchor="middle" font-size="8" fill="#fff">F1</text>
+    <rect x="44"  y="23" width="20" height="14" fill="#1f5f5b"/><text x="54" y="33" text-anchor="middle" font-size="8" fill="#fff">F2</text>
+    <rect x="66"  y="23" width="20" height="14" fill="#1f5f5b"/><text x="76" y="33" text-anchor="middle" font-size="8" fill="#fff">F3</text>
+    <rect x="88"  y="23" width="20" height="14" fill="#1f5f5b"/><text x="98" y="33" text-anchor="middle" font-size="8" fill="#fff">F4</text>
+    <rect x="110" y="23" width="20" height="14" fill="#c1502e"/><text x="120" y="33" text-anchor="middle" font-size="8" fill="#fff">B1</text>
+    <rect x="132" y="23" width="20" height="14" fill="#1f5f5b"/><text x="142" y="33" text-anchor="middle" font-size="8" fill="#fff">F5</text>
+    <rect x="154" y="23" width="20" height="14" fill="#c1502e"/><text x="164" y="33" text-anchor="middle" font-size="8" fill="#fff">B2</text>
+    <rect x="176" y="23" width="20" height="14" fill="#1f5f5b"/><text x="186" y="33" text-anchor="middle" font-size="8" fill="#fff">F6</text>
+    <rect x="198" y="23" width="20" height="14" fill="#c1502e"/><text x="208" y="33" text-anchor="middle" font-size="8" fill="#fff">B3</text>
+    <rect x="220" y="23" width="20" height="14" fill="#c1502e"/><text x="230" y="33" text-anchor="middle" font-size="8" fill="#fff">B4</text>
+    <rect x="242" y="23" width="20" height="14" fill="#c1502e"/><text x="252" y="33" text-anchor="middle" font-size="8" fill="#fff">B5</text>
+
+    <!-- Stage 2 -->
+    <rect x="44"  y="43" width="20" height="14" fill="#1f5f5b"/><text x="54" y="53" text-anchor="middle" font-size="8" fill="#fff">F1</text>
+    <rect x="66"  y="43" width="20" height="14" fill="#1f5f5b"/><text x="76" y="53" text-anchor="middle" font-size="8" fill="#fff">F2</text>
+    <rect x="88"  y="43" width="20" height="14" fill="#1f5f5b"/><text x="98" y="53" text-anchor="middle" font-size="8" fill="#fff">F3</text>
+    <rect x="110" y="43" width="20" height="14" fill="#1f5f5b"/><text x="120" y="53" text-anchor="middle" font-size="8" fill="#fff">F4</text>
+    <rect x="132" y="43" width="20" height="14" fill="#c1502e"/><text x="142" y="53" text-anchor="middle" font-size="8" fill="#fff">B1</text>
+    <rect x="154" y="43" width="20" height="14" fill="#1f5f5b"/><text x="164" y="53" text-anchor="middle" font-size="8" fill="#fff">F5</text>
+    <rect x="176" y="43" width="20" height="14" fill="#c1502e"/><text x="186" y="53" text-anchor="middle" font-size="8" fill="#fff">B2</text>
+    <rect x="198" y="43" width="20" height="14" fill="#1f5f5b"/><text x="208" y="53" text-anchor="middle" font-size="8" fill="#fff">F6</text>
+    <rect x="220" y="43" width="20" height="14" fill="#c1502e"/><text x="230" y="53" text-anchor="middle" font-size="8" fill="#fff">B3</text>
+    <rect x="242" y="43" width="20" height="14" fill="#c1502e"/><text x="252" y="53" text-anchor="middle" font-size="8" fill="#fff">B4</text>
+
+    <!-- Stage 3 -->
+    <rect x="66"  y="63" width="20" height="14" fill="#1f5f5b"/><text x="76" y="73" text-anchor="middle" font-size="8" fill="#fff">F1</text>
+    <rect x="88"  y="63" width="20" height="14" fill="#1f5f5b"/><text x="98" y="73" text-anchor="middle" font-size="8" fill="#fff">F2</text>
+    <rect x="110" y="63" width="20" height="14" fill="#1f5f5b"/><text x="120" y="73" text-anchor="middle" font-size="8" fill="#fff">F3</text>
+    <rect x="132" y="63" width="20" height="14" fill="#1f5f5b"/><text x="142" y="73" text-anchor="middle" font-size="8" fill="#fff">F4</text>
+    <rect x="154" y="63" width="20" height="14" fill="#c1502e"/><text x="164" y="73" text-anchor="middle" font-size="8" fill="#fff">B1</text>
+    <rect x="176" y="63" width="20" height="14" fill="#1f5f5b"/><text x="186" y="73" text-anchor="middle" font-size="8" fill="#fff">F5</text>
+    <rect x="198" y="63" width="20" height="14" fill="#c1502e"/><text x="208" y="73" text-anchor="middle" font-size="8" fill="#fff">B2</text>
+    <rect x="220" y="63" width="20" height="14" fill="#1f5f5b"/><text x="230" y="73" text-anchor="middle" font-size="8" fill="#fff">F6</text>
+    <rect x="242" y="63" width="20" height="14" fill="#c1502e"/><text x="252" y="73" text-anchor="middle" font-size="8" fill="#fff">B3</text>
+  </g>
+
+  <!-- bubble annotations -->
+  <text x="20" y="320" font-family="'Caveat', cursive" font-size="18" fill="#c1502e">↖ initial bubble: stages fill up</text>
+  <text x="200" y="320" font-family="'Caveat', cursive" font-size="18" fill="#1f5f5b">steady-state: every stage busy</text>
+  <text x="540" y="320" font-family="'Caveat', cursive" font-size="18" fill="#c1502e">final bubble: stages drain ↘</text>
+  <text x="370" y="350" font-family="'Caveat', cursive" font-size="20" fill="#1a1612" text-anchor="middle">bubble fraction = (P − 1) / (M + P − 1) — more micro-batches → smaller bubble</text>
+</svg>
+</div>
+
+<p>Read the bottom panel. With M=6 micro-batches and P=4 stages, after the initial fill-up, every stage is processing <em>some</em> micro-batch (forward or backward) every step. The 1F1B schedule (alternate one forward, one backward) keeps memory low: a stage is processing at most P micro-batches' activations at once.</p>
+
+<h3>The bubble math</h3>
+
+<p>The fraction of time stages are idle (the bubble):</p>
+
+<pre><code>bubble_fraction = (P − <span class="num">1</span>) / (M + P − <span class="num">1</span>)</code></pre>
+
+<p>Where P = number of pipeline stages, M = number of micro-batches per training step. Concrete: P=8 stages, M=4 micro-batches → bubble = 7/11 ≈ 64% (terrible). M=64 → bubble = 7/71 ≈ 10% (acceptable). M=256 → bubble = 7/263 ≈ 2.7% (great).</p>
+
+<p>This is why pipeline parallelism wants <strong>large effective batch sizes</strong> — you need many micro-batches to amortize the bubble. For LLM training where effective batch sizes are huge (~4M tokens), this is fine. For smaller-scale training, the bubble can dominate.</p>
+
+<h3>Pipeline schedules: GPipe vs 1F1B vs interleaved</h3>
+
+<div class="table-wrap">
+<table>
+<caption>Three pipeline schedules</caption>
+<thead><tr><th>Schedule</th><th>Memory cost</th><th>Tradeoff</th></tr></thead>
+<tbody>
+<tr><td><strong>GPipe</strong></td><td>All M micro-batches' activations on every stage at peak</td><td>Simple to reason about, but huge activation memory</td></tr>
+<tr><td><strong>1F1B</strong> (one forward, one backward)</td><td>Up to P micro-batches' activations at peak</td><td>The standard. Balances memory and bubble.</td></tr>
+<tr><td><strong>Interleaved 1F1B</strong></td><td>Smaller bubble, more communication</td><td>Each stage gets multiple "virtual" stages, smaller bubble at the cost of more sends/recvs. Used in Megatron's largest configurations.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>1F1B is the modern default for transformer pretraining. Interleaved is a Megatron-LM specialty for the very largest setups (1T-parameter scale).</p>
+
+<h2>Sequence parallelism (briefly)</h2>
+
+<p>One more axis. <em>Sequence parallel</em> splits along the sequence dimension T instead of the hidden dimension D or the layer index. It's a refinement of TP: in regions where the work is purely per-token (LayerNorm, activation, dropout), there's no need to replicate <code>(B, T, D)</code> tensors across TP ranks — you can split T across them and each rank processes its own slice.</p>
+
+<p>The benefit: activation memory drops by a factor of TP_size in those regions. For long-context training (T=32768+), this matters because activation memory dominates. The cost: extra all-gather/reduce-scatter at the boundaries between sequence-parallel and tensor-parallel regions. Megatron-style codebases combine TP and SP together; there's roughly no extra communication compared to TP-only because they amortize.</p>
+
+<p>You'll see SP mentioned in any modern large-model paper. Conceptually: it's TP that exploits per-token operations.</p>
+
+<h2>4D parallelism: the modern stack</h2>
+
+<p>Frontier training uses all four:</p>
+
+<ul>
+  <li><strong>Data parallel (DP)</strong>: shards the batch across nodes. Cheapest communication (one all-reduce after backward, M16). Always present.</li>
+  <li><strong>Tensor parallel (TP)</strong>: splits a matmul within a layer. Stay within a node — needs NVLink for the per-layer all-reduces.</li>
+  <li><strong>Pipeline parallel (PP)</strong>: splits the model into stages across nodes. Tolerates lower bandwidth (one send/recv between stages per micro-batch).</li>
+  <li><strong>Sequence parallel (SP)</strong>: tags onto TP. Cuts activation memory along the sequence dim.</li>
+</ul>
+
+<p>The standard pattern at scale: <strong>TP within a node (8 ranks), PP across nodes (e.g., 8 stages), DP/FSDP across pipeline copies, SP integrated with TP</strong>. Total ranks = TP × PP × DP. For a 70B model on a 256-GPU cluster: TP=8, PP=4, DP=8 (8×4×8=256). The choice of axis sizes is a topology optimization — match the heavier collectives to faster fabrics.</p>
+
+<div class="ndq">
+<h4>About TP, PP, and friends</h4>
+
+<p class="q">When do I need TP at all? Can't I just use FSDP?</p>
+<p class="a">For models that fit a single-layer's parameters comfortably on one GPU, FSDP is enough. TP becomes essential when <em>even a single layer is too big</em> — for example, a 70B+ model where one layer's weights exceed a GPU's memory after FSDP gathers them. TP splits the layer itself, so even the materialized weight is sharded. At extreme scale (100B+), TP is mandatory.</p>
+
+<p class="q">Can I combine FSDP with TP?</p>
+<p class="a">Yes — that's the standard pattern. FSDP shards across the data-parallel dimension; TP shards within each layer. PyTorch's <code>DTensor</code> abstraction handles the multi-axis sharding cleanly. The combination is sometimes called "2D parallel."</p>
+
+<p class="q">Why doesn't TP scale beyond a node?</p>
+<p class="a">Bandwidth. TP does one all-reduce per layer (or two with attention + MLP). For 32 layers × 2 collectives = 64 all-reduces per forward + same for backward = 128 collectives per step. Each is on the order of a megabyte. On NVLink (600 GB/s), each is a few microseconds. On 400 Gbps inter-node (~50 GB/s), 10× slower, plus higher latency per call. TP outside a node tanks throughput.</p>
+
+<p class="q">My PP run has correct loss but is incredibly slow. What gives?</p>
+<p class="a">Probably bubble dominance. Check M (micro-batch count) vs P (stage count). If M is comparable to P, your bubble fraction is near 50%. Increase micro-batches by either (a) more accumulation steps per step (more micro-batches, same effective batch) or (b) smaller per-microbatch batch size (more micro-batches at the same total batch). Aim for M ≥ 4P.</p>
+
+<p class="q">Is TP/PP coming or going?</p>
+<p class="a">Coming. Models keep growing. FSDP-only training plateaus around ~100B parameters depending on hardware. Above that, TP and PP are mandatory. PyTorch's <code>torch.distributed.tensor.parallel</code> module is actively developed; the new DTensor + <code>parallelize_module</code> API is much cleaner than older Megatron-style hand-coded TP. Expect this area to be a big theme over the next few years.</p>
+</div>
+
+<h2>Where each parallelism lives</h2>
+
+<p>A simple mental model that captures the design pressures:</p>
+
+<div class="table-wrap">
+<table>
+<caption>Choosing the right axis for the right hardware</caption>
+<thead><tr><th>Parallelism</th><th>What it scales</th><th>Bandwidth need</th><th>Where it goes</th></tr></thead>
+<tbody>
+<tr><td>Data parallel</td><td>Effective batch size</td><td>Low (one all-reduce/step)</td><td>Outermost — across nodes / racks</td></tr>
+<tr><td>FSDP / ZeRO-3</td><td>Fixed-cost memory</td><td>Medium-high (per-layer all-gather + reduce-scatter)</td><td>Middle — usually intra-node, sometimes hybrid</td></tr>
+<tr><td>Tensor parallel</td><td>Single-layer compute &amp; param size</td><td>High (per-layer all-reduce)</td><td>Innermost — within a node, on NVLink</td></tr>
+<tr><td>Sequence parallel</td><td>Activation memory at long T</td><td>Bundled with TP</td><td>Within TP groups</td></tr>
+<tr><td>Pipeline parallel</td><td>Total parameter count</td><td>Low-medium (send/recv between adjacent stages)</td><td>Across nodes</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>The principle: <strong>match the heavier collective to the faster fabric</strong>. NVLink (600 GB/s within node) is for TP. InfiniBand or fast ethernet (~50-200 GB/s between nodes) is for FSDP or PP. The slowest fabric (or the cheapest collective) is for DP.</p>
+
+<h2>Code Magnets: assemble a 2D parallel setup</h2>
+
+<p>You're configuring 2D parallelism: TP=4 within each node, FSDP across the rest. World size 16 means 4 TP groups of 4 GPUs each. Three magnets are wrong choices.</p>
+
+<div class="magnets">
+<p>Arrange the magnets into a working setup.</p>
+
+<div class="magnet-pool">
+  <span class="magnet">from torch.distributed.device_mesh import init_device_mesh</span>
+  <span class="magnet">mesh = init_device_mesh("cuda", (4, 4), mesh_dim_names=("dp", "tp"))</span>
+  <span class="magnet">mesh = init_device_mesh("cuda", (16,), mesh_dim_names=("dp",))</span>
+  <span class="magnet">tp_plan = {"mlp.W1": ColwiseParallel(), "mlp.W2": RowwiseParallel()}</span>
+  <span class="magnet">parallelize_module(model, mesh["tp"], tp_plan)</span>
+  <span class="magnet">model = FSDP(model, device_mesh=mesh["dp"], sharding_strategy=ShardingStrategy.FULL_SHARD)</span>
+  <span class="magnet">model = FSDP(model, device_mesh=mesh, sharding_strategy=ShardingStrategy.FULL_SHARD)</span>
+  <span class="magnet">model = DDP(model)</span>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<pre><code><span class="kw">from</span> torch.distributed.device_mesh <span class="kw">import</span> init_device_mesh
+
+mesh = <span class="fn">init_device_mesh</span>(<span class="str">"cuda"</span>, (<span class="num">4</span>, <span class="num">4</span>), mesh_dim_names=(<span class="str">"dp"</span>, <span class="str">"tp"</span>))
+tp_plan = {<span class="str">"mlp.W1"</span>: <span class="fn">ColwiseParallel</span>(), <span class="str">"mlp.W2"</span>: <span class="fn">RowwiseParallel</span>()}
+<span class="fn">parallelize_module</span>(model, mesh[<span class="str">"tp"</span>], tp_plan)
+model = <span class="fn">FSDP</span>(model, device_mesh=mesh[<span class="str">"dp"</span>], sharding_strategy=ShardingStrategy.FULL_SHARD)</code></pre>
+<p>The traps:</p>
+<ul>
+  <li><code>(16,)</code> mesh with one dim called "dp": no TP at all, just plain FSDP.</li>
+  <li><code>FSDP(model, device_mesh=mesh, ...)</code> without selecting a sub-mesh: tries to FSDP-shard across all 16 ranks including the TP dim, which double-shards the already-TP'd parameters.</li>
+  <li><code>DDP(model)</code> after TP: DDP doesn't know about TP-sharded parameters — would all-reduce TP shards as if they were complete tensors.</li>
+</ul>
+<p>The right pattern: <strong>build a 2D mesh, parallelize_module on the TP submesh, FSDP on the DP submesh</strong>. Each parallelism gets its own slice of the mesh.</p>
+</details>
+</div>
+
+<h2>Who does what?</h2>
+
+<div class="matching">
+<p class="intro">Match each parallelism concept to its real role.</p>
+
+<div class="match-grid">
+  <div class="header">Concept</div>
+  <div class="header">Real role</div>
+
+  <div>Column-parallel</div>
+  <div>A. Splits a linear layer's output dim across ranks; each rank owns a column slice.</div>
+
+  <div>Row-parallel</div>
+  <div>B. Splits a linear layer's input dim; outputs are partial sums needing all-reduce.</div>
+
+  <div>Pipeline stage</div>
+  <div>C. A contiguous set of layers held by one rank; passes activations to next stage.</div>
+
+  <div>1F1B schedule</div>
+  <div>D. Alternates forward/backward per stage; balances bubble vs activation memory.</div>
+
+  <div>Bubble fraction (P-1)/(M+P-1)</div>
+  <div>E. Shows why you need M ≥ 4P micro-batches for pipeline efficiency.</div>
+
+  <div>Sequence parallel</div>
+  <div>F. Splits along T in per-token regions; reduces activation memory in TP groups.</div>
+
+  <div>4D parallelism</div>
+  <div>G. Stack DP + FSDP + TP + PP (+ SP); match heaviest collective to fastest fabric.</div>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<p>
+<strong>Column-parallel</strong> → A<br>
+<strong>Row-parallel</strong> → B<br>
+<strong>Pipeline stage</strong> → C<br>
+<strong>1F1B schedule</strong> → D<br>
+<strong>Bubble fraction (P-1)/(M+P-1)</strong> → E<br>
+<strong>Sequence parallel</strong> → F<br>
+<strong>4D parallelism</strong> → G
+</p>
+<p>The mental shortcut: <em>col-par splits outputs, row-par splits inputs (with all-reduce), stages are layer slices, 1F1B alternates F/B, bubble math sets M, SP cuts activation along T, 4D matches collectives to fabric speed</em>.</p>
+</details>
+</div>
+
+<h2>Exercises</h2>
+
+<div class="exercise">
+<p><strong>1.</strong> A team's PP=8 run has bubble fraction 25%. Their effective batch is 256, micro-batch=8 (so M=32). Compute the bubble; what M would they need for 5%?</p>
+<details class="answer"><summary>show answer</summary>
+<p>Bubble = (P-1)/(M+P-1) = 7/(32+7) = 7/39 ≈ 18%. Their 25% number is probably from including communication overhead beyond just the bubble. For 5% bubble: 7/(M+7) = 0.05 → M+7 = 140 → M = 133. With per-microbatch batch=8, effective batch becomes 8×133 = 1064. Doable for LLM pretraining (effective batches in the millions are normal); pricey if your effective batch is otherwise constrained. The takeaway: <strong>bubble is why pipeline parallelism is most useful at very large effective batch sizes</strong>.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>2.</strong> Why does column-parallel-then-row-parallel need only one all-reduce, while column-parallel-then-column-parallel would need two?</p>
+<details class="answer"><summary>show answer</summary>
+<p>Column-parallel splits the <em>output</em> dim, so each rank's result has shape <code>(B, T, D'/W)</code> — a <em>partial</em> output along the feature dim, no summing needed yet. Then row-parallel splits the <em>input</em> dim, so each rank computes a partial sum of the <em>final</em> output and one all-reduce stitches them together. Each rank's chunk lines up with the next layer's input partition: <em>no all-reduce in between</em>.</p>
+<p>If you did column-parallel-then-column-parallel: rank 0 has columns 0..D'/W of the first output, but the second column-parallel layer needs the <em>full</em> activation as input. So you'd have to all-gather the first output (or all-reduce some equivalent), then proceed. Two collectives instead of one. Megatron's "col-then-row" pattern is the cheapest schedule.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>3.</strong> A team is training a 175B model on 1024 GPUs across 128 nodes. They configure 4D parallelism. Suggest reasonable axis sizes and explain.</p>
+<details class="answer"><summary>show answer</summary>
+<p>One common configuration: <strong>TP=8, PP=8, DP=16</strong> (8 × 8 × 16 = 1024). TP=8 fits within a single 8-GPU node (NVLink). PP=8 stages spread across 8 nodes — each pipeline copy spans 8 nodes via inter-node communication. DP=16 means 16 copies of the entire pipeline — one all-reduce per training step across DP, on the slowest fabric. Effective batch is 16× the micro-batch × pipeline-microbatches.</p>
+<p>The principle: TP gets the fastest fabric (NVLink within a node), PP the next-fastest (inter-node, but only point-to-point sends per micro-batch), DP the slowest (one all-reduce per step). Different teams pick slightly different splits — Llama 3 used TP=8, PP=16, DP=N for the 405B run, for instance.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>4.</strong> What's the difference, conceptually, between FSDP all-gather and TP's column-parallel? Both gather across ranks before a matmul...</p>
+<details class="answer"><summary>show answer</summary>
+<p>FSDP <em>materializes a complete parameter</em> on each rank temporarily, then runs the layer normally, then frees. The matmul each rank does is the <em>full</em> matmul on its full data — same compute as single-GPU.</p>
+<p>TP column-parallel <em>doesn't materialize</em> the complete weight. Each rank only ever has its slice of the weight. The matmul each rank does is a smaller matmul (1/W of the columns). The "gather" in TP is conceptually about gathering <em>partial outputs</em>, not weights.</p>
+<p>Memory: FSDP saves per-rank weight storage (1/W) but recomputes the full weight at use time. TP also stores 1/W but never needs the full thing. <em>So TP is strictly less memory than FSDP for that one layer.</em> Compute: FSDP does full-size matmuls; TP does smaller matmuls in parallel — the per-rank compute is less, but you need W ranks running concurrently. They're solving different problems: FSDP shards <em>all training state</em>, TP shards <em>compute</em>.</p>
+</details>
+</div>
+
+<div class="bullet-points">
+<h3>What just happened?</h3>
+<ul>
+  <li><strong>Tensor parallel (TP)</strong> splits a single matmul across W ranks: column-parallel splits output dim, row-parallel splits input dim, "col-then-row" needs one all-reduce per region.</li>
+  <li><strong>The f/g operators</strong>: f = identity-fwd / all-reduce-bwd at TP entry; g = all-reduce-fwd / identity-bwd at TP exit. Modern PyTorch's <code>parallelize_module</code> wires these for you.</li>
+  <li><strong>TP is high-bandwidth</strong> — many small all-reduces per step. <strong>Stay within a node</strong> (NVLink). Across nodes, TP tanks throughput.</li>
+  <li><strong>Pipeline parallel (PP)</strong> splits the layer stack into P stages, one per rank. Each stage receives activations from the previous rank, processes its layers, sends to the next.</li>
+  <li><strong>Naïve PP is bad</strong> — only one stage runs at a time. <strong>Micro-batches</strong> fix it: split a batch into M chunks; the pipeline stays full once it's primed.</li>
+  <li><strong>1F1B</strong> is the standard schedule: alternate one forward, one backward. Bounds activation memory at ~P micro-batches per stage.</li>
+  <li><strong>Bubble fraction</strong> = (P-1)/(M+P-1). Need M ≥ 4P or so for acceptable efficiency. PP wants <em>large effective batches</em> — fits naturally for LLM pretraining.</li>
+  <li><strong>Sequence parallel (SP)</strong> rides on top of TP: splits the per-token computations along T. Shrinks activation memory at long context. Bundled with TP in modern frameworks.</li>
+  <li><strong>4D parallelism</strong> (DP × FSDP × TP × PP × SP) is the modern stack. Match the heavier collective to the faster fabric: TP intra-node, PP/FSDP inter-node, DP outermost.</li>
+  <li><strong>FSDP vs TP</strong>: FSDP materializes the full weight per layer briefly; TP never materializes it. Different memory/compute tradeoffs; combine for very large models.</li>
+  <li>The reflex: when picking a parallelism plan, draw your hardware topology, mark the bandwidth between every pair, and place the most-communication-heavy axis on the fastest connection.</li>
+</ul>
+</div>
+
+<p>That closes Part VI. You now have the full distributed toolkit: communication primitives (M15), data parallelism (M16), state sharding (M17), and operation+layer sharding (M18). Combined with the memory + profiling work from Part V, you can predict where any training run will be bound and pick the right tool.</p>
+
+<p>Part VII pivots inward. Modules 19-21 open up the framework itself — the dispatcher and ATen layer, the CUDA caching allocator and stream model, and finally <code>torch.compile</code> as the system that fuses everything. That's the foundation for Part VIII, where we start writing the kernels.</p>
+
+<div class="module-footer">
+  <span>PyTorch · From Tensor to Kernel</span>
+  <span class="num">18</span>
+  <span>Tensor &amp; pipeline parallelism</span>
+</div>
+
+</div>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="17_zero_fsdp.html" class="prev">&laquo; 17 ZeRO/FSDP</a>
+  <a href="../../index.html" class="home">Home</a>
+  <a href="19_dispatcher_aten.html" class="next">19 Dispatcher &raquo;</a>
+</nav>
+</body>
+</html>

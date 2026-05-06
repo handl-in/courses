@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam asks the wrong question</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 09</p>
+</div>
+<div class="module-title">
+<p>Locking</p>
+</div>
+<div class="subtitle">
+<p>Pessimistic vs optimistic, deadlocks, and the queue patterns that scale</p>
+</div>
+</div>
+<div class="opener">
+<p>Two transactions both want to update the same row. Who waits? Who fails? How do you decide <em>which strategy</em> to use <em>before</em> you've shipped to production and started seeing deadlocks at 4 AM?</p>
+<p>Most engineers learn locking by getting paged. This module gets you there before the page.</p>
+</div>
+<h1>Sam asks the wrong question</h1>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+OK so I read about optimistic locking and I'm convinced. No locks, no deadlocks, just a version column and retry on conflict. We should switch our whole codebase to optimistic locking, right?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+What's your conflict rate?</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+What do you mean conflict rate?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+How often do two concurrent transactions try to modify the same row? If it's 1%, optimistic locking is brilliant — almost everyone succeeds first try, and the rare retry is cheap. If it's 50%, optimistic locking is catastrophic — half your work gets thrown away and redone, every retry races into more retries, and your throughput collapses.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+Oh.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Both pessimistic and optimistic locking are correct. The question isn't "which is better." The question is "what's my contention pattern?" The same problem with low contention wants optimistic; with high contention wants pessimistic. <strong>You don't get to pick by aesthetic. The workload picks for you.</strong></p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+And deadlocks?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Pessimistic only. Optimistic doesn't deadlock — it just retries. But pessimistic deadlocks are usually fixable in one of three specific ways, and once you know them, you stop fearing the deadlock detector. By the end of this module you'll know exactly when each strategy fits and how to make pessimistic locking safe.</p>
+</div>
+</div>
+<div class="keyidea">
+<p>Pessimistic locking assumes conflicts are likely; lock first, then act. Optimistic locking assumes conflicts are rare; act first, then verify. <strong>Pick by contention rate, not by preference.</strong> Low contention → optimistic. High contention → pessimistic.</p>
+</div>
+<h1>Pessimistic locking</h1>
+<p>You acquire a lock <em>before</em> doing the work. Anyone else who wants the same lock waits.</p>
+<pre><code class="language-sql">BEGIN;
+SELECT * FROM accounts WHERE id = 1 FOR UPDATE;   -- exclusive row lock
+-- ... compute new balance ...
+UPDATE accounts SET balance = ... WHERE id = 1;
+COMMIT;                                            -- lock released
+</code></pre>
+<div class="scenario">
+<p><strong>The bank teller scene:</strong></p>
+<p>Two clerks both want to debit account A. Clerk 1 starts the transaction first.</p>
+<ul>
+<li><strong>Clerk 1</strong>: <code>SELECT FOR UPDATE</code> → gets the lock, reads $500, computes new $400, UPDATEs, commits.</li>
+<li><strong>Clerk 2</strong>: <code>SELECT FOR UPDATE</code> → blocked, waits at the lock.</li>
+<li>Clerk 1 commits. Lock released.</li>
+<li>Clerk 2: now reads $400 (post-clerk-1's commit), computes correctly from there.</li>
+</ul>
+<p><strong>Correctness is automatic.</strong> The lock serializes access to that row. There's no race because there's no concurrency on the contended resource.</p>
+<p>The cost: throughput on that row caps at "1 transaction at a time, sequentially." Under high contention, the system becomes a queue.</p>
+</div>
+<div class="metaphor">
+<p><strong>The bathroom door analogy.</strong></p>
+<p>Pessimistic locking is a bathroom with a lock. Walk up, lock the door, do your business, unlock. Anyone who arrives meanwhile waits in line.</p>
+<p>Two great properties:
+- Nobody walks in on you. Privacy guaranteed.
+- The system is simple. No "did somebody else use it" worry.</p>
+<p>Two costs:
+- Lines form. Wait time scales with usage.
+- If two people both need <em>two</em> bathrooms (master bedroom and guest), and they grab them in opposite orders, you get deadlock.</p>
+</div>
+<h2>SELECT FOR UPDATE — the row-level workhorse</h2>
+<p><code>SELECT ... FOR UPDATE</code> is the most common pessimistic-locking syntax. It takes a row-level write lock on each row matched.</p>
+<pre><code class="language-sql">SELECT * FROM accounts WHERE id IN (1, 2, 3) FOR UPDATE;
+</code></pre>
+<p>Other transactions trying to update those rows wait. Reads (without FOR UPDATE) still proceed via MVCC — they see the pre-lock snapshot.</p>
+<div class="tip">
+<p>Postgres also has <code>SELECT ... FOR SHARE</code> — a row-level <em>read</em> lock. Others can read it but not modify it. Useful when you need to <em>prevent change</em> during your transaction without modifying anything yourself.</p>
+<p>Example: validating that a user account is active before placing an order. You want to ensure the account doesn't get deactivated mid-transaction. <code>FOR SHARE</code> lets other readers proceed but blocks deactivations.</p>
+</div>
+<h1>Optimistic locking</h1>
+<p>You don't lock. You read the data, do your work, and at write time check "did anyone change this since I read it?" If yes, retry.</p>
+<p>This is usually implemented via a <strong>version column</strong> or a <strong>last-modified timestamp</strong>:</p>
+<pre><code class="language-sql">-- Read
+SELECT id, balance, version FROM accounts WHERE id = 1;
+-- application reads balance=500, version=7
+-- ... compute new balance ...
+
+-- Write with version check
+UPDATE accounts
+SET balance = 400, version = 8
+WHERE id = 1 AND version = 7;
+-- if 0 rows updated → someone else modified, retry
+</code></pre>
+<div class="scenario">
+<p><strong>The optimistic version of the bank teller scene:</strong></p>
+<ul>
+<li><strong>Clerk 1</strong>: reads (balance=500, version=7).</li>
+<li><strong>Clerk 2</strong> (concurrently): reads (balance=500, version=7).</li>
+<li><strong>Clerk 1</strong>: computes 400, UPDATE WHERE version=7 → success, version becomes 8.</li>
+<li><strong>Clerk 2</strong>: computes 400, UPDATE WHERE version=7 → 0 rows affected. <strong>Conflict.</strong> Retries.</li>
+<li><strong>Clerk 2 retry</strong>: reads (balance=400, version=8). Computes 300. UPDATE WHERE version=8 → success.</li>
+</ul>
+<p><strong>No locking. No waiting.</strong> Just an after-the-fact check.</p>
+<p>If contention is rare, this is brilliant — the wasted retry is a small percentage of total work. If contention is heavy, retries dominate and the system thrashes.</p>
+</div>
+<div class="metaphor">
+<p><strong>The shared Google Doc analogy.</strong></p>
+<p>Optimistic locking is editing a shared Google Doc. You type freely. If two people edit the same paragraph at the same moment, the system catches it and one of you sees a "merge conflict" — your version was based on a stale view, please reconcile.</p>
+<p>For low-collision usage (people working on different sections), it's perfect. Nobody waits. Productivity is maximum.</p>
+<p>For high-collision usage (everybody mashing on the same line), it's a nightmare. Constant merge conflicts. Half your typing gets thrown out.</p>
+</div>
+<h2>When to use which: the decision</h2>
+<div class="compare">
+<div class="vs-left">
+<h4>Pessimistic — use when</h4>
+<ul>
+<li>Conflict rate is high (&gt;5-10%)</li>
+<li>The work being protected is short (lock held briefly)</li>
+<li>Wasted retries are expensive (audit logs, external API calls)</li>
+<li>Correctness must be obvious (financial transactions)</li>
+</ul>
+<p><b>Failure mode:</b> deadlocks. Manageable with discipline.</p>
+</div>
+<div class="vs-right">
+<h4>Optimistic — use when</h4>
+<ul>
+<li>Conflict rate is low (&lt;5%)</li>
+<li>The work being done is read-heavy then write</li>
+<li>Wasted retries are cheap (idempotent operations)</li>
+<li>You want to maximize throughput at low contention</li>
+</ul>
+<p><b>Failure mode:</b> retry storms. Catastrophic at high contention.</p>
+</div>
+</div>
+<div class="insider">
+<p><strong>The crossover point</strong> depends on workload, but a rough heuristic: <strong>above ~20% conflict rate, pessimistic wins.</strong> Above that, optimistic's retry overhead exceeds pessimistic's queueing cost. Below ~5%, optimistic wins easily — locks are wasted overhead.</p>
+<p>The 5-20% range is workload-specific. <strong>Profile, don't guess.</strong></p>
+<p>Mention "conflict rate determines the choice" in an interview, and you signal you've thought about this beyond the textbook.</p>
+</div>
+<h1>Deadlocks: the pessimistic price</h1>
+<p>A <strong>deadlock</strong> is when two or more transactions each hold a lock the other needs, and they wait forever.</p>
+<div class="scenario">
+<p><strong>The classic deadlock:</strong></p>
+<p>T1: locks row 5, then wants row 9.
+T2: locks row 9, then wants row 5.</p>
+<p>T1 waits for T2 to release row 9.
+T2 waits for T1 to release row 5.</p>
+<p><strong>Stalemate.</strong> Without intervention, both transactions hang forever.</p>
+</div>
+<div class="diagram">
+<pre><code>                      THE WAIT-FOR GRAPH
+</code></pre>
+<p>T1 ──holds──→ Row 5
+   T1 ──wants──→ Row 9</p>
+<p>T2 ──holds──→ Row 9
+   T2 ──wants──→ Row 5</p>
+<p>Drawing the wait-for graph (who waits for whom):</p>
+<pre><code>     T1 ──waits-for──→ T2
+          ▲                │
+          │                ▼
+          ←──waits-for── (cycle!)
+</code></pre>
+<p>A CYCLE in the wait-for graph means deadlock.
+   No transaction can proceed until another releases its lock.</p>
+</div>
+<h2>How databases detect deadlocks</h2>
+<p>Databases run a <strong>deadlock detector</strong> in the background. Periodically — typically every 1 second — it builds the wait-for graph and looks for cycles. When detected, the database picks a <strong>victim</strong> transaction and aborts it. The other(s) proceed.</p>
+<pre><code>ERROR: deadlock detected
+DETAIL: Process 12345 waits for ShareLock on transaction 4729;
+        blocked by process 12346.
+        Process 12346 waits for ShareLock on transaction 4728;
+        blocked by process 12345.
+HINT:   See server log for query details.
+</code></pre>
+<p>Your application <strong>must catch deadlock errors and retry</strong>. This is non-negotiable for any production app using pessimistic locks.</p>
+<div class="warning">
+<p><strong>Different databases pick victims differently.</strong></p>
+<ul>
+<li><strong>MySQL InnoDB</strong>: picks the txn with the <em>least work done</em> (smallest undo log).</li>
+<li><strong>Postgres</strong>: picks the txn currently waiting (the "newer" one to detect).</li>
+<li><strong>SQL Server</strong>: picks based on a deadlock priority setting and rollback cost.</li>
+<li><strong>Oracle</strong>: similar heuristic to Postgres.</li>
+</ul>
+<p><strong>Don't assume the victim is the "newer" or "older" transaction</strong> — it varies by engine. Application retry logic should be agnostic to which side gets killed.</p>
+</div>
+<h2>Avoiding deadlocks: the discipline</h2>
+<p>The classic prevention rule: <strong>always acquire locks in the same order across all transactions.</strong></p>
+<div class="workout">
+<p><strong>The deadlock prevention recipe:</strong></p>
+<div class="step">
+<p><strong>Identify which rows your transactions might lock together.</strong> If transaction X locks rows A and B, and transaction Y also locks A and B, they're at risk.</p>
+</div>
+<div class="step">
+<p><strong>Pick a canonical lock order</strong> for those rows. The simplest: sort by primary key.</p>
+</div>
+<div class="step">
+<p><strong>Always acquire locks in that order</strong>, in every code path, across every service.</p>
+</div>
+<div class="step">
+<p><strong>No deadlock is possible</strong> because no cycle can form — every transaction is reaching for locks in the same direction.</p>
+</div>
+</div>
+<pre><code class="language-sql">-- BAD (deadlock prone)
+T1: lock(row 5); lock(row 9);
+T2: lock(row 9); lock(row 5);
+
+-- GOOD (deterministic order)
+T1: lock(row 5); lock(row 9);
+T2: lock(row 5); lock(row 9);   -- both lock 5 first
+</code></pre>
+<div class="tip">
+<p>A common pattern: when you must update <em>multiple</em> rows, <strong>sort by primary key and lock them in that order</strong>. Now any two transactions touching the same set of rows agree on order. <strong>No deadlock possible.</strong></p>
+<p>For the money transfer pattern (debit account A, credit account B), the senior code looks like:</p>
+<pre><code class="language-sql">BEGIN;
+SELECT * FROM accounts WHERE id IN ($source, $dest)
+  ORDER BY id  -- canonical order
+  FOR UPDATE;
+-- ... transfer logic ...
+COMMIT;
+</code></pre>
+<p>The <code>ORDER BY id</code> makes the lock acquisition order deterministic. Two simultaneous transfers between the same accounts can't deadlock.</p>
+</div>
+<h2>The other deadlock prevention strategies</h2>
+<div class="insider">
+<p>Beyond consistent lock order, four more strategies:</p>
+<p><strong>1. Reduce transaction size.</strong> Shorter transactions hold locks for less time. Less time held = smaller window for deadlock. The single best generic fix.</p>
+<p><strong>2. Use lower isolation when possible.</strong> Read Committed locks fewer rows. RR/SSI lock more (or track more dependencies). Use the weakest isolation that's correct for the use case.</p>
+<p><strong>3. Use single-row coordinator patterns.</strong> If many transactions need to coordinate, have them all lock a single sentinel row first. Serializes them via that one row. Loses concurrency, eliminates deadlock.</p>
+<p><strong>4. Move to optimistic locking.</strong> If the access pattern doesn't fit consistent ordering well, optimistic might be a better strategy. Lock-free, deadlock-free, but pays in retries.</p>
+</div>
+<h1>Lock granularity</h1>
+<p>Locks can apply at different scopes. The trade-offs cascade through performance.</p>
+<table>
+<thead>
+<tr>
+<th>Scope</th>
+<th>Example</th>
+<th>Pro</th>
+<th>Con</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Row</strong></td>
+<td>Postgres FOR UPDATE</td>
+<td>High concurrency</td>
+<td>Many locks → memory cost</td>
+</tr>
+<tr>
+<td><strong>Page</strong></td>
+<td>SQL Server (one disk page)</td>
+<td>Fewer locks</td>
+<td>Blocks unrelated rows on same page</td>
+</tr>
+<tr>
+<td><strong>Table</strong></td>
+<td>LOCK TABLE</td>
+<td>One lock</td>
+<td>Kills concurrency</td>
+</tr>
+<tr>
+<td><strong>Predicate / range</strong></td>
+<td>SI predicate locks (Postgres SSI)</td>
+<td>Prevents phantoms</td>
+<td>Complex implementation</td>
+</tr>
+<tr>
+<td><strong>Advisory</strong></td>
+<td><code>pg_advisory_lock</code></td>
+<td>App-defined semantics</td>
+<td>App must respect them</td>
+</tr>
+</tbody>
+</table>
+<div class="scenario">
+<p><strong>Why granularity matters:</strong></p>
+<p>A bulk update over 100K rows. Row locks: 100K lock entries in memory, but other transactions can still touch unrelated rows. Page locks: ~1K locks, but all rows on those pages are blocked even if the update only touches some. Table lock: one lock entry, but the entire table is unavailable to others.</p>
+<p>Granularity is a memory-vs-concurrency tradeoff. Finer = more concurrency, more memory. Coarser = less memory, less concurrency.</p>
+</div>
+<h1>Lock escalation: SQL Server's drama</h1>
+<div class="warning">
+<p><strong>Lock escalation</strong> is a feature SQL Server has and Postgres doesn't.</p>
+<p>Under load, if a transaction takes too many row-level locks (~5,000 by default), SQL Server <em>converts them to a single table lock</em> to save memory. Sounds reasonable. <strong>In practice, it causes outages.</strong></p>
+<p>Once escalated, the entire table is locked. Other transactions wanting <em>any</em> row on that table now wait. The bulk operation finishes; the table unlocks. But for the duration, every other query sees a hang.</p>
+</div>
+<div class="scenario">
+<p><strong>The classic lock escalation incident:</strong></p>
+<p>A nightly cleanup job runs <code>DELETE FROM events WHERE created_at &lt; ...</code>. Touches ~50K rows.</p>
+<p>At 5,000 row locks, SQL Server escalates to a table lock. Suddenly, every query touching <code>events</code> waits. The OLTP application grinds to a halt for the next 90 seconds while the delete completes.</p>
+<p>The first time this happens, you panic. The second time, you batch the delete: <code>WHERE created_at &lt; ... LIMIT 4000</code> in a loop, committing each batch. The escalation threshold is never reached.</p>
+<p>The mitigation pattern: <strong>batch large operations to stay below the escalation threshold.</strong></p>
+</div>
+<div class="insider">
+<p><strong>Other databases don't escalate.</strong>
+- <strong>Postgres</strong>: never escalates. Holds millions of row locks happily (with predictable memory cost).
+- <strong>MySQL InnoDB</strong>: never escalates.
+- <strong>Oracle</strong>: never escalates.</p>
+<p>Lock escalation is a SQL Server thing. If you're not on SQL Server, you don't have this problem. If you are, batch your big writes.</p>
+</div>
+<h1>Advisory locks: the hidden gem</h1>
+<div class="insider">
+<p>Postgres has a feature most engineers never discover: <strong>advisory locks</strong>.</p>
+<p>Advisory locks aren't tied to any row or table. They're application-defined keys (just a 64-bit integer or two 32-bit integers) that follow normal locking semantics. Take them, hold them, release them. Other transactions trying to take the same key wait.</p>
+<pre><code class="language-sql">SELECT pg_advisory_lock(42);   -- take lock with key 42
+-- ... do exclusive work ...
+SELECT pg_advisory_unlock(42); -- release
+</code></pre>
+<p><strong>Use cases:</strong>
+- "Only one job processes this queue at a time" — without modeling it as a row.
+- "Singleton initialization across many app instances" — first one wins, others wait or skip.
+- "Distributed mutex for application-level resources" — much cheaper than implementing your own.</p>
+<p>There are also <strong>session-level</strong> and <strong>transaction-level</strong> variants, and <strong>shared</strong> vs <strong>exclusive</strong> versions. Mention <code>pg_advisory_lock</code> in an interview about Postgres operations and you signal real depth.</p>
+</div>
+<h1>SELECT FOR UPDATE SKIP LOCKED — the queue pattern</h1>
+<p>This deserves its own section. It's the <em>canonical</em> pattern for "claim a job from a queue" in Postgres and MySQL.</p>
+<div class="scenario">
+<p><strong>The job queue problem:</strong></p>
+<p>50 workers race to claim jobs from a <code>jobs</code> table. The naive approach:</p>
+<pre><code class="language-sql">BEGIN;
+SELECT * FROM jobs WHERE status='pending' LIMIT 1 FOR UPDATE;
+UPDATE jobs SET status='claimed', worker_id=$me WHERE id=$found_id;
+COMMIT;
+</code></pre>
+<p>Without <code>SKIP LOCKED</code>, every worker that arrives at the same moment locks the <em>same row</em> — the first pending job. 49 of them wait at the lock, do nothing, eventually the first commits, then 49 race to claim the <em>next</em> row. The throughput is bottlenecked by the lock contention, even though there are plenty of jobs to go around.</p>
+</div>
+<div class="keyidea">
+<p><strong><code>FOR UPDATE SKIP LOCKED</code></strong> tells the SELECT to silently skip rows already locked by other transactions. Now 50 workers can claim 50 different jobs concurrently — no waiting. The lock contention vanishes.</p>
+</div>
+<pre><code class="language-sql">-- The senior pattern for queue claim:
+BEGIN;
+SELECT * FROM jobs
+  WHERE status='pending'
+  ORDER BY created_at
+  LIMIT 1
+  FOR UPDATE SKIP LOCKED;
+-- ... process ...
+UPDATE jobs SET status='completed' WHERE id=$found_id;
+COMMIT;
+</code></pre>
+<div class="workout">
+<p><strong>Walk through with two workers:</strong></p>
+<div class="step">
+<p>Worker A and B both arrive simultaneously. Both run the SELECT.</p>
+</div>
+<div class="step">
+<p>Worker A's SELECT locks row 1 (the oldest pending job).</p>
+</div>
+<div class="step">
+<p>Worker B's SELECT <em>would</em> lock row 1, but <code>SKIP LOCKED</code> makes it skip. It grabs row 2 instead and locks that.</p>
+</div>
+<div class="step">
+<p>Both workers proceed in parallel — different jobs, no waiting.</p>
+</div>
+<div class="step">
+<p>A 10x speedup over the naive pattern. Both engines (Postgres ≥ 9.5, MySQL ≥ 8.0) support this.</p>
+</div>
+</div>
+<div class="insider">
+<p>This pattern is so important for queue workloads that it's the <em>first</em> thing to mention when interviewers ask "how would you build a queue on top of a database." It signals you understand both the contention problem and the modern solution.</p>
+<p>You might still want to consider whether a real queue (SQS, RabbitMQ, Redis Streams) is a better choice than a database. But if you're stuck with the database, <code>SKIP LOCKED</code> is the answer.</p>
+</div>
+<h1>Three more ways to think about locking</h1>
+<div class="metaphor">
+<p><strong>Way 1: traffic intersections.</strong></p>
+<p>Pessimistic locking is a 4-way stop sign. Everyone waits their turn. Strict ordering. Slow at peak hour but never collisions.</p>
+<p>Optimistic locking is a roundabout. Everyone keeps moving. Most of the time, no problem. Occasionally two cars meet at the same point — minor fender bender, both reverse and try again. Fast at low traffic, ugly at peak.</p>
+<p>Lock escalation is when the city decides 50 stop-sign intersections in a row should be replaced with one giant traffic light. Now one signal cycle blocks everything. Fewer signs, but worse user experience.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 2: kitchen pots.</strong></p>
+<p>Pessimistic: cook puts hand on pot handle, says "mine," uses it, puts down. Anyone wanting that pot waits.</p>
+<p>Optimistic: cook grabs whatever pot, uses it, but at serving time checks "anyone else use this and switch ingredients?" If yes, redo. Cheap when nobody else cooks; chaos when many cooks share ingredients.</p>
+<p>Deadlock: cook A grabs the saucepan and reaches for the spatula. Cook B has the spatula and reaches for the saucepan. Both stuck. Eventually the head chef (deadlock detector) yells at one to put their pot down.</p>
+<p>Lock acquisition order discipline: house rule that pots are always picked up in alphabetical order. Now no two cooks can deadlock — they're both reaching toward the same place.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 3: shared documents.</strong></p>
+<p>Pessimistic = Microsoft Word document open from a network share, marked "in use" by Alice. Bob waits.</p>
+<p>Optimistic = Google Docs. Both edit. System merges or surfaces conflicts.</p>
+<p>Advisory lock = a Slack message saying "I'm working on the deploy script for the next 30 minutes, hands off." Not enforced by the system, but everyone respects it because they agreed to.</p>
+<p><code>SELECT FOR UPDATE SKIP LOCKED</code> = a job queue where, when you grab a task, others can see it's claimed and pick a different one — no waiting in line for the same task.</p>
+</div>
+<h1>Sharpen your pencil</h1>
+<div class="exercise">
+<p><strong>Exercise 1.</strong> Your service has a "claim a job from queue" operation. 50 workers race to claim jobs from a single <code>jobs</code> table. Currently you use <code>SELECT * FROM jobs WHERE status='pending' LIMIT 1 FOR UPDATE; UPDATE jobs SET status='claimed' WHERE id=?</code>. You're seeing severe contention. Workers spend more time waiting on locks than processing.</p>
+<p>Three independent improvements you'd propose, in order?</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>Improvement 1: Add <code>SKIP LOCKED</code>.</strong></p>
+<pre><code class="language-sql">SELECT * FROM jobs WHERE status='pending'
+ORDER BY created_at LIMIT 1
+FOR UPDATE SKIP LOCKED;
+</code></pre>
+<p>This is <em>the</em> idiomatic fix. 50 workers claim 50 different jobs concurrently with no lock waiting. Often a 10x improvement, no architecture change. <strong>Always the first thing to try.</strong></p>
+<p><strong>Improvement 2: Sharded queue.</strong></p>
+<p>Replace the single queue with N partitioned queues (e.g., by <code>hash(job_id) mod N</code>). Each worker rotates through partitions. Reduces contention by N×. Useful when even SKIP LOCKED has too many concurrent attempts on the index scan side.</p>
+<p><strong>Improvement 3: Move to a real queue.</strong></p>
+<p>If you're using a database as a queue, you're paying for ACID guarantees that may not be needed. SQS, RabbitMQ, Redis Streams, Kafka — purpose-built queues handle this with millisecond latency, no locking, built-in retry and dead-letter semantics.</p>
+<p>The general lesson: <strong>a database queue is fine until it isn't.</strong> When contention dominates, either use the database's queue features (SKIP LOCKED) or move to a queue.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2.</strong> A team is seeing deadlocks in production logs once per day. Their instinct is to rewrite to optimistic locking. Is that the right call?</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>Slow down. Three diagnostic questions first:</p>
+<p><strong>1. What's the actual deadlock rate?</strong> Once per day across millions of transactions is barely measurable — it might be perfectly acceptable as long as the application retries. The cost of switching to optimistic might exceed the cost of one retry per day.</p>
+<p><strong>2. What's the conflict pattern?</strong> Read the deadlock logs. Are they always the same two queries? If yes, the fix is <em>lock ordering</em> in those specific queries — not a strategy change. Most production deadlocks come from inconsistent lock acquisition order in 2-3 hot code paths. Rewrite those paths.</p>
+<p><strong>3. What's the contention rate?</strong> If most transactions conflict, optimistic locking will retry-storm and burn CPU. If conflicts are rare, optimistic might be a clean win. <strong>Measure first.</strong></p>
+<p>The path I'd actually take:
+- Add deadlock retry logic if it's not already there. (Idempotent operations only.)
+- Identify the top 2-3 deadlock-producing queries.
+- Enforce consistent lock order in those — usually sort by primary key and lock in order.
+- Only consider strategy change if those changes don't bring deadlocks below the noise floor.</p>
+<p>Switching to optimistic locking <em>across the codebase</em> is a multi-quarter project that introduces new failure modes. Almost never the right move when you can fix 3 queries instead.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3.</strong> Explain to non-technical Sam, in two sentences, why <code>SELECT FOR UPDATE SKIP LOCKED</code> is the right pattern for a job queue.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>A regular <code>SELECT FOR UPDATE</code> for "give me the next pending job" causes every worker to fight for the same row — 49 of them wait while 1 processes, totally serializing the queue. Adding <code>SKIP LOCKED</code> tells each worker to silently skip rows already claimed by others and grab the next available one, so 50 workers can pull 50 different jobs in parallel without ever blocking each other.</p>
+</div>
+</div>
+<h1>There are no dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p>Q: Does a plain SELECT take any locks?</p>
+</div>
+<div class="a">
+<p>A: In Postgres at the default Read Committed isolation, plain <code>SELECT</code> takes <em>no row locks</em> — MVCC handles read consistency without them. In MySQL InnoDB at Repeatable Read, plain SELECT also doesn't take locks (MVCC). At Serializable in InnoDB, plain SELECT can take shared locks. The general principle: <strong>modern MVCC databases avoid read locks for plain SELECT</strong>.</p>
+</div>
+<div class="q">
+<p>Q: What's the difference between SELECT FOR UPDATE and SELECT FOR SHARE?</p>
+</div>
+<div class="a">
+<p>A: <code>FOR UPDATE</code> is an <em>exclusive</em> lock — others can't read or write the row until you commit. <code>FOR SHARE</code> is a <em>shared</em> lock — others can read but not modify. Use SHARE when you need to ensure a row doesn't change during your transaction without modifying it yourself.</p>
+</div>
+<div class="q">
+<p>Q: Can two transactions both hold SHARE locks on the same row?</p>
+</div>
+<div class="a">
+<p>A: Yes. Multiple shared locks are compatible. Only exclusive (<code>FOR UPDATE</code>) conflicts with anything. The lock matrix: shared+shared OK; shared+exclusive blocks; exclusive+anything blocks.</p>
+</div>
+<div class="q">
+<p>Q: How long can locks be held?</p>
+</div>
+<div class="a">
+<p>A: Until commit or rollback. There's no automatic timeout in most engines unless you set one. Postgres has <code>lock_timeout</code> and <code>statement_timeout</code> to bound this. <strong>Long-held locks are an anti-pattern</strong> — short transactions are always better than long ones.</p>
+</div>
+<div class="q">
+<p>Q: What if my application crashes while holding locks?</p>
+</div>
+<div class="a">
+<p>A: When the database connection drops, locks are released automatically as part of the implicit rollback. As long as your connection actually disconnects (TCP FIN, RST, or keepalive failure), the locks go away. The risk: a process hanging in a way that <em>doesn't</em> drop the connection — locks linger. Connection-level timeouts (TCP keepalive, server-side <code>idle_in_transaction_session_timeout</code>) bound this.</p>
+</div>
+<div class="q">
+<p>Q: Can I see what locks are currently held?</p>
+</div>
+<div class="a">
+<p>A: Yes. Postgres: <code>SELECT * FROM pg_locks JOIN pg_stat_activity USING (pid);</code>. MySQL: <code>SHOW ENGINE INNODB STATUS;</code> and <code>information_schema.INNODB_TRX/INNODB_LOCKS</code>. Essential for debugging "why is everything blocked?" mysteries.</p>
+</div>
+<div class="q">
+<p>Q: What's "lock-free" programming, and is that the same as optimistic locking?</p>
+</div>
+<div class="a">
+<p>A: Related but different. Lock-free programming uses CPU-level atomic instructions (CAS — compare-and-swap) to coordinate without OS-level locks. Optimistic locking is the database-level analog: check-and-update with version. Both share the philosophy of "act first, validate at commit." Lock-free is a CPU concept; optimistic locking is a database concept.</p>
+</div>
+<div class="q">
+<p>Q: How does this all interact with MVCC from Module 08?</p>
+</div>
+<div class="a">
+<p>A: MVCC handles <em>reader-writer</em> coordination via snapshots. Locks handle <em>writer-writer</em> coordination. They're complementary. A transaction that needs to ensure a row doesn't change during its work uses an explicit lock (<code>FOR UPDATE</code>) on top of MVCC's snapshot semantics. The senior framing: MVCC eliminates one class of contention; explicit locks handle the rest.</p>
+</div>
+</div>
+<h1>Three myths to dynamite</h1>
+<div class="myth">
+<p><strong>"Always use optimistic locking — no deadlocks!"</strong></p>
+<p>False. Optimistic doesn't deadlock, but it has retry storms under high contention. Both strategies fail under contention; they fail <em>differently</em>. The right choice depends on workload, not on aesthetic preference.</p>
+</div>
+<div class="myth">
+<p><strong>"SELECT takes a lock."</strong></p>
+<p>False (in modern MVCC databases, mostly). Plain SELECT in Postgres at default isolation takes no row locks — MVCC handles read consistency. SELECT FOR UPDATE/SHARE explicitly take locks. Don't conflate read consistency with locking.</p>
+</div>
+<div class="myth">
+<p><strong>"Deadlocks are bugs that must be eliminated."</strong></p>
+<p>False. Deadlocks are <em>expected</em> in any system with pessimistic locking and complex enough access patterns. The goal isn't zero deadlocks — it's deadlocks at a <em>low rate the application can absorb via retry</em>. A few per day is normal. A few per second means you have a real problem to fix.</p>
+</div>
+<h1>Interview gotchas</h1>
+<div class="gotcha">
+<p><strong>Saying "always use optimistic locking, no deadlocks!"</strong> Optimistic doesn't deadlock but has retry storms. Both strategies fail under contention.</p>
+</div>
+<div class="gotcha">
+<p><strong>Forgetting that SELECT can take locks.</strong> Plain SELECT in Postgres at default doesn't, but <code>SELECT ... FOR UPDATE/SHARE</code> does, and DML (INSERT, UPDATE, DELETE) takes locks too. Some isolation levels in some engines also take implicit shared locks.</p>
+</div>
+<div class="gotcha">
+<p><strong>Not handling deadlock errors in code.</strong> Pessimistic locking + no retry logic = guaranteed production incidents. The senior reflex: any code path with <code>FOR UPDATE</code> must have deadlock retry handling.</p>
+</div>
+<div class="gotcha">
+<p><strong>Recommending VACUUM FULL or LOCK TABLE casually.</strong> Both are heavy hammers. Production answer: <code>pg_repack</code>, <code>SKIP LOCKED</code>, batched operations. Don't reach for the heavy options unless you really need them.</p>
+</div>
+<div class="gotcha">
+<p><strong>Not knowing about SKIP LOCKED.</strong> It's the canonical queue pattern. Mentioning it in any "build a queue" or "concurrent claim" conversation signals you've actually built systems.</p>
+</div>
+<h1>Mock interview</h1>
+<div class="mock-interview">
+<div class="turn q">
+<p>You see deadlocks in production logs once a day. The team's instinct is to rewrite to optimistic locking. Is that the right call?</p>
+</div>
+<div class="turn a">
+<p>Slow down. Three diagnostic questions first:</p>
+<p><strong>One — what's the actual deadlock rate?</strong> Once a day across millions of transactions is barely measurable — it might be perfectly acceptable as long as the application retries. The cost of switching to optimistic might exceed the cost of one retry per day.</p>
+<p><strong>Two — what's the conflict pattern?</strong> Read the deadlock logs. Are they always the same two queries? If yes, the fix is <em>lock ordering</em> in those specific queries — not a strategy change. Most production deadlocks come from inconsistent lock acquisition order in 2-3 hot code paths. Rewrite those paths to acquire locks in a consistent order, usually sorted by primary key.</p>
+<p><strong>Three — what's the contention rate?</strong> If most transactions conflict, optimistic locking will retry-storm and burn CPU. If conflicts are rare, optimistic might be a clean win. Measure first.</p>
+<p>The path I'd actually take:
+- Add deadlock retry logic if it's not already there. (Idempotent operations only.)
+- Identify the top 2-3 deadlock-producing queries.
+- Enforce consistent lock order in those.
+- Only consider strategy change if those changes don't bring deadlocks below the noise floor.</p>
+<p>Switching to optimistic locking <em>across the codebase</em> is a multi-quarter project that introduces new failure modes. Almost never the right move when you can fix 3 queries instead.</p>
+</div>
+<div class="commentary">
+<p>Multiple diagnostic questions before action. Names the most common root cause (inconsistent lock acquisition order). Ranks fixes by cost. The senior reflex: investigate before rebuilding.</p>
+</div>
+<div class="turn q">
+<p>Suppose investigation shows the deadlocks are between two specific transactions that update the same set of rows in different orders. Walk me through the fix.</p>
+</div>
+<div class="turn a">
+<p>This is the textbook case for <strong>consistent lock acquisition order</strong>.</p>
+<p>The problem: T1 and T2 both update accounts A and B in transfers. T1 happens to lock A first; T2 happens to lock B first. Eventually they meet — T1 holds A wanting B, T2 holds B wanting A. Cycle. Deadlock.</p>
+<p>The fix: in <em>every</em> code path that locks both A and B, lock them in a deterministic order. The simplest:</p>
+<pre><code class="language-sql">BEGIN;
+SELECT * FROM accounts WHERE id IN ($a_id, $b_id)
+  ORDER BY id  -- canonical order
+  FOR UPDATE;
+-- ... do the transfer ...
+COMMIT;
+</code></pre>
+<p>Now T1 and T2 both lock the <em>lower-id</em> account first, then the higher-id. They can't form a wait cycle. T1 might still wait for T2's first lock, but it's a queue, not a deadlock.</p>
+<p><strong>Verify by re-running the deadlock-producing scenario.</strong> If you can no longer trigger the deadlock, the fix is in.</p>
+<p>The deeper habit: any time you find yourself acquiring locks on multiple rows in a transaction, <strong>think about whether other code paths might lock the same rows in different orders</strong>. If yes, impose a canonical order. This is one of those disciplines that becomes automatic once you've debugged a few deadlocks.</p>
+<p>Other options if sorting isn't feasible (e.g., business logic determines order):
+- Use a single coordinator row that all conflicting transactions must lock first. Serializes them via that one row.
+- Move to optimistic locking for that specific code path.
+- Use advisory locks with a deterministic key.</p>
+</div>
+<div class="commentary">
+<p>Names the canonical fix (sort by ID), shows the SQL, and explains the verification step. The "deeper habit" framing is the senior pattern.</p>
+</div>
+<div class="turn q">
+<p>Switching topics — how would you build a job queue on top of a Postgres database?</p>
+</div>
+<div class="turn a">
+<p>First the obvious caveat: Postgres can serve as a queue, but for high-throughput workloads, purpose-built queues (SQS, RabbitMQ, Redis Streams, Kafka) are usually better. They have built-in retry, dead-letter, prioritization, and don't compete with OLTP for capacity.</p>
+<p>But if the requirements fit Postgres — modest throughput, want transactional consistency with the rest of the system, want SQL access for monitoring — here's the pattern:</p>
+<p><strong>Schema:</strong></p>
+<pre><code class="language-sql">CREATE TABLE jobs (
+  id BIGSERIAL PRIMARY KEY,
+  status TEXT NOT NULL DEFAULT 'pending',
+  payload JSONB NOT NULL,
+  attempts INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  started_at TIMESTAMPTZ,
+  completed_at TIMESTAMPTZ,
+  error TEXT
+);
+
+CREATE INDEX idx_jobs_status_created
+  ON jobs(status, created_at)
+  WHERE status IN ('pending', 'in_progress');
+</code></pre>
+<p>The partial index keeps it small — most rows are 'completed' and don't need to be indexed.</p>
+<p><strong>Claim pattern (the critical part):</strong></p>
+<pre><code class="language-sql">BEGIN;
+SELECT id, payload FROM jobs
+  WHERE status = 'pending'
+  ORDER BY created_at
+  LIMIT 1
+  FOR UPDATE SKIP LOCKED;
+-- ... process the job in application code ...
+UPDATE jobs SET status = 'completed', completed_at = NOW() WHERE id = $found_id;
+COMMIT;
+</code></pre>
+<p><strong><code>FOR UPDATE SKIP LOCKED</code> is the magic.</strong> Without it, all workers contend for the same row. With it, each worker grabs a different available job. Both Postgres (≥9.5) and MySQL (≥8.0) support it.</p>
+<p><strong>Failure handling:</strong>
+- Wrap the processing in the application's error handler. On failure, increment <code>attempts</code>, schedule a retry (via separate row update), or move to dead letter (separate status).
+- Use a watchdog process to find rows stuck in 'in_progress' for too long (worker crashed mid-job) and reset them to 'pending' for retry.</p>
+<p><strong>Operational concerns:</strong>
+- Periodic cleanup of completed rows (delete or move to archive table). Otherwise the table grows unboundedly.
+- Monitor for hot-row contention if SKIP LOCKED isn't enough at very high worker counts (&gt;100 concurrent workers).
+- If throughput exceeds ~1K-10K jobs/sec sustained, consider moving to a real queue.</p>
+<p>The senior framing: this works well up to a point, then doesn't scale. <strong>Know the threshold and have a migration path before you hit it.</strong></p>
+</div>
+<div class="commentary">
+<p>Pragmatic — acknowledges when Postgres isn't the right tool. Provides complete schema with rationale (partial index). The watchdog pattern, cleanup concerns, and scaling threshold show real production thinking.</p>
+</div>
+<div class="turn q">
+<p>Last one. A teammate proposes using <code>LOCK TABLE</code> for a particular operation that needs strong guarantees. What do you tell them?</p>
+</div>
+<div class="turn a">
+<p>First instinct: push back, but understand the goal first.</p>
+<p><strong>Step one — what's the actual requirement?</strong> "Strong guarantees" can mean many things:
+- "No other writes during this operation" → table lock could work, but maybe row-level locks on the affected rows are enough.
+- "Consistent snapshot for reading" → MVCC and snapshot isolation already give this without any locks.
+- "Atomic batch update" → standard transaction with row locks usually suffices.
+- "Bulk migration without interleaving writes" → maybe the only legitimate use of table lock.</p>
+<p><strong>Step two — explain the cost.</strong> <code>LOCK TABLE</code> in EXCLUSIVE mode blocks <em>all</em> other queries on that table — including reads if it's ACCESS EXCLUSIVE. For a hot table, this can cause an immediate user-visible outage. Even a few seconds of LOCK TABLE during business hours can spike error rates and timeout retries.</p>
+<p><strong>Step three — propose alternatives.</strong></p>
+<p>For "atomic update across many rows": just use a regular transaction. Row locks are taken automatically by UPDATE statements. Other transactions wait briefly for individual rows but the table stays available.</p>
+<p>For "no concurrent writes during a complex operation": Serializable isolation level with retry logic. Lets the database catch conflicts without you taking a table lock.</p>
+<p>For "bulk migration": batch into smaller transactions. Yes, individual rows might briefly be in mixed states between batches, but the application can usually tolerate this if writes are designed for it.</p>
+<p>For "schema change": Postgres now has many <code>... CONCURRENTLY</code> variants (CREATE INDEX, REINDEX, REFRESH MATERIALIZED VIEW) that avoid table locks. Use those.</p>
+<p><strong>Step four — when to actually use LOCK TABLE.</strong> Genuine use cases:
+- One-time data corrections during a maintenance window.
+- Very specific schema changes that don't have CONCURRENTLY equivalents.
+- Initial bulk loads into empty tables (no concurrent traffic anyway).</p>
+<p>The framing: <strong>LOCK TABLE is the nuclear option. Reach for it when you've genuinely exhausted alternatives, with awareness of the operational cost.</strong></p>
+</div>
+<div class="commentary">
+<p>Empathetic — understands the goal first. Provides multiple specific alternatives. Names the legitimate use cases without dismissing them. The "nuclear option" framing is the right mental model.</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<h3>Locking — One Page</h3>
+<h4>Pessimistic</h4>
+<p>Lock before work. <code>SELECT FOR UPDATE</code>. Wait + possible deadlock.</p>
+<p><strong>Use when</strong>: high contention, short critical sections, retries are expensive.</p>
+<h4>Optimistic</h4>
+<p>Read, work, check at commit. Version column. Retry on conflict, no deadlock.</p>
+<p><strong>Use when</strong>: low contention (&lt;5% conflict), retries are cheap, want max throughput.</p>
+<h4>Pick by contention rate</h4>
+<ul>
+<li>Low (&lt;5%): optimistic.</li>
+<li>Medium (5-20%): measure both.</li>
+<li>High (&gt;20%): pessimistic.</li>
+</ul>
+<h4>Deadlock</h4>
+<p>Cycle in wait-for graph. DB picks a victim and aborts it. <strong>Application MUST handle and retry.</strong></p>
+<p><strong>Prevent via:</strong>
+1. Consistent lock acquisition order (sort by PK).
+2. Shorter transactions.
+3. Lower isolation when correct.
+4. Single-row coordinator pattern.
+5. Switch to optimistic locking.</p>
+<h4>Lock granularity</h4>
+<p>Row → page → table → predicate → advisory.</p>
+<p><strong>Postgres</strong>: row-level only, no escalation. Holds millions of locks happily.
+<strong>SQL Server</strong>: escalates row → table at ~5000 locks. Common cause of incidents. Mitigate by batching.</p>
+<h4>Postgres-specific patterns</h4>
+<ul>
+<li><code>SELECT FOR UPDATE SKIP LOCKED</code> — the canonical queue pattern.</li>
+<li><code>pg_advisory_lock(key)</code> — application-defined locks, no row required.</li>
+<li><code>SELECT FOR SHARE</code> — shared read lock; others can read but not modify.</li>
+<li><code>SET lock_timeout = '5s';</code> — bound how long you wait for a lock.</li>
+</ul>
+<h4>Senior anti-patterns to avoid</h4>
+<ul>
+<li>Long-held locks (long transactions).</li>
+<li>Inconsistent lock order (creates deadlocks).</li>
+<li>LOCK TABLE in production (use alternatives).</li>
+<li>Forgetting deadlock retry logic with pessimistic locks.</li>
+</ul>
+<h4>The 30-second verbal answer</h4>
+<p>"Pessimistic locking takes locks before the work; optimistic locking validates at commit. Pick by contention rate — low contention means optimistic; high contention means pessimistic. Deadlocks are inherent to pessimistic locking; prevent them via consistent lock acquisition order. For queue patterns, <code>SELECT FOR UPDATE SKIP LOCKED</code> is the canonical Postgres/MySQL idiom — workers claim different rows concurrently without blocking."</p>
+<h4>Always pair with</h4>
+<p>MVCC (Module 08), isolation levels (Module 07), retry logic, advisory locks, predicate locks, lock_timeout, deadlock detector, idempotency.</p>
+</div>
+<h1>What's next</h1>
+<p>You've finished the <strong>transactions trilogy</strong> — ACID/BASE vocabulary (Module 07), MVCC mechanics and snapshot isolation (Module 08), explicit locking strategies (this module). The concurrency story is complete.</p>
+<p><strong>Module 10 opens the distributed core</strong>: replication. Leader-follower, multi-leader, the GitHub 2018 incident as a study in what goes wrong during failover, sync vs async replication, the read-your-writes problem. This is where databases go from "single node" to "system."</p>
+<p><strong>Module 11</strong> then dives into CDC, logical vs physical replication, geo-replication, and the modern lakehouse pattern — how data flows from your OLTP system into the rest of the world.</p>
+<p>Get water. Single-node is done. Distributed starts now.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="08_mvcc_snapshot_skew.html" class="prev">&laquo; 08 MVCC</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="10_replication.html" class="next">10 Replication &raquo;</a>
+</nav>
+</body>
+</html>

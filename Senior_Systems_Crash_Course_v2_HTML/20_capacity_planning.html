@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam guesses at capacity</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 20</p>
+</div>
+<div class="module-title">
+<p>Capacity Planning &amp; When to Scale</p>
+</div>
+<div class="subtitle">
+<p>Growth modeling, headroom thresholds, load testing, and the engineering-leadership conversations that decide when to spend money on scale</p>
+</div>
+</div>
+<div class="opener">
+<p>Two days before Black Friday, the VP of Engineering asks: "Are we going to be OK?" Junior engineers say "should be fine." Mid-level engineers say "we tested last week, we're good." Senior engineers pull out the capacity model — a spreadsheet, a load test report, and a written argument for <em>which resource will saturate first</em> and at <em>what traffic level</em>.</p>
+<p>Capacity planning isn't paranoia. It's the discipline of turning "we'll add servers if we need them" into a defensible engineering plan, with numbers, dates, and triggers. This chapter is how to build that plan, how to load-test honestly, and how to have the conversation with your VP without hand-waving.</p>
+</div>
+<h1>Sam guesses at capacity</h1>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+We've grown 3x this year. The CTO asked "can we handle next year's traffic?" I said "yeah, we should be fine — we have lots of headroom." She asked me to back that up with numbers. I'm not sure where to start. CPU is at 40%, memory's at 50%, our database has 30% headroom. We're fine, right?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+You just told me the dashboards' instantaneous values. That's not capacity planning. Capacity planning is: "at our projected growth rate, <em>which resource will saturate first</em>, <em>when</em>, and <em>what's our plan when it does</em>?"</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+But CPU is only at 40%. We have 60% headroom.</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Wrong. You don't have 60% headroom. You have <em>the headroom of your most-saturated resource at peak traffic</em>. If CPU is 40% on average but spikes to 95% during the noon rush, your real headroom is 5%. And growth doesn't move resources uniformly — write traffic might double while CPU stays flat, exhausting your IOPS budget. Or read traffic might 10x while CPU barely moves but your replication lag explodes.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+So what do I actually do?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Three things. <em>Model</em> what each resource looks like at 2x, 5x, 10x current traffic. <em>Identify</em> the first resource that hits a saturation wall. <em>Plan</em> the mitigation for that wall — not with hand-waving, with a specific architectural change, a cost estimate, and a date you'd need to make the change.</p>
+</div>
+</div>
+<div class="keyidea">
+<p><strong>Capacity planning is not about "do we have headroom?" — it's about "which resource saturates first, when, and what do we do about it?"</strong> Headroom is per-resource, not global. Growth amplifies different resources at different rates. Senior engineers build models that predict <em>which wall you hit first</em> and have a plan ready before you hit it.</p>
+</div>
+<h1>The four resources every system runs out of</h1>
+<p>There are exactly four flavors of bottleneck a senior engineer plans for. Every capacity model decomposes into these four:</p>
+<div class="compare">
+<div class="left">
+<p><strong>1. CPU</strong>
+The processor is busy. Symptoms: high utilization, high run queue, throttled containers. Scales with: request rate × CPU per request.</p>
+</div>
+<div class="right">
+<p><strong>2. Memory</strong>
+RAM is full or being thrashed. Symptoms: swap activity, OOM kills, GC pressure, page cache evictions. Scales with: working set size, connection count, in-flight requests.</p>
+</div>
+</div>
+<div class="compare">
+<div class="left">
+<p><strong>3. I/O (disk + network)</strong>
+Disk IOPS, disk throughput, network bandwidth, or packet rate. Symptoms: high I/O wait, queue depth, packet drops. Scales with: write rate, read miss rate, fanout.</p>
+</div>
+<div class="right">
+<p><strong>4. Concurrency limits</strong>
+Connections, file descriptors, thread pools, lock contention, queue depth. Symptoms: timeouts, queue saturation, "connection refused." Scales with: concurrent users × duration per request.</p>
+</div>
+</div>
+<div class="insider">
+<p><strong>The hidden fifth: external dependencies.</strong> Your system can have infinite headroom internally and still hit a wall because <em>Stripe rate-limits you</em> or <em>S3's per-bucket throughput peaks</em> or <em>DNS queries to your DB hostname time out</em>. Senior capacity planning includes an inventory of every external service in the request path with their published limits — and your <em>current consumption</em> against them.</p>
+</div>
+<div class="scenario">
+<p><strong>Real example of "the wrong wall."</strong> A team I worked with planned for CPU growth, doubled their server count, and still went down at Black Friday. The actual bottleneck: their MySQL connection pool. Adding application servers made it <em>worse</em> — more apps competing for the same connection pool. Each app could handle 2x traffic but they collectively exhausted DB connections at 1.4x. The mitigation should have been a connection proxy (PgBouncer/ProxySQL) plus connection pooling tuning, not more application servers.</p>
+<p>Lesson: doubling the dimension you measured doesn't help if the bottleneck is somewhere you didn't measure.</p>
+</div>
+<h1>Little's Law: the math senior engineers cite</h1>
+<p>If you remember one formula from this chapter, remember this one. Senior interviewers reach for it constantly, and it's surprisingly powerful for back-of-the-envelope reasoning.</p>
+<div class="keyidea">
+<p><strong>Little's Law: L = λ × W</strong></p>
+<p>Where <strong>L</strong> is the average number of items in the system (concurrency), <strong>λ</strong> is the arrival rate (requests per second), and <strong>W</strong> is the average time each item spends in the system (latency in seconds).</p>
+</div>
+<p>That's it. Three variables, one equation. Here's why it matters.</p>
+<div class="workout">
+<p><strong>Worked example: how many threads do I need?</strong></p>
+<p>You're sizing a service. You expect 5,000 RPS. Average request latency is 200ms (0.2s). How many concurrent requests are in flight?</p>
+<p>L = 5000 × 0.2 = <strong>1,000 concurrent requests</strong></p>
+<p>If each request takes a thread, you need a thread pool of at least 1,000. With safety margin (say 1.5x for variability), size the pool to <strong>1,500 threads</strong>.</p>
+<p>If the pool is too small (say 500), incoming requests queue up. Queueing increases latency, which increases L (Little's Law again — higher W means higher L for the same λ), which deepens the queue, and now you have a feedback loop. This is <em>queueing collapse</em>.</p>
+</div>
+<div class="workout">
+<p><strong>Worked example: connection pool sizing.</strong></p>
+<p>You have 10 application servers, each handling 200 RPS. Your average database query latency is 5ms (0.005s).</p>
+<p>Per server: L = 200 × 0.005 = 1 connection on average.</p>
+<p>But that's the <em>average</em>. With p99 query latency at 50ms, occasional spikes need 10+ connections per server. So size each app server's pool at, say, 20 connections (with margin). Total DB connections needed: 10 servers × 20 = 200.</p>
+<p>If your DB has <code>max_connections = 100</code>, <strong>you cannot serve this load</strong>. The fix is either a connection pooler in front of the DB (PgBouncer in transaction mode), increasing <code>max_connections</code> (with the memory cost), or reducing per-app connection counts (which means thread-pool tuning in the app).</p>
+</div>
+<div class="pullquote">
+<p>"Little's Law turns vague capacity questions into specific arithmetic. 'Can we handle 10K RPS?' becomes 'at 200ms latency, we need 2000 concurrent slots — do we have them?' Always reach for the formula first."</p>
+</div>
+<div class="pause">
+<p><strong>Pause and think.</strong> Your service handles 1000 RPS. Latency averages 100ms. You add a feature that increases average latency to 500ms. Without changing traffic, what happens to in-flight concurrency?</p>
+<p>Answer: L was 1000 × 0.1 = 100 in-flight. Now L = 1000 × 0.5 = 500 in-flight. Concurrency increased <strong>5x</strong> with no traffic change. If your thread pool was sized for 100 with 50% margin (= 150), you've blown through it. The latency increase silently consumed your concurrency budget.</p>
+</div>
+<h1>Modeling growth: from current state to future state</h1>
+<p>Capacity planning has two halves: predicting <em>traffic growth</em> and predicting <em>resource consumption per unit of traffic</em>. Both are needed.</p>
+<h2>Step 1: Project the demand curve</h2>
+<div class="workout">
+<p><strong>The demand model.</strong></p>
+<p>Pick the <em>primary driver</em>. For most consumer products: monthly active users. For B2B: customers and seats. For APIs: integrated partners. <em>Then</em> derive: requests per user per day → peak RPS → resource utilization at peak RPS.</p>
+<p>Example projection for a SaaS product:</p>
+<table>
+<thead>
+<tr>
+<th>Quarter</th>
+<th>Customers</th>
+<th>DAU/Customer</th>
+<th>Total DAU</th>
+<th>Peak RPS</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q1 (now)</td>
+<td>500</td>
+<td>200</td>
+<td>100,000</td>
+<td>2,000</td>
+<td>Current state</td>
+</tr>
+<tr>
+<td>Q2</td>
+<td>700</td>
+<td>220</td>
+<td>154,000</td>
+<td>3,200</td>
+<td>Sales-driven growth</td>
+</tr>
+<tr>
+<td>Q3</td>
+<td>1,000</td>
+<td>240</td>
+<td>240,000</td>
+<td>5,200</td>
+<td>Marketing campaign</td>
+</tr>
+<tr>
+<td>Q4</td>
+<td>1,400</td>
+<td>260</td>
+<td>364,000</td>
+<td>8,400</td>
+<td>Year-end push</td>
+</tr>
+<tr>
+<td>Year+1</td>
+<td>2,500</td>
+<td>280</td>
+<td>700,000</td>
+<td>17,000</td>
+<td>8.5x current peak</td>
+</tr>
+</tbody>
+</table>
+<p>Two growth multipliers compound: customer count <em>and</em> DAU/customer (engagement). Don't model just one.</p>
+</div>
+<div class="warning">
+<p><strong>Beware "linear projection."</strong> Real growth is rarely linear. Consumer products often follow logistic / S-curves (slow → exponential → saturation). B2B often follows step functions (big customer wins). Cyclic businesses have seasonal peaks 5-10x the baseline. Pick the model that matches your business — and <em>plot the actuals against your projection monthly</em> to know when you're off.</p>
+</div>
+<h2>Step 2: Per-resource consumption rates</h2>
+<p>For each resource, ask: <em>what does one unit of demand cost?</em></p>
+<div class="workout">
+<p><strong>Per-resource cost decomposition.</strong></p>
+<p>For each request type (read, write, search, complex query):
+1. CPU per request (microseconds of CPU)
+2. Memory per request (bytes allocated, working set retained)
+3. Disk reads per request (in IOPS)
+4. Disk writes per request (bytes written, including WAL/redo)
+5. Network in/out per request (bytes)
+6. Cache impact per request (cache misses)
+7. Database query count and average query latency</p>
+<p>Then weighted-sum across the request mix:</p>
+<pre><code>Total CPU at peak = Σ (request_type_RPS × CPU_per_request)
+Total IOPS at peak = Σ (request_type_RPS × IOPS_per_request)
+... etc
+</code></pre>
+<p>Now you have a per-resource projection.</p>
+</div>
+<div class="scenario">
+<p><strong>Concrete consumption model.</strong> A fintech API has three request types: balance lookup (90% of traffic, 5ms, 1 DB read), transaction submit (8% of traffic, 80ms, 5 DB ops), report generation (2% of traffic, 800ms, 50 DB ops).</p>
+<p>At 5,000 RPS aggregate:
+- Balance lookups: 4,500 RPS × 5ms = 22.5 CPU-seconds/sec → ~23 CPU cores
+- Transactions: 400 RPS × 80ms = 32 CPU-seconds/sec → ~32 cores
+- Reports: 100 RPS × 800ms = 80 CPU-seconds/sec → ~80 cores</p>
+<p>Total: ~135 CPU cores. Plus headroom (50%) → 200 cores. With 32-core machines, that's 7 servers.</p>
+<p>But check the <em>database</em> dimension separately:
+- DB ops/sec: (4,500 × 1) + (400 × 5) + (100 × 50) = 11,500 ops/sec.
+- That probably needs a beefier DB or read replicas.</p>
+<p>Notice: <strong>report generation is 2% of traffic but 60% of CPU</strong>. Senior insight: optimize the expensive minority, not the cheap majority. A 2x speedup on reports moves the system more than a 2x speedup on balance lookups.</p>
+</div>
+<h2>Step 3: Identify the first wall</h2>
+<div class="workout">
+<p><strong>Finding the saturation point per resource.</strong></p>
+<p>For each resource, compute: at what RPS does this resource hit 80% utilization?</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Current util at 2K RPS</th>
+<th>Saturation point (extrapolated)</th>
+<th>First-wall RPS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>App CPU</td>
+<td>40%</td>
+<td>5,000 RPS at 100%</td>
+<td>4,000 RPS @ 80%</td>
+</tr>
+<tr>
+<td>DB CPU</td>
+<td>30%</td>
+<td>6,667 RPS at 100%</td>
+<td>5,300 RPS @ 80%</td>
+</tr>
+<tr>
+<td>DB IOPS (writes)</td>
+<td>50%</td>
+<td>4,000 RPS at 100%</td>
+<td>3,200 RPS @ 80%</td>
+</tr>
+<tr>
+<td>Connection pool</td>
+<td>70%</td>
+<td>2,857 RPS at 100%</td>
+<td>2,300 RPS @ 80% ← FIRST WALL</td>
+</tr>
+<tr>
+<td>Network</td>
+<td>20%</td>
+<td>10,000 RPS at 100%</td>
+<td>8,000 RPS @ 80%</td>
+</tr>
+<tr>
+<td>Cache memory</td>
+<td>60%</td>
+<td>3,333 RPS at 100%</td>
+<td>2,700 RPS @ 80%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>At 2,300 RPS (15% above current), you exhaust the connection pool.</strong> That's the first wall. Plan that mitigation first. <em>After</em> that, plan for cache memory at 2,700, then DB IOPS at 3,200.</p>
+<p>Senior insight: each wall mitigation extends runway, but only to the <em>next</em> wall. Map them all upfront.</p>
+</div>
+<div class="insider">
+<p><strong>The 80% threshold isn't arbitrary.</strong> Queueing theory shows that latency rises <em>non-linearly</em> as utilization approaches 100%. At 50% utilization, latency might be 2x the service time. At 80%, it's 5x. At 95%, it's 20x. By the time utilization hits 90%, you're already in a customer-painful regime. Plan for 80% peak utilization, not 99%, because the last 20% buys you crash space when traffic spikes unexpectedly.</p>
+</div>
+<h2>Step 4: Plan the mitigations</h2>
+<div class="workout">
+<p><strong>The mitigation roadmap.</strong></p>
+<p>For each wall, document:
+1. <strong>What's the wall?</strong> (specific resource, expected saturation point)
+2. <strong>What's the mitigation?</strong> (specific architectural change)
+3. <strong>What's the cost?</strong> (engineering days, infrastructure $/month)
+4. <strong>What's the lead time?</strong> (how long does the change take)
+5. <strong>What's the trigger?</strong> (RPS or other signal that means "start the change now")</p>
+<p>Example:</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Wall</th>
+<th>Mitigation</th>
+<th>Eng cost</th>
+<th>$ cost</th>
+<th>Lead time</th>
+<th>Trigger</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Conn pool @ 2.3K RPS</td>
+<td>Add PgBouncer (transaction pool mode)</td>
+<td>5 days</td>
+<td>$200/mo</td>
+<td>1 week</td>
+<td>1.8K RPS</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Cache mem @ 2.7K RPS</td>
+<td>Upgrade Redis to larger instance</td>
+<td>1 day</td>
+<td>$500/mo</td>
+<td>2 days</td>
+<td>2.4K RPS</td>
+</tr>
+<tr>
+<td>3</td>
+<td>DB IOPS @ 3.2K RPS</td>
+<td>Migrate to gp3 or io2 EBS</td>
+<td>3 days</td>
+<td>$800/mo</td>
+<td>1 week</td>
+<td>2.8K RPS</td>
+</tr>
+<tr>
+<td>4</td>
+<td>App CPU @ 4K RPS</td>
+<td>Auto-scaling group + larger instances</td>
+<td>2 days</td>
+<td>$1.5K/mo</td>
+<td>Existing</td>
+<td>3.5K RPS</td>
+</tr>
+<tr>
+<td>5</td>
+<td>DB CPU @ 5.3K RPS</td>
+<td>Read replicas, route reads</td>
+<td>10 days</td>
+<td>$2K/mo</td>
+<td>3 weeks</td>
+<td>4K RPS</td>
+</tr>
+</tbody>
+</table>
+<p>This is the senior deliverable. Not a paragraph of "we should be fine" — a concrete table you can review with leadership and execute against.</p>
+</div>
+<h1>Load testing: the discipline most teams skip</h1>
+<p>You can't trust models without <em>validation</em>. Load testing is where you confirm — or refute — your capacity projections. Most teams do this badly. Here's how to do it well.</p>
+<h2>The four levels of load testing</h2>
+<div class="compare">
+<div class="left">
+<p><strong>Level 1 — Smoke test</strong>
+Send 1 RPS for 5 minutes. Confirms the system <em>works at all</em> under synthetic load. Catches obvious config issues. Run on every deploy.</p>
+</div>
+<div class="right">
+<p><strong>Level 2 — Load test</strong>
+Send expected peak traffic (e.g., 5,000 RPS) for 15-30 minutes. Validates that <em>expected</em> traffic is handled within SLO. Run weekly or before major launches.</p>
+</div>
+</div>
+<div class="compare">
+<div class="left">
+<p><strong>Level 3 — Stress test</strong>
+Ramp from 0 to 2-5x expected peak. Find where things start <em>breaking</em>. Latency degrades? Errors appear? Critical for capacity planning.</p>
+</div>
+<div class="right">
+<p><strong>Level 4 — Soak test</strong>
+Send moderate load (e.g., 70% of peak) for 12-24 hours. Catches memory leaks, file descriptor leaks, connection leaks, log/disk fill. Run before major releases.</p>
+</div>
+</div>
+<div class="insider">
+<p><strong>The level senior engineers care most about: stress testing.</strong> Load tests confirm what you already think. Stress tests reveal what you <em>don't</em>. Always include a stress test phase that goes 2-3x your expected peak — that's where you discover the connection pool exhaustion at 1.4x, the GC pause at 2.1x, the cascading timeout at 2.7x. These are the things that ruin Black Friday.</p>
+</div>
+<h2>Tooling</h2>
+<div class="workout">
+<p><strong>Load testing tools by use case:</strong></p>
+<ul>
+<li><strong>k6 (Grafana)</strong> — modern, JavaScript-based, excellent for HTTP/REST/GraphQL. Best general-purpose choice today.</li>
+<li><strong>Locust</strong> — Python-based, great for complex user-journey simulation, write scripted scenarios easily.</li>
+<li><strong>vegeta</strong> — Go-based, simple, perfect for raw HTTP throughput tests.</li>
+<li><strong>wrk / wrk2</strong> — extremely high throughput, low overhead, harder to script.</li>
+<li><strong>JMeter</strong> — heavyweight, complex, but battle-tested for enterprise (legacy choice in many orgs).</li>
+<li><strong>Gatling</strong> — Scala-based, code-as-config, strong reporting.</li>
+<li><strong>Artillery</strong> — Node.js, easy to start with, decent for moderate loads.</li>
+</ul>
+<p>For database-specific load: <strong>sysbench, pgbench, mysqlslap, YCSB</strong>.</p>
+<p>For API contract testing under load: <strong>Tavern, Karate, Postman</strong> (with collection runner).</p>
+</div>
+<div class="tip">
+<p><strong>Run load tests against a <em>realistic</em> environment.</strong> A load test against a 1-instance dev environment tells you about that 1-instance setup. The senior pattern: load test against <em>production-shaped</em> infrastructure (same instance types, same DB tier, same caching tier) — usually a "staging" environment that mirrors prod. Even better: replay production traffic in shadow mode to a candidate environment.</p>
+</div>
+<h2>What to measure during a load test</h2>
+<div class="workout">
+<p><strong>Load test instrumentation checklist:</strong></p>
+<ol>
+<li><strong>Throughput</strong>: RPS achieved (vs RPS attempted). If you said "send 5K RPS" but the tool says "achieved 4.2K RPS," you've already found a bottleneck — the tool couldn't push that much.</li>
+<li><strong>Latency distribution</strong>: p50, p95, p99, p99.9, max. Plot over time, not as point summaries.</li>
+<li><strong>Error rate</strong> by type: timeouts, 5xx, connection refused, parse errors.</li>
+<li><strong>Resource utilization</strong> on every tier: app CPU/mem, DB CPU/mem/IOPS, cache hit rate, network bandwidth.</li>
+<li><strong>Saturation indicators</strong>: thread pool utilization, queue depths, connection pool usage.</li>
+<li><strong>External dependencies</strong>: latency and error rate of every downstream service.</li>
+<li><strong>Cost signals</strong>: cloud auto-scaling actions, throttling events, rate-limited responses.</li>
+</ol>
+<p>Capture a <em>baseline</em> run before changes, then a <em>candidate</em> run after. Compare distributions, not point values.</p>
+</div>
+<h2>Common load testing mistakes</h2>
+<div class="gotcha">
+<p><strong>Gotcha: closed-loop vs open-loop testing.</strong></p>
+<p>Most load tools default to <em>closed-loop</em>: a fixed number of virtual users, each one waits for a response before issuing the next request. This <em>underestimates</em> real load — when latency increases, virtual users naturally throttle themselves.</p>
+<p>Real production traffic is <em>open-loop</em>: arrivals are independent of completions. If responses get slow, more requests pile up. Open-loop generates more pain. Most modern tools (k6, vegeta with <code>-rate</code>) support open-loop. Use it for capacity planning. Closed-loop is only realistic for fixed-user-count systems (like internal tools).</p>
+</div>
+<div class="gotcha">
+<p><strong>Gotcha: the cache-warming bias.</strong></p>
+<p>A 10-minute load test gives the cache 10 minutes to warm. Real traffic might never let the cache warm if the working set is too large. Senior pattern: run a <em>cold-cache</em> load test by clearing caches before starting, <em>and</em> a warm-cache test for steady state. Both numbers matter.</p>
+</div>
+<div class="gotcha">
+<p><strong>Gotcha: synthetic data vs real data shapes.</strong></p>
+<p>Loading 1M synthetic users with <code>user_id</code> 1-1000000 is not the same as loading 1M real users with skewed activity. Real users have hot accounts (Pareto distribution). Real queries have hot keys. Senior load tests use <em>anonymized production traffic samples</em> or <em>zipfian-distributed synthetic loads</em>, not uniform-random.</p>
+</div>
+<h1>Vertical vs horizontal scaling: when to do which</h1>
+<p>The senior progression from Module 17 was: single → vertical → replicas → caching → horizontal → multi-region. Capacity planning is when you <em>decide which step to take next</em>. Here's the framework.</p>
+<div class="keyidea">
+<p><strong>Vertical first, horizontal when forced.</strong> Vertical scaling (bigger machine) is operationally simpler, has fewer failure modes, and avoids distributed-systems complexity. Senior teams scale vertically until they hit a wall (single-machine limit, single-AZ failure domain, or per-instance limits like Postgres connections). Then they go horizontal — but only because they have to.</p>
+</div>
+<h2>When vertical scaling is the right answer</h2>
+<div class="workout">
+<p><strong>Reach for vertical scaling when:</strong></p>
+<ol>
+<li><strong>Current instance has more headroom available.</strong> AWS RDS goes up to 24XL (96 vCPU, 768GB RAM). GCP and Azure have similar tiers. Most workloads can be served by a single beefy machine well into the millions of users.</li>
+<li><strong>The workload is single-master or doesn't shard cleanly.</strong> A relational database with complex multi-table transactions is hard to shard. Buying a bigger box is the right answer for years.</li>
+<li><strong>Operational simplicity is worth more than cost optimization.</strong> A 4xlarge costing 8x a small instance might be 2x more expensive but 100x easier to operate. For a Series-A startup, that's the right tradeoff.</li>
+<li><strong>Compliance / data residency makes single-region single-instance preferred.</strong> Healthcare, finance, government workloads sometimes can't easily distribute.</li>
+</ol>
+</div>
+<h2>When horizontal scaling is forced</h2>
+<div class="workout">
+<p><strong>You must scale horizontally when:</strong></p>
+<ol>
+<li><strong>You've hit the largest available instance.</strong> When the next vertical step doesn't exist, horizontal is the only path.</li>
+<li><strong>Single-machine failure is too painful.</strong> If a 30-second restart costs you $500K, you need redundancy independent of vertical sizing.</li>
+<li><strong>The workload genuinely shards cleanly.</strong> Per-tenant SaaS, per-user data, per-region data — these decompose naturally. Then horizontal scaling beats vertical because you get parallelism for free.</li>
+<li><strong>Geographic distribution is needed.</strong> Vertical can't put compute closer to users in Tokyo. Horizontal across regions can.</li>
+<li><strong>Cost crosses over.</strong> At very high scale, large instances become disproportionately expensive vs many smaller ones (the "scale-up tax"). For workloads above ~$10K/month per instance, scale-out often becomes cheaper.</li>
+</ol>
+</div>
+<div class="scenario">
+<p><strong>Real example: when not to shard.</strong> A company with 50K users and 5K writes/sec on Postgres asked "should we shard?" Answer: no. A <code>db.r6g.4xlarge</code> (16 vCPU, 128 GB RAM) handles that load comfortably with 50% headroom. Sharding adds: cross-shard query complexity, distributed transactions, rebalancing operations, more failure modes. The engineering cost would be 6 months of work. The vertical scaling cost is $2K/month more.</p>
+<p>Senior call: spend $24K/year ($2K × 12) on a bigger instance, save 6 months of engineering work, defer the sharding conversation until a <em>real</em> signal forces it (vertical wall hit, geographic distribution needed). Most teams shard 2-3 years too early because of "what if we grow?" fears.</p>
+</div>
+<div class="pullquote">
+<p>"The cost of premature horizontal scaling is six months of distributed-systems complexity. The cost of late horizontal scaling is six weeks of crisis migration. Senior engineers prefer the second — they can see it coming."</p>
+</div>
+<h1>Auto-scaling: when it works and when it doesn't</h1>
+<p>Auto-scaling sounds magical. "Just set it and the cloud handles it." Reality is more nuanced.</p>
+<h2>When auto-scaling works well</h2>
+<div class="workout">
+<p><strong>Auto-scaling is a good fit when:</strong></p>
+<ol>
+<li><strong>Stateless services.</strong> Web servers, API gateways, processing workers — scale them up and down freely.</li>
+<li><strong>Workloads with predictable patterns.</strong> Daily peaks, weekly cycles, traffic that takes minutes (not seconds) to ramp.</li>
+<li><strong>You have leading indicators.</strong> CPU, request rate, queue depth — metrics that signal "more capacity needed" before the system breaks.</li>
+<li><strong>Spin-up time is fast relative to spike duration.</strong> If a new instance takes 5 minutes to come online and your spike is 45 minutes, auto-scaling helps. If the spike is 90 seconds, it's already over.</li>
+</ol>
+</div>
+<h2>When auto-scaling fails</h2>
+<div class="gotcha">
+<p><strong>Auto-scaling fails for stateful systems.</strong> Databases don't auto-scale by adding instances — that's <em>replication setup</em>, not scaling. Similarly: caches with sticky data, queues with consumer-group rebalancing pain, services with long-lived connections.</p>
+</div>
+<div class="gotcha">
+<p><strong>Auto-scaling fails for sudden spikes.</strong> A traffic spike from 1K to 50K RPS in 30 seconds gives auto-scaling no time to react. By the time new instances are up, the original ones have already failed. Mitigations: pre-provision for known spike events (Black Friday, product launches), use predictive scaling, or maintain a baseline of warm capacity higher than current need.</p>
+</div>
+<div class="gotcha">
+<p><strong>Auto-scaling can mask real problems.</strong> If your CPU is rising linearly because of a memory leak (more GC = more CPU), auto-scaling adds servers and <em>hides</em> the leak. Now you have 50 servers all leaking memory instead of 5. Always pair auto-scaling with anomaly detection on per-instance metrics.</p>
+</div>
+<div class="insider">
+<p><strong>The senior auto-scaling configuration:</strong>
+- <strong>Scale-out trigger</strong>: CPU &gt; 70% for 2 consecutive minutes (lagging) OR request rate &gt; N/server (leading).
+- <strong>Scale-in trigger</strong>: CPU &lt; 30% for 15 consecutive minutes (slow scale-in to avoid flapping).
+- <strong>Min instances</strong>: cover your baseline + tolerate 1 AZ failure.
+- <strong>Max instances</strong>: cap at 3-5x baseline to prevent runaway scaling from causing runaway costs.
+- <strong>Cooldown</strong>: 5 minutes between scaling actions to avoid thrash.</p>
+<p>The asymmetry — fast scale-out, slow scale-in — is intentional. Scaling out wrongly costs money. Scaling in wrongly causes outages. Bias toward keeping capacity.</p>
+</div>
+<h1>Three exercises</h1>
+<div class="exercise">
+<p><strong>Exercise 1: The capacity question for the VP.</strong></p>
+<p>Your CEO asks: "Can we handle 5x current traffic next quarter?" Current peak is 2K RPS. CPU on app servers averages 35% (peak 65%). DB CPU is 25% (peak 50%). Memory and network are well below 50%. What's your senior answer — and what specific data would you bring to back it up?</p>
+<div class="answer-box">
+<p>The right answer is <em>neither</em> "yes, we have headroom" <em>nor</em> "no, we'll fall over." Both are guesses. The senior answer involves a model.</p>
+</div>
+<div class="solution">
+<p><strong>Senior answer:</strong></p>
+<p>"I can give you a defensible answer in 48 hours. Here's what I need to do first:</p>
+<ol>
+<li><strong>Run a stress test</strong> that ramps from 2K to 10K RPS over 30 minutes. This tells me empirically where things start to bend.</li>
+<li><strong>Decompose per-resource consumption</strong> — at 2K RPS, what's the CPU/IOPS/connections/memory cost per request? Then linearly project to 10K RPS, while flagging non-linear resources (cache hit rates degrade with working-set growth).</li>
+<li><strong>Identify the first wall</strong> — which resource saturates first when extrapolated? Based on what I see, candidates are: connection pool, DB IOPS, or app CPU during peaks. The stress test will confirm.</li>
+<li><strong>Build a mitigation roadmap</strong> — for each wall, the architectural change, engineering cost, and lead time.</li>
+</ol>
+<p>Then I can give you one of three answers: (A) 'yes, we can handle 10K with these specific changes by date X,' (B) 'we can handle 7K but not 10K without architectural change Y,' or (C) 'we have a wall at 4K we didn't know about, here's the mitigation.'</p>
+<p>Hand-waving 'we have headroom' is how outages happen. Give me 48 hours and you'll get a real plan."</p>
+<p><strong>What this signals:</strong> you have a methodology, you respect the question, you're honest about uncertainty, and you're committing to a specific deliverable. That's a senior answer to a leadership question.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2: The Black Friday plan.</strong></p>
+<p>You operate an e-commerce site that does 5K RPS normal, with Black Friday peaks historically 10-15x baseline. Black Friday is in 6 weeks. What's your capacity planning playbook?</p>
+<div class="answer-box">
+<p>6 weeks is enough time to do this well. Less than 4 weeks and you're cutting it close. Less than 2 weeks and you're hoping.</p>
+</div>
+<div class="solution">
+<p><strong>Senior playbook (week-by-week):</strong></p>
+<p><strong>Week 1-2: Model and load test.</strong>
+- Project peak: assume 15-20x baseline (more conservative than historical, because traffic grows year-over-year).
+- Run stress test up to 25x baseline. Find walls.
+- Decompose by request type — Black Friday traffic is read-heavy on product pages, write-heavy on cart/checkout. Different mix from normal day.</p>
+<p><strong>Week 3: Implement mitigations.</strong>
+- For each wall identified: implement the change, deploy to production at low risk, validate.
+- Common Black Friday mitigations: pre-warm caches, increase auto-scaling max instances, raise connection pool limits, scale up DB tier for the event, add read replicas, shed non-critical features (recommendations, recently-viewed) under load.</p>
+<p><strong>Week 4: Game day.</strong>
+- Run a <em>production</em> load test in a controlled window (e.g., Sunday 3am). Push to expected peak. Validate the mitigations work end-to-end.
+- Run a chaos exercise — kill an instance, kill a cache, kill an AZ. Confirm graceful degradation.</p>
+<p><strong>Week 5: Pre-event prep.</strong>
+- Code freeze except for ops fixes.
+- Pre-provision capacity (don't rely on auto-scaling to react to a spike — pre-warm to expected peak).
+- Stage runbooks for every plausible failure mode.
+- Brief on-call rotation, escalation paths, war room logistics.</p>
+<p><strong>Week 6 (Black Friday week): Execute.</strong>
+- Day before: confirm provisioning, dry-run the runbooks.
+- During event: war room, dashboards on big screens, no deploys, on-call doubled.
+- After: post-event review (what scaled, what didn't, what we'd change next year).</p>
+<p><strong>Senior signal:</strong> specific timeline, named mitigations, game day in week 4, code freeze, pre-provision rather than rely on auto-scaling, post-event review. This is the muscle memory of someone who's done multiple Black Fridays.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3: Vertical or horizontal?</strong></p>
+<p>You're at 80% CPU on a 32-vCPU PostgreSQL primary with 200GB working set. Traffic is growing 30% per quarter. Your team is debating: scale up to 96 vCPU (vertical) or shard the database (horizontal). What's your recommendation, and what data would change your answer?</p>
+<div class="answer-box">
+<p>This is the canonical "scale up vs scale out" decision. Senior engineers strongly default to vertical here.</p>
+</div>
+<div class="solution">
+<p><strong>Senior recommendation: vertical, with conditions.</strong></p>
+<p><strong>Why vertical first:</strong>
+- Sharding Postgres is a major engineering investment (3-6 months of work). Vertical scaling is a maintenance window.
+- 96 vCPU buys you ~3x current CPU headroom. At 30% growth/quarter, that's 4-5 quarters of runway. That's significant.
+- Sharding adds query complexity, distributed transactions, and rebalancing operations. The operational cost continues forever.
+- Vertical preserves your option to shard <em>later</em> with more information.</p>
+<p><strong>The conditions where my answer would change:</strong>
+- <strong>Memory wall.</strong> If working set is growing toward the largest available instance's RAM, vertical hits a hard ceiling. Then horizontal is forced.
+- <strong>Single-AZ risk.</strong> If a 30-second outage of the primary is unacceptable (financial trading), the <em>redundancy</em> argument forces horizontal — though this is replication, not necessarily sharding.
+- <strong>Geographic distribution.</strong> If users are now in Asia and EU, vertical can't reduce their latency. Geo-sharding (or multi-region active-active) is forced.
+- <strong>Workload pattern change.</strong> If query patterns are becoming embarrassingly parallel (analytics workloads, high-fanout reads), horizontal reads via replicas might be cheaper than vertical primary scaling.</p>
+<p><strong>What I'd do this quarter:</strong>
+1. Scale vertically to 96 vCPU.
+2. <em>In parallel</em>, build the sharding capability — but don't deploy it yet. Get the partition key chosen, get the sharding proxy ready, build the migration tooling.
+3. Re-evaluate next quarter with one more data point.</p>
+<p><strong>Senior signal:</strong> chose vertical, but built the optionality for horizontal. Identified the specific signals that would force the decision later. Treated this as a <em>staged</em> decision rather than a binary one.</p>
+</div>
+</div>
+<h1>No dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p><strong>Q: What's a reasonable utilization target for production?</strong></p>
+</div>
+<div class="a">
+<p>For latency-sensitive systems: 60-70% peak utilization. The remaining 30-40% is your <em>crash buffer</em> for unexpected spikes, instance failures, and the queueing-theory reality that latency rises non-linearly past 80%. For batch systems where latency doesn't matter: 85-90% is fine. The number is <em>not</em> 95% — that's where things break.</p>
+</div>
+<div class="q">
+<p><strong>Q: How far ahead should I plan capacity?</strong></p>
+</div>
+<div class="a">
+<p>The horizon depends on lead time of the slowest mitigation. If your slowest mitigation (e.g., DB sharding) takes 6 months, plan 12+ months out for that resource. Faster mitigations (auto-scaling tweaks) need only weeks of foresight. Senior teams have a <em>rolling 12-month capacity model</em> updated quarterly.</p>
+</div>
+<div class="q">
+<p><strong>Q: How do I plan capacity for spiky workloads I can't predict?</strong></p>
+</div>
+<div class="a">
+<p>Three patterns: (1) over-provision the baseline so spikes fit in headroom, (2) build aggressive auto-scaling with predictive elements (e.g., scale up at 9am every day before traffic arrives), (3) build <em>backpressure</em> mechanisms (rate limiting, queue-based deferral) so spikes degrade gracefully rather than catastrophically. Most teams need all three.</p>
+</div>
+<div class="q">
+<p><strong>Q: Should I use spot/preemptible instances to save money?</strong></p>
+</div>
+<div class="a">
+<p>For <em>batch and async workloads</em>: yes, spot instances can save 60-90% for tolerant workloads. For <em>user-facing serving</em>: only as a supplement to a baseline of on-demand capacity. AWS Spot can yank 100% of your fleet with 2 minutes notice — if your business depends on it, you need on-demand baseline plus spot supplementation, with graceful degradation when spot capacity disappears.</p>
+</div>
+<div class="q">
+<p><strong>Q: Do I need a load testing environment that mirrors production?</strong></p>
+</div>
+<div class="a">
+<p>Ideally yes. Practically, "production-shaped" (same instance types, same database tier, same caching architecture) is enough — even at lower scale. The goal is to validate that the <em>architecture</em> scales, not to recreate production scale. A 1/4-scale staging that mirrors prod's topology is far better than a single-node dev environment.</p>
+</div>
+<div class="q">
+<p><strong>Q: What about chaos engineering? Where does it fit?</strong></p>
+</div>
+<div class="a">
+<p>Chaos engineering is <em>capacity testing for failures</em>. You test "can we handle 10x traffic?" with load tests, and "can we handle losing an AZ?" with chaos experiments. Both are part of capacity planning broadly defined. Tools: Chaos Monkey (instance kills), Gremlin (network/CPU/disk faults), Litmus (Kubernetes-native), AWS Fault Injection Simulator.</p>
+</div>
+<div class="q">
+<p><strong>Q: How do I justify capacity investments to leadership?</strong></p>
+</div>
+<div class="a">
+<p>Frame it as risk management. "If we don't add capacity X by date Y, we have N% chance of degraded service during Z (e.g., Black Friday), which historically costs us $K in revenue plus reputation damage." Quantified risk + concrete mitigation cost makes the conversation about ROI rather than engineering wishlist.</p>
+</div>
+<div class="q">
+<p><strong>Q: What's the difference between capacity planning and performance engineering?</strong></p>
+</div>
+<div class="a">
+<p>Capacity planning answers "how much capacity do we need at projected demand?" Performance engineering answers "how do we make each request use less capacity?" They're complementary: better performance reduces capacity needs (cheaper to scale), and capacity planning identifies where performance work has the most leverage (the bottleneck resource).</p>
+</div>
+</div>
+<h1>Three myths</h1>
+<div class="myth">
+<p><strong>MYTH: "Auto-scaling means we don't need capacity planning."</strong></p>
+<p>Auto-scaling handles <em>day-to-day variation</em>. It does not handle: sudden spikes faster than instances spin up, stateful systems, dependencies that don't auto-scale (your database, third-party APIs, your CDN's per-account quotas), or runaway cost from misbehaving traffic. Auto-scaling is a <em>tool</em> in capacity planning, not a substitute for it.</p>
+</div>
+<div class="myth">
+<p><strong>MYTH: "We have N% headroom, so we have N% growth runway."</strong></p>
+<p>Headroom is per-resource, not global. If you have 40% CPU headroom but 5% connection pool headroom, your runway is 5% growth before the connection pool saturates. Senior planning identifies the <em>minimum</em> headroom across all resources and plans against that.</p>
+</div>
+<div class="myth">
+<p><strong>MYTH: "Once we scale to handle 10x, we're set."</strong></p>
+<p>Scaling 10x reveals <em>new</em> bottlenecks. The system that handles 10x traffic has different bottlenecks than the system that handled 1x. Network bandwidth becomes important. Replication lag becomes important. Per-tenant noisy-neighbor problems emerge. Senior teams expect each capacity plateau to expose new walls — capacity planning is <em>continuous</em>, not one-time.</p>
+</div>
+<h1>Five gotchas</h1>
+<div class="gotcha">
+<p><strong>GOTCHA 1: The "noisy neighbor" effect on shared infrastructure.</strong></p>
+<p>You provisioned for 5K RPS. You're getting 4K. CPU shows 70%. Cool, you have headroom — except your m5.large is on a host where another tenant is hammering the network. Your <em>steady</em> CPU is 70%, your <em>bursty</em> throughput is constrained, and you have no visibility into it. Mitigations: use larger instance types (m5.2xlarge+ get dedicated cores), use bare metal or dedicated hosts for critical workloads, monitor for unexplained latency variance.</p>
+</div>
+<div class="gotcha">
+<p><strong>GOTCHA 2: Cache hit rate degrades non-linearly with working set growth.</strong></p>
+<p>Your cache holds 80% of working set, hit rate is 95%. You grow 2x — now cache holds 40% of working set. Hit rate doesn't drop to 47.5% (linear) — it might drop to 60-70% (non-linear) because the <em>most-accessed</em> items still fit. But the database load doesn't 2x — it might 5x because cache misses surged disproportionately.</p>
+</div>
+<div class="gotcha">
+<p><strong>GOTCHA 3: Connection-pooling savings can mask the real problem.</strong></p>
+<p>Adding PgBouncer in transaction mode multiplies your effective connection capacity by 50-100x. Great. But if your <em>queries</em> are slow, you're now bottlenecked on per-query throughput, not connections. PgBouncer made you blind to the real issue. Always measure query latency and DB CPU, not just connection counts.</p>
+</div>
+<div class="gotcha">
+<p><strong>GOTCHA 4: GC tuning can mask memory pressure.</strong></p>
+<p>A JVM with aggressive GC tuning can hide a memory leak — GC works harder, throughput drops, latency degrades, but no OOM. You see "high CPU" without obvious cause. The fix is heap dump analysis, not GC tuning. Heap usage trending upward over hours/days is your signal even when GC seems to be coping.</p>
+</div>
+<div class="gotcha">
+<p><strong>GOTCHA 5: Cost growth is non-linear with scale.</strong></p>
+<p>Doubling traffic does not double cost. It might 1.5x cost (efficiency gains from amortization) or 3x cost (sharding overhead, replicated data, caching layers). Cost-per-request changes at every scale plateau. Senior plans include <em>cost projection</em> alongside capacity projection — leadership cares about both.</p>
+</div>
+<h1>Mock interview</h1>
+<div class="mock-interview">
+<div class="turn q">
+<p><strong>Interviewer:</strong> "Walk me through how you'd plan capacity for a service expected to grow 5x next year."</p>
+</div>
+<div class="turn a">
+<p><strong>You:</strong> "Five steps, in this order.</p>
+<p>First, build the demand model. What's the primary driver — users, transactions, integrations? Project that driver quarter by quarter. From the driver, derive RPS at peak. Don't model just the average — peak-to-average ratio is often 3-5x for consumer products.</p>
+<p>Second, decompose per-resource cost. For each request type, measure: CPU, memory, IOPS, network, DB queries, external calls. Then weighted-sum across the request mix at projected peak. This gives me a per-resource projection.</p>
+<p>Third, identify saturation points. For each resource, what's the RPS at which it hits 80% utilization? List them in order. The smallest number is the first wall.</p>
+<p>Fourth, build the mitigation roadmap. For each wall: what's the architectural change, what's the engineering cost, what's the lead time, what's the trigger. This gives leadership a concrete plan, not 'we'll figure it out.'</p>
+<p>Fifth, validate with load testing. Run a stress test up to the predicted peak. Confirm the model. If empirical reality disagrees with the model, the model is wrong — adjust the projection.</p>
+<p>What I'd specifically <em>avoid</em>: saying 'we have headroom' based on average dashboard values. Headroom is at peak, per-resource, with growth modeled forward."</p>
+</div>
+<div class="commentary">
+<p><strong>What makes this senior:</strong> named a five-step methodology, distinguished demand modeling from resource modeling, called out the peak-to-average distinction, included load test validation explicitly, and explicitly <em>named the failure mode they avoid</em> (hand-waving from averages). The interviewer is hearing someone who's planned capacity for real systems.</p>
+</div>
+<div class="turn q">
+<p><strong>Interviewer:</strong> "Your service handles 1000 RPS at 100ms p99. The product team wants to add a feature that increases p99 to 400ms. What capacity implications do you flag?"</p>
+</div>
+<div class="turn a">
+<p><strong>You:</strong> "I'd reach for Little's Law immediately.</p>
+<p>Currently: L = 1000 × 0.1 = 100 in-flight requests. The thread pool, connection pool, and any concurrency-limited resource is sized for around 100.</p>
+<p>After the change: L = 1000 × 0.4 = 400 in-flight requests. The system needs <strong>4x more concurrency</strong> to handle the same traffic.</p>
+<p>That breaks several things if we don't plan for it:
+1. Thread pools need to be sized to 400+ with margin (say 600).
+2. Connection pools downstream — if each request holds 1 connection for its duration, we now hold 4x more connections concurrently.
+3. Memory pressure — each in-flight request retains memory; 4x in-flight means 4x peak memory consumption.
+4. Downstream services — they now see longer-held connections, deeper queues.</p>
+<p>So the capacity flag is: <strong>a 4x latency increase produces a 4x concurrency increase even at constant traffic</strong>. We need to retest at the new latency profile, resize the pools, and check downstream impact. The product team likely wasn't thinking about this — it's an engineering responsibility to flag it before launch.</p>
+<p>I'd also ask: is the latency increase fundamental, or is it from synchronous calls that could be parallelized or async? Often the right answer isn't 'absorb the latency cost' — it's 'redesign to eliminate it.'"</p>
+</div>
+<div class="commentary">
+<p><strong>What makes this senior:</strong> opened with Little's Law (named the formula), applied it numerically, traced the implications across multiple resources (pools, memory, downstream), then <em>challenged the premise</em> by asking whether the latency was fundamental. That last move — questioning whether to accept the constraint at all — is staff-level thinking.</p>
+</div>
+<div class="turn q">
+<p><strong>Interviewer:</strong> "Tell me about a time you made the wrong capacity call. What happened and what did you learn?"</p>
+</div>
+<div class="turn a">
+<p><strong>You:</strong> "I'll give you one. Three years ago, we had a service growing steadily — 30% per quarter. CPU averaged 40%, memory was 50%, looked healthy. I assured leadership we had 6+ months of headroom.</p>
+<p>What I missed: we had a connection pool sized for 100 connections, and we were averaging 70 used. I never plotted <em>connection</em> utilization on the capacity dashboard — I was watching CPU and memory.</p>
+<p>Six weeks later, traffic spiked 30% during a marketing campaign. Connection pool exhausted. Cascading timeouts upstream. We had a 2-hour partial outage.</p>
+<p>The lesson — and I bring this up with every junior engineer I work with now — is that headroom is <em>per-resource</em>, not global. The bottleneck is whichever resource hits its wall first, and you only know which resource that is by <em>measuring all of them</em>. CPU and memory aren't a complete picture; you also need connection pools, file descriptors, thread pools, lock contention, and dependency latencies.</p>
+<p>After that, I built a 'first wall' dashboard for every service: a visual showing utilization-to-saturation distance for <em>every</em> concurrency-limited resource. The smallest one is the first wall. We caught the next four near-misses with that dashboard."</p>
+</div>
+<div class="commentary">
+<p><strong>What makes this senior:</strong> specific story, owned the mistake without deflection ("I missed"), explained the systemic gap (only measuring CPU/memory), described the durable change (the "first wall" dashboard), and connected it to ongoing mentorship of others. Interviewers love this kind of answer because it shows learning that <em>changed practice</em>, not just an anecdote.</p>
+</div>
+<div class="turn q">
+<p><strong>Interviewer:</strong> "How do you decide between scaling vertically vs sharding a database?"</p>
+</div>
+<div class="turn a">
+<p><strong>You:</strong> "Strong default to vertical, with specific signals that force horizontal.</p>
+<p>Vertical first because: sharding is a 3-6 month engineering investment, adds permanent operational complexity (cross-shard queries, distributed transactions, rebalancing), and is hard to undo. Vertical scaling is a maintenance window.</p>
+<p>I'd go horizontal only when one of these signals is true:
+1. <strong>Memory wall.</strong> Working set is approaching the largest available instance's RAM. Vertical hits a hard ceiling.
+2. <strong>Single-AZ risk is unacceptable.</strong> Even with vertical scaling, a single primary is a single failure domain — but this might be solved by replication, not sharding.
+3. <strong>The workload shards cleanly.</strong> Per-tenant SaaS, geographic data partitioning, time-series data — these decompose naturally and the sharding overhead is genuinely worth it.
+4. <strong>You've hit the largest instance.</strong> When the next vertical step doesn't exist, horizontal is forced.
+5. <strong>Geographic distribution matters.</strong> Latency to users in Asia can't be fixed by a bigger machine in Virginia.</p>
+<p>I'd also distinguish <em>read scaling</em> from <em>write scaling</em>. Read scaling via replicas is much cheaper than full sharding and solves many 'we need more DB capacity' problems. Sharding is only required when <em>write throughput</em> exceeds single-primary capacity.</p>
+<p>Practical playbook: when growing toward a wall, scale vertically <em>and</em> in parallel build the sharding capability — partition key chosen, sharding proxy implemented, migration tooling built. Deploy sharding only when forced. This way you have the <em>option</em> without paying the operational cost prematurely."</p>
+</div>
+<div class="commentary">
+<p><strong>What makes this senior:</strong> strong opinion stated upfront, with specific signal conditions for changing the recommendation. Distinguished read scaling from write scaling — a senior nuance. Suggested building sharding <em>as optionality</em> in parallel with vertical scaling, which is exactly how mature teams operate. Interviewer is hearing thoughtful staging, not binary thinking.</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<p><strong>THE CORE QUESTION</strong>
+- Not "do we have headroom?" but "<strong>which resource saturates first, when, and what's the plan?</strong>"</p>
+<p><strong>THE FOUR RESOURCES</strong>
+1. CPU — busy processor
+2. Memory — RAM full or thrashing
+3. I/O — disk IOPS, throughput, network bandwidth
+4. Concurrency — connections, threads, FDs, locks</p>
+<p>Plus: external dependencies (rate limits on partners, CDN quotas).</p>
+<p><strong>LITTLE'S LAW: L = λ × W</strong>
+- L = concurrent items, λ = arrival rate, W = time per item
+- Use to size: thread pools, connection pools, in-flight buffers
+- Latency increase → concurrency increase (4x latency = 4x in-flight at constant traffic)</p>
+<p><strong>FOUR-STEP PLANNING</strong>
+1. Project demand (driver → RPS, with peak-to-average ratio)
+2. Decompose per-resource cost per request
+3. Find saturation point per resource (80% utilization is the line)
+4. Build mitigation roadmap with cost, lead time, trigger</p>
+<p><strong>FOUR LEVELS OF LOAD TESTING</strong>
+1. Smoke (1 RPS, sanity)
+2. Load (expected peak, validate SLO)
+3. Stress (2-5x peak, find walls) ← most important
+4. Soak (12-24h moderate, catch leaks)</p>
+<p>Tools: k6 / Locust / vegeta / wrk2</p>
+<p><strong>VERTICAL VS HORIZONTAL</strong>
+- Default: vertical until forced
+- Forced when: memory wall, can't run on one instance, sharding clean, geo-distribution, hit largest instance
+- Read scaling via replicas ≠ sharding (much cheaper, often sufficient)</p>
+<p><strong>AUTO-SCALING RULES</strong>
+- Fast scale-out, slow scale-in (avoid flapping)
+- Min: cover baseline + AZ failure
+- Max: 3-5x baseline (cap runaway costs)
+- Doesn't help: sub-spin-up spikes, stateful systems</p>
+<p><strong>TARGET UTILIZATION</strong>
+- Latency-sensitive: 60-70% peak (queueing rises non-linearly past 80%)
+- Batch: 85-90% fine</p>
+<p><strong>GOTCHAS</strong>
+- Headroom is per-resource (smallest one wins)
+- Closed-loop testing under-estimates real load
+- Cache hit rate degrades non-linearly
+- Auto-scaling masks slow leaks
+- Cost grows non-linearly (could be 0.5x or 3x per traffic 2x)</p>
+<p><strong>THE SENIOR DELIVERABLE</strong>
+A table with: resource × current util × saturation point × first wall RPS × mitigation × eng cost × $ cost × lead time × trigger.
+Not a paragraph. A table.</p>
+</div>
+<div class="pullquote">
+<p>"Junior engineers say 'we have headroom.' Mid-level say 'we tested last week.' Senior engineers say 'here's the wall, here's when we hit it, here's the mitigation, here's the trigger.' The difference is a model, not a feeling."</p>
+</div>
+<h1>What's next</h1>
+<p>You can now find bottlenecks (Module 19) <em>and</em> predict when you'll hit them (Module 20). The next two modules complete the operational picture:</p>
+<p><strong>Module 21 — Multi-Region Architecture.</strong> A dedicated treatment of geographic distribution: latency budgets per region, edge POPs, anycast routing, regional data residency, and the patterns for active-active across continents.</p>
+<p><strong>Module 22 — Networking Fundamentals.</strong> TCP, connection pooling internals, TLS, HTTP/2 vs HTTP/3, gRPC, L4 vs L7 load balancers, DNS-based routing — the network layer that ultimately constrains all of the above.</p>
+<p>Together, observability + capacity + geo + networking is what senior systems engineers know that their juniors don't. You measure, predict, distribute, and connect. That's the operational craft.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="19_bottlenecks_observability.html" class="prev">&laquo; 19 Observability</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="21_multi_region.html" class="next">21 Multi-Region &raquo;</a>
+</nav>
+</body>
+</html>

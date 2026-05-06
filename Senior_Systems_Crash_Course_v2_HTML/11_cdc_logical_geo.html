@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam catches up on architecture</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 11</p>
+</div>
+<div class="module-title">
+<p>CDC, Logical Replication &amp; Geo-Replication</p>
+</div>
+<div class="subtitle">
+<p>How data flows from your OLTP system to the rest of the world — and the operational pitfalls of getting it wrong</p>
+</div>
+</div>
+<div class="opener">
+<p>Your engineering team is talking about Debezium, Iceberg, the lakehouse, and CDC pipelines. The architect is throwing around "logical replication slot" like everyone knows what that is.</p>
+<p>You don't. Most engineers don't. By the end of this module, you'll be the one who <em>does</em>.</p>
+</div>
+<h1>Sam catches up on architecture</h1>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+OK so last module covered replication — leaders, followers, lag, failover. But everyone at work keeps saying "CDC pipeline" and "Debezium" and "Kafka into Iceberg." How does that fit in?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+That's the <em>modern</em> extension of replication. Module 10 was replicas inside the same database for HA and read scaling. This module is about replicating <em>outside</em> the database — to Kafka, to data lakes, to search indexes, to other databases entirely. Same fundamentals, different destination.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+So CDC is just... replication?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+CDC stands for Change Data Capture. It <em>is</em> replication, but specifically the kind that captures row-level changes — INSERTs, UPDATEs, DELETEs — as a stream of events. Once you have that stream, you can pipe it anywhere. To search engines for indexing. To analytical warehouses. To other services. To data lakes for ML training.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+Why is this such a big deal?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Because it solves the integration problem at scale. Without CDC, every team that wants OLTP data writes their own polling job — "SELECT * FROM users WHERE updated_at &gt; $last_check" — and they all duplicate effort, miss updates, hammer the OLTP database. With CDC, the database itself emits an event stream, and consumers subscribe. <strong>The OLTP database stays pristine. Everyone else gets a faithful, real-time mirror.</strong></p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+And the operational pitfalls?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Two main ones. Replication slots that fill the disk — the canonical Postgres incident. And geo-replication conflicts that you find out about three months after deployment. We'll cover both.</p>
+</div>
+</div>
+<div class="keyidea">
+<p><strong>Physical replication</strong> ships byte-for-byte page changes — exact mirrors. <strong>Logical replication</strong> ships row-level operations — flexible mirrors. <strong>CDC</strong> is the productized version of logical replication, exposed as an event stream for downstream consumers. The modern data platform is built on this distinction.</p>
+</div>
+<h1>Physical vs logical: the foundational split</h1>
+<p>Every replication mechanism falls into one of two categories. Senior engineers know exactly which.</p>
+<div class="compare">
+<div class="vs-left">
+<h4>Physical replication</h4>
+<p>Ships <em>byte-for-byte</em> changes to disk pages. The replica is a literal bit copy of the primary.</p>
+<p><b>Pro</b>: fastest. No interpretation overhead.</p>
+<p><b>Pro</b>: exact reproduction — indexes, internal state, everything.</p>
+<p><b>Con</b>: replica must be same major version of database.</p>
+<p><b>Con</b>: can't filter or transform data.</p>
+<p><b>Con</b>: the replica is read-only — it cannot be queried for unrelated work.</p>
+<p><b>Used by</b>: standard Postgres streaming replication, MySQL row-based replication (mostly).</p>
+</div>
+<div class="vs-right">
+<h4>Logical replication</h4>
+<p>Ships row-level operations: "INSERT row X with values Y", "UPDATE row Z set foo=bar". Replica reconstructs by executing them.</p>
+<p><b>Pro</b>: flexible — replicate to different version, schema, or even different DB type.</p>
+<p><b>Pro</b>: can filter rows or columns.</p>
+<p><b>Pro</b>: replica is fully writable; logical replica only mirrors what's published.</p>
+<p><b>Con</b>: slower — operations must be parsed and re-executed.</p>
+<p><b>Con</b>: subtle gaps (DDL, sequences) require care.</p>
+<p><b>Used by</b>: Postgres logical replication, Debezium (everything), MySQL row-based with filters.</p>
+</div>
+</div>
+<div class="scenario">
+<p><strong>A concrete difference:</strong></p>
+<p>You have a Postgres 14 primary with 50 columns in <code>users</code>. You want to replicate to a Postgres 16 reporting cluster, but only a subset of columns — and you want to filter out internal users.</p>
+<p><strong>Physical replication</strong>: you can't. Physical requires same version, same schema, same data. End of conversation.</p>
+<p><strong>Logical replication</strong>: easy. Define a publication that includes only the columns and rows you want. The downstream replica can be Postgres 16 (cross-version), can have additional indexes, can even have different unrelated tables.</p>
+<p>For <em>internal HA</em>, physical wins. For <em>fan-out to other systems</em>, logical is the only option.</p>
+</div>
+<div class="insider">
+<p><strong>Postgres physical replication ships the WAL (Module 02).</strong> The very same byte stream the primary writes for crash recovery is sent to replicas. They apply it to their own data files. This is why it's so fast — there's no parsing, no re-execution, just byte-level page mutations.</p>
+<p><strong>Postgres logical replication still uses the WAL</strong> — but a separate process (<code>logical decoding</code>) reads the WAL, reconstructs row-level operations from page-level changes, and emits them as a logical stream. The output protocol is configurable.</p>
+</div>
+<h1>Change Data Capture (CDC)</h1>
+<p>CDC is logical replication, productized for downstream consumption. Instead of replicating to another database, the change stream is exposed as an event feed.</p>
+<div class="diagram">
+<pre><code>                          CDC PIPELINE
+</code></pre>
+<p>┌────────────────────────────┐
+  │  Postgres / MySQL primary  │   ← writes go here as usual
+  │     (source of truth)       │
+  └──────────────┬─────────────┘
+                 │  WAL / binlog
+                 │  (logical decoding)
+                 ▼
+  ┌────────────────────────────┐
+  │       Debezium connector    │   ← reads source change stream
+  │     (or pg_logical, etc.)   │   ← emits structured events
+  └──────────────┬─────────────┘
+                 │
+                 ▼
+  ┌────────────────────────────┐
+  │           Kafka             │   ← durable event bus
+  └──────────────┬─────────────┘
+                 │
+   ┌─────────────┼──────────────┬──────────────┐
+   ▼             ▼              ▼              ▼
+ Search       Analytics      Cache         Other
+ (Elastic)    (Iceberg/      (Redis)       services
+              Snowflake)</p>
+</div>
+<div class="keyidea">
+<p>The CDC pattern: source database stays the <em>single source of truth</em>. CDC tool reads the change stream, publishes events to a durable bus (Kafka). Downstream consumers maintain their own optimized representations — search indexes, denormalized views, caches.</p>
+<p><strong>The OLTP database stops being directly hit by every team that needs its data.</strong> That's the win.</p>
+</div>
+<h2>Why CDC over polling?</h2>
+<div class="scenario">
+<p><strong>The polling antipattern:</strong></p>
+<p>Each downstream team writes their own job: <code>SELECT * FROM users WHERE updated_at &gt; $last_seen</code> every minute.</p>
+<p>By the third team adopting this pattern:
+- The primary OLTP database is hammered every minute by N polling jobs.
+- Each job has slightly different "last seen" semantics → bugs.
+- DELETEs are missed (they don't have an <code>updated_at</code>).
+- Schema changes break every poller silently.
+- Each team reinvents the wheel for retries, error handling, schema evolution.</p>
+<p>The primary becomes a pull-target for the whole company. Capacity planning becomes adversarial: "stop polling so often!"</p>
+<p><strong>CDC inverts the model.</strong> The primary publishes once. Anyone subscribes. No polling, no missed DELETEs, no per-team schema drift.</p>
+</div>
+<h2>Debezium: the dominant CDC tool</h2>
+<div class="insider">
+<p><strong>Debezium</strong> is the most-deployed open-source CDC tool. Source connectors for Postgres, MySQL, MongoDB, Oracle, SQL Server, Cassandra. Output to Kafka.</p>
+<p>The basic flow for Postgres:
+1. Postgres has logical replication enabled (<code>wal_level = logical</code>).
+2. A <em>publication</em> is created on the table(s) of interest.
+3. A <em>replication slot</em> is created — Postgres holds WAL until the slot is acked.
+4. Debezium connects, reads from the slot, parses logical changes.
+5. Debezium emits events to Kafka topics — typically one topic per table.</p>
+<p>Each event has the row's before-state, after-state, and metadata (source LSN, transaction ID, operation type). Downstream consumers process the stream.</p>
+<p><strong>Mention Debezium by name</strong> in any conversation about CDC and you sound like someone who's done this.</p>
+</div>
+<h2>CDC consumers: what people actually do</h2>
+<div class="workout">
+<p><strong>Common CDC downstream patterns:</strong></p>
+<div class="step">
+<p><strong>Search index sync.</strong> Every user/product/document update triggers a re-index in Elasticsearch or OpenSearch. The OLTP database stays normalized; the search index stays denormalized for fast text search.</p>
+</div>
+<div class="step">
+<p><strong>Analytics warehouse loading.</strong> Stream changes into Snowflake/BigQuery/Redshift via tools like Materialize, Fivetran, or Airbyte (under the hood, CDC). Real-time analytical mirrors of OLTP data.</p>
+</div>
+<div class="step">
+<p><strong>Lakehouse population.</strong> Events flow into Iceberg, Delta Lake, or Hudi tables on S3. Multiple query engines (Trino, Spark, DuckDB) read the same data.</p>
+</div>
+<div class="step">
+<p><strong>Cache invalidation / population.</strong> Updates to Postgres trigger Redis cache writes. Cache stays in sync with database without app-level dual writes.</p>
+</div>
+<div class="step">
+<p><strong>Microservice integration.</strong> Service A's database updates trigger events Service B reacts to. Each service owns its own data; CDC carries cross-service notifications.</p>
+</div>
+<div class="step">
+<p><strong>Audit logs.</strong> Every change automatically flows to an immutable audit log. Compliance-friendly without adding application code.</p>
+</div>
+</div>
+<h2>Replication slots: the canonical pitfall</h2>
+<p>This is the operational gotcha that bites every team running Postgres CDC for the first time.</p>
+<div class="warning">
+<p><strong>A replication slot pins WAL.</strong></p>
+<p>When Debezium creates a replication slot in Postgres, it's telling the primary: "don't recycle WAL until I've consumed it and acknowledged."</p>
+<p>If Debezium goes down — and stays down — the slot is still there. Postgres keeps every WAL segment generated since the last ack. <strong>Indefinitely.</strong></p>
+<p>The disk fills up. Once <code>pg_wal</code> consumes the available space, <strong>Postgres stops accepting writes.</strong> The whole OLTP system goes down.</p>
+</div>
+<div class="scenario">
+<p><strong>The 3 AM page:</strong></p>
+<p>A team deploys CDC. Things work fine for weeks.</p>
+<p>Then Debezium gets restarted during a Kubernetes node failure, and gets stuck in CrashLoopBackOff due to a config mistake. Nobody notices — the consumers downstream still have their cached data.</p>
+<p>72 hours later, the primary database alerts: disk at 95%. The team investigates, sees <code>pg_wal</code> is 4 TB. They check <code>pg_replication_slots</code> — there's a stale slot from Debezium, still active, holding 4 TB of WAL.</p>
+<p>They have a choice: kill the slot (and lose all the un-streamed changes), or fix Debezium fast enough that the disk doesn't fill before catch-up finishes.</p>
+<p>Either way, downstream consumers will have a gap or a delay. <strong>The primary database almost went down because of a CDC consumer's failure.</strong></p>
+</div>
+<div class="insider">
+<p><strong>The mitigations every senior CDC operator deploys:</strong></p>
+<p><strong>1. Monitor <code>pg_replication_slots.confirmed_flush_lsn</code> lag.</strong> Per-slot lag in bytes. Alert when any slot is more than a few hundred MB behind.</p>
+<p><strong>2. Set <code>max_slot_wal_keep_size</code></strong> (Postgres 13+). When a slot's WAL backlog exceeds this size, Postgres invalidates the slot rather than fill the disk. The slot has to be recreated and the consumer has a gap, but the primary stays up.</p>
+<p><strong>3. Set up dead-slot alerting.</strong> A slot whose <code>active = false</code> for more than a few minutes is a smell. The consumer is gone but the slot lingers, accumulating WAL.</p>
+<p><strong>4. Use temporary slots when possible.</strong> Some clients can use slots that auto-delete on disconnect. Less safe (can lose data on disconnect), but won't fill the disk.</p>
+<p><strong>Mention <code>max_slot_wal_keep_size</code> in an interview about CDC operations</strong> and you signal you've actually run this in production.</p>
+</div>
+<h1>Geo-replication</h1>
+<p>Replicating data across geographic regions. Different from local HA — you're now dealing with high-latency links and partitions that last hours, not seconds.</p>
+<div class="scenario">
+<p><strong>The latency reality:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Round-trip latency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Same rack</td>
+<td>0.1ms</td>
+</tr>
+<tr>
+<td>Same data center</td>
+<td>0.5-1ms</td>
+</tr>
+<tr>
+<td>Same AZ</td>
+<td>1-2ms</td>
+</tr>
+<tr>
+<td>Same region (cross-AZ)</td>
+<td>1-3ms</td>
+</tr>
+<tr>
+<td>Cross-region intracontinental (e.g., US East ↔ US West)</td>
+<td>60-90ms</td>
+</tr>
+<tr>
+<td>Cross-region intercontinental (e.g., US East ↔ EU)</td>
+<td>80-150ms</td>
+</tr>
+<tr>
+<td>US ↔ Asia (e.g., US East ↔ Tokyo)</td>
+<td>150-200ms</td>
+</tr>
+</tbody>
+</table>
+<p>These numbers are physics, not performance optimization. The speed of light in fiber sets the floor.</p>
+<p>This means: <strong>synchronous replication across continents adds 100-200ms to every commit.</strong> For latency-sensitive OLTP, this is unacceptable. Geo-replication is therefore almost always async.</p>
+</div>
+<h2>Three patterns for geo-replication</h2>
+<div class="workout">
+<p><strong>The three common patterns:</strong></p>
+<div class="step">
+<p><strong>Single-region writes, multi-region async reads.</strong> All writes go to one region's primary. Other regions have async replicas for local reads. Simplest. Local reads are fast; writes pay the cross-region latency only if the user is far from the primary region. <strong>Most production systems use this.</strong></p>
+</div>
+<div class="step">
+<p><strong>Multi-leader / active-active.</strong> Each region has a writable leader. Leaders replicate to each other async. Local writes everywhere. <strong>Requires conflict resolution</strong> (Module 10). Used when write latency matters more than consistency.</p>
+</div>
+<div class="step">
+<p><strong>Globally synchronous (Spanner-style).</strong> Use atomic clocks (TrueTime) or HLC + Paxos/Raft to provide global consistency despite latency. Spanner, CockroachDB, FoundationDB. Writes pay the WAN round-trip cost; consistency is preserved. <strong>Expensive but correct.</strong></p>
+</div>
+</div>
+<div class="insider">
+<p><strong>The hidden cost of geo-replication: it's not just latency.</strong></p>
+<p>Cross-region links can have <strong>partition events</strong> lasting minutes to hours. Cloud providers' "regions" connect via undersea cables that occasionally fail. AWS, GCP, Azure all publish their cross-region partition history.</p>
+<p>A geo-replicated system has to handle:
+- Async replication catching up after multi-hour partitions.
+- Conflicts arising from concurrent writes during partition.
+- Failover policies that don't trigger on transient cross-region blips.</p>
+<p>Most teams underestimate this. The infrastructure ships in 2 weeks; the operational maturity takes 2 years.</p>
+</div>
+<h2>The data residency wrinkle</h2>
+<div class="scenario">
+<p><strong>A regulatory complication:</strong></p>
+<p>GDPR (EU), CCPA (California), data residency laws in China, Russia, India, etc. They require that personal data of citizens stays in specific geographic locations.</p>
+<p>If your Postgres replica in Singapore accidentally has European user data → GDPR violation. If your CDC pipeline copies user records from EU to US for analytics → potential issue.</p>
+<p><strong>Geo-replication topologies must respect these laws.</strong> Some patterns:</p>
+<ul>
+<li><strong>Region-locked tables</strong>: certain tables only ever live in their region's database. Cross-region queries require explicit application-level coordination.</li>
+<li><strong>Field-level filtering in CDC</strong>: redact PII before streaming cross-region.</li>
+<li><strong>Separate global vs regional systems</strong>: a global system has anonymized aggregates; regional systems hold the raw personal data.</li>
+</ul>
+<p>The senior detail: data residency is a <em>first-class</em> design constraint for any global system. Choose architecture <em>before</em> writing code.</p>
+</div>
+<h1>Three more ways to think about CDC</h1>
+<div class="metaphor">
+<p><strong>Way 1: a newsletter.</strong></p>
+<p>Without CDC, every interested reader has to call the publisher and ask "what's new?" If 100 readers do this every minute, the publisher's phone is jammed.</p>
+<p>CDC is a newsletter. The publisher writes once. Anyone interested subscribes. Everyone gets the same content automatically. The publisher's workload doesn't grow with subscribers; the <em>delivery</em> infrastructure (Kafka) does.</p>
+<p>A replication slot that fills the disk is like a subscriber whose mailbox is full but they don't unsubscribe — the publisher keeps stockpiling old issues "in case they come back," and eventually their warehouse fills.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 2: court reporting.</strong></p>
+<p>Physical replication is photocopying every page of every document and shipping the copies. The destination has every byte exactly. Same court, same documents.</p>
+<p>Logical replication is having a court reporter transcribe what's said into a structured record. The record can go anywhere — different court, different language, filtered to just the testimony of one witness.</p>
+<p>CDC is making the transcription publicly available as a feed. Many parties can subscribe. Each parses the feed and uses what they need.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 3: GitHub commits.</strong></p>
+<p>Physical replication is <code>git clone --mirror</code>. Bit-exact copy of the repository.</p>
+<p>Logical replication is <code>git format-patch</code> — exporting commits as patches that can be applied to any repository, possibly with modifications.</p>
+<p>CDC is GitHub's webhook system. The repo emits events for every commit; subscribers (CI, deploy, notification, etc.) react. The repo doesn't care who's listening.</p>
+</div>
+<h1>Sharpen your pencil</h1>
+<div class="exercise">
+<p><strong>Exercise 1.</strong> Your team wants to keep an Elasticsearch index in sync with a Postgres <code>products</code> table. The current approach: a nightly job that does <code>SELECT * FROM products</code> and reindexes everything. Performance is fine but the search index is up to 24 hours stale. Three options for fresher data, ranked by complexity?</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>Option 1 (simplest): Polling for changes.</strong>
+Add <code>updated_at</code> indexed column. Job runs every 5 minutes: <code>SELECT * FROM products WHERE updated_at &gt; $last_seen</code>. Apply to Elasticsearch.</p>
+<p>Pros: no new infrastructure, easy to debug.
+Cons: misses DELETEs. Schema changes silently break it. Hammers the OLTP database with frequent queries. Doesn't scale to multiple downstream consumers.</p>
+<p><strong>Option 2 (medium): CDC pipeline.</strong>
+Set up Debezium reading Postgres logical replication, publishing to Kafka. Sink connector consumes Kafka and updates Elasticsearch.</p>
+<p>Pros: near-real-time freshness (sub-second). Captures DELETEs. OLTP database isn't polled. Other consumers can subscribe to the same stream.
+Cons: operational overhead — Debezium, Kafka, monitoring slot lag. Initial setup is non-trivial.</p>
+<p><strong>Option 3 (complex): Application-level dual writes.</strong>
+Modify the application: every product write goes to Postgres AND Elasticsearch synchronously.</p>
+<p>Pros: simplest mental model. Tightest consistency.
+Cons: distributed transactions across heterogeneous systems are hard. If Elasticsearch is briefly down, do writes fail? Get queued? Get lost? Every failure mode requires careful handling. <strong>In practice, dual writes are usually a worse choice than CDC because of these failure modes.</strong></p>
+<p><strong>The senior recommendation:</strong> if there's only one consumer (search index) and you're early-stage, polling is fine. If you have or will have multiple consumers, build CDC up front. Don't do dual writes unless you have a very specific reason.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2.</strong> Your Postgres database is alerting on <code>pg_wal</code> directory size. Investigation shows a stale Debezium replication slot holding 80 GB of WAL. Walk through your decision process.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>Step 1: Stop the bleeding.</strong>
+Set <code>max_slot_wal_keep_size = 100GB</code> (or appropriate for your disk capacity) immediately. This caps how much WAL any slot can hold before being invalidated. Stops the disk from filling further.</p>
+<p><strong>Step 2: Decide whether to keep or drop the slot.</strong></p>
+<p>Two scenarios:</p>
+<ul>
+<li>
+<p><strong>Debezium will be back soon.</strong> Wait for it. Once it reconnects and acks, the slot frees its WAL backlog. Disk usage drops.</p>
+</li>
+<li>
+<p><strong>Debezium is permanently broken or unwanted.</strong> Drop the slot: <code>SELECT pg_drop_replication_slot('debezium_slot');</code>. WAL is freed. Downstream consumers will have a gap from the last ack to now — they'll need to re-bootstrap from a fresh snapshot.</p>
+</li>
+</ul>
+<p><strong>Step 3: Determine the data loss scope.</strong>
+If you drop the slot, the downstream system has a gap. Document the time range. Coordinate with downstream owners. Re-bootstrap may take hours or days for large tables.</p>
+<p><strong>Step 4: Postmortem.</strong>
+Why did the slot go stale? Common causes: Debezium pod crashed without alerting, Kafka was down, network partition. Add monitoring on <code>pg_replication_slots.active = false</code> for any duration. Don't repeat the incident.</p>
+<p><strong>Step 5: Configure for prevention.</strong>
+- <code>max_slot_wal_keep_size</code> permanently set.
+- Per-slot lag monitoring with alerts at 1 GB and 10 GB thresholds.
+- Dead-slot detection (slot inactive for &gt;5 minutes alerts).
+- Document runbook for "slot too large" incidents.</p>
+<p>The senior reflex: <strong>safe defaults first, root cause second, prevention third.</strong></p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3.</strong> Explain to non-technical Sam, in two sentences, what Change Data Capture does and why it's better than polling.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>CDC has the database itself emit a stream of events whenever any data changes — every INSERT, UPDATE, and DELETE flows out as it happens. This is much better than polling ("ask the database every minute what changed") because it doesn't miss deletes, doesn't hammer the database with constant questions, and captures changes within a second instead of within a minute.</p>
+</div>
+</div>
+<h1>There are no dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p>Q: What's the difference between Debezium and <code>pg_logical</code>?</p>
+</div>
+<div class="a">
+<p>A: <code>pg_logical</code> is Postgres's <em>built-in</em> logical replication mechanism — replicates from one Postgres to another Postgres. Debezium is a <em>productized</em> CDC tool that reads from <code>pg_logical</code> (or its underlying logical decoding) and emits to Kafka. They're complementary: pg_logical is the source mechanism; Debezium is the consumer that publishes to other systems.</p>
+</div>
+<div class="q">
+<p>Q: Can I run CDC on a read replica instead of the primary?</p>
+</div>
+<div class="a">
+<p>A: Yes — and you should, if possible. Postgres supports replication slots on standbys (since v16). Running Debezium against a replica reduces load on the primary. The catch: cascading replication adds slight extra lag, and slot management is per-replica.</p>
+</div>
+<div class="q">
+<p>Q: What happens during a primary failover with active CDC?</p>
+</div>
+<div class="a">
+<p>A: Tricky. The primary's replication slots don't automatically transfer to the new primary. After failover, you need to recreate the slots on the new primary and have Debezium reconnect with appropriate offset (usually a fresh snapshot of unacked tables). Some advanced setups use <em>logical failover slots</em> (pg_failover_slots extension or built-in support in newer versions) to make this transparent.</p>
+</div>
+<div class="q">
+<p>Q: Can CDC handle schema changes?</p>
+</div>
+<div class="a">
+<p>A: Partially. ALTER TABLE statements are sometimes captured by logical decoding, sometimes not (depends on configuration and database). Most CDC tools handle ADD COLUMN gracefully — new columns just appear. DROP COLUMN and rename can break downstream consumers. <strong>Schema evolution requires a registry</strong> (Module 14) to manage.</p>
+</div>
+<div class="q">
+<p>Q: How does CDC handle very large tables on initial sync?</p>
+</div>
+<div class="a">
+<p>A: First the tool takes a <em>snapshot</em> of the existing table — reading all rows. While snapshotting, it also captures the changes happening concurrently (via the WAL). After snapshot, it applies the captured changes to bring the destination up to date, then enters streaming mode. For huge tables, this initial snapshot can take hours and consume significant primary CPU.</p>
+</div>
+<div class="q">
+<p>Q: What's the difference between row-based and statement-based replication?</p>
+</div>
+<div class="a">
+<p>A: MySQL terminology. Statement-based ships SQL statements ("UPDATE users SET ..."); row-based ships actual row changes ("row 42 had values X, now Y"). Statement-based is smaller but has subtle correctness issues with non-deterministic functions (NOW(), RAND()). Row-based is more verbose but always correct. Most modern setups use row-based.</p>
+</div>
+<div class="q">
+<p>Q: Can I have CDC from one MySQL to another MySQL?</p>
+</div>
+<div class="a">
+<p>A: Yes, that's MySQL's native binlog replication. CDC tooling like Debezium reads the same binlog and publishes elsewhere. The two are complementary: native binlog replication for HA; Debezium for fan-out to non-MySQL consumers.</p>
+</div>
+<div class="q">
+<p>Q: Does CDC work with NoSQL databases?</p>
+</div>
+<div class="a">
+<p>A: Yes. Debezium has connectors for MongoDB, Cassandra, and others. The mechanism varies — MongoDB has change streams; Cassandra uses commit log readers. The pattern (capture changes, publish to event bus) is universal even if the source mechanics differ.</p>
+</div>
+</div>
+<h1>Three myths to dynamite</h1>
+<div class="myth">
+<p><strong>"CDC is just replication."</strong></p>
+<p>Half-true. CDC is <em>logical</em> replication exposed as a consumable event stream for downstream systems other than database replicas. The mechanism is replication; the use case is broader integration. The distinction matters because operational concerns differ — slot management, schema evolution, downstream consumer reliability are CDC-specific.</p>
+</div>
+<div class="myth">
+<p><strong>"Polling is just as good as CDC for most use cases."</strong></p>
+<p>Largely false. Polling misses DELETEs unless you implement explicit deletion tracking. Polling has a freshness vs primary-load tradeoff that CDC sidesteps. Polling doesn't scale across multiple consumers cleanly. For <em>one</em> consumer of <em>one</em> small table, polling is fine. Beyond that, CDC pays for itself fast.</p>
+</div>
+<div class="myth">
+<p><strong>"Geo-replication just means replicas in other regions."</strong></p>
+<p>False. Geo-replication is the <em>replication topology</em> part. The full picture includes data residency laws, conflict resolution policies, partition tolerance budget, and operational maturity for handling multi-hour cross-region partitions. Senior engineers treat geo-replication as an architectural concern, not a configuration setting.</p>
+</div>
+<h1>Interview gotchas</h1>
+<div class="gotcha">
+<p><strong>Confusing physical and logical replication.</strong> Physical = byte-for-byte. Logical = row operations. Different uses, different tradeoffs. Senior engineers know both names and can explain when each fits.</p>
+</div>
+<div class="gotcha">
+<p><strong>Forgetting the replication slot disk-fill issue.</strong> Mention <code>pg_replication_slots</code>, <code>max_slot_wal_keep_size</code>, and slot-lag monitoring when discussing CDC operations. This is the canonical Postgres CDC pitfall.</p>
+</div>
+<div class="gotcha">
+<p><strong>Suggesting dual writes over CDC.</strong> "Write to Postgres and Elasticsearch in the same transaction" is naive. The two systems can fail independently; you can't atomically commit across heterogeneous datastores. CDC sidesteps this entire class of problems.</p>
+</div>
+<div class="gotcha">
+<p><strong>Treating geo-replication as just a latency problem.</strong> Latency is the obvious cost. Data residency, partition handling, conflict resolution, and operational maturity are equal-magnitude costs. Senior framing: geo-replication is a 1-2 year operational investment, not a deployment.</p>
+</div>
+<div class="gotcha">
+<p><strong>Not knowing Debezium by name.</strong> It's the dominant open-source CDC tool. Naming it in interviews about CDC is table stakes for senior roles.</p>
+</div>
+<h1>Mock interview</h1>
+<div class="mock-interview">
+<div class="turn q">
+<p>We have a Postgres OLTP system. The data team wants to build dashboards on this data. They're proposing a 5-minute polling job that copies tables to BigQuery. What do you think?</p>
+</div>
+<div class="turn a">
+<p>Several concerns, ranked by likelihood:</p>
+<p><strong>One — does polling capture everything?</strong> A 5-minute polling job using <code>SELECT * FROM table WHERE updated_at &gt; $last_seen</code> <em>misses DELETEs</em>. Anything deleted between polls is invisible to BigQuery; the dashboards show stale data. The team probably doesn't realize this until a finance dashboard shows refunded orders that were already removed from the system.</p>
+<p><strong>Two — does it scale across consumers?</strong> Today it's one team. In six months, the search team wants real-time indexing, the ML team wants feature data, the auditing team wants every change. Each builds their own polling job. The OLTP database becomes a pull-target for the whole company. Capacity planning becomes adversarial.</p>
+<p><strong>Three — does 5-minute freshness meet the actual need?</strong> "5 minutes stale" is fine for some dashboards, not for others. If a CFO sees revenue from 5 minutes ago vs Slack messages reporting current revenue from a different system, that's confusion at minimum, distrust at worst.</p>
+<p><strong>My recommendation: build CDC properly the first time.</strong></p>
+<ul>
+<li>Debezium reads Postgres WAL via logical replication.</li>
+<li>Publishes to Kafka.</li>
+<li>BigQuery loads from Kafka via Dataflow or a streaming connector.</li>
+<li>Future consumers (search, ML, audit) subscribe to the same Kafka stream.</li>
+</ul>
+<p>The upfront cost is higher than polling. But polling has a hidden compounding cost — every new consumer makes the OLTP database's life worse. CDC is the architecture that grows.</p>
+<p>If the team strongly prefers to start simple, fine: polling for now, but with a documented migration plan when a second consumer appears. Don't paint yourself into a corner.</p>
+</div>
+<div class="commentary">
+<p>Three concerns, each grounded in a specific failure mode. Concrete tooling stack. The "compounding cost" framing — senior thinking about architecture as it grows.</p>
+</div>
+<div class="turn q">
+<p>You convince them. Six months later, the team alerts: Postgres <code>pg_wal</code> directory is at 200 GB and growing. What do you do?</p>
+</div>
+<div class="turn a">
+<p>First reflex: <strong>stop the bleeding.</strong> Set <code>max_slot_wal_keep_size = 250GB</code> immediately to cap the maximum any one slot can hold. This prevents disk fill while we investigate.</p>
+<p>Then diagnose:</p>
+<p><strong>Step 1: which slot is the problem?</strong></p>
+<pre><code class="language-sql">SELECT slot_name, active, restart_lsn,
+       pg_wal_lsn_diff(pg_current_wal_lsn(), restart_lsn) AS lag_bytes
+FROM pg_replication_slots
+ORDER BY lag_bytes DESC;
+</code></pre>
+<p>If one slot has hundreds of GB of lag, that's the culprit.</p>
+<p><strong>Step 2: is the consumer alive?</strong>
+- Check Debezium pod status. If down, restart it.
+- Check Kafka — is it accepting writes? Disk space? Broker health?
+- Check the connector logs for errors.</p>
+<p><strong>Step 3: if the consumer is alive but slow, why?</strong></p>
+<p>Possibilities:
+- Recent schema change that the connector is mishandling. Check connector error logs.
+- A massive transaction (huge bulk update) that's still being processed. Wait for it to drain.
+- A poison pill record the connector keeps choking on. Inspect logs and skip if necessary.
+- Network partition between Debezium and Kafka. Investigate connectivity.</p>
+<p><strong>Step 4: if the consumer is permanently broken</strong>, decide whether to drop the slot. Dropping means downstream loses some data and needs a re-snapshot. But the OLTP system stays up.</p>
+<p><strong>Step 5: postmortem and prevention.</strong>
+- Why didn't we have alerts earlier? Set per-slot lag alerts at 1 GB and 10 GB thresholds.
+- Why didn't <code>max_slot_wal_keep_size</code> save us? It wasn't configured. Now it is.
+- Add dead-slot alerting (<code>active = false</code> for &gt;5 min).
+- Runbook update for the next person on call.</p>
+<p>The senior reflex: <strong>safe defaults first, root cause second, prevention third.</strong> Don't let prevention get in the way of stopping the immediate damage.</p>
+</div>
+<div class="commentary">
+<p>Specific SQL queries. Concrete investigation steps. The "safe defaults first" framing is the senior on-call reflex. Mentions documentation and runbook updates — the unglamorous post-incident work.</p>
+</div>
+<div class="turn q">
+<p>Different scenario. We're going global. Users in EU and US. Some user data is GDPR-regulated. How would you architect the data layer?</p>
+</div>
+<div class="turn a">
+<p>This is a <em>data residency</em> problem first, replication problem second. Let me think through it carefully.</p>
+<p><strong>Step 1: classify data.</strong></p>
+<ul>
+<li><em>PII / GDPR-regulated</em>: emails, addresses, payment info, identifiers tied to individuals.</li>
+<li><em>Operational data</em>: order amounts, product IDs, timestamps — usually fine to flow globally.</li>
+<li><em>Aggregates</em>: anonymized rollups, perfectly portable.</li>
+</ul>
+<p><strong>Step 2: choose a topology.</strong></p>
+<p><strong>Option A: Region-locked databases per user.</strong>
+Each user is assigned a "home region" based on their location. Their PII lives only in that region's database. Cross-region queries require explicit user consent or anonymization.</p>
+<p><strong>Option B: Region-replicated with field-level filtering.</strong>
+A single logical database is replicated cross-region, but PII columns are filtered out of the cross-region replication. EU keeps email addresses; US doesn't.</p>
+<p><strong>Option C: Two completely separate systems.</strong>
+EU has its own complete stack. US has its own complete stack. They share nothing except possibly anonymized aggregates streaming to a central analytics environment.</p>
+<p>For most companies, <strong>Option A or B</strong> is the right answer. Option C is operationally heavy.</p>
+<p><strong>Step 3: Architect specifically.</strong></p>
+<ul>
+<li><strong>Database</strong>: Postgres in each region as the OLTP source of truth.</li>
+<li><strong>Cross-region replication</strong>: async, logical, with filtering. EU replica of US database (and vice versa) only includes operational data, not PII.</li>
+<li><strong>CDC for analytics</strong>: Debezium per region, with a column-filter that omits PII before publishing. Anonymous events flow to a central Kafka.</li>
+<li><strong>Central analytics</strong>: aggregated/anonymized data only. PII never lands here.</li>
+<li><strong>Local reads</strong>: each region serves its own users from its local database.</li>
+</ul>
+<p><strong>Step 4: Operational concerns.</strong></p>
+<ul>
+<li><strong>Cross-region partitions are real and last hours.</strong> Architecture must work during partition. Local OLTP keeps going; cross-region analytics lags but recovers.</li>
+<li><strong>Failover policy</strong>: don't auto-promote across regions. The complexity of cross-region failover usually exceeds the benefit. Separate region-local HA from cross-region DR.</li>
+<li><strong>Consent &amp; data subject requests</strong>: GDPR includes "right to deletion." When deleted in the EU, must propagate to all places the data was copied (analytics, backups). Build the deletion pipeline up front.</li>
+</ul>
+<p><strong>The framing</strong>: data residency is a <em>first-class architectural constraint</em>. Naming it "Module 11 architecture" misses the point — it's the spine of every cross-border system.</p>
+</div>
+<div class="commentary">
+<p>Categorizes data first (PII vs operational vs aggregates). Three options ranked by operational cost. Concrete architectural recommendations. The "right to deletion pipeline" detail signals real GDPR experience.</p>
+</div>
+<div class="turn q">
+<p>Last one. Your team is choosing between Postgres logical replication, Debezium, and Materialize for getting OLTP data into a real-time analytics engine. What's the difference?</p>
+</div>
+<div class="turn a">
+<p>All three solve adjacent problems but differ in scope.</p>
+<p><strong>Postgres logical replication (built-in):</strong>
+Postgres → Postgres. The destination is another Postgres database, possibly with filtering or transformation. Native, well-supported, simple. <strong>Bad fit if you want to feed non-Postgres downstream systems.</strong></p>
+<p>Use when: you want a real-time read replica with column/row filtering, possibly cross-version. You don't need to feed Kafka or other consumers.</p>
+<p><strong>Debezium:</strong>
+Postgres → Kafka → anywhere. Source connector reads logical replication; output is structured events on Kafka topics. Many sink connectors (Elasticsearch, BigQuery, ClickHouse, etc.) consume from Kafka.</p>
+<p>Use when: you have multiple downstream consumers, or you want to fan out to non-Postgres systems, or you want a durable event bus between source and sinks. <strong>The standard architectural pattern for OLTP-to-everything.</strong></p>
+<p><strong>Materialize:</strong>
+A different beast — <em>not</em> CDC tooling per se, but a streaming database. It maintains <em>materialized views</em> over CDC streams, with sub-second freshness, supporting standard SQL.</p>
+<p>Use when: you want to write SQL queries that produce real-time results. The query is the artifact; the streaming machinery is hidden underneath. Particularly good for real-time dashboards and serving-layer denormalization.</p>
+<p><strong>A pragmatic combination</strong>: Debezium for the data pipeline, Materialize as one of the consumers building real-time SQL views. Or: Debezium for some downstream systems, Materialize directly on Postgres for fast iterative analytics development.</p>
+<p>The senior framing: <strong>don't pick "the tool" for CDC. Map your downstream needs and pick the architecture that fits.</strong> Sometimes the answer is multiple tools — Debezium feeds Kafka, Materialize consumes from Kafka, BigQuery consumes from Kafka. Each does what it's good at.</p>
+</div>
+<div class="commentary">
+<p>Names each tool's actual scope clearly. The "different beast" honesty about Materialize — not pretending it's a Debezium competitor. The "pragmatic combination" closing is the senior architectural framing.</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<h3>CDC, Logical Replication &amp; Geo-Replication — One Page</h3>
+<h4>Physical vs Logical</h4>
+<ul>
+<li><strong>Physical</strong>: byte-for-byte WAL shipping. Same version. Read-only replicas. Fast.</li>
+<li><strong>Logical</strong>: row-level operations. Cross-version, filtered, transformable. Slower.</li>
+</ul>
+<h4>CDC = productized logical replication</h4>
+<p>Source database emits a stream of row changes. Tools (Debezium, Maxwell, etc.) publish to event buses (Kafka). Downstream consumers subscribe.</p>
+<h4>Why CDC over polling</h4>
+<ul>
+<li>Captures DELETEs (polling misses).</li>
+<li>Sub-second latency (polling has frequency floor).</li>
+<li>Doesn't poll-hammer the OLTP source.</li>
+<li>Scales across multiple consumers.</li>
+</ul>
+<h4>Common CDC consumers</h4>
+<ol>
+<li>Search index sync (Elasticsearch).</li>
+<li>Analytics warehouse (Snowflake, BigQuery).</li>
+<li>Lakehouse formats (Iceberg, Delta).</li>
+<li>Cache invalidation (Redis).</li>
+<li>Microservice integration.</li>
+<li>Audit logs.</li>
+</ol>
+<h4>The Postgres replication slot pitfall</h4>
+<p>A slot pins WAL until consumer acks. Stale slot → WAL accumulates → disk fills → primary STOPS ACCEPTING WRITES.</p>
+<p><strong>Mitigations:</strong>
+- <code>max_slot_wal_keep_size</code> (caps WAL per slot).
+- Per-slot lag monitoring (alert at 1 GB, 10 GB).
+- Dead-slot alerting (<code>active = false</code> &gt; 5 min).
+- Document runbook for "slot too large" incidents.</p>
+<h4>Geo-replication patterns</h4>
+<ol>
+<li><strong>Single-region writes, multi-region async reads</strong> (most common).</li>
+<li><strong>Multi-leader / active-active</strong> (with conflict resolution).</li>
+<li><strong>Globally synchronous</strong> (Spanner-style, expensive).</li>
+</ol>
+<p><strong>Latency floor:</strong> physics. Cross-continent = 100-200ms RTT.</p>
+<h4>Data residency</h4>
+<p>GDPR, CCPA, region-specific laws require PII stays in specific geos.</p>
+<p><strong>Patterns:</strong>
+- Region-locked tables (PII never crosses).
+- Field-level filtering in CDC (strip PII at boundary).
+- Separate global vs regional systems.</p>
+<p><strong>Architectural concern, not a configuration knob.</strong></p>
+<h4>Tool landscape</h4>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Postgres logical replication</td>
+<td>PG → PG, possibly filtered</td>
+</tr>
+<tr>
+<td>Debezium</td>
+<td>PG/MySQL/Mongo → Kafka → anywhere</td>
+</tr>
+<tr>
+<td>Materialize</td>
+<td>Streaming SQL views over CDC</td>
+</tr>
+<tr>
+<td>Fivetran/Airbyte</td>
+<td>Managed CDC for analytics</td>
+</tr>
+<tr>
+<td>pg_failover_slots</td>
+<td>Slot continuity across PG failover</td>
+</tr>
+</tbody>
+</table>
+<h4>The 30-second verbal answer</h4>
+<p>"CDC is logical replication exposed as an event stream for downstream consumers. The OLTP database stays the source of truth; CDC tools like Debezium publish row changes to Kafka, and consumers (search indexes, analytics warehouses, caches) subscribe. The big Postgres operational gotcha is replication slots that pin WAL when consumers go down — set max_slot_wal_keep_size and monitor slot lag. Geo-replication adds physics-level latency and data residency constraints; treat them as architectural concerns."</p>
+<h4>Always pair with</h4>
+<p>WAL (Module 02), replication topology (Module 10), schema evolution (Module 14), Kafka, Iceberg, Debezium, GDPR, eventual consistency, idempotent consumers.</p>
+</div>
+<h1>What's next</h1>
+<p>You now have the full picture of <em>getting data out</em> of OLTP — physical for HA replicas, logical for cross-system fan-out, CDC as the productized event stream pattern. You know the operational pitfalls (replication slots, geo-replication latency, data residency) and the tool landscape (Debezium dominates, with Materialize as the streaming-SQL alternative).</p>
+<p><strong>Module 12 starts the consensus chapter.</strong> CAP theorem stated correctly (it's not what you've been told), quorum mathematics, Raft and Paxos as the algorithms that make distributed agreement possible, and how systems like etcd, ZooKeeper, and CockroachDB use them in production.</p>
+<p><strong>Module 13</strong> covers distributed transactions: 2PC, 3PC, sagas, idempotency. The patterns for "do this thing, but across services that can each fail independently."</p>
+<p>Get water. The mechanics of moving data between systems is done. Next we tackle how systems <em>agree</em>.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="10_replication.html" class="prev">&laquo; 10 Replication</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="12_cap_consensus.html" class="next">12 CAP &raquo;</a>
+</nav>
+</body>
+</html>

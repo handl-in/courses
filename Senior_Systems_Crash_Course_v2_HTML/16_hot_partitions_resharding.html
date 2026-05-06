@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sam learns about the second-day problems</title>
+<style>
+/* ============================================================
+   HEAD FIRST STYLE v2: Senior Systems Crash Course
+   Full HF density: characters, dialogues, comics, scenarios
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;700&family=Permanent+Marker&family=Kalam:wght@400;700&display=swap');
+
+:root {
+  --paper: #fdfbf3;
+  --paper-warm: #f9f4e3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --accent-soft: #f7d6cf;
+  --highlight: #fef3a4;
+  --note-bg: #fff8c4;
+  --warning-bg: #ffe0d6;
+  --code-bg: #2b2b2b;
+  --code-fg: #f8f8f2;
+  --rule: #2c2c2c;
+  --tip-bg: #d6ebd2;
+  --quote-bg: #f0e7d8;
+  --maya-bg: #e8e0f0;
+  --maya-color: #5a3a7a;
+  --sam-bg: #fef9e0;
+  --sam-color: #8a4a0e;
+  --interviewer-bg: #d6e0f0;
+  --interviewer-color: #1c3a6e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 30px 100px 30px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* HEADINGS */
+h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  margin: 0 0 0.3em 0;
+  color: var(--ink);
+  border-bottom: 5px solid var(--ink);
+  padding-bottom: 8px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+h1::before {
+  content: "→ ";
+  color: var(--accent);
+}
+
+h2 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2em;
+  margin-top: 2.2em;
+  color: var(--ink);
+  background: var(--highlight);
+  padding: 8px 16px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+h3 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.55em;
+  margin-top: 1.8em;
+  color: var(--accent);
+  border-left: 6px solid var(--accent);
+  padding-left: 14px;
+}
+
+h4 {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.25em;
+  margin-top: 1.3em;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+p { margin: 0.9em 0; }
+
+.opener {
+  font-family: 'Caveat', cursive;
+  font-size: 1.7em;
+  line-height: 1.3;
+  color: var(--accent);
+  margin: 1em 0 1.8em 0;
+  border-left: 4px dashed var(--accent);
+  padding-left: 18px;
+}
+
+/* CHARACTER PROFILES */
+.cast {
+  display: flex;
+  gap: 16px;
+  margin: 2em 0;
+  flex-wrap: wrap;
+}
+.cast .character {
+  flex: 1;
+  min-width: 220px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 5px 5px 0 var(--accent);
+}
+.cast .character.maya {
+  border-color: var(--maya-color);
+  box-shadow: 5px 5px 0 var(--maya-color);
+}
+.cast .character.sam {
+  border-color: var(--sam-color);
+  box-shadow: 5px 5px 0 var(--sam-color);
+}
+.cast .character h4 {
+  margin: 0 0 6px 0;
+  text-decoration: none;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+}
+.cast .character.maya h4 { color: var(--maya-color); }
+.cast .character.sam h4 { color: var(--sam-color); }
+.cast .character .role {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.cast .character .bio {
+  font-size: 0.92em;
+  line-height: 1.5;
+}
+
+/* DIALOGUE */
+.dialogue {
+  margin: 2em 0;
+  padding: 18px;
+  background: var(--paper-warm);
+  border: 2px dashed var(--ink);
+  border-radius: 10px;
+  page-break-inside: avoid;
+}
+.dialogue::before {
+  content: "💬 In conversation";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.dialogue .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  position: relative;
+  max-width: 85%;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+.dialogue .turn.maya {
+  background: var(--maya-bg);
+  border: 2px solid var(--maya-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.sam {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .turn.interviewer {
+  background: var(--interviewer-bg);
+  border: 2px solid var(--interviewer-color);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+.dialogue .turn.candidate {
+  background: var(--sam-bg);
+  border: 2px solid var(--sam-color);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+.dialogue .speaker {
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.dialogue .turn.maya .speaker { color: var(--maya-color); }
+.dialogue .turn.sam .speaker { color: var(--sam-color); }
+.dialogue .turn.interviewer .speaker { color: var(--interviewer-color); }
+.dialogue .turn.candidate .speaker { color: var(--sam-color); }
+
+/* FIRESIDE CHAT */
+.fireside {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3a8 100%);
+  border: 3px solid #b8860b;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 2em 0;
+  position: relative;
+  box-shadow: 4px 4px 0 #8b6914;
+}
+.fireside::before {
+  content: "🔥 FIRESIDE CHAT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+/* SIDEBARS / CALLOUTS */
+.sidebar, .note, .tip, .warning, .brain, .nodumbq, .exercise, .scenario, .gotcha,
+.metaphor, .pause, .keyidea, .reallyworld, .myth, .insider {
+  margin: 1.6em 0;
+  padding: 18px 22px;
+  border-radius: 6px;
+  position: relative;
+  page-break-inside: avoid;
+}
+
+.note {
+  background: var(--note-bg);
+  border: 2px solid #d4b800;
+  border-left-width: 8px;
+}
+.note::before {
+  content: "📓 NOTE";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #6b5400;
+}
+
+.tip {
+  background: var(--tip-bg);
+  border: 2px solid #6b9b62;
+  border-left-width: 8px;
+}
+.tip::before {
+  content: "💡 TIP";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #2d5226;
+}
+
+.warning, .gotcha {
+  background: var(--warning-bg);
+  border: 2px solid var(--accent);
+  border-left-width: 8px;
+}
+.warning::before {
+  content: "⚠️ WATCH OUT";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.gotcha::before {
+  content: "🎯 INTERVIEW GOTCHA";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.brain {
+  background: #e8e0f0;
+  border: 2px dashed #6a4a8a;
+  border-left-style: solid;
+  border-left-width: 8px;
+}
+.brain::before {
+  content: "🧠 BRAIN POWER — pause and think";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #5a3a7a;
+}
+
+.pause {
+  background: #fff5e6;
+  border: 3px solid #c97a2b;
+  border-radius: 50px;
+  text-align: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.4em;
+  color: #8a4a0e;
+  padding: 20px;
+}
+.pause::before {
+  content: "⏸ ";
+  font-size: 1.5em;
+}
+
+.metaphor {
+  background: #f0f7ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.metaphor::before {
+  content: "🎭 METAPHOR";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+
+.nodumbq {
+  background: #e3f0ff;
+  border: 2px solid #3a6ea5;
+  border-left-width: 8px;
+}
+.nodumbq::before {
+  content: "❓ THERE ARE NO DUMB QUESTIONS";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #234e7a;
+}
+.nodumbq .q {
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 0.8em;
+  color: #234e7a;
+  font-family: 'Kalam', cursive;
+  font-size: 1.05em;
+}
+.nodumbq .a {
+  margin-top: 0.3em;
+  margin-bottom: 0.8em;
+}
+
+.exercise {
+  background: white;
+  border: 2px solid var(--ink);
+  border-left-width: 8px;
+}
+.exercise::before {
+  content: "✏️ SHARPEN YOUR PENCIL";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+
+.exercise .answer-box {
+  background: var(--paper-warm);
+  border: 1px dashed var(--ink);
+  border-radius: 4px;
+  padding: 14px;
+  margin-top: 14px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  line-height: 1.4;
+  min-height: 80px;
+}
+.exercise .answer-box::before {
+  content: "Your answer:";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-style: normal;
+}
+
+.exercise .solution {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--tip-bg);
+  border-left: 4px solid #2d5226;
+  border-radius: 4px;
+}
+.exercise .solution::before {
+  content: "✓ A senior answer";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  color: #2d5226;
+  margin-bottom: 6px;
+}
+
+.scenario {
+  background: #fef0e0;
+  border: 2px solid #c97a2b;
+  border-left-width: 8px;
+}
+.scenario::before {
+  content: "🎬 SCENARIO";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8a4a0e;
+}
+
+.reallyworld {
+  background: #f5e6e6;
+  border: 2px solid #8b1a1a;
+  border-left-width: 8px;
+}
+.reallyworld::before {
+  content: "📰 REAL-WORLD WAR STORY";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 700;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: #8b1a1a;
+}
+
+.myth {
+  background: #2c2c2c;
+  color: var(--paper);
+  border-left: 8px solid #c0392b;
+  padding: 18px 22px;
+  border-radius: 6px;
+  margin: 1.6em 0;
+}
+.myth::before {
+  content: "🧨 MYTH BUSTER";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.insider {
+  background: #2a2540;
+  color: var(--paper);
+  border-left: 8px solid #fef3a4;
+  padding: 18px 22px;
+  border-radius: 6px;
+}
+.insider::before {
+  content: "🕵️ INSIDER TIP";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.15em;
+  margin-bottom: 8px;
+  color: var(--highlight);
+  letter-spacing: 1px;
+}
+
+.margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  display: block;
+  margin: 0.8em 0 0.8em 30px;
+  padding: 4px 14px;
+  border-left: 3px solid var(--accent);
+  transform: rotate(-0.4deg);
+  line-height: 1.3;
+}
+
+.key, .keyidea {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.3em;
+  background: var(--accent);
+  color: white;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 6px;
+  box-shadow: 5px 5px 0 var(--ink);
+  line-height: 1.4;
+}
+.key::before, .keyidea::before {
+  content: "★ KEY IDEA  ";
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.85em;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--highlight);
+}
+
+.pullquote {
+  font-family: 'Caveat', cursive;
+  font-size: 2em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--accent);
+  margin: 2em auto;
+  padding: 20px;
+  max-width: 600px;
+  position: relative;
+}
+
+code {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  background: #f0e9d8;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: #5a2828;
+}
+
+pre {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 18px 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.86em;
+  line-height: 1.5;
+  border-left: 6px solid var(--accent);
+  page-break-inside: avoid;
+}
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.6em 0;
+  font-size: 0.95em;
+  page-break-inside: avoid;
+}
+th {
+  background: var(--ink);
+  color: white;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  padding: 12px 14px;
+  text-align: left;
+  border: 1px solid var(--ink);
+}
+td {
+  padding: 10px 14px;
+  border: 1px solid #999;
+  background: white;
+  vertical-align: top;
+}
+tr:nth-child(even) td {
+  background: #f4ede0;
+}
+
+ul, ol {
+  margin: 0.9em 0;
+  padding-left: 1.7em;
+}
+ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  position: relative;
+}
+ul li::before {
+  content: "→";
+  color: var(--accent);
+  font-weight: 700;
+  position: absolute;
+  left: -1.3em;
+}
+ol li {
+  margin: 0.5em 0;
+}
+
+hr {
+  border: none;
+  text-align: center;
+  margin: 3em 0;
+}
+hr::before {
+  content: "✦  ✦  ✦";
+  color: var(--accent);
+  font-size: 1.5em;
+  letter-spacing: 0.6em;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 14px 20px;
+  background: var(--quote-bg);
+  border-left: 6px solid var(--ink);
+  font-style: italic;
+  font-family: 'Bitter', Georgia, serif;
+}
+
+.cheatsheet {
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 22px 28px;
+  margin: 2em 0;
+  box-shadow: 7px 7px 0 var(--accent);
+  page-break-inside: avoid;
+}
+.cheatsheet h3 {
+  margin-top: 0;
+  border-left: none;
+  padding-left: 0;
+  text-align: center;
+  font-size: 1.7em;
+  color: var(--ink);
+  font-family: 'Permanent Marker', cursive;
+}
+.cheatsheet h4 {
+  margin-top: 1em;
+  font-size: 1.15em;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 1.6em 0;
+}
+.compare > div {
+  padding: 16px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--ink);
+  background: white;
+}
+.compare .vs-left {
+  background: #e8f0e0;
+  box-shadow: 4px 4px 0 #6b9b62;
+}
+.compare .vs-right {
+  background: #f0e0e0;
+  box-shadow: 4px 4px 0 #c97a7a;
+}
+.compare h4 {
+  margin-top: 0;
+  text-decoration: none;
+  font-size: 1.25em;
+}
+
+.diagram {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84em;
+  line-height: 1.4;
+  white-space: pre;
+  background: white;
+  border: 2px dashed var(--ink);
+  padding: 16px 20px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.6em 0;
+  page-break-inside: avoid;
+}
+.diagram-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2em;
+  color: var(--accent);
+  text-align: center;
+  margin-top: -8px;
+  margin-bottom: 1.6em;
+}
+
+.interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  page-break-inside: avoid;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.interview::before {
+  content: "🎤 INTERVIEW QUESTION";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.interview .answer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #888;
+}
+.interview .answer::before {
+  content: "✓ How a senior answers";
+  display: block;
+  font-family: 'Patrick Hand', cursive;
+  color: var(--highlight);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.mock-interview {
+  background: #1a1a1a;
+  color: var(--paper);
+  padding: 22px 26px;
+  border-radius: 8px;
+  margin: 2em 0;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+.mock-interview::before {
+  content: "🎤 MOCK INTERVIEW — full transcript";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 1.2em;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+.mock-interview .turn {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-family: 'Kalam', cursive;
+  font-size: 1.02em;
+  line-height: 1.5;
+}
+.mock-interview .turn.q {
+  background: #2c2c2c;
+  border-left: 4px solid var(--highlight);
+}
+.mock-interview .turn.q::before {
+  content: "INTERVIEWER: ";
+  font-family: 'Permanent Marker', cursive;
+  color: var(--highlight);
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .turn.a {
+  background: #3a3528;
+  border-left: 4px solid #88aa66;
+}
+.mock-interview .turn.a::before {
+  content: "YOU: ";
+  font-family: 'Permanent Marker', cursive;
+  color: #aacc88;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+}
+.mock-interview .commentary {
+  margin: 8px 0 8px 30px;
+  padding: 8px 14px;
+  background: #4a3a2a;
+  border-left: 3px dashed var(--highlight);
+  font-family: 'Caveat', cursive;
+  font-size: 1.15em;
+  color: #ffd870;
+  border-radius: 4px;
+}
+.mock-interview .commentary::before {
+  content: "↳ what's happening: ";
+  font-family: 'Patrick Hand', cursive;
+  color: #ffd870;
+  font-size: 0.85em;
+}
+
+.expectation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 1.6em 0;
+}
+.expectation .left, .expectation .right {
+  padding: 16px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+.expectation .left {
+  background: #e8f0e0;
+}
+.expectation .right {
+  background: #fdd6c5;
+}
+.expectation .left::before {
+  content: "🤞 WHAT YOU'D EXPECT";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: #2d5226;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.expectation .right::before {
+  content: "💥 WHAT ACTUALLY HAPPENS";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95em;
+  color: var(--accent);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.chapter-opener {
+  text-align: center;
+  margin: 2em 0 3em 0;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--highlight) 0%, var(--paper) 100%);
+  border: 4px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0 var(--accent);
+}
+.chapter-opener .module-num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.3em;
+  color: var(--accent);
+  letter-spacing: 4px;
+}
+.chapter-opener .module-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.6em;
+  margin: 12px 0;
+  line-height: 1.05;
+}
+.chapter-opener .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--accent);
+  margin-top: 12px;
+  line-height: 1.3;
+}
+
+.workout {
+  background: #fffbe6;
+  border: 2px solid #b8860b;
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 1.8em 0;
+  page-break-inside: avoid;
+  counter-reset: step-counter;
+}
+.workout::before {
+  content: "🏃 WORK IT OUT — step by step";
+  display: block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.1em;
+  color: #8b6914;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+.workout .step {
+  margin: 12px 0;
+  padding-left: 50px;
+  position: relative;
+  min-height: 36px;
+}
+.workout .step::before {
+  content: counter(step-counter);
+  counter-increment: step-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #b8860b;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2em;
+}
+
+@media print {
+  body {
+    font-size: 11pt;
+    max-width: none;
+    padding: 0;
+  }
+  h1 { page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2, h3 { page-break-after: avoid; }
+  pre, table, .sidebar, .note, .tip, .warning, .brain, .nodumbq,
+  .exercise, .scenario, .gotcha, .key, .cheatsheet, .interview, .dialogue,
+  .workout, .fireside, .myth, .insider, .reallyworld,
+  .metaphor, .mock-interview {
+    page-break-inside: avoid;
+  }
+  .compare, .expectation { page-break-inside: avoid; }
+}
+
+@page {
+  size: A4;
+  margin: 1.8cm 1.6cm;
+  @bottom-right {
+    content: counter(page);
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+  }
+  @bottom-left {
+    content: "Senior Systems Crash Course";
+    font-family: 'Patrick Hand', cursive;
+    color: #888;
+    font-size: 0.85em;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="chapter-opener">
+<div class="module-num">
+<p>MODULE 16</p>
+</div>
+<div class="module-title">
+<p>Hot Partitions, Resharding &amp; Rebalancing</p>
+</div>
+<div class="subtitle">
+<p>When one shard is melting and the others are bored — the operational reality of sharded systems</p>
+</div>
+</div>
+<div class="opener">
+<p>You sharded the database two months ago. Things were great. Then a single celebrity user started gaining followers, the analytics team accidentally pinned reads to one tenant, or the timestamp-based partition for "today" hit 90% disk. <strong>One shard is on fire. The rest are idle.</strong></p>
+<p>This module is about the operational reality of sharded systems — the part where partition strategy meets traffic that doesn't match the spreadsheet.</p>
+</div>
+<h1>Sam learns about the second-day problems</h1>
+<div class="dialogue">
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+OK we sharded our system per Module 15. Hash partitioning by user_id, 8 shards. It's been running for two months. We're starting to see weird things — one shard's CPU is constantly higher than the others, sometimes alerts fire on it. Random hours of the day. Is something wrong with that one shard's hardware?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Probably not the hardware. Probably traffic. Welcome to <em>day-two</em> problems in sharded systems. The partition strategy looked fine on paper. Then production hits, and one shard starts running hotter than the others.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+Why? They all have roughly the same number of users, right?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Same <em>count</em> of users. Different <em>activity per user</em>. A handful of power users on one shard can produce 80% of that shard's load while their neighbors are idle. The 80/20 rule isn't a guideline — it's a load distribution. Most production systems have it whether they planned for it or not.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+And how do we fix it?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+That depends on what's hot and why. Sometimes you split the hot user's data across more shards. Sometimes you give them their own dedicated shard. Sometimes you accept it and over-provision the hot shard. There's no one fix.</p>
+</div>
+<div class="turn sam">
+<p><span class="speaker">Sam</span>
+And rebalancing?</p>
+</div>
+<div class="turn maya">
+<p><span class="speaker">Maya</span>
+Rebalancing is what you do when "split the hot user across shards" runs into the <em>next</em> problem: how do you actually move data between live shards without taking the system down? That's where the real engineering lives. By the end of this module you'll know the standard patterns and the operational discipline. Most engineers fake their way through this in interviews. Senior engineers don't.</p>
+</div>
+</div>
+<div class="keyidea">
+<p>Hot partitions are the canonical operational failure of sharded systems. They happen because traffic distribution is not the same as data distribution. The fixes range from simple (over-provision the hot shard) to architectural (split the hot key, isolate the hot tenant, change the partition scheme). <strong>Rebalancing is the technique for moving data between shards safely</strong>, and the right pattern depends on whether you can afford brief inconsistency or need strict consistency throughout.</p>
+</div>
+<h1>How hot partitions actually happen</h1>
+<p>Most teams' partition strategy looks balanced on paper. Production reality is different. Here are the four most common ways hot partitions emerge.</p>
+<h2>Pattern 1: skewed activity per entity</h2>
+<div class="scenario">
+<p><strong>The celebrity user pattern.</strong></p>
+<p>You shard by user_id. 8 shards, hash distribution. Each shard has ~1/8 of users. Looks balanced.</p>
+<p>Then one user gains 10 million followers and starts posting hourly. Every post triggers fan-out events for those 10M followers (Module 05). All this user's events flow through one shard.</p>
+<p>That shard now does 10x the work of the others. CPU pegged. Latency rising. The rest of the cluster is bored.</p>
+<p><strong>The data is balanced; the activity isn't.</strong> Hash partitioning protects you from random distribution, not from per-entity skew.</p>
+</div>
+<div class="warning">
+<p><strong>Power-law distributions are the norm</strong>, not the exception. In almost any system with users, tenants, or accounts, a small fraction generates the majority of activity. <strong>If you don't plan for it, your hot shard finds you.</strong></p>
+</div>
+<h2>Pattern 2: time-based hot tail</h2>
+<div class="scenario">
+<p><strong>The "latest range" problem.</strong></p>
+<p>You partition events by <code>created_at</code> month. Each month is a separate physical partition.</p>
+<p><code>events_2024_12</code> is the current month. Every new write goes there. Eleven other partitions sit cold, holding historical data.</p>
+<p>For a system at 100K writes/sec, that one partition takes the full load. The other 11 are essentially read-only.</p>
+<p>This is the same hot-partition problem as Module 15's range partitioning warning, manifesting in production: range partitioning concentrates writes on the active range.</p>
+</div>
+<div class="insider">
+<p><strong>The fix patterns for time-based hot tail:</strong></p>
+<ul>
+<li><strong>Sub-partition by hash</strong>: within each month, further partition by <code>hash(user_id)</code>. Now writes spread across hash-buckets within the current month.</li>
+<li><strong>Use date+hash composite keys</strong>: e.g., <code>(YYYYMM-shard_id)</code>. The active month has multiple "shards" rather than one.</li>
+<li><strong>Switch to hash-only partitioning</strong> if range queries on time aren't worth it.</li>
+</ul>
+<p><strong>Cassandra and DynamoDB use this combination by default</strong>: hash for distribution, range within for ordering. Most relational systems with naive date-range partitioning end up with this hot tail until they switch to hybrid.</p>
+</div>
+<h2>Pattern 3: anti-pattern partition keys</h2>
+<div class="scenario">
+<p><strong>The status enum example.</strong></p>
+<p>A team partitions an <code>orders</code> table by <code>status</code>. Six values: <code>pending</code>, <code>paid</code>, <code>shipped</code>, <code>delivered</code>, <code>canceled</code>, <code>refunded</code>.</p>
+<p>Looks reasonable — 6 shards. But:</p>
+<ul>
+<li>New orders are always <code>pending</code>. The pending shard takes 100% of writes initially.</li>
+<li>Most queries hit <code>paid</code> or <code>shipped</code> — these shards take 80% of read traffic.</li>
+<li><code>refunded</code> and <code>canceled</code> shards sit nearly idle.</li>
+</ul>
+<p><strong>Six shards. Two are hot. Four are cold. The "balance" was illusory.</strong></p>
+<p>This is the <em>low-cardinality</em> trap from Module 15: partitioning by a column with few distinct values rarely produces even load. Status, country, language, tier — all common offenders.</p>
+</div>
+<h2>Pattern 4: scan-heavy queries</h2>
+<div class="scenario">
+<p><strong>One bad query melts a shard.</strong></p>
+<p>The analytics team writes a daily report query that does <code>SELECT * FROM events WHERE event_type = 'page_view' AND created_at &gt; NOW() - INTERVAL '7 days'</code>.</p>
+<p>The events are partitioned by user_id. So this query has to scan all 8 shards. That's fine — it's a fan-out.</p>
+<p>But each shard does a sequential scan of the last 7 days of data. <strong>One of the shards happens to have a popular event_type concentration</strong> (users on that shard like one feature heavily). It spends 10 minutes scanning while the others finish in 2.</p>
+<p>The cluster is pegged for 10 minutes — driven by the one slow shard.</p>
+<p>This isn't a partition design issue; it's a <em>query distribution</em> issue. The fix is to route this query to a separate analytical store, not to fight the shard.</p>
+</div>
+<h1>Detecting hot partitions</h1>
+<p>You can't fix what you can't see. Here are the metrics that matter.</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>What it shows</th>
+<th>Threshold to alert</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Per-shard CPU utilization</strong></td>
+<td>Which shard is busiest</td>
+<td>&gt;2x the cluster average</td>
+</tr>
+<tr>
+<td><strong>Per-shard query rate</strong></td>
+<td>Which shard handles most queries</td>
+<td>&gt;2x the cluster average</td>
+</tr>
+<tr>
+<td><strong>Per-shard write rate</strong></td>
+<td>Where writes concentrate</td>
+<td>&gt;2x the cluster average</td>
+</tr>
+<tr>
+<td><strong>Per-shard p99 latency</strong></td>
+<td>Where users see slowness</td>
+<td>Significantly higher than other shards</td>
+</tr>
+<tr>
+<td><strong>Per-shard data size</strong></td>
+<td>Storage skew</td>
+<td>One shard much larger than others</td>
+</tr>
+<tr>
+<td><strong>Top key analysis</strong></td>
+<td>Which user/tenant drives the most traffic</td>
+<td>Top 1% of keys &gt;25% of traffic</td>
+</tr>
+</tbody>
+</table>
+<div class="insider">
+<p><strong>The "hot key" detection is what most teams skip.</strong></p>
+<p>Per-shard metrics tell you <em>which</em> shard is hot. Top-key analysis tells you <em>why</em>. Without it, you'll find yourself "the user_id=42 shard is hot" and not know if it's because the <em>shard</em> is misconfigured or because <em>user 42</em> is generating disproportionate traffic.</p>
+<p>Tools like Datadog, New Relic, and Honeycomb can break down query rates by key prefix or by user-id-after-hash. Cassandra has <code>nodetool toppartitions</code>. Postgres has <code>pg_stat_statements</code> filtered by query parameters.</p>
+<p><strong>Mention "top key analysis" in interviews about hot-shard debugging</strong> and you sound like someone who's actually instrumented this in production.</p>
+</div>
+<h1>Fixing hot partitions</h1>
+<p>Multiple fixes, ordered from cheapest to most architectural.</p>
+<div class="workout">
+<p><strong>The hot-partition fix ladder:</strong></p>
+<div class="step">
+<p><strong>Vertical scale the hot shard.</strong> The crudest fix: give the hot shard more CPU/RAM/IOPS than the others. Heterogeneous cluster. Buy time. Trade money for not solving the underlying issue.</p>
+</div>
+<div class="step">
+<p><strong>Composite partition key.</strong> Change the partition key to include a sub-partition. <code>hash(user_id, record_id)</code> instead of <code>hash(user_id)</code>. The hot user's records spread across multiple shards. <strong>Trade-off: queries scoped to one user now fan out across shards.</strong></p>
+</div>
+<div class="step">
+<p><strong>Salting the hot key.</strong> Specifically for known-hot keys, prepend or append a random suffix. <code>hash(user_id || random(0..9))</code> — the hot user is now 10 different keys, spread across the cluster. <strong>Trade-off: lookups for that user must check all 10 variants.</strong></p>
+</div>
+<div class="step">
+<p><strong>Tenant tiering.</strong> Manually identify the top users/tenants. Route them to dedicated shards. Standard tenants stay on the hash. <strong>Trade-off: routing logic complexity; the heavy users are physically isolated.</strong></p>
+</div>
+<div class="step">
+<p><strong>Cell isolation.</strong> At extreme scale, the heaviest tenants get their own database. Each cell is a complete deployment. <strong>Trade-off: maximum operational cost; maximum isolation.</strong> Used by Salesforce and AWS internal services.</p>
+</div>
+<div class="step">
+<p><strong>Rearchitect the partition key.</strong> If the chosen key is fundamentally bad (low cardinality, status enum, etc.), the long-term fix is to repartition with a different key. <strong>Major effort. Requires resharding (next section).</strong></p>
+</div>
+</div>
+<div class="scenario">
+<p><strong>Choosing the right fix:</strong></p>
+<ul>
+<li>Single celebrity user with predictable activity: <strong>salt the hot key</strong> or <strong>isolate to dedicated shard</strong>.</li>
+<li>A few power tenants: <strong>tenant tiering</strong>.</li>
+<li>Time-based hot tail: <strong>switch to composite hash+range</strong> or sub-partition by hash within each time range.</li>
+<li>Bad partition key (low cardinality): <strong>rearchitect</strong> — accept the project cost.</li>
+<li>Single bad query: don't change the partition; <strong>route the query to a separate analytical store</strong>.</li>
+</ul>
+<p>The senior reflex: <strong>don't fix the symptom. Diagnose which pattern caused the hot partition, then pick the matching fix.</strong></p>
+</div>
+<h1>Resharding without downtime</h1>
+<p>Now we hit the harder problem. You've decided you need to change your shard count or scheme. The system is in production. Users are hitting it. <strong>How do you actually move data between shards safely?</strong></p>
+<div class="keyidea">
+<p>Resharding without downtime is the canonical hard operational problem in sharded systems. The pattern: <strong>dual-write to old and new schemes during migration, gradually shift reads, then stop writing the old.</strong> The variations are about how you handle in-flight writes, replication lag, and verification.</p>
+</div>
+<h2>The four-phase rebalancing pattern</h2>
+<div class="workout">
+<p><strong>The canonical resharding sequence:</strong></p>
+<div class="step">
+<p><strong>Phase 1 — provision new shards.</strong> Add the new shards (or re-divide existing data into a new scheme). They're empty. The application doesn't read from them yet.</p>
+</div>
+<div class="step">
+<p><strong>Phase 2 — backfill historical data.</strong> Copy data from the old shards to where it should live in the new scheme. Often with batched, paced jobs to avoid saturating either side. <strong>This phase can take hours to weeks</strong> depending on data size.</p>
+</div>
+<div class="step">
+<p><strong>Phase 3 — dual-write.</strong> Application writes to both old and new locations for any incoming data. <strong>Both schemes are live in parallel.</strong> Reads still come from the old scheme.</p>
+</div>
+<div class="step">
+<p><strong>Phase 4 — verify.</strong> Run consistency checks. Sample data. Compare row counts. Confirm the new scheme has everything the old does plus the dual-writes. <strong>Don't skip this</strong> — undetected drift is the source of post-migration corruption.</p>
+</div>
+<div class="step">
+<p><strong>Phase 5 — cut over reads.</strong> Switch reads to the new scheme. Old shards are now redundant. Run dual reads for a period to verify.</p>
+</div>
+<div class="step">
+<p><strong>Phase 6 — stop dual-writes and decommission old.</strong> Application writes only to the new scheme. After enough time confirming nothing breaks, the old shards can be retired.</p>
+</div>
+</div>
+<div class="diagram">
+<pre><code>                      RESHARDING TIMELINE
+</code></pre>
+<p>Phase 1: Provision new shards
+   ┌──────────┐  ┌──────────┐                ┌──────────┐ ┌──────────┐
+   │  Old A   │  │  Old B   │                │  New X   │ │  New Y   │
+   │ (live)   │  │ (live)   │                │ (empty)  │ │ (empty)  │
+   └──────────┘  └──────────┘                └──────────┘ └──────────┘</p>
+<p>Phase 2-3: Backfill + dual-write
+   ┌──────────┐  ┌──────────┐  ──backfill──► ┌──────────┐ ┌──────────┐
+   │  Old A   │  │  Old B   │                │  New X   │ │  New Y   │
+   │ (live)   │  │ (live)   │  ──dual-write► │ (filling)│ │ (filling)│
+   └──────────┘  └──────────┘                └──────────┘ └──────────┘</p>
+<p>Phase 4: Verify
+   Compare row counts, sample checksums, look for drift.
+   FIX issues before proceeding.</p>
+<p>Phase 5: Cut over reads
+   ┌──────────┐  ┌──────────┐                ┌──────────┐ ┌──────────┐
+   │  Old A   │  │  Old B   │                │  New X   │ │  New Y   │
+   │(writes)  │  │(writes)  │  ◄─reads───── │ (reads)  │ │ (reads)  │
+   └──────────┘  └──────────┘                └──────────┘ └──────────┘</p>
+<p>Phase 6: Decommission old
+                                                ┌──────────┐ ┌──────────┐
+                                                │  New X   │ │  New Y   │
+                                                │ (live)   │ │ (live)   │
+                                                └──────────┘ └──────────┘</p>
+</div>
+<div class="warning">
+<p><strong>Skipping Phase 4 is the most common fatal mistake.</strong> Teams want to "just deploy and see if it works." Most of the time, dual-write has dropped data, race conditions have caused mismatches, or backfill missed rows. <strong>Always verify before cutting over reads.</strong> A single missed row is hard to recover from once the old shards are gone.</p>
+</div>
+<h2>CDC-based resharding</h2>
+<div class="insider">
+<p><strong>The modern way to do resharding uses CDC</strong> (Module 11) instead of application-level dual writes.</p>
+<p>The pattern:
+1. Provision new shards as CDC consumers of the old shards.
+2. Backfill is implemented by streaming the WAL/binlog of old shards through Debezium or similar to populate new shards.
+3. Live writes flow through the same CDC stream — new shards are continuously up-to-date.
+4. After verification, the application's write path is switched to write to new shards directly.
+5. CDC pipeline is dismantled.</p>
+<p><strong>Why this is better than application dual-write:</strong>
+- The CDC pipeline handles ordering, retries, idempotency.
+- The application doesn't need temporary "write to both" code.
+- Backfill and ongoing replication are the same mechanism.
+- Verification can happen at the CDC level (event lag, lag-zero confirmation).</p>
+<p><strong>Tools</strong>: Vitess uses VStreams; Debezium handles Postgres logical replication; YugabyteDB has built-in resharding.</p>
+<p><strong>The senior framing</strong>: CDC-based resharding is the modern operational pattern. Application-level dual writes still work but introduce code that exists only during migration windows.</p>
+</div>
+<h2>Vnodes make rebalancing tractable</h2>
+<p>Recall from Module 15: consistent hashing with vnodes places each physical node at many positions on the ring. <strong>This is what makes rebalancing live possible.</strong></p>
+<div class="scenario">
+<p><strong>Adding a node with vnodes:</strong></p>
+<p>A 4-node Cassandra cluster has 256 vnodes per node. So 1024 vnode positions on the ring. A 5th node is added — it gets 256 new vnode positions, each at a random ring position.</p>
+<p>Each of those 256 vnodes claims a small slice from one of the existing nodes. <strong>Each existing node loses ~64 small slices to the new node</strong>, instead of one big slice to a single neighbor.</p>
+<p>The data movement happens in parallel across all four old nodes. Each contributes a small fraction. The new node receives data from all of them simultaneously. <strong>The migration is faster and more even.</strong></p>
+<p>Without vnodes, adding a node would mean one neighbor of the new node moves a lot of data. The migration is slower and concentrated. Vnodes turn rebalancing into a low-impact, distributed operation.</p>
+</div>
+<div class="tip">
+<p><strong>This is one of the underappreciated benefits of vnodes.</strong> Most engineers know vnodes "balance load." Few articulate "vnodes make scaling out a smooth, parallel operation rather than a one-neighbor-bears-the-burden event." The latter framing signals real production experience.</p>
+</div>
+<h1>Resharding patterns by database</h1>
+<div class="compare">
+<div class="vs-left">
+<h4>Cassandra-style</h4>
+<p>Built-in via vnodes. Adding a node triggers automatic data movement. Stream protocol handles inter-node transfer.</p>
+<p><b>Operational</b>: monitor stream rates, expect transient latency spikes during streaming, can pause if load gets bad.</p>
+<p><b>The "easy" path.</b> The system was designed for this.</p>
+</div>
+<div class="vs-right">
+<h4>Sharded Postgres (Citus)</h4>
+<p>Shards are explicit Postgres tables with tracked metadata. <code>SELECT alter_distributed_table</code> can rebalance — moves shards between nodes.</p>
+<p><b>Operational</b>: requires planning the migration, tooling exposed for shard moves, parallel migration possible.</p>
+<p><b>The "managed" path.</b> Citus handles the ceremony.</p>
+</div>
+</div>
+<div class="compare">
+<div class="vs-left">
+<h4>Manually sharded systems</h4>
+<p>Application-level shard routing. Resharding requires application + data layer coordination. Long migration windows.</p>
+<p><b>Operational</b>: full dual-write/backfill/verify/cutover dance. Custom tooling. High risk of subtle bugs.</p>
+<p><b>The "hard" path.</b> Most expensive.</p>
+</div>
+<div class="vs-right">
+<h4>NewSQL (CockroachDB, Spanner)</h4>
+<p>Range-based with automatic splitting. Hot ranges are detected and split automatically. No human intervention needed for typical rebalancing.</p>
+<p><b>Operational</b>: monitor split decisions; trust the system to handle most cases.</p>
+<p><b>The "automatic" path.</b> The promise of these systems.</p>
+</div>
+</div>
+<div class="insider">
+<p><strong>The choice of database determines how much rebalancing you do manually.</strong></p>
+<ul>
+<li>Cassandra/DynamoDB: rebalancing is automatic; you scale up/down by adding/removing nodes.</li>
+<li>Citus/Vitess: rebalancing is supported but requires running specific commands.</li>
+<li>Manual sharding: rebalancing is a project. Multi-quarter effort for non-trivial schemas.</li>
+<li>NewSQL: rebalancing is hidden — the system splits ranges automatically as load grows.</li>
+</ul>
+<p><strong>For systems that anticipate ongoing scale</strong>, picking a database that handles rebalancing automatically is one of the highest-value architectural choices. <strong>For systems with stable scale</strong>, manual or semi-automated rebalancing is fine. The senior framing: match the rebalancing burden to the team's operational capacity.</p>
+</div>
+<h1>Three more ways to think about it</h1>
+<div class="metaphor">
+<p><strong>Way 1: a moving van.</strong></p>
+<p>Naive resharding is a moving van — all your stuff in one truck, taking it to one new location. If the truck breaks down halfway, your stuff is stranded.</p>
+<p>Vnode-based resharding is a fleet of moving vans, each carrying a small portion. They all leave from different rooms in the old house and arrive at the new one together. If one van is delayed, the others continue. The move happens in parallel, with bounded risk per van.</p>
+<p>Application-level dual-write is keeping both houses live during the move — old furniture stays where it was; new copies appear in the new house as you go. You don't move out of the old place until everything's verified in the new one.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 2: a city shifting its center of gravity.</strong></p>
+<p>A city's population grows. Some neighborhoods get crowded; others empty out. The city has options:</p>
+<ul>
+<li><strong>Vertical scaling</strong>: build taller buildings in the crowded neighborhoods. Quick but only works to a point.</li>
+<li><strong>Composite key partitioning</strong>: split the crowded neighborhood into smaller named blocks so people identify with smaller units.</li>
+<li><strong>Tenant tiering</strong>: relocate the busiest residents to a new dedicated district.</li>
+<li><strong>Cell isolation</strong>: build entirely new cities for the largest populations.</li>
+<li><strong>Rearchitect</strong>: change the way neighborhoods are defined entirely. Disruptive, multi-year project.</li>
+</ul>
+<p>A real city does all of these in different cases. So does a real sharded system.</p>
+</div>
+<div class="metaphor">
+<p><strong>Way 3: traffic management.</strong></p>
+<p>Hot partition = a single road with too much traffic. Solutions:
+- Add more lanes (vertical scale).
+- Encourage diverse routes (salt the hot key).
+- Build alternative roads (rearchitect).
+- Toll the busy road (route the traffic to a different system).</p>
+<p>Resharding = redirecting drivers from one road network to another while traffic continues. You don't close the old road first; you build the new one, gradually open it, verify it works, then close the old one. <strong>Sequencing matters more than ambition.</strong></p>
+</div>
+<h1>Sharpen your pencil</h1>
+<div class="exercise">
+<p><strong>Exercise 1.</strong> Your team's <code>events</code> table is hash-sharded on <code>user_id</code> across 8 shards. The marketing team launches a campaign and one user account (a corporate test account used by 200 internal QA staff) starts generating 10x normal write traffic. The shard hosting that user is at 95% CPU. Three diagnostic questions you'd ask, plus three fix options ranked by effort.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>Three diagnostic questions:</strong></p>
+<p><strong>Q1. Is this temporary or permanent?</strong> A campaign-driven spike that ends in 2 weeks doesn't justify architectural change. A permanent QA pattern does. Ask the marketing team.</p>
+<p><strong>Q2. Are reads or writes the bottleneck?</strong> Write-bound and read-bound have different fixes. Reads can often be addressed with caching or read replicas. Writes require partition strategy changes.</p>
+<p><strong>Q3. Are there other "hot enough" users on the same shard, or is this one user accounting for nearly all the load?</strong> If it's one user, the fix is targeted. If multiple users on this shard happen to be busy, the partition scheme has unlucky alignment.</p>
+<p><strong>Three fix options ranked by effort:</strong></p>
+<p><strong>Option 1 (low effort): vertical scale the affected shard.</strong>
+Bump CPU/RAM on this one shard. Heterogeneous cluster. Buys time without architectural change. Costs more in cloud spend; doesn't solve the underlying issue. Reasonable for "campaign ends in 2 weeks" scenarios.</p>
+<p><strong>Option 2 (medium effort): salt the hot user's records.</strong>
+Application logic detects "user X is the QA account" and salts their writes: <code>hash(user_id || random(0..9))</code>. The QA writes spread across 10 different hash buckets, distributed across shards. <strong>Trade-off</strong>: querying "all events for user X" now requires checking all 10 salt variants — adds a fan-out for that user's reads.</p>
+<p><strong>Option 3 (high effort): isolate the QA tenant.</strong>
+Move the QA account to its own dedicated shard. Application's write path checks "is this the QA account?" and routes appropriately. Standard users continue to hash. <strong>Trade-off</strong>: routing complexity, but cleanest separation. Common pattern for known-hot tenants.</p>
+<p><strong>My recommendation:</strong> if it's a known-recurring pattern (the QA team uses this account daily), go with Option 3 — isolation. Set up the routing once; the dedicated shard can be sized appropriately and won't perturb other tenants. If it's a temporary campaign artifact, Option 1 is fine.</p>
+<p>The senior reflex: <strong>distinguish "permanent design issue" from "temporary spike."</strong> Don't pay architectural cost for a problem that resolves itself in two weeks. Don't over-provision forever to avoid a one-time fix.</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 2.</strong> You're growing from 4 to 8 shards. Walk through the resharding plan with concrete steps. Use Citus on Postgres as the substrate.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p><strong>Pre-work:</strong></p>
+<p>Before any operations, verify the partition scheme will benefit. Going 4→8 doubles capacity but moves significant data. Estimate the migration window: if data is, say, 4 TB across 4 shards (1 TB each), moving half to new shards is ~2 TB of transfer. Plan for hours to days depending on bandwidth.</p>
+<p><strong>Phase 1 — provision the 4 new shards.</strong></p>
+<p>Add 4 new Postgres nodes to the Citus cluster. Each becomes a worker. Verify they're empty and registered with the coordinator. Confirm Citus knows about all 8 shards.</p>
+<p><strong>Phase 2 — initiate rebalance.</strong></p>
+<pre><code class="language-sql">SELECT rebalance_table_shards('events', shard_transfer_mode := 'auto');
+</code></pre>
+<p>Citus moves shards between workers, attempting to balance the data. The <code>auto</code> mode uses logical replication where possible, falls back to block-level for tables that don't support it.</p>
+<p><strong>During Phase 2:</strong>
+- Monitor <code>pg_stat_activity</code> and <code>citus_get_active_worker_nodes()</code> for shard movement progress.
+- Monitor disk I/O and CPU on source and destination workers — Citus throttles itself but heavy moves can degrade query latency.
+- Run small sample queries to verify reads still work as shards move.</p>
+<p>This phase can take hours per TB. Don't rush.</p>
+<p><strong>Phase 3 — verify after move completion.</strong></p>
+<ul>
+<li>Run row counts on each shard before/after.</li>
+<li>Sample data integrity: pick random rows and compare against expected.</li>
+<li>Run application smoke tests against the rebalanced cluster.</li>
+</ul>
+<p><strong>Phase 4 — performance check.</strong></p>
+<p>Once balanced, verify:
+- Per-shard CPU is roughly equal under typical load.
+- Query latency hasn't regressed.
+- No unexpected hotspots (look at <code>pg_stat_user_tables</code> per shard).</p>
+<p><strong>Phase 5 — celebrate quietly.</strong></p>
+<p>Update runbook and capacity-planning docs with current shard count. Document any quirks discovered during the rebalance.</p>
+<p><strong>The full timeline</strong>: 1 day of planning, 1-3 days of rebalance for typical sizes, 1 day of verification. <strong>Plan for a multi-week project including all the safety checks.</strong></p>
+<p><strong>Things that go wrong:</strong>
+- Replication lag on the source shards — backfill takes longer than expected.
+- Unexpected vacuum churn — long transactions block dead-tuple cleanup, leading to bloat.
+- One target node has different hardware specs — load isn't truly balanced.</p>
+<p><strong>The senior framing</strong>: rebalancing in Citus is <em>supported but not free</em>. The complexity is hidden but the operational burden is real. Plan, monitor, verify. Don't trust "it just works."</p>
+</div>
+</div>
+<div class="exercise">
+<p><strong>Exercise 3.</strong> Explain to non-technical Sam, in two sentences, why "the data is balanced but one shard is still hot" is a thing that happens.</p>
+<div class="answer-box"></div>
+<div class="solution">
+<p>Sharding splits data evenly — same number of users on each shard — but it doesn't split <em>activity</em> evenly because some users are far more active than others. So if a celebrity user with 10 million followers happens to land on shard 3, that one shard does most of the work while shards 1, 2, and 4 sit nearly idle, even though all four have the same headcount of users.</p>
+</div>
+</div>
+<h1>There are no dumb questions</h1>
+<div class="nodumbq">
+<div class="q">
+<p>Q: How long does a typical resharding take?</p>
+</div>
+<div class="a">
+<p>A: Highly workload-dependent. For a Cassandra cluster adding nodes: minutes to hours, mostly handled automatically. For Citus: hours to days for TB-scale data. For manual application-level sharding: weeks to months — most of which is verification and gradual cutover. <strong>Senior reflex: budget 3-5x your estimate for safety margin.</strong></p>
+</div>
+<div class="q">
+<p>Q: Can I rebalance during peak hours?</p>
+</div>
+<div class="a">
+<p>A: Generally no, unless your system specifically supports it. Most rebalancing introduces latency spikes from the data transfer. Cassandra has rate-limiting on streaming. Citus's rebalance can be paused. <strong>Schedule for low-traffic windows; plan rollback if metrics degrade beyond acceptable.</strong></p>
+</div>
+<div class="q">
+<p>Q: What's the difference between "rebalancing" and "resharding"?</p>
+</div>
+<div class="a">
+<p>A: Often used interchangeably. <strong>Rebalancing</strong> = redistributing existing shards across nodes (same total shard count, different node assignments). <strong>Resharding</strong> = changing the shard count or scheme entirely. Cassandra rebalances when you add nodes; Citus reshards when you split a shard into more shards. The line is fuzzy.</p>
+</div>
+<div class="q">
+<p>Q: What if I detect a hot partition during a rebalance?</p>
+</div>
+<div class="a">
+<p>A: Pause the rebalance. Treat the hot partition first (vertical scale, key salting, isolation). Then resume rebalancing once the hot situation is stable. <strong>Don't rebalance into a known-broken state</strong> — it'll be worse on the other side.</p>
+</div>
+<div class="q">
+<p>Q: How do I test a rebalancing plan before doing it for real?</p>
+</div>
+<div class="a">
+<p>A: Stage. Set up a clone of the production cluster with synthetic or anonymized data. Run the same rebalance commands. Measure timing, observe behavior. Most teams that have a smooth production rebalance practiced first. <strong>Without staging, rebalancing in prod is a "deploy and pray" event.</strong></p>
+</div>
+<div class="q">
+<p>Q: What's "hash slot" or "tablet" sharding I keep hearing about?</p>
+</div>
+<div class="a">
+<p>A: Different names for the same idea. Redis uses <strong>hash slots</strong> (16384 fixed slots, distributed across nodes). Cassandra uses <strong>tokens</strong> (positions on the ring). YugabyteDB and CockroachDB use <strong>tablets</strong> (small ranges). All variants of "many small partitions, distributed across physical nodes." <strong>The "many small" is what makes rebalancing tractable.</strong></p>
+</div>
+<div class="q">
+<p>Q: When should I move from manual sharding to a managed sharding solution?</p>
+</div>
+<div class="a">
+<p>A: When the cost of manual coordination exceeds the cost of migration. Symptoms include: rebalancing requires multi-week projects, schema changes coordinate across many teams, or the team's operational time is consumed by sharding mechanics. <strong>At that point, Vitess/Citus/CockroachDB pay back fast.</strong> Earlier than that, manual is fine.</p>
+</div>
+<div class="q">
+<p>Q: How do I rollback a rebalance if something goes wrong?</p>
+</div>
+<div class="a">
+<p>A: This is why dual-write phases exist. If you've stopped writing to the old shards but cut over reads, rollback means writing the missed-during-cutover data back. <strong>Always overlap the dual-write window with verification.</strong> Keep old shards alive for at least one read-cycle (typically a week) before decommissioning, in case rollback is needed. <strong>Don't decommission until you're sure.</strong></p>
+</div>
+</div>
+<h1>Three myths to dynamite</h1>
+<div class="myth">
+<p><strong>"Hash partitioning prevents hot partitions."</strong></p>
+<p>False. Hash partitioning prevents <em>random</em> skew. It does nothing about <em>per-key</em> skew. If one user generates disproportionate traffic, hash-sharding by user_id concentrates that traffic on one shard. <strong>Hash protects you from bad luck, not from power-law distributions.</strong></p>
+</div>
+<div class="myth">
+<p><strong>"Resharding is automatic in Cassandra."</strong></p>
+<p>Half-true. Cassandra automatically <em>rebalances</em> when you add or remove nodes — vnodes redistribute. But changing the partition key, rebuilding tables for new query patterns, or introducing new column families requires manual work. <strong>"Automatic rebalancing" ≠ "automatic resharding."</strong> The first is built-in; the second requires the same dual-write/backfill/verify dance.</p>
+</div>
+<div class="myth">
+<p><strong>"You only need to think about hot partitions when you scale up."</strong></p>
+<p>False. Hot partitions can emerge at any point — a celebrity user appears, a tenant's usage pattern changes, a marketing campaign drives concentrated traffic. <strong>Hot-partition monitoring is a permanent operational discipline, not a startup task.</strong></p>
+</div>
+<h1>Interview gotchas</h1>
+<div class="gotcha">
+<p><strong>Saying "we'd just resharding" without acknowledging the operational cost.</strong> Resharding is a multi-week project for non-trivial systems. Anyone who says "we'd just reshard" without noting the dual-write phase, verification, and rollback window hasn't actually done it.</p>
+</div>
+<div class="gotcha">
+<p><strong>Forgetting verification phases.</strong> "Backfill, then cutover" without explicit verification is the recipe for losing data. Senior engineers always include sampling, row-count comparison, and dual-read windows.</p>
+</div>
+<div class="gotcha">
+<p><strong>Not knowing the difference between rebalancing and resharding.</strong> They're related but distinct. Rebalancing = same shards, different node assignments. Resharding = different shards entirely.</p>
+</div>
+<div class="gotcha">
+<p><strong>Treating CDC-based rebalance as "obviously the right answer."</strong> It's modern and clean, but requires existing CDC infrastructure. For teams without it, application dual-write is sometimes faster to ship.</p>
+</div>
+<div class="gotcha">
+<p><strong>Suggesting VACUUM FULL as part of a rebalance plan.</strong> Locks the table. Wrong tool. Modern rebalances use online operations (logical replication, CDC, or pg_repack-style rewrites).</p>
+</div>
+<h1>Mock interview</h1>
+<div class="mock-interview">
+<div class="turn q">
+<p>A team is running a 16-shard Cassandra cluster. One shard is consistently hot — 80% CPU while others sit at 30%. They've been running this way for three weeks. Walk me through the diagnosis.</p>
+</div>
+<div class="turn a">
+<p>This is a textbook hot-partition scenario. Let me work through it systematically.</p>
+<p><strong>Step 1: confirm it's not hardware.</strong></p>
+<p>Check the box specs and recent maintenance history. Sometimes a shard is on older hardware (3-year-old SSD, smaller instance type). If so, the hardware imbalance is the answer — not a partition strategy issue.</p>
+<p><strong>Step 2: identify the hot rows on that shard.</strong></p>
+<p><code>nodetool toppartitions</code> (or equivalent) shows which partitions are receiving the most writes/reads. You're looking for: is one partition dominating, or is the load spread across many?</p>
+<p><strong>Possible findings:</strong>
+- One partition takes 60% of the shard's traffic → single hot key.
+- Top 10 partitions take 80% of traffic → power-law concentration.
+- Load is spread evenly across partitions on this shard → strange. Probably hardware or per-node config issue.</p>
+<p><strong>Step 3: characterize the hot key.</strong></p>
+<p>If there's a hot key, who is it?
+- A power user? Common pattern. Targeted fix.
+- An internal/test/QA account? Common pattern, easy fix (route them elsewhere).
+- A tenant? Multi-tenant skew. Different fix family.</p>
+<p><strong>Step 4: pick the fix based on what you found.</strong></p>
+<p>If a single power user, salt their writes — change to <code>hash(user_id || random(0..9))</code>. The user's records spread across 10 buckets. Trade-off: querying for that user fans out across 10 buckets.</p>
+<p>If a test account, isolate it. Application-level routing: "if user_id == 'qa-test', route to dedicated shard." Standard users continue with normal hashing.</p>
+<p>If multiple hot tenants, <strong>tenant tiering</strong>: identify the top 5-10 tenants and give them dedicated shards. Hash the rest.</p>
+<p>If the partition strategy is fundamentally wrong (e.g., partitioning by <code>country</code> and one country has 50% of users), the fix is rearchitecture — repartition with a different key. <strong>Multi-month project.</strong> But if that's the underlying cause, it's the only durable fix.</p>
+<p><strong>Step 5: validate.</strong></p>
+<p>After implementing the fix, monitor:
+- Per-shard CPU should converge.
+- p99 latency on the previously-hot shard should drop.
+- No new hotspot emerges as a side effect.</p>
+<p><strong>The senior framing:</strong> <em>fix the underlying pattern, not just the symptom.</em> Vertical-scaling the hot shard buys time but doesn't fix anything. The right answer depends on whether the cause is one user (salt or isolate), many users (rearchitect or tier), or strategy (repartition).</p>
+</div>
+<div class="commentary">
+<p>Five-step diagnostic workflow. Specific tools (<code>nodetool toppartitions</code>). Multiple fix options matched to root causes. The "fix the underlying pattern, not just the symptom" framing is the senior reflex.</p>
+</div>
+<div class="turn q">
+<p>The team decides to migrate from <code>hash(user_id) mod 8</code> to consistent hashing because they want to add shards smoothly in the future. Walk me through the migration.</p>
+</div>
+<div class="turn a">
+<p>This is a one-time pain that pays off forever. Worth doing carefully.</p>
+<p><strong>Phase 0: prerequisites.</strong></p>
+<ul>
+<li>Document the current hashing scheme and which shard owns each user.</li>
+<li>Ensure CDC infrastructure is in place — this migration benefits massively from it.</li>
+<li>Have a clean staging environment to rehearse on.</li>
+<li>Run a load test on the staging system to validate the new scheme.</li>
+</ul>
+<p><strong>Phase 1: provision new shards using consistent hashing.</strong></p>
+<p>Stand up a new cluster (or new shards in the same cluster) using consistent hashing with vnodes. Choose vnode count: 256 per node is standard for Cassandra-like systems; for Postgres-based systems, the equivalent is "many small physical shards owned by each node."</p>
+<p>The new system is empty. Application doesn't read from it.</p>
+<p><strong>Phase 2: backfill via CDC.</strong></p>
+<p>Use Debezium or equivalent to stream the entire current dataset from old shards to new ones. Each row is hashed via the new consistent hashing scheme and written to the appropriate new shard.</p>
+<p>For a TB-scale dataset, this might take hours to days. Pace the backfill to avoid saturating the old shards or the network.</p>
+<p><strong>Phase 3: dual-write.</strong></p>
+<p>Application writes to both old and new schemes simultaneously. Live writes flow into the new system at the same time as the backfill is finishing.</p>
+<p>This requires application changes — temporary code that writes to both. Plan to remove this code after migration.</p>
+<p><strong>Phase 4: catchup verification.</strong></p>
+<p>Once backfill is "complete":
+- Compare row counts between old and new (full counts via batch jobs).
+- Sample random keys and verify they appear correctly in both.
+- Run a small read-from-new-system canary to verify data integrity.</p>
+<p><strong>This is the critical phase.</strong> Don't skip it. Drift between old and new is the most expensive bug to find post-cutover.</p>
+<p><strong>Phase 5: cut over reads gradually.</strong></p>
+<ul>
+<li>Start with 1% of read traffic going to new system.</li>
+<li>Monitor for errors, latency regressions, missing data.</li>
+<li>Increase to 10%, 50%, 100% over hours/days.</li>
+</ul>
+<p>Tools like feature flags or service mesh routing make this safer.</p>
+<p><strong>Phase 6: stop dual-writes.</strong></p>
+<p>When you're confident, application stops writing to old shards. Only new shards take writes.</p>
+<p><strong>Phase 7: decommission old shards.</strong></p>
+<p>After a verification period (1-2 weeks of solo operation), the old shards can be retired.</p>
+<p><strong>Total timeline: 4-8 weeks</strong> for a moderately complex production system. Most of it is migration and verification, not actual code changes.</p>
+<p><strong>Things to plan for:</strong></p>
+<ul>
+<li><strong>Long transactions on old system blocking vacuum/cleanup.</strong> Common during dual-write phases. Monitor and bound.</li>
+<li><strong>Replication lag spikes.</strong> Cross-region or under heavy backfill, lag can grow. Plan for this in your read-cutover timing.</li>
+<li><strong>Application-level dual-write bugs.</strong> Race conditions where one write succeeds and the other fails. Have idempotency at the new-shard layer to handle retries.</li>
+<li><strong>Unexpected hotspots in the new scheme.</strong> If the consistent hashing distribution lands the heaviest tenant on a single vnode somehow, you'd see hot-shard issues immediately. Watch metrics during canary phase.</li>
+</ul>
+<p><strong>The senior framing:</strong> <em>resharding is a project, not a deploy.</em> The architecture team plans; the data team executes; the application team integrates. Multiple touchpoints, weeks of careful execution.</p>
+</div>
+<div class="commentary">
+<p>Seven-phase plan. Specific tools and timing. Acknowledges that dual-write code is temporary. The "what to plan for" gotcha list signals real-world experience. Realistic 4-8 week timeline framing.</p>
+</div>
+<div class="turn q">
+<p>Suppose the migration is in Phase 5, you're at 30% reads on the new system, and a developer reports that some recent writes seem to be missing. What do you do?</p>
+</div>
+<div class="turn a">
+<p>Triage carefully. <strong>Don't panic, don't continue cutover, gather data.</strong></p>
+<p><strong>Step 1: pause the cutover.</strong></p>
+<p>Roll the percentage back to 0% reads from new (everyone reads from old). Continue dual-writing. This stabilizes the situation while we investigate. <strong>Better to lose 30% of read traffic temporarily than to corrupt data.</strong></p>
+<p><strong>Step 2: gather facts.</strong></p>
+<p>Get specifics from the developer:
+- What rows are missing? (Specific user IDs, timestamps.)
+- When did they notice? (Just now, or has it been a while?)
+- Reading from old or new at time of complaint?
+- Is the missing-write pattern consistent (always the same kind of row) or random?</p>
+<p><strong>Step 3: investigate.</strong></p>
+<p>Check the missing rows in both systems:
+- If the row exists in old but not new → backfill missed it, or dual-write failed.
+- If the row exists in new but not old → less likely, but possible if the cutover read showed phantom data from a different system entirely.
+- If neither → the write never reached the database — separate bug.</p>
+<p>Look at the application logs around the time of the missing write. Did dual-write report success on both, or did one fail silently?</p>
+<p><strong>Step 4: fix the root cause.</strong></p>
+<p>Possible causes I'd investigate, ordered by likelihood:</p>
+<p><strong>Cause A: dual-write failure path.</strong> Application caught a write failure on the new system but didn't propagate or retry. Add idempotency keys and proper retry logic to the dual-write path. Backfill the affected rows manually.</p>
+<p><strong>Cause B: backfill missed late-arriving updates.</strong> The backfill copied historical data, but during the dual-write window, some updates to historical rows happened on old shards and didn't get re-replicated to new. <strong>Need to re-run backfill for affected key ranges.</strong> CDC-based migrations handle this naturally; application-level dual-writes can have this gap.</p>
+<p><strong>Cause C: hashing mismatch.</strong> A small bug where the new hashing scheme places certain rows differently than expected. Test exhaustively with sample data. Fix the hashing logic; re-run partial backfill.</p>
+<p><strong>Step 5: re-verify before resuming.</strong></p>
+<p>Before resuming the cutover, run extensive verification:
+- Compare row counts on both sides (full table scan if needed).
+- Sample random rows for value comparison.
+- Specifically test the cases that triggered the report.</p>
+<p>Only resume cutover when you've confirmed the root cause is fixed AND data parity is restored.</p>
+<p><strong>Step 6: post-mortem.</strong></p>
+<p>After resolution:
+- Document the failure mode for future reference.
+- Strengthen verification phase to catch this specific issue earlier.
+- Consider whether the migration approach needs adjusting.</p>
+<p><strong>The senior framing:</strong> <em>during a live migration, the safer path is always "pause and investigate"</em>. Continuing forward with unresolved data integrity issues compounds the problem. Migrations are expensive but corrupted data is more expensive.</p>
+</div>
+<div class="commentary">
+<p>Calm, structured response. The "pause first" instinct is the senior on-call reflex. Specific causes ranked by likelihood. Acknowledges that this kind of issue is <em>expected</em> during migrations — the question is how you handle it. The "data parity is restored before resuming" detail is critical.</p>
+</div>
+<div class="turn q">
+<p>Last one. Your team has been running 8 shards on Postgres with manual application-level routing for two years. Now the operational cost of sharding mechanics is dominating engineering time. What would you propose?</p>
+</div>
+<div class="turn a">
+<p>The team has hit the inflection point where manual sharding's hidden costs exceed the migration cost of moving to a managed sharding solution. Time to pay down that technical debt.</p>
+<p><strong>Step 1: validate the inflection point.</strong></p>
+<p>Quantify the operational cost concretely:
+- Engineer-hours per month spent on shard-aware coordination (cross-shard queries, schema migrations across shards, manual rebalancing, hot-shard incidents).
+- Recurring incidents traceable to manual sharding.
+- Velocity slowdown — features that take longer because of sharding mechanics.</p>
+<p>If this is, say, 30% of one engineer's time, that's expensive. Probably an order of magnitude more than maintaining a managed sharding solution would cost.</p>
+<p><strong>Step 2: choose the target.</strong></p>
+<p>Three plausible options:
+- <strong>Citus</strong>: stays on Postgres semantics. Migration is "make Citus aware of the existing sharding scheme." Good fit for teams already comfortable with Postgres.
+- <strong>CockroachDB</strong>: distributed SQL with consensus per range. Strong consistency across shards, automatic rebalancing. Different operational profile.
+- <strong>AlloyDB / Aurora / managed equivalents</strong>: depending on cloud provider. Still single-cluster but with built-in scaling.</p>
+<p>For a team currently on Postgres with manual sharding, <strong>Citus is the lowest-friction migration</strong>. CockroachDB is a bigger architectural change but has stronger guarantees. Cloud-managed is the easiest path if they're cloud-native.</p>
+<p><strong>Step 3: design the migration.</strong></p>
+<p>For Citus:
+- Provision a Citus cluster.
+- Citus has tooling to import existing sharded tables: <code>create_distributed_table</code> with the existing partition key.
+- Backfill from existing shards via CDC.
+- Cut over reads gradually.
+- Decommission the manual sharding logic in the application.</p>
+<p>For CockroachDB:
+- Bigger lift. Schema changes (CockroachDB doesn't support all Postgres features).
+- Application changes to remove sharding-aware code.
+- Migration as a large project, possibly running both systems in parallel for weeks.</p>
+<p><strong>Step 4: socialize the cost.</strong></p>
+<p>Migration to managed sharding is itself a 3-6 month project. The team's velocity may dip during that time. <strong>The pitch to leadership</strong>: "we're investing 3-6 months to recover 30% of our engineering capacity going forward." Easy ROI calculation if you have the data.</p>
+<p><strong>Step 5: execute incrementally.</strong></p>
+<p>Don't migrate everything at once. Pick the lowest-risk table or service. Migrate it. Validate. Then move on to higher-risk tables. By the time you're done, the team has built confidence with the new tooling.</p>
+<p><strong>Things to be careful about:</strong></p>
+<ul>
+<li><strong>Don't migrate to "the wrong sharding tool."</strong> If the team's strengths are Postgres operations, going to a fundamentally different system (Cassandra, DynamoDB) introduces a learning curve that's its own ongoing cost.</li>
+<li><strong>Don't underestimate the verification effort.</strong> Migrations always uncover surprises. Plan time for them.</li>
+<li><strong>Don't decommission the old sharding code prematurely.</strong> Keep it operational for a verification period.</li>
+</ul>
+<p><strong>The senior framing:</strong> <em>technical debt has a real interest rate</em>. Manual sharding accumulates operational cost daily. At some point, paying down the principal makes sense — especially when the alternative is paying interest forever.</p>
+<p>The question is rarely "should we move to managed sharding?" — it's "when is the right time?" The answer is usually "once the operational pain is sustained and the migration cost is manageable." This team is there.</p>
+</div>
+<div class="commentary">
+<p>Strategic and pragmatic. Quantifies the decision. Three concrete options with trade-offs. The "interest rate of technical debt" framing is the right way to pitch infrastructure migration to leadership. Acknowledges this is a multi-quarter project, not a sprint.</p>
+</div>
+</div>
+<h1>Cheat sheet</h1>
+<div class="cheatsheet">
+<h3>Hot Partitions, Resharding &amp; Rebalancing — One Page</h3>
+<h4>How hot partitions emerge</h4>
+<ol>
+<li><strong>Skewed activity per entity</strong> — power user / heavy tenant.</li>
+<li><strong>Time-based hot tail</strong> — latest range gets all writes.</li>
+<li><strong>Anti-pattern partition keys</strong> — low cardinality, status enums.</li>
+<li><strong>Scan-heavy queries</strong> — one bad query per shard.</li>
+</ol>
+<h4>Detection metrics</h4>
+<ul>
+<li>Per-shard CPU, query rate, write rate, p99 latency, data size.</li>
+<li><strong>Top key analysis</strong> — which user/tenant drives the most traffic.</li>
+<li>Alert when any shard exceeds 2x the cluster average.</li>
+</ul>
+<h4>Hot partition fix ladder</h4>
+<ol>
+<li>Vertical scale the hot shard (cheapest, buys time).</li>
+<li><strong>Composite partition key</strong> — <code>hash(user_id, record_id)</code>.</li>
+<li><strong>Salt the hot key</strong> — <code>hash(user_id || random(0..9))</code>.</li>
+<li><strong>Tenant tiering</strong> — power tenants → dedicated shards.</li>
+<li><strong>Cell isolation</strong> — heaviest tenants → own database.</li>
+<li><strong>Repartition</strong> — change the partition key entirely.</li>
+</ol>
+<h4>Resharding pattern (canonical)</h4>
+<ol>
+<li>Provision new shards.</li>
+<li>Backfill historical data (batched, paced).</li>
+<li>Dual-write during migration.</li>
+<li><strong>Verify</strong> — row counts, sample data, smoke tests. Don't skip.</li>
+<li>Cut over reads gradually.</li>
+<li>Stop dual-writes; decommission old.</li>
+</ol>
+<h4>CDC-based resharding (modern)</h4>
+<ul>
+<li>Use Debezium to stream from old shards to new during backfill and live migration.</li>
+<li>Cleaner than application-level dual-write.</li>
+<li>Handles ordering, retries, idempotency naturally.</li>
+</ul>
+<h4>Vnodes make rebalance smooth</h4>
+<p>Adding a node = many small data transfers from many existing nodes in parallel.
+Without vnodes = one neighbor bears the burden of moving its share.
+<strong>Vnodes turn rebalancing into bounded, parallel work.</strong></p>
+<h4>Database-specific patterns</h4>
+<ul>
+<li><strong>Cassandra/DynamoDB</strong>: automatic via vnodes. Scale up/down by adding/removing nodes.</li>
+<li><strong>Citus</strong>: <code>rebalance_table_shards()</code> command. Citus handles ceremony.</li>
+<li><strong>Manual sharding</strong>: full dual-write/backfill/verify dance. High cost.</li>
+<li><strong>NewSQL (Cockroach, Spanner)</strong>: automatic range splitting. Hidden complexity.</li>
+</ul>
+<h4>Anti-patterns</h4>
+<ul>
+<li>Skipping the verification phase.</li>
+<li>Decommissioning old shards before verification window completes.</li>
+<li>Rebalancing during peak hours.</li>
+<li>"Just fix the symptom" — vertical scaling forever instead of underlying fix.</li>
+<li>Migrating without staging-environment rehearsal.</li>
+</ul>
+<h4>When to migrate from manual to managed sharding</h4>
+<ul>
+<li>Operational cost of manual coordination dominates engineering time.</li>
+<li>Recurring incidents from sharding mechanics.</li>
+<li>Velocity slowdown attributable to shard awareness.</li>
+<li>Schema changes coordinate across many teams.</li>
+</ul>
+<h4>The 30-second verbal answer</h4>
+<p>"Hot partitions happen because traffic distribution isn't the same as data distribution. Power users, time-based tail, and bad partition keys are the common patterns. Detection requires per-shard metrics plus top-key analysis. Fixes range from vertical scaling (cheap, buys time) to repartitioning (expensive, durable). Resharding without downtime requires dual-write/backfill/verify/cutover discipline; CDC-based pipelines are the modern way. Vnodes make rebalancing tractable by spreading data movement across many parallel transfers."</p>
+<h4>Always pair with</h4>
+<p>Partitioning (Module 15), CDC (Module 11), HA (Module 17), CockroachDB, Citus, Vitess, vnodes, top-key analysis, idempotency.</p>
+</div>
+<h1>What's next</h1>
+<p>You can now articulate why hot partitions emerge, diagnose them with concrete metrics, choose the appropriate fix from the ladder, and walk through a resharding without losing data. The dual-write/backfill/verify pattern is in your toolkit.</p>
+<p><strong>Module 17 closes the operational chapter</strong> with HA topologies, scaling strategies, caching architecture, and backpressure — how systems gracefully degrade under load instead of cascading into total outage. We'll cover the four nines vs five nines trade-offs, multi-region active-active, and the patterns that prevent an overloaded system from taking down the dependencies it relies on.</p>
+<p>After that, the appendices: <strong>Appendix A</strong> on data lakes vs warehouses, <strong>Appendix B</strong> on the 60-second answer template that lands every senior interview question.</p>
+<p>Get water. The operational distributed-systems story is one module from done.</p>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="15_partitioning_consistent_hashing.html" class="prev">&laquo; 15 Partitioning</a>
+  <a href="../index.html" class="home">Home</a>
+  <a href="17_ha_scaling_caching.html" class="next">17 HA/Scaling &raquo;</a>
+</nav>
+</body>
+</html>

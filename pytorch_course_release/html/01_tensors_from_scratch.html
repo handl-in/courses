@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 01 — Tensors, from scratch</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800;9..144,900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@400;500;600;700&family=Patrick+Hand&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+  :root {
+    --paper: #f6efe1; --paper-deep: #ede2cc;
+    --ink: #1a1612; --ink-soft: #3a322a; --ink-muted: #6b5d4f;
+    --terracotta: #c1502e; --terracotta-deep: #8c3a20;
+    --teal: #1f5f5b; --teal-deep: #133e3b;
+    --mustard: #d4a017; --rose: #b85a6c;
+    --pytorch: #ee4c2c;
+    --code-bg: #2a2520; --code-bg-light: #f0e8d4;
+    --rule: #c8b89a;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; padding: 0 0 60px 0; background: var(--paper);
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(193,80,46,0.04) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(31,95,91,0.04) 0%, transparent 40%);
+    color: var(--ink);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px; line-height: 1.7;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 60px 40px 120px; }
+  .module-header { border-bottom: 3px double var(--ink); padding-bottom: 32px; margin-bottom: 48px; position: relative; }
+  .module-tag {
+    display: inline-block; font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--terracotta-deep); background: var(--paper-deep);
+    padding: 6px 14px; border: 1.5px solid var(--terracotta-deep);
+    border-radius: 2px; margin-bottom: 20px;
+  }
+  .module-title {
+    font-family: 'Fraunces', serif; font-weight: 900; font-size: 56px;
+    line-height: 1.05; margin: 0 0 14px; color: var(--ink); letter-spacing: -0.02em;
+  }
+  .module-title em { font-style: italic; font-weight: 400; color: var(--terracotta); }
+  .module-sub { font-family: 'Caveat', cursive; font-size: 26px; color: var(--ink-soft); margin: 0; }
+  h2 { font-family: 'Fraunces', serif; font-weight: 800; font-size: 32px; margin: 56px 0 18px; color: var(--ink); line-height: 1.15; letter-spacing: -0.01em; }
+  h2::before { content: "§ "; color: var(--terracotta); font-weight: 600; }
+  h3 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 22px; margin: 36px 0 12px; color: var(--teal-deep); letter-spacing: -0.005em; }
+  h4 { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; margin: 28px 0 10px; color: var(--ink-soft); }
+  p { margin: 0 0 18px; }
+  p strong { color: var(--terracotta-deep); font-weight: 600; }
+  p em { color: var(--teal-deep); }
+  blockquote { border-left: 4px solid var(--terracotta); padding: 4px 0 4px 22px; margin: 24px 0; font-style: italic; color: var(--ink-soft); font-size: 18px; }
+  a { color: var(--teal-deep); text-decoration: underline wavy var(--mustard); text-underline-offset: 4px; }
+  code { font-family: 'IBM Plex Mono', monospace; font-size: 0.88em; background: var(--code-bg-light); padding: 1px 6px; border-radius: 3px; color: var(--terracotta-deep); border: 1px solid rgba(0,0,0,0.06); }
+  pre { background: var(--code-bg); color: #e8d9b8; font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; line-height: 1.55; padding: 22px 26px; border-radius: 4px; overflow-x: auto; margin: 24px 0; border-left: 4px solid var(--pytorch); box-shadow: 4px 4px 0 var(--ink); position: relative; }
+  pre::before { content: ">_"; position: absolute; top: 8px; right: 14px; font-size: 11px; color: var(--pytorch); opacity: 0.7; letter-spacing: 0.1em; }
+  pre code { background: transparent; color: inherit; padding: 0; border: none; font-size: inherit; }
+  pre .kw { color: #ff8a65; }
+  pre .str { color: #a5d6a7; }
+  pre .num { color: #ffcc80; }
+  pre .com { color: #8d7d65; font-style: italic; }
+  pre .fn { color: #82b1ff; }
+  pre .ty { color: #ce93d8; }
+  .sticky { background: #fff8a8; background-image: linear-gradient(180deg, #fff8a8 0%, #ffeb7a 100%); padding: 22px 26px; margin: 28px 0; box-shadow: 3px 4px 12px rgba(0,0,0,0.18), inset 0 -8px 14px rgba(0,0,0,0.04); transform: rotate(-0.4deg); font-family: 'Patrick Hand', cursive; font-size: 19px; line-height: 1.5; color: var(--ink); position: relative; }
+  .sticky::before { content: ""; position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 80px; height: 22px; background: rgba(193,80,46,0.5); border-radius: 1px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+  .sticky.pink { background-image: linear-gradient(180deg, #ffd5dc 0%, #ffb8c4 100%); transform: rotate(0.5deg); }
+  .sticky.blue { background-image: linear-gradient(180deg, #d3e9f5 0%, #aed4ec 100%); transform: rotate(-0.6deg); }
+  .sticky.green { background-image: linear-gradient(180deg, #d4ecc8 0%, #b3d99e 100%); transform: rotate(0.3deg); }
+  .sticky strong { color: var(--terracotta-deep); }
+  .brainpower { border: 2.5px solid var(--ink); background: var(--paper-deep); padding: 24px 28px 26px; margin: 32px 0; border-radius: 2px; position: relative; box-shadow: 5px 5px 0 var(--terracotta); }
+  .brainpower::before { content: "BRAIN POWER"; position: absolute; top: -13px; left: 22px; background: var(--terracotta); color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; padding: 4px 12px; letter-spacing: 0.18em; }
+  .brainpower p { margin: 8px 0; font-size: 16px; }
+  .brainpower p:first-child { margin-top: 6px; }
+  .ndq { background: linear-gradient(180deg, #fdf6e3 0%, #f5ead0 100%); border: 1.5px dashed var(--ink-soft); border-radius: 8px; padding: 28px 30px; margin: 36px 0; }
+  .ndq h4 { font-family: 'Fraunces', serif; font-size: 22px; text-transform: none; letter-spacing: 0; color: var(--terracotta-deep); margin: 0 0 18px; border-bottom: 1.5px solid var(--rule); padding-bottom: 8px; }
+  .ndq h4::before { content: "Q&A — "; color: var(--ink-muted); font-style: italic; }
+  .ndq .q { font-family: 'Caveat', cursive; font-size: 22px; color: var(--teal-deep); margin: 14px 0 4px; line-height: 1.3; }
+  .ndq .q::before { content: "Q: "; font-weight: 700; color: var(--terracotta); }
+  .ndq .a { margin: 0 0 16px 14px; padding-left: 14px; border-left: 3px solid var(--mustard); color: var(--ink-soft); font-size: 16px; }
+  .ndq .a::before { content: "A: "; font-weight: 700; color: var(--ink); font-family: 'Fraunces', serif; }
+  .table-wrap { margin: 28px 0; overflow-x: auto; border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--teal); background: #fff; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; font-family: 'Lora', serif; }
+  table caption { font-family: 'Caveat', cursive; font-size: 22px; color: var(--terracotta-deep); padding: 12px 0; text-align: left; caption-side: top; }
+  th { background: var(--ink); color: #fff; text-align: left; padding: 12px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+  td { padding: 12px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--paper-deep); }
+  tr:last-child td { border-bottom: none; }
+  td strong { color: var(--terracotta-deep); }
+  td code { font-size: 12.5px; }
+  .decision { background: #fff; border: 2px solid var(--ink); border-radius: 2px; padding: 24px 28px; margin: 32px 0; box-shadow: 5px 5px 0 var(--mustard); font-family: 'IBM Plex Mono', monospace; font-size: 14px; line-height: 1.8; white-space: pre; overflow-x: auto; color: var(--ink); }
+  .warn { background: #fcecec; border-left: 6px solid var(--terracotta); padding: 18px 22px; margin: 28px 0; border-radius: 0 4px 4px 0; position: relative; }
+  .warn::before { content: "⚠"; position: absolute; top: 14px; right: 18px; font-size: 24px; color: var(--terracotta); }
+  .warn strong { color: var(--terracotta-deep); }
+  .keyidea { background: var(--teal); color: #f6efe1; padding: 26px 30px; margin: 32px 0; border-radius: 2px; font-family: 'Fraunces', serif; font-size: 19px; font-weight: 500; line-height: 1.5; position: relative; box-shadow: 4px 4px 0 var(--ink); }
+  .keyidea::before { content: "★ KEY IDEA"; position: absolute; top: -11px; left: 22px; background: var(--mustard); color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700; padding: 4px 10px; letter-spacing: 0.18em; }
+  .keyidea strong { color: var(--mustard); }
+  .exercise { border: 2px dashed var(--teal-deep); padding: 24px 28px; margin: 36px 0; background: rgba(255,255,255,0.5); border-radius: 2px; }
+  .exercise::before { content: "✎ SHARPEN YOUR PENCIL"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px dotted var(--teal); }
+  .exercise .answer { margin-top: 14px; padding: 14px 18px; background: var(--paper-deep); border-radius: 4px; font-size: 15px; }
+  .exercise .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+  ul, ol { margin: 16px 0; padding-left: 28px; }
+  li { margin: 8px 0; }
+  ul li::marker { color: var(--terracotta); }
+  ol li::marker { color: var(--teal-deep); font-weight: 600; }
+  .dialogue { margin: 28px 0; padding: 20px 24px; background: var(--paper-deep); border-radius: 4px; border-left: 4px solid var(--rose); }
+  .dialogue .speaker { font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--rose); font-weight: 700; display: block; margin-top: 10px; }
+  .dialogue .speaker:first-child { margin-top: 0; }
+  .dialogue .speaker.b { color: var(--teal-deep); }
+  .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin: 28px 0; }
+  .twocol > div { padding: 20px 22px; border-radius: 2px; background: #fff; border: 1.5px solid var(--rule); }
+  .twocol > div h4 { margin-top: 0; }
+  .twocol .good { border-color: var(--teal); border-left: 5px solid var(--teal); }
+  .twocol .bad { border-color: var(--terracotta); border-left: 5px solid var(--terracotta); }
+  .ascii { background: var(--paper-deep); padding: 22px 26px; margin: 28px 0; border: 1.5px solid var(--rule); border-radius: 2px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.5; white-space: pre; overflow-x: auto; color: var(--ink); }
+  .module-footer { margin-top: 80px; padding-top: 28px; border-top: 3px double var(--ink); display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-muted); }
+  .module-footer .num { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 800; color: var(--terracotta); line-height: 1; }
+  .toc { background: #fff; border: 2px solid var(--ink); padding: 30px 40px; margin: 40px 0; box-shadow: 6px 6px 0 var(--teal); }
+  .toc h3 { font-family: 'Fraunces', serif; font-size: 26px; margin: 0 0 20px; color: var(--ink); }
+  .toc ol { columns: 2; column-gap: 40px; padding-left: 24px; }
+  .toc li { font-size: 15px; break-inside: avoid; margin: 4px 0; }
+  .toc li strong { color: var(--terracotta-deep); }
+  .toc .part { font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--teal-deep); margin: 16px 0 6px; column-span: all; border-bottom: 1px dashed var(--rule); padding-bottom: 4px; }
+
+  /* CODE MAGNETS — fridge-magnet style code snippets to be arranged */
+  .magnets { margin: 36px 0; padding: 26px 28px 30px; background: #ede2cc; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--teal-deep); position: relative; }
+  .magnets::before { content: "✦ CODE MAGNETS"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px dotted var(--ink-soft); }
+  .magnets p { margin: 0 0 18px; font-size: 16px; }
+  .magnet-pool { display: flex; flex-wrap: wrap; gap: 10px; padding: 16px; background: #c8c0a8; background-image: linear-gradient(135deg, #c8c0a8 25%, transparent 25%), linear-gradient(225deg, #c8c0a8 25%, transparent 25%), linear-gradient(45deg, #c8c0a8 25%, transparent 25%), linear-gradient(315deg, #c8c0a8 25%, #b5ad95 25%); background-size: 14px 14px; background-position: 7px 0, 7px 0, 0 0, 0 0; border-radius: 6px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.2); margin: 12px 0; min-height: 70px; }
+  .magnet { display: inline-block; background: #fff; padding: 10px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink); border-radius: 3px; box-shadow: 2px 2px 4px rgba(0,0,0,0.25), inset 0 -2px 0 rgba(0,0,0,0.05); border: 1px solid #d8d0b4; transform: rotate(-1deg); transition: transform 0.15s; cursor: default; user-select: all; }
+  .magnet:nth-child(2n) { transform: rotate(1.5deg); background: #fff8e8; }
+  .magnet:nth-child(3n) { transform: rotate(-2deg); background: #f0f5ee; }
+  .magnet:nth-child(5n) { transform: rotate(0.8deg); background: #f5e8e0; }
+  .magnet:hover { transform: rotate(0) scale(1.05); z-index: 2; }
+  .magnets .answer { margin-top: 16px; padding: 14px 18px; background: #fff8d8; border-radius: 4px; font-size: 15px; border-left: 4px solid var(--mustard); }
+  .magnets .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+  .magnets .answer pre { margin: 12px 0 0; }
+
+  /* CHARACTER — anthropomorphized objects with avatar and speech */
+  .character { margin: 30px 0; padding: 20px 22px 22px; background: #fff; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--rose); position: relative; display: grid; grid-template-columns: 80px 1fr; gap: 18px; align-items: start; }
+  .character .avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--mustard); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 900; font-size: 30px; color: var(--ink); border: 2.5px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+  .character.tensor .avatar { background: var(--pytorch); color: #fff; }
+  .character.stride .avatar { background: var(--teal); color: #fff; }
+  .character.storage .avatar { background: var(--mustard); }
+  .character.dtype .avatar { background: var(--rose); color: #fff; }
+  .character.autograd .avatar { background: var(--terracotta); color: #fff; }
+  .character .who { font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--ink-muted); font-weight: 700; margin: 0 0 4px; }
+  .character .name { font-family: 'Fraunces', serif; font-weight: 800; font-size: 22px; color: var(--ink); margin: 0 0 8px; line-height: 1; }
+  .character .says { font-family: 'Lora', serif; font-size: 16px; line-height: 1.55; color: var(--ink); margin: 0; font-style: italic; }
+  .character .says::before { content: '"'; font-family: 'Fraunces', serif; font-size: 28px; color: var(--terracotta); line-height: 0; vertical-align: -8px; margin-right: 4px; }
+  .character .says::after { content: '"'; font-family: 'Fraunces', serif; font-size: 28px; color: var(--terracotta); line-height: 0; vertical-align: -8px; margin-left: 2px; }
+  .character + .character { margin-top: -10px; }
+
+  /* BULLET POINTS — recap section with checklist vibe */
+  .bullet-points { margin: 48px 0 36px; padding: 32px 36px 36px; background: var(--paper-deep); border: 3px solid var(--ink); border-radius: 4px; position: relative; box-shadow: 6px 6px 0 var(--mustard); }
+  .bullet-points::before { content: "BULLET POINTS"; position: absolute; top: -16px; left: 28px; background: var(--ink); color: var(--mustard); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; padding: 6px 16px; letter-spacing: 0.2em; }
+  .bullet-points h3 { font-family: 'Caveat', cursive; font-size: 28px; color: var(--terracotta); margin: 0 0 16px; }
+  .bullet-points ul { list-style: none; padding-left: 0; margin: 0; }
+  .bullet-points ul li { position: relative; padding: 6px 0 6px 38px; font-size: 16px; line-height: 1.5; border-bottom: 1px dashed var(--rule); }
+  .bullet-points ul li:last-child { border-bottom: none; }
+  .bullet-points ul li::before { content: ""; position: absolute; left: 6px; top: 11px; width: 18px; height: 18px; border: 2px solid var(--terracotta); border-radius: 3px; background: #fff; }
+  .bullet-points ul li::after { content: "✓"; position: absolute; left: 9px; top: 6px; font-family: 'Caveat', cursive; font-size: 22px; font-weight: 700; color: var(--terracotta); }
+  .bullet-points ul li strong { color: var(--terracotta-deep); }
+  .bullet-points ul li code { font-size: 13px; }
+
+  /* MATCHING — "Who Does What?" two-column matching exercise */
+  .matching { margin: 36px 0; padding: 26px 28px 28px; background: #fff; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 4px 4px 0 var(--teal); position: relative; }
+  .matching::before { content: "✦ WHO DOES WHAT?"; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--teal-deep); margin-bottom: 6px; padding-bottom: 10px; border-bottom: 2px dotted var(--ink-soft); }
+  .matching p.intro { margin: 8px 0 18px; font-size: 15px; font-style: italic; color: var(--ink-soft); }
+  .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1.5px solid var(--ink); }
+  .match-grid > div { padding: 12px 14px; border-bottom: 1px solid var(--rule); font-size: 14.5px; vertical-align: middle; display: flex; align-items: center; }
+  .match-grid > div:nth-child(4n+1), .match-grid > div:nth-child(4n+2) { background: var(--paper-deep); }
+  .match-grid > div:nth-child(2n+1) { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--terracotta-deep); border-right: 1.5px dashed var(--ink); }
+  .match-grid > div:nth-child(2n) { color: var(--ink); }
+  .match-grid > div:nth-last-child(-n+2) { border-bottom: none; }
+  .match-grid .header { background: var(--ink) !important; color: #fff !important; font-family: 'IBM Plex Mono', monospace !important; font-size: 11px !important; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; padding: 10px 14px; border-bottom: none; }
+  .matching .answer { margin-top: 16px; padding: 14px 18px; background: var(--paper-deep); border-radius: 4px; font-size: 15px; }
+  .matching .answer summary { cursor: pointer; font-family: 'Caveat', cursive; font-size: 20px; color: var(--terracotta); }
+
+  @media (max-width: 720px) {
+    .wrap { padding: 40px 22px 80px; }
+    .module-title { font-size: 40px; }
+    .twocol { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .character { grid-template-columns: 56px 1fr; gap: 12px; }
+    .character .avatar { width: 56px; height: 56px; font-size: 22px; }
+    .match-grid { grid-template-columns: 1fr 1fr; font-size: 13px; }
+  }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+<div class="module-header">
+  <div class="module-tag">Part I · Module 01</div>
+  <h1 class="module-title">Tensors, <em>from scratch</em></h1>
+  <p class="module-sub">— what they actually are, why <code>.contiguous()</code> exists, and the "view vs copy" mental model that will save you a hundred bugs</p>
+</div>
+
+<p>Most PyTorch tutorials begin with: <em>"a tensor is like a NumPy array but it can run on a GPU."</em> That sentence is true. It is also useless. It tells you nothing about why your code crashed at 3am with a <code>view size is not compatible</code> error, or why <code>x.transpose(0,1).view(-1)</code> screams at you while <code>x.transpose(0,1).reshape(-1)</code> is fine.</p>
+
+<p>So we're going to start one level deeper. We'll build a model in your head of what a tensor <em>actually is</em>, in memory, and then everything else — broadcasting, views, contiguity, strides, advanced indexing — will fall out of that model with very little memorization.</p>
+
+<div class="keyidea">
+A tensor is <strong>five things</strong>: a chunk of contiguous memory (the <em>storage</em>), plus a recipe for interpreting that chunk as a multi-dimensional array (<em>shape</em>, <em>stride</em>, <em>offset</em>, <em>dtype</em>), plus the <em>device</em> the chunk lives on. Most "weird tensor behavior" is unsurprising once you keep these five things in your head.
+</div>
+
+<h2>Meet the cast</h2>
+
+<p>Before we dissect a tensor, let's hear from the players themselves. Each one is going to play a role in this story, so it helps to put a face to the name.</p>
+
+<div class="character storage">
+  <div class="avatar">S</div>
+  <div>
+    <p class="who">Storage</p>
+    <p class="name">"Hi, I'm a flat buffer of bytes."</p>
+    <p class="says">I'm just a chunk of memory. I don't know whether I'm a 3×4 matrix or a 12-element vector. That's not my job. My job is to hold bytes. Talk to Shape if you want opinions.</p>
+  </div>
+</div>
+
+<div class="character tensor">
+  <div class="avatar">T</div>
+  <div>
+    <p class="who">Tensor</p>
+    <p class="name">"I'm the face of the operation."</p>
+    <p class="says">When you call <code>x.shape</code> or <code>x[2, 3]</code>, you're talking to me. But I don't store any of the actual numbers. I just hold a reference to Storage and a recipe for how to read it. Without my friends Shape, Stride, and Offset, I'd be useless.</p>
+  </div>
+</div>
+
+<div class="character stride">
+  <div class="avatar">→</div>
+  <div>
+    <p class="who">Stride</p>
+    <p class="name">"I'm the recipe."</p>
+    <p class="says">If you want element <code>[2, 3]</code>, ask me where to look in Storage. I'll say: "go to byte <code>(2 × my_first_value + 3 × my_second_value) × dtype_size</code>." That's it. I'm the secret to why <code>transpose</code> is free. Change me and the same Storage looks completely different.</p>
+  </div>
+</div>
+
+<div class="character dtype">
+  <div class="avatar">#</div>
+  <div>
+    <p class="who">Dtype</p>
+    <p class="name">"I tell you how big each number is."</p>
+    <p class="says">Storage just sees bytes. I'm the one who says "every 4 of these bytes is one float32" or "every 8 is one int64." Change me and you reinterpret the same memory as different numbers. This is more dangerous than it sounds.</p>
+  </div>
+</div>
+
+<p>That's the cast. Storage holds the bytes. Tensor is the public face. Stride is the recipe for navigating Storage. Dtype tells you the unit. Now let's watch them work together.</p>
+
+<h2>The five-thing model</h2>
+
+<p>Open a Python REPL — actually do this — and let's poke a tensor with a stick.</p>
+
+<pre><code><span class="kw">import</span> torch
+
+x = torch.arange(<span class="num">12</span>).reshape(<span class="num">3</span>, <span class="num">4</span>)
+<span class="fn">print</span>(x)
+<span class="com"># tensor([[ 0,  1,  2,  3],</span>
+<span class="com">#         [ 4,  5,  6,  7],</span>
+<span class="com">#         [ 8,  9, 10, 11]])</span>
+
+<span class="fn">print</span>(x.shape)              <span class="com"># torch.Size([3, 4])</span>
+<span class="fn">print</span>(x.stride())           <span class="com"># (4, 1)</span>
+<span class="fn">print</span>(x.storage_offset())   <span class="com"># 0</span>
+<span class="fn">print</span>(x.dtype)              <span class="com"># torch.int64</span>
+<span class="fn">print</span>(x.device)             <span class="com"># cpu</span>
+<span class="fn">print</span>(x.untyped_storage())  <span class="com"># 96 bytes (12 * 8)</span></code></pre>
+
+<p>Five attributes. Five things you need to keep in your head:</p>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c1502e"/>
+    </marker>
+  </defs>
+  <text x="20" y="40" font-size="14" font-weight="700" fill="#1a1612">storage (the bytes)</text>
+  <g transform="translate(20, 50)">
+    <g font-size="13" text-anchor="middle">
+      <rect x="0"   y="0" width="50" height="40" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="25"  y="26" fill="#1a1612">0</text>
+      <rect x="50"  y="0" width="50" height="40" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="75"  y="26" fill="#1a1612">1</text>
+      <rect x="100" y="0" width="50" height="40" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="125" y="26" fill="#1a1612">2</text>
+      <rect x="150" y="0" width="50" height="40" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="175" y="26" fill="#1a1612">3</text>
+      <rect x="200" y="0" width="50" height="40" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="225" y="26" fill="#1a1612">4</text>
+      <rect x="250" y="0" width="50" height="40" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="275" y="26" fill="#1a1612">5</text>
+      <rect x="300" y="0" width="50" height="40" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="325" y="26" fill="#1a1612">6</text>
+      <rect x="350" y="0" width="50" height="40" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="375" y="26" fill="#1a1612">7</text>
+      <rect x="400" y="0" width="50" height="40" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="425" y="26" fill="#1a1612">8</text>
+      <rect x="450" y="0" width="50" height="40" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="475" y="26" fill="#1a1612">9</text>
+      <rect x="500" y="0" width="50" height="40" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="525" y="26" fill="#1a1612">10</text>
+      <rect x="550" y="0" width="50" height="40" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="575" y="26" fill="#1a1612">11</text>
+    </g>
+    <g font-size="10" text-anchor="middle" fill="#6b5d4f">
+      <text x="25" y="58">[0]</text>
+      <text x="225" y="58">[4]</text>
+      <text x="425" y="58">[8]</text>
+    </g>
+  </g>
+  <g transform="translate(20, 130)">
+    <path d="M 0 0 L 0 -10 L 200 -10 L 200 0" fill="none" stroke="#c1502e" stroke-width="2"/>
+    <text x="100" y="22" font-size="13" font-weight="700" fill="#c1502e" text-anchor="middle">row 0 → stride[0]=4</text>
+    <path d="M 200 0 L 200 -10 L 400 -10 L 400 0" fill="none" stroke="#1f5f5b" stroke-width="2"/>
+    <text x="300" y="22" font-size="13" font-weight="700" fill="#1f5f5b" text-anchor="middle">row 1 → +4 elements</text>
+    <path d="M 400 0 L 400 -10 L 600 -10 L 600 0" fill="none" stroke="#d4a017" stroke-width="2"/>
+    <text x="500" y="22" font-size="13" font-weight="700" fill="#8c6512" text-anchor="middle">row 2 → +4 elements</text>
+  </g>
+  <text x="350" y="195" font-size="14" font-weight="700" fill="#1a1612" text-anchor="middle">how YOU see it: shape (3, 4) with stride (4, 1)</text>
+  <g transform="translate(220, 210)" font-size="14" text-anchor="middle">
+    <rect x="0"   y="0"  width="60" height="32" fill="#f6efe1" stroke="#c1502e" stroke-width="1.5"/><text x="30"  y="22" fill="#1a1612">0</text>
+    <rect x="60"  y="0"  width="60" height="32" fill="#f6efe1" stroke="#c1502e" stroke-width="1.5"/><text x="90"  y="22" fill="#1a1612">1</text>
+    <rect x="120" y="0"  width="60" height="32" fill="#f6efe1" stroke="#c1502e" stroke-width="1.5"/><text x="150" y="22" fill="#1a1612">2</text>
+    <rect x="180" y="0"  width="60" height="32" fill="#f6efe1" stroke="#c1502e" stroke-width="1.5"/><text x="210" y="22" fill="#1a1612">3</text>
+    <rect x="0"   y="32" width="60" height="32" fill="#f6efe1" stroke="#1f5f5b" stroke-width="1.5"/><text x="30"  y="54" fill="#1a1612">4</text>
+    <rect x="60"  y="32" width="60" height="32" fill="#f6efe1" stroke="#1f5f5b" stroke-width="1.5"/><text x="90"  y="54" fill="#1a1612">5</text>
+    <rect x="120" y="32" width="60" height="32" fill="#f6efe1" stroke="#1f5f5b" stroke-width="1.5"/><text x="150" y="54" fill="#1a1612">6</text>
+    <rect x="180" y="32" width="60" height="32" fill="#f6efe1" stroke="#1f5f5b" stroke-width="1.5"/><text x="210" y="54" fill="#1a1612">7</text>
+    <rect x="0"   y="64" width="60" height="32" fill="#f6efe1" stroke="#d4a017" stroke-width="1.5"/><text x="30"  y="86" fill="#1a1612">8</text>
+    <rect x="60"  y="64" width="60" height="32" fill="#f6efe1" stroke="#d4a017" stroke-width="1.5"/><text x="90"  y="86" fill="#1a1612">9</text>
+    <rect x="120" y="64" width="60" height="32" fill="#f6efe1" stroke="#d4a017" stroke-width="1.5"/><text x="150" y="86" fill="#1a1612">10</text>
+    <rect x="180" y="64" width="60" height="32" fill="#f6efe1" stroke="#d4a017" stroke-width="1.5"/><text x="210" y="86" fill="#1a1612">11</text>
+  </g>
+  <text x="500" y="260" font-family="'Caveat', cursive" font-size="20" fill="#c1502e">same bytes,</text>
+  <text x="500" y="282" font-family="'Caveat', cursive" font-size="20" fill="#c1502e">different recipe!</text>
+  <path d="M 490 260 Q 460 250 440 250" stroke="#c1502e" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+</svg>
+</div>
+
+<p>Look at the diagram. Storage on top is just bytes. The brackets show how Stride <code>(4, 1)</code> chops it into rows: jump 4 to start a new row, jump 1 to advance a column. The <em>matrix you see</em> is just the bytes plus the recipe.</p>
+
+<ol>
+  <li><strong>Storage</strong> — a flat buffer of 12 int64s sitting in CPU memory. 96 bytes, period. This buffer doesn't know it's a 3×4 matrix.</li>
+  <li><strong>Shape</strong> — <code>(3, 4)</code>. The dimensions you logically want.</li>
+  <li><strong>Stride</strong> — <code>(4, 1)</code>. To advance one row, jump 4 elements in storage. To advance one column, jump 1.</li>
+  <li><strong>Offset</strong> — 0. Start at element 0 of the storage.</li>
+  <li><strong>Dtype</strong> — <code>int64</code>. Each element is 8 bytes.</li>
+</ol>
+
+<p>That's it. Everything PyTorch does to a tensor is some combination of (a) reading/writing the storage, (b) changing the shape/stride/offset to reinterpret the storage, or (c) allocating a new storage. The whole framework is built on this distinction.</p>
+
+<h3>Why strides are the secret to everything</h3>
+
+<p>Here is the trick that makes PyTorch fast. Most reshape-y operations don't touch memory at all — they just rewrite the stride. Watch:</p>
+
+<pre><code>y = x.transpose(<span class="num">0</span>, <span class="num">1</span>)            <span class="com"># swap rows and columns</span>
+<span class="fn">print</span>(y)
+<span class="com"># tensor([[ 0,  4,  8],</span>
+<span class="com">#         [ 1,  5,  9],</span>
+<span class="com">#         [ 2,  6, 10],</span>
+<span class="com">#         [ 3,  7, 11]])</span>
+
+<span class="fn">print</span>(y.shape)               <span class="com"># torch.Size([4, 3])</span>
+<span class="fn">print</span>(y.stride())            <span class="com"># (1, 4)   ← swapped!</span>
+<span class="fn">print</span>(y.untyped_storage().data_ptr() == x.untyped_storage().data_ptr())  <span class="com"># True</span></code></pre>
+
+<div class="character stride">
+  <div class="avatar">→</div>
+  <div>
+    <p class="who">Stride, again</p>
+    <p class="name">"Want to transpose? Just swap me."</p>
+    <p class="says">Look — none of the bytes moved. PyTorch just handed you a new Tensor pointing at the same Storage, but with my values flipped: <code>(1, 4)</code> instead of <code>(4, 1)</code>. Now to advance one row you jump 1; to advance one column, jump 4. Same data, different journey. <em>That's why transpose is free.</em></p>
+  </div>
+</div>
+
+<div class="brainpower">
+<p><strong>Pause.</strong> Without running anything: if I do <code>y[0, 1]</code>, what storage offset does PyTorch read?</p>
+<p>(stride is <code>(1, 4)</code>, offset is 0, indexing is row 0, col 1) → <em>0·1 + 1·4 = 4</em>. So it reads <code>storage[4]</code>, which is the value 4. That matches <code>y[0,1] == 4</code>. ✓</p>
+<p>That tiny computation — <code>offset + sum(index_i × stride_i)</code> — is the heart of every tensor read in PyTorch.</p>
+</div>
+
+<h2>View vs copy: the bug factory</h2>
+
+<p>Operations that <em>just rewrite stride/shape/offset</em> are called <strong>views</strong>. They share storage with the parent. Operations that <em>allocate new storage and copy</em> are called <strong>copies</strong>. Knowing which is which prevents two classes of bugs: surprise mutations (you wrote to a view and changed someone else's data) and surprise crashes (you tried to take a view that's mathematically impossible).</p>
+
+<div class="matching">
+<p class="intro">Match each operation to what it does to memory.</p>
+
+<div class="match-grid">
+  <div class="header">Operation</div>
+  <div class="header">What does it do?</div>
+
+  <div>x.view(-1)</div>
+  <div>A. Always allocates new storage and copies.</div>
+
+  <div>x.transpose(0, 1)</div>
+  <div>B. Rewrites stride only — no memory touched. Errors if not contiguous.</div>
+
+  <div>x.clone()</div>
+  <div>C. Returns a view with stride 0 in the broadcast dimensions.</div>
+
+  <div>x.reshape(-1)</div>
+  <div>D. Swaps two stride values. No bytes move. Result is non-contiguous.</div>
+
+  <div>x.expand(3, 4)</div>
+  <div>E. Tries to make a view; copies if it has to.</div>
+
+  <div>x[2:5]</div>
+  <div>F. Shifts the storage offset and creates a view.</div>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<p>
+<strong>x.view(-1)</strong> → B (rewrites stride, errors if non-contiguous)<br>
+<strong>x.transpose(0, 1)</strong> → D (swaps stride values, no bytes move)<br>
+<strong>x.clone()</strong> → A (always allocates and copies)<br>
+<strong>x.reshape(-1)</strong> → E (view if possible, copy if necessary)<br>
+<strong>x.expand(3, 4)</strong> → C (stride 0 in broadcast dims)<br>
+<strong>x[2:5]</strong> → F (shifts offset, view)
+</p>
+<p>If you got <em>view</em> and <em>reshape</em> mixed up: the difference is that <code>view</code> is strict — it refuses to copy. <code>reshape</code> is permissive — it'll silently copy when needed. Same outcome on contiguous tensors; very different on transposed ones.</p>
+</details>
+</div>
+
+<p>Here's the surprise-mutation trap, lived through by every PyTorch user at some point:</p>
+
+<pre><code>weights = torch.randn(<span class="num">4</span>, <span class="num">4</span>)
+first_row = weights[<span class="num">0</span>]            <span class="com"># view!</span>
+first_row.zero_()                <span class="com"># in-place</span>
+<span class="fn">print</span>(weights[<span class="num">0</span>])             <span class="com"># tensor([0., 0., 0., 0.]) ← weights got nuked</span></code></pre>
+
+<p>If you wanted an independent copy, you needed <code>weights[0].clone()</code>. The leading rule of thumb: <em>any tensor you got from slicing or reshaping is probably a view; if you mean to mutate it, mutate it on purpose.</em></p>
+
+<div class="warn">
+<strong>Common foot-gun:</strong> the in-place ops (<code>add_</code>, <code>mul_</code>, <code>zero_</code>, <code>copy_</code>, etc., the trailing-underscore family) write through views. So <code>x.view(-1).zero_()</code> zeros <em>all of x</em>. This is a feature, not a bug — but it's a feature that has chewed off many fingers.
+</div>
+
+<h2>Contiguity: the secret rule of <code>view</code></h2>
+
+<p>Why does <code>x.transpose(0,1).view(-1)</code> raise <em>"view size is not compatible with input tensor's size and stride"</em>? Because <code>view</code> requires a single contiguous chunk of storage that matches the requested shape. After a transpose, the elements you'd need to walk through in order to read row-by-row are <em>not</em> in linear order in storage:</p>
+
+<div class="ascii">x  shape (3,4) stride (4,1):
+   reading row-major: storage[0], [1], [2], [3], [4], [5]...      ✓ linear
+
+x.transpose(0,1)  shape (4,3) stride (1,4):
+   reading row-major: storage[0], [4], [8], [1], [5], [9]...      ✗ jumpy</div>
+
+<p>A tensor is <em>contiguous</em> when reading it in row-major order matches the linear order in storage. Formally: <code>stride[i] == prod(shape[i+1:])</code> for the row-major (C-order) case. Transposes break that. You have two options:</p>
+
+<pre><code><span class="com"># Option A: view requires contiguity, so make it so</span>
+y = x.transpose(<span class="num">0</span>, <span class="num">1</span>).contiguous().view(-<span class="num">1</span>)
+
+<span class="com"># Option B: reshape will quietly copy if needed</span>
+y = x.transpose(<span class="num">0</span>, <span class="num">1</span>).reshape(-<span class="num">1</span>)</code></pre>
+
+<p>People often ask "why doesn't <code>view</code> just call <code>contiguous</code> for me?" Because hidden copies kill performance. <code>view</code> is the strict version: it promises zero memory traffic. If you want the friendly version, ask for <code>reshape</code>. The framework is being honest with you.</p>
+
+<h2>Code Magnets</h2>
+
+<p>Time to test your understanding. Below is a tray of code magnets. Your job: arrange them in your head (or on paper) to produce a tensor whose storage is the numbers <code>0..11</code> but whose <em>shape</em> is <code>(4, 3)</code> in transposed-looking order — that is, when you print it, you see:</p>
+
+<pre><code>tensor([[ 0,  4,  8],
+        [ 1,  5,  9],
+        [ 2,  6, 10],
+        [ 3,  7, 11]])</code></pre>
+
+<div class="magnets">
+<p>Drag these magnets (mentally) into a single Python statement. Use exactly four of them; one is a red herring.</p>
+
+<div class="magnet-pool">
+  <span class="magnet">torch.arange(12)</span>
+  <span class="magnet">.reshape(3, 4)</span>
+  <span class="magnet">.reshape(4, 3)</span>
+  <span class="magnet">.transpose(0, 1)</span>
+  <span class="magnet">.contiguous()</span>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<p>The arrangement that works:</p>
+<pre><code>torch.arange(<span class="num">12</span>).reshape(<span class="num">3</span>, <span class="num">4</span>).transpose(<span class="num">0</span>, <span class="num">1</span>).contiguous()</code></pre>
+<p>The red herring is <code>.reshape(4, 3)</code> — it would give you the wrong layout (numbers <code>0..11</code> in row-major, not the transposed pattern). The trick is that <code>reshape(3, 4)</code> first lays out as <code>[[0,1,2,3], [4,5,6,7], [8,9,10,11]]</code>, then <code>transpose(0, 1)</code> swaps stride to <code>(1, 4)</code> giving the desired output. <code>.contiguous()</code> at the end is optional unless you need the bytes physically reordered for a downstream kernel.</p>
+</details>
+</div>
+
+<div class="ndq">
+<h4>About contiguity</h4>
+
+<p class="q">Should I just always call <code>.contiguous()</code> to be safe?</p>
+<p class="a">No. <code>.contiguous()</code> is a copy if the tensor isn't already contiguous, and the cost scales with tensor size. In a tight inner loop on a 1-billion-element tensor, that's serious. Use <code>reshape</code> when you'd otherwise have written <code>contiguous().view(...)</code>; let PyTorch decide.</p>
+
+<p class="q">Why does the error message say "size and stride"? My size <em>fits</em>.</p>
+<p class="a">Because <code>view</code> doesn't just check element count. It checks whether you can <em>walk the new shape</em> without leaving storage in row-major order. After a transpose, you can't. The error is technically correct but the wording trips everyone up.</p>
+
+<p class="q">Is there a way to ask "is this a view of that?"</p>
+<p class="a">There's no public API for "view of," but you can check storage identity: <code>a.untyped_storage().data_ptr() == b.untyped_storage().data_ptr()</code>. If those match, they share storage. They might still be looking at non-overlapping regions, but you've at least narrowed it down.</p>
+</div>
+
+<h2>Stride 0: the broadcasting trick</h2>
+
+<p>Now for a beautiful piece of engineering. What does <code>x.expand(3, 4)</code> do when <code>x</code> is a <code>(1, 4)</code> tensor?</p>
+
+<pre><code>x = torch.tensor([[<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>]])      <span class="com"># shape (1, 4)</span>
+y = x.expand(<span class="num">3</span>, <span class="num">4</span>)
+<span class="fn">print</span>(y)
+<span class="com"># tensor([[10, 20, 30, 40],</span>
+<span class="com">#         [10, 20, 30, 40],</span>
+<span class="com">#         [10, 20, 30, 40]])</span>
+
+<span class="fn">print</span>(y.shape)        <span class="com"># torch.Size([3, 4])</span>
+<span class="fn">print</span>(y.stride())     <span class="com"># (0, 1)   ← zero!</span></code></pre>
+
+<p>Stride zero. To advance one row, jump <em>zero</em> elements in storage. The matrix lies. There aren't 12 elements; there are still only 4. The view just keeps re-reading them. This is how broadcasting works under the hood — duplication is virtual, free, and lazy.</p>
+
+<p>This is also why you sometimes see "broadcasting was much faster than I expected" results. There's no copy; you're just reading the same cache lines several times. Hardware loves that.</p>
+
+<div class="sticky blue">
+<strong>Whiteboard tattoo:</strong> stride 0 = "this dimension lies; it's a single value pretending to be many." If you ever see <code>(0, 1, 0)</code> in a stride, broadcasting happened. It's not a bug.
+</div>
+
+<h2>Creating tensors: the menu</h2>
+
+<p>You will create tensors a thousand different ways across your career. Here is the menu in roughly the order you'll need it.</p>
+
+<pre><code><span class="com"># From Python data</span>
+torch.tensor([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>])              <span class="com"># infers dtype (int64 here)</span>
+torch.tensor([<span class="num">1.0</span>, <span class="num">2.0</span>, <span class="num">3.0</span>])          <span class="com"># float32</span>
+torch.tensor([[<span class="num">1</span>, <span class="num">2</span>], [<span class="num">3</span>, <span class="num">4</span>]], dtype=torch.float32)
+
+<span class="com"># Shape-based factories</span>
+torch.zeros(<span class="num">3</span>, <span class="num">4</span>)
+torch.ones(<span class="num">3</span>, <span class="num">4</span>)
+torch.empty(<span class="num">3</span>, <span class="num">4</span>)                    <span class="com"># UNINITIALIZED — garbage values, fast</span>
+torch.full((<span class="num">3</span>, <span class="num">4</span>), <span class="num">3.14</span>)
+torch.eye(<span class="num">5</span>)                          <span class="com"># identity matrix</span>
+
+<span class="com"># Ranges</span>
+torch.arange(<span class="num">10</span>)                       <span class="com"># 0..9</span>
+torch.arange(<span class="num">2</span>, <span class="num">10</span>, <span class="num">2</span>)                  <span class="com"># 2,4,6,8</span>
+torch.linspace(<span class="num">0</span>, <span class="num">1</span>, <span class="num">100</span>)               <span class="com"># 100 evenly spaced values</span>
+
+<span class="com"># Random</span>
+torch.rand(<span class="num">3</span>, <span class="num">4</span>)                      <span class="com"># uniform [0, 1)</span>
+torch.randn(<span class="num">3</span>, <span class="num">4</span>)                     <span class="com"># standard normal</span>
+torch.randint(<span class="num">0</span>, <span class="num">10</span>, (<span class="num">3</span>, <span class="num">4</span>))            <span class="com"># integers in [0, 10)</span>
+
+<span class="com"># Match an existing tensor's shape/dtype/device</span>
+torch.zeros_like(x)
+torch.randn_like(x)
+torch.full_like(x, <span class="num">7</span>)</code></pre>
+
+<p>The <code>_like</code> family is underused. When you're allocating intermediate buffers in a model, <code>torch.zeros_like(x)</code> is almost always more correct than <code>torch.zeros(x.shape)</code> — the first respects dtype <em>and</em> device automatically. The second silently allocates on CPU even if <code>x</code> is on GPU.</p>
+
+<div class="warn">
+<strong><code>torch.empty</code> gives you garbage.</strong> It's faster than <code>zeros</code> because it skips the memset, but the contents are whatever was previously in that memory. It's correct only when you're about to overwrite every element. Beginners sometimes train models for hours wondering why loss is NaN; they used <code>empty</code> as if it were <code>zeros</code> and the optimizer choked on uninitialized values.
+</div>
+
+<h2>Dtypes you actually use</h2>
+
+<p>PyTorch has more dtypes than you'll ever need. The ones that matter:</p>
+
+<div class="table-wrap">
+<table>
+<caption>The dtypes that earn their keep</caption>
+<thead><tr><th>Dtype</th><th>Bytes</th><th>Use it for…</th></tr></thead>
+<tbody>
+<tr><td><code>torch.float32</code> (default)</td><td>4</td><td>The safe choice for training. Models train, gradients are stable.</td></tr>
+<tr><td><code>torch.float16</code> (half)</td><td>2</td><td>Speed/memory wins on GPU, but narrow range — overflows easily.</td></tr>
+<tr><td><code>torch.bfloat16</code></td><td>2</td><td>Same range as fp32, less precision. Usually beats fp16 for training.</td></tr>
+<tr><td><code>torch.float64</code></td><td>8</td><td>Scientific computing, gradcheck. Almost never for training.</td></tr>
+<tr><td><code>torch.int64</code> (long, default int)</td><td>8</td><td>Indices, labels.</td></tr>
+<tr><td><code>torch.int32</code> / <code>int8</code></td><td>4 / 1</td><td>Quantization, packed embeddings.</td></tr>
+<tr><td><code>torch.bool</code></td><td>1</td><td>Masks. <em>Not</em> packed bits — each is a byte.</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Module 03 will dig into fp16 vs bf16 properly — for now, just internalize that <strong>fp32 is the default and you should not change it without thinking</strong>.</p>
+
+<h2>Devices: cpu, cuda, mps</h2>
+
+<p>Every tensor lives on exactly one device. Operations between tensors require them on the same device — or you get the world's most explicit error.</p>
+
+<pre><code>x = torch.randn(<span class="num">3</span>, <span class="num">4</span>)
+y = x.to(<span class="str">'cuda'</span>)            <span class="com"># or x.cuda(), or x.to(0)</span>
+z = x + y                  <span class="com"># RuntimeError: Expected all tensors to be on same device</span>
+
+<span class="com"># Best practice: pick a device once, propagate it</span>
+device = torch.device(<span class="str">'cuda'</span> <span class="kw">if</span> torch.cuda.is_available() <span class="kw">else</span> <span class="str">'cpu'</span>)
+x = torch.randn(<span class="num">3</span>, <span class="num">4</span>, device=device)
+y = torch.zeros_like(x)            <span class="com"># inherits device, dtype</span></code></pre>
+
+<p>The <code>.to()</code> method is the universal mover — it handles device, dtype, or both: <code>x.to(device='cuda', dtype=torch.float16)</code>. It's smart enough to be a no-op if the tensor is already where you asked.</p>
+
+<p>One subtlety: <code>.to()</code> on a CPU→GPU move is asynchronous if non-blocking is enabled and the source is in pinned memory. We'll get to that in Module 03 and Module 13. For now, just know <code>x.cuda()</code> and <code>x.to('cuda')</code> are the same and you can use either.</p>
+
+<h2>Mutating tensors: the in-place rules</h2>
+
+<p>PyTorch has two flavors of most operations: out-of-place (returns a new tensor) and in-place (modifies the tensor, marked with a trailing underscore). They look almost identical:</p>
+
+<pre><code>x = torch.tensor([<span class="num">1.0</span>, <span class="num">2.0</span>, <span class="num">3.0</span>])
+
+y = x.add(<span class="num">1.0</span>)         <span class="com"># out-of-place: y is new, x unchanged</span>
+x.add_(<span class="num">1.0</span>)            <span class="com"># in-place: x mutated, returns x</span>
+
+x[<span class="num">0</span>] = <span class="num">100</span>             <span class="com"># also in-place</span>
+x.copy_(y)             <span class="com"># also in-place — copies y's data into x's storage</span></code></pre>
+
+<p>In-place ops save memory (no new allocation), but they have two costs:</p>
+
+<ol>
+  <li><strong>Autograd hates them.</strong> If a tensor is needed for the backward pass and you mutate it in place, PyTorch may either error or compute wrong gradients. The framework tries to detect this with version counters, but the rule is: don't mutate intermediate tensors during forward.</li>
+  <li><strong>They write through views.</strong> If you got the tensor from slicing, mutating it changes the parent. Sometimes this is what you want; often it isn't.</li>
+</ol>
+
+<div class="character autograd">
+  <div class="avatar">∂</div>
+  <div>
+    <p class="who">Autograd (eavesdropping)</p>
+    <p class="name">"Just a heads-up about views."</p>
+    <p class="says">When Tensor and Storage chat about <em>views</em>, I'm the one who has to deal with the consequences. If you mutate a view in-place — like <code>x[0].zero_()</code> — that's a write to the parent's Storage, and I might need its <em>old</em> value for the backward pass. So I track version counters. If a Storage has been bumped, I refuse to compute the gradient for the stale value. We'll talk more in Module 4. For now, just know: <em>in-place writes through views are how I learn to mistrust you</em>.</p>
+  </div>
+</div>
+
+<div class="dialogue">
+<span class="speaker">JUNIOR</span>I want to set all the negatives in <code>x</code> to zero. <code>x[x &lt; 0] = 0</code>?
+<span class="speaker b">SENIOR</span>That works. It's an in-place write through a boolean mask. Just be aware: if <code>x</code> needs gradients, that's an in-place op and you might get yelled at by autograd.
+<span class="speaker">JUNIOR</span>Alternative?
+<span class="speaker b">SENIOR</span><code>x = x.clamp(min=0)</code>. Out-of-place, autograd-friendly, single line. <code>F.relu(x)</code> or <code>x.relu()</code> also.
+</div>
+
+<h2>Putting the model together: a worked debug</h2>
+
+<p>Here's the kind of bug you'll spot in 30 seconds once you have the five-thing model.</p>
+
+<pre><code>x = torch.randn(<span class="num">8</span>, <span class="num">3</span>, <span class="num">224</span>, <span class="num">224</span>)              <span class="com"># NCHW image batch</span>
+x_nhwc = x.permute(<span class="num">0</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">1</span>)               <span class="com"># to channels-last</span>
+
+<span class="com"># Pass to a layer that expects channels-last bytes contiguous</span>
+out = some_kernel(x_nhwc)
+<span class="com"># Throws: "expected contiguous input"</span></code></pre>
+
+<p>The <em>shape</em> of <code>x_nhwc</code> is right — <code>(8, 224, 224, 3)</code>, channels-last. But the <em>stride</em> is still the old (NCHW) stride, just permuted. The bytes in memory are not in NHWC order. You either need <code>x_nhwc.contiguous()</code>, or use the proper memory format API: <code>x.contiguous(memory_format=torch.channels_last)</code>, which lays out the bytes for real.</p>
+
+<p>Notice how the bug isn't about <em>logic</em>. The math is correct. The bug is that you assumed permute physically reorders memory, and you're now feeding a kernel a buffer it doesn't recognize. The five-thing model spots this immediately.</p>
+
+<h2>Tiny exercises that bake the model in</h2>
+
+<div class="exercise">
+<p><strong>1.</strong> What's the stride of <code>torch.zeros(2, 3, 5)</code> in row-major order? Compute it before checking.</p>
+<details class="answer"><summary>show answer</summary>
+<p>For row-major (C-order), <code>stride[i] = prod(shape[i+1:])</code>. So shape <code>(2, 3, 5)</code> gives stride <code>(15, 5, 1)</code>: advance one in dim-0 means skipping a whole 3×5=15 plane; one in dim-1 skips 5; one in dim-2 skips 1.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>2.</strong> I do <code>x = torch.arange(24).reshape(2, 3, 4); y = x.permute(2, 0, 1)</code>. What are <code>y.shape</code> and <code>y.stride()</code>?</p>
+<details class="answer"><summary>show answer</summary>
+<p>Shape <code>(4, 2, 3)</code>. Original stride was <code>(12, 4, 1)</code>. Permuting <code>(2, 0, 1)</code> reorders the strides the same way: <code>(1, 12, 4)</code>. Verify mentally: to advance one in <em>new dim 0</em> (which was old dim 2), jump 1; to advance one in new dim 1 (old dim 0), jump 12; new dim 2 (old dim 1) jumps 4.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>3.</strong> I have <code>x = torch.randn(3, 4)</code>. I want to add a fifth column of zeros to get a (3, 5) tensor. View, reshape, or new allocation?</p>
+<details class="answer"><summary>show answer</summary>
+<p><strong>New allocation.</strong> No combination of stride/shape/offset can describe a tensor whose last column is zero while the rest are <code>x</code>'s data — the zeros aren't in <code>x</code>'s storage. You need <code>torch.cat([x, torch.zeros(3, 1)], dim=1)</code> or to allocate a <code>(3,5)</code> and copy. Spotting "is the data already there?" is the right reflex.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>4.</strong> Write a one-liner to test whether two tensors share storage.</p>
+<details class="answer"><summary>show answer</summary>
+<pre><code><span class="kw">def</span> <span class="fn">share_storage</span>(a, b):
+    <span class="kw">return</span> a.untyped_storage().data_ptr() == b.untyped_storage().data_ptr()</code></pre>
+<p>Useful for debugging "did this op make a copy?" suspicions. Note: same storage doesn't mean fully overlapping — two slices of the same buffer share storage but might not overlap.</p>
+</details>
+</div>
+
+<div class="bullet-points">
+<h3>What just happened?</h3>
+<ul>
+  <li>A <strong>Tensor</strong> is a small object that holds a reference to <strong>Storage</strong> (the actual bytes) plus a recipe for reading it: <strong>shape, stride, offset, dtype</strong>. Plus the device the bytes live on.</li>
+  <li><strong>Storage doesn't know it's a matrix.</strong> It's a flat byte buffer. Multiple Tensors can share the same Storage with different recipes — that's why <code>transpose</code> is free.</li>
+  <li>The lookup formula is always: <code>storage[offset + sum(index_i × stride_i)]</code>. Memorize this; it's the heart of every read.</li>
+  <li><strong>Stride 0</strong> is the broadcasting trick — the dimension lies, you read the same value many times. <code>x.expand(...)</code> uses it.</li>
+  <li><code>view</code> is strict (no copy ever, errors if it can't); <code>reshape</code> is permissive (copies when forced); <code>permute</code>/<code>transpose</code> just swap stride values.</li>
+  <li>A tensor is <strong>contiguous</strong> when row-major reading order matches storage order. <code>.contiguous()</code> physically re-lays out memory if needed.</li>
+  <li>An operation that mutates Storage (in-place ops, the underscore family) affects every Tensor that views it. <strong>Autograd watches for this</strong> via version counters.</li>
+  <li><code>torch.empty</code> returns garbage memory — fast but dangerous. Use <code>zeros</code> / <code>ones</code> when content matters.</li>
+  <li>Use <code>_like</code> factories (<code>torch.zeros_like(x)</code>) to inherit dtype <em>and</em> device automatically.</li>
+  <li>The reflex: when something tensor-related surprises you, ask "what's the storage, what's the stride, what's the offset?" Nine times out of ten the answer is right there.</li>
+</ul>
+</div>
+
+<p>In Module 02 we'll get serious about indexing, broadcasting, and shape gymnastics — once you have the storage/stride model, those topics stop being magic and become rules.</p>
+
+<div class="module-footer">
+  <span>PyTorch · From Tensor to Kernel</span>
+  <span class="num">01</span>
+  <span>Tensors, from scratch</span>
+</div>
+
+</div>
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="00_cover.html" class="prev">&laquo; 00 Cover</a>
+  <a href="../../index.html" class="home">Home</a>
+  <a href="02_indexing_broadcasting.html" class="next">02 Broadcasting &raquo;</a>
+</nav>
+</body>
+</html>

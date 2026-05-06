@@ -1,0 +1,584 @@
+#!/usr/bin/env python3
+"""Module 02: Indexing, broadcasting & shape gymnastics — full HF vibe."""
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent))
+from build_module import emit
+
+BODY = r"""
+<div class="module-header">
+  <div class="module-tag">Part I · Module 02</div>
+  <h1 class="module-title">Indexing, broadcasting &amp; <em>shape gymnastics</em></h1>
+  <p class="module-sub">— the rules behind every reshape, every weird shape error, and the <code>einsum</code> notation you've been avoiding</p>
+</div>
+
+<p>If Module 01 was about what a tensor <em>is</em>, this module is about how to <em>move it around</em>: take slices, fold dimensions, broadcast, transpose, reshape. The bad news is that PyTorch has approximately fifteen ways to do each of these, with subtle differences. The good news is that most of them are dialects of three or four ideas, and once you can read the dialects you stop being afraid of any of them.</p>
+
+<div class="keyidea">
+There are exactly <strong>three rules</strong> for how shapes interact: <em>broadcasting</em> (one-sided dimension extension), <em>contraction</em> (matrix multiply / einsum), and <em>reshape-or-permute</em> (rearranging without changing total elements). Almost every shape error you'll ever see is one of these three rules being violated.
+</div>
+
+<h2>Meet the new players</h2>
+
+<p>This module brings two new characters onto the stage. They're going to do most of the work.</p>
+
+<div class="character" style="--c: #1f5f5b;">
+  <div class="avatar" style="background: #d4a017;">B</div>
+  <div>
+    <p class="who">Broadcaster</p>
+    <p class="name">"I right-align everything."</p>
+    <p class="says">When you ask me to add two tensors of different shapes, I line them up on the <em>right</em> — yes, the right, not the left. Then I check each pair of dimensions: if they match, fine. If one is 1, I stretch it (Stride 0!). If neither is 1 and they don't match, I yell. That's literally my whole job.</p>
+  </div>
+</div>
+
+<div class="character" style="--c: #b85a6c;">
+  <div class="avatar" style="background: #b85a6c; color: #fff;">Σ</div>
+  <div>
+    <p class="who">Einsum</p>
+    <p class="name">"Just give me letters and I'll do the rest."</p>
+    <p class="says">Name every axis with a letter. Tell me which letters you want in the output. Any letter that appears in the inputs but <em>not</em> the output, I sum over. Any letter that appears in multiple inputs, I contract on. That's it. <code>'bhtd,bhsd-&gt;bhts'</code> isn't hieroglyphs — it's me saying "for each batch, head, query position, key position, sum over d." Easy.</p>
+  </div>
+</div>
+
+<h2>Indexing: the four kinds</h2>
+
+<p>You think you know indexing. PyTorch has four flavors and they each behave differently with respect to <em>views</em>, <em>shape</em>, and <em>autograd</em>. Naming them up front saves you a lot of debugging.</p>
+
+<div class="table-wrap">
+<table>
+<caption>The four indexing flavors</caption>
+<thead><tr><th>Flavor</th><th>Example</th><th>Returns</th><th>View?</th></tr></thead>
+<tbody>
+<tr><td><strong>Basic (slicing)</strong></td><td><code>x[2:5, :, ::2]</code></td><td>Slice with regular stride</td><td>Yes</td></tr>
+<tr><td><strong>Integer single</strong></td><td><code>x[3]</code> or <code>x[3, 7]</code></td><td>Drops a dim</td><td>Yes</td></tr>
+<tr><td><strong>Boolean mask</strong></td><td><code>x[x &gt; 0]</code></td><td>1-D flattened</td><td>No (copy)</td></tr>
+<tr><td><strong>Fancy / advanced</strong></td><td><code>x[[0,2,5]]</code> or <code>x[idx_tensor]</code></td><td>Gathered values</td><td>No (copy)</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>The key distinction: <strong>basic indexing is a view, fancy indexing is a copy</strong>. Why? Because basic indexing maps to a regular pattern (start + step × i), expressible as offset + stride. Fancy indexing means "go fetch elements in this arbitrary order" — there's no stride trick that does that, so PyTorch allocates and copies.</p>
+
+<pre><code>x = torch.arange(<span class="num">20</span>).reshape(<span class="num">4</span>, <span class="num">5</span>)
+
+<span class="com"># Basic — view</span>
+a = x[<span class="num">1</span>:<span class="num">3</span>]                         <span class="com"># shape (2,5), shares storage</span>
+<span class="fn">print</span>(a.untyped_storage().data_ptr() == x.untyped_storage().data_ptr())  <span class="com"># True</span>
+
+<span class="com"># Integer — view (drops a dim)</span>
+b = x[<span class="num">2</span>]                            <span class="com"># shape (5,), shares storage</span>
+
+<span class="com"># Boolean mask — copy, flattens</span>
+c = x[x &gt; <span class="num">10</span>]                       <span class="com"># shape (9,) [numbers 11..19]</span>
+
+<span class="com"># Fancy — copy, keeps the indexed dim's shape</span>
+d = x[[<span class="num">0</span>, <span class="num">2</span>, <span class="num">3</span>]]                    <span class="com"># shape (3, 5)</span>
+e = x[[<span class="num">0</span>, <span class="num">2</span>, <span class="num">3</span>], [<span class="num">1</span>, <span class="num">2</span>, <span class="num">4</span>]]          <span class="com"># shape (3,) — pairs of indices</span></code></pre>
+
+<p>That last one is worth staring at. When you supply two index <em>tensors</em> of the same shape, you're asking for <em>paired</em> indexing: <code>(0,1), (2,2), (3,4)</code>. NumPy and PyTorch share this convention. It's not "rows 0,2,3 then columns 1,2,4" — it's "the elements at those (row,col) pairs."</p>
+
+<h3>Newaxis and <code>None</code>: the dimension-adder</h3>
+
+<p>You'll see this constantly:</p>
+
+<pre><code>x = torch.tensor([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>])           <span class="com"># shape (3,)</span>
+y = x[:, <span class="kw">None</span>]                       <span class="com"># shape (3, 1) — added axis</span>
+z = x[<span class="kw">None</span>, :]                       <span class="com"># shape (1, 3) — added axis at the front</span>
+w = x[<span class="kw">None</span>, :, <span class="kw">None</span>]                 <span class="com"># shape (1, 3, 1)</span></code></pre>
+
+<p><code>None</code> is just <code>numpy.newaxis</code>. It inserts a size-1 dimension at that slot. Equivalent to <code>x.unsqueeze(0)</code> or <code>x.unsqueeze(-1)</code>. People prefer <code>None</code> in indexing expressions because it composes — <code>x[None, :, None]</code> is shorter than <code>x.unsqueeze(0).unsqueeze(-1)</code>.</p>
+
+<div class="brainpower">
+<p><strong>Quick test:</strong> if <code>a</code> has shape <code>(5,)</code> and <code>b</code> has shape <code>(7,)</code>, what shape does <code>a[:, None] * b[None, :]</code> have?</p>
+<p>(walk the broadcasting): <code>(5, 1) * (1, 7)</code> → broadcast → <code>(5, 7)</code>. This is the standard outer-product idiom in PyTorch. You'll write it dozens of times. Memorize it.</p>
+</div>
+
+<h2>The broadcasting rules, finally explained</h2>
+
+<p>Broadcasting is the source of more "but it should work!" frustration than any other PyTorch feature. The rules feel arbitrary until you internalize <em>why</em> they were chosen, at which point they become obvious.</p>
+
+<div class="character" style="--c: #1f5f5b;">
+  <div class="avatar" style="background: #d4a017;">B</div>
+  <div>
+    <p class="who">Broadcaster</p>
+    <p class="name">"Two rules. That's all."</p>
+    <p class="says">One: I right-align the shapes — pad the shorter one on the LEFT with implicit 1s. Two: for each pair of aligned dims, they must be equal OR one of them must be 1. If one is 1, I stretch it for free using Stride 0. Anything else, I throw a "size mismatch" error. That's literally everything I do.</p>
+  </div>
+</div>
+
+<div class="tensor-vis" style="margin: 32px 0; text-align: center;">
+<svg viewBox="0 0 720 420" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto; font-family: 'IBM Plex Mono', monospace;">
+  <defs>
+    <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f5f5b"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c1502e"/>
+    </marker>
+  </defs>
+
+  <!-- title -->
+  <text x="360" y="28" font-size="15" font-weight="700" fill="#1a1612" text-anchor="middle">Broadcasting: align RIGHT, then check each dim</text>
+
+  <!-- example 1: works -->
+  <text x="20" y="68" font-size="13" font-weight="700" fill="#1f5f5b">Example 1: (4, 1, 6) and (5, 6)</text>
+
+  <g transform="translate(40, 80)" font-size="14" text-anchor="middle">
+    <text x="-12" y="22" text-anchor="end" font-weight="700" fill="#1a1612">a:</text>
+    <rect x="0"   y="0" width="60" height="36" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="30" y="24" fill="#1a1612">4</text>
+    <rect x="60"  y="0" width="60" height="36" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="90" y="24" fill="#1a1612">1</text>
+    <rect x="120" y="0" width="60" height="36" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="150" y="24" fill="#1a1612">6</text>
+
+    <text x="-12" y="74" text-anchor="end" font-weight="700" fill="#1a1612">b:</text>
+    <rect x="0"   y="48" width="60" height="36" fill="#ede2cc" stroke="#6b5d4f" stroke-width="1.5" stroke-dasharray="3 3"/><text x="30" y="72" fill="#6b5d4f">1</text>
+    <rect x="60"  y="48" width="60" height="36" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="90" y="72" fill="#1a1612">5</text>
+    <rect x="120" y="48" width="60" height="36" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="150" y="72" fill="#1a1612">6</text>
+
+    <text x="-12" y="126" text-anchor="end" font-weight="700" fill="#1f5f5b">→</text>
+    <rect x="0"   y="100" width="60" height="36" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="1.5"/><text x="30" y="124" fill="#1a1612">4</text>
+    <rect x="60"  y="100" width="60" height="36" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="1.5"/><text x="90" y="124" fill="#1a1612">5</text>
+    <rect x="120" y="100" width="60" height="36" fill="#d4ecc8" stroke="#1f5f5b" stroke-width="1.5"/><text x="150" y="124" fill="#1a1612">6</text>
+
+    <text x="240" y="74" font-family="'Caveat', cursive" font-size="20" fill="#1f5f5b">b padded with 1 on left ✓</text>
+    <text x="240" y="125" font-family="'Caveat', cursive" font-size="20" fill="#1f5f5b">result: (4, 5, 6)</text>
+  </g>
+
+  <!-- example 2: fails -->
+  <text x="20" y="240" font-size="13" font-weight="700" fill="#c1502e">Example 2: (3, 5) and (4, 5) — FAILS</text>
+
+  <g transform="translate(40, 252)" font-size="14" text-anchor="middle">
+    <text x="-12" y="22" text-anchor="end" font-weight="700" fill="#1a1612">a:</text>
+    <rect x="0"  y="0" width="60" height="36" fill="#fcecec" stroke="#c1502e" stroke-width="1.5"/><text x="30" y="24" fill="#1a1612">3</text>
+    <rect x="60" y="0" width="60" height="36" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="90" y="24" fill="#1a1612">5</text>
+
+    <text x="-12" y="74" text-anchor="end" font-weight="700" fill="#1a1612">b:</text>
+    <rect x="0"  y="48" width="60" height="36" fill="#fcecec" stroke="#c1502e" stroke-width="1.5"/><text x="30" y="72" fill="#1a1612">4</text>
+    <rect x="60" y="48" width="60" height="36" fill="#fff" stroke="#1a1612" stroke-width="1.5"/><text x="90" y="72" fill="#1a1612">5</text>
+
+    <text x="160" y="48" font-family="'Caveat', cursive" font-size="20" fill="#c1502e">3 ≠ 4, neither is 1 → ERROR</text>
+    <text x="160" y="98" font-size="13" fill="#1a1612">"The size of tensor a (3) must match</text>
+    <text x="160" y="115" font-size="13" fill="#1a1612">the size of tensor b (4) at non-singleton dim 0"</text>
+  </g>
+</svg>
+</div>
+
+<p>The two rules:</p>
+
+<ol>
+  <li><strong>Right-align the shapes.</strong> Pad shorter shapes with 1s on the <em>left</em>.</li>
+  <li><strong>For each aligned dimension, compatibility means equal OR one of them is 1.</strong> If one is 1, it broadcasts (stride-zero trick from Module 01) up to the other.</li>
+</ol>
+
+<p>Right-alignment is the rule everyone forgets. You think it'll match dimensions left-to-right because you read left-to-right. PyTorch (and NumPy) align right because the rightmost dimensions are typically the "innermost" — channels, embedding dims, the small numbers. Padding 1s on the left of the shorter shape lets a small tensor "broadcast over" the outer batch/spatial dimensions of a larger one.</p>
+
+<div class="dialogue">
+<span class="speaker">JUNIOR</span>I have a batch of shape <code>(B, T, D)</code> and a positional embedding of shape <code>(T, D)</code>. <code>x + pos</code> works?
+<span class="speaker b">SENIOR</span>Yes. <code>(B, T, D)</code> right-aligned with <code>(T, D)</code> pads to <code>(1, T, D)</code>. Then dim-0 is <code>(B, 1)</code> → broadcasts to <code>B</code>. Same positions used for every batch item. Standard transformer move.
+<span class="speaker">JUNIOR</span>And <code>(B, T, D) + (B, D)</code>?
+<span class="speaker b">SENIOR</span>That breaks. Right-align: <code>(B, T, D)</code> vs <code>(_, B, D)</code>. Now dim-1 is <code>T</code> vs <code>B</code> — almost certainly not equal, neither is 1. PyTorch yells. You probably wanted <code>(B, T, D) + (B, 1, D)</code>, with an explicit <code>unsqueeze(1)</code> on the second tensor.
+</div>
+
+<h3>The "one in the middle" trick</h3>
+
+<p>Sometimes you want to broadcast over a dimension that isn't on the edge. The fix is always the same: <code>unsqueeze</code> a 1 in the right slot.</p>
+
+<pre><code><span class="com"># Tensor of shape (B, T, D), per-position scaling factor of shape (T,)</span>
+x = torch.randn(<span class="num">2</span>, <span class="num">5</span>, <span class="num">8</span>)
+scale = torch.linspace(<span class="num">0.1</span>, <span class="num">1.0</span>, <span class="num">5</span>)        <span class="com"># shape (5,)</span>
+
+<span class="com"># Wrong: (5,) right-aligns to (1, 1, 5) — that's per-D, not per-T</span>
+y_wrong = x * scale          <span class="com"># wrong dimension!</span>
+
+<span class="com"># Right: explicitly add a trailing 1 so (5,) becomes (5, 1) → (1, 5, 1)</span>
+y = x * scale[:, <span class="kw">None</span>]               <span class="com"># scale shape (5, 1) → (1, 5, 1) → broadcasts</span></code></pre>
+
+<p>The general procedure: when you broadcast and the result is wrong, ask "what shape does my smaller tensor need to <em>look like</em> after right-aligning?" Then explicitly <code>unsqueeze</code> or use <code>None</code> to make it that shape. PyTorch will broadcast correctly from there.</p>
+
+<h2>view vs reshape vs permute vs transpose</h2>
+
+<p>Time to settle these once and for all.</p>
+
+<div class="matching">
+<p class="intro">Match each shape-changing operation to what it actually does.</p>
+
+<div class="match-grid">
+  <div class="header">Operation</div>
+  <div class="header">What it does</div>
+
+  <div>x.view(new_shape)</div>
+  <div>A. Swaps two dimensions. Special case of permute. Result is non-contiguous.</div>
+
+  <div>x.reshape(new_shape)</div>
+  <div>B. Reorders all dimensions according to a permutation. Result is non-contiguous.</div>
+
+  <div>x.permute(*dims)</div>
+  <div>C. Reinterprets storage as new shape. ERRORS if not contiguous.</div>
+
+  <div>x.transpose(d1, d2)</div>
+  <div>D. Adds or removes a size-1 dimension. View only.</div>
+
+  <div>x.flatten(s, e)</div>
+  <div>E. Same as view, but COPIES if it has to. Always works (if total elements match).</div>
+
+  <div>x.squeeze() / unsqueeze()</div>
+  <div>F. Merges a range of consecutive dimensions into one. Calls reshape underneath.</div>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<p>
+<strong>x.view(new_shape)</strong> → C<br>
+<strong>x.reshape(new_shape)</strong> → E<br>
+<strong>x.permute(*dims)</strong> → B<br>
+<strong>x.transpose(d1, d2)</strong> → A<br>
+<strong>x.flatten(s, e)</strong> → F<br>
+<strong>x.squeeze() / unsqueeze()</strong> → D
+</p>
+<p>The mental shortcut: <em>view is strict, reshape is permissive, permute reorders, transpose swaps two, flatten/unflatten are sugar over reshape, squeeze/unsqueeze fiddle with size-1 dims</em>.</p>
+</details>
+</div>
+
+<p>The pattern most people get wrong: <code>permute</code> changes <em>which dimensions are which</em>; <code>view</code> changes <em>how to count elements</em>. They are not interchangeable. <code>x.view(C, B, T)</code> does <em>not</em> swap dims; it reinterprets the flat buffer as if it were already in <code>(C, B, T)</code> order. If your tensor was actually <code>(B, T, C)</code>, you've now got garbage.</p>
+
+<pre><code>x = torch.arange(<span class="num">24</span>).reshape(<span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>)        <span class="com"># (B=2, T=3, C=4)</span>
+
+<span class="com"># I want to transpose to (C, T, B). Do NOT do:</span>
+wrong = x.view(<span class="num">4</span>, <span class="num">3</span>, <span class="num">2</span>)         <span class="com"># this is garbage — same buffer, wrong meaning</span>
+
+<span class="com"># Do this:</span>
+right = x.permute(<span class="num">2</span>, <span class="num">1</span>, <span class="num">0</span>).contiguous()   <span class="com"># now bytes are in (C, T, B) order</span></code></pre>
+
+<div class="warn">
+<strong>The classic shape bug.</strong> Reshape works on element <em>count</em>, not on element <em>meaning</em>. Two tensors of shape <code>(2, 3, 4)</code> and <code>(4, 3, 2)</code> hold the same 24 numbers, but the second one is the first viewed in a totally different way. <code>view</code> and <code>reshape</code> will happily turn one into the other. The numbers will be wrong, training will diverge, and you'll spend a day finding out it was a missing <code>permute</code>.
+</div>
+
+<h3>The flatten/unflatten idiom</h3>
+
+<p>You'll see this all over transformer code:</p>
+
+<pre><code><span class="com"># In a transformer, attention scores have shape (B, H, T, T)</span>
+<span class="com"># where H is heads. Sometimes you want to fold heads into the batch:</span>
+
+scores = torch.randn(<span class="num">2</span>, <span class="num">4</span>, <span class="num">10</span>, <span class="num">10</span>)
+flat = scores.flatten(<span class="num">0</span>, <span class="num">1</span>)            <span class="com"># shape (8, 10, 10)</span>
+
+<span class="com"># And to unfold:</span>
+back = flat.unflatten(<span class="num">0</span>, (<span class="num">2</span>, <span class="num">4</span>))         <span class="com"># shape (2, 4, 10, 10)</span></code></pre>
+
+<p>This is just <code>reshape</code> under the hood, but the names are clearer. Use <code>flatten</code>/<code>unflatten</code> for "merge these adjacent dims" / "split this dim into these factors." Use <code>view</code>/<code>reshape</code> when the operation is more general.</p>
+
+<h2>einsum: the universal solvent</h2>
+
+<p>If you've avoided <code>einsum</code> because it looks like Egyptian hieroglyphs, today is the day. It's the single most readable way to express tensor operations once you spend twenty minutes with it.</p>
+
+<div class="character" style="--c: #b85a6c;">
+  <div class="avatar" style="background: #b85a6c; color: #fff;">Σ</div>
+  <div>
+    <p class="who">Einsum</p>
+    <p class="name">"My algorithm in three lines."</p>
+    <p class="says">(1) Name each axis of each input with a letter. (2) Name the output axes with letters too. (3) Any letter that appears in the inputs but <em>not</em> the output, I sum over. That's the entire rule. <code>'mk,kn-&gt;mn'</code> is matmul. <code>'i,i-&gt;'</code> is dot product. <code>'bhtd,bhsd-&gt;bhts'</code> is attention scores. Same rule, every time.</p>
+  </div>
+</div>
+
+<pre><code><span class="com"># Matrix multiply: (M, K) × (K, N) → (M, N)</span>
+torch.einsum(<span class="str">'mk,kn-&gt;mn'</span>, A, B)
+
+<span class="com"># Batched matmul: (B, M, K) × (B, K, N) → (B, M, N)</span>
+torch.einsum(<span class="str">'bmk,bkn-&gt;bmn'</span>, A, B)
+
+<span class="com"># Outer product: (M,) × (N,) → (M, N)</span>
+torch.einsum(<span class="str">'i,j-&gt;ij'</span>, a, b)
+
+<span class="com"># Element-wise multiply + sum (dot product): (N,) × (N,) → scalar</span>
+torch.einsum(<span class="str">'i,i-&gt;'</span>, a, b)
+
+<span class="com"># Trace of a matrix: sum of diagonal</span>
+torch.einsum(<span class="str">'ii-&gt;'</span>, M)
+
+<span class="com"># Transpose: (M, N) → (N, M)</span>
+torch.einsum(<span class="str">'ij-&gt;ji'</span>, M)
+
+<span class="com"># Multi-head attention scores: q (B,H,T,D) × k (B,H,T,D) → (B,H,T,T)</span>
+scores = torch.einsum(<span class="str">'bhtd,bhsd-&gt;bhts'</span>, q, k)</code></pre>
+
+<p>Read each one as: "letters appearing in any input but not the output are summed." That's the entire rule. It generalizes matmul, batched matmul, dot product, outer product, trace, transpose, and most of attention.</p>
+
+<div class="sticky green">
+<strong>einsum's secret superpower:</strong> when you write <code>'bhtd,bhsd-&gt;bhts'</code>, the shape contract is <em>self-documenting</em>. Anyone reading the line knows the input shapes and the output shape. Compare to <code>q @ k.transpose(-1,-2)</code>, which leaves the reader to figure out the dims. Use einsum when the operation has more than two axes; use matmul/<code>@</code> when it's a plain matrix multiply.
+</div>
+
+<h3>einsum performance</h3>
+
+<p>One myth: einsum is slow. It used to be — early implementations didn't fuse well. Modern PyTorch's einsum dispatches to optimized matmul/bmm calls when possible, and <code>torch.compile</code> can fuse it further. For matmul-shaped einsums, you get the cuBLAS path. For exotic contractions, it falls back to a generic kernel that's slower but still vectorized.</p>
+
+<p>The rule of thumb: write the operation in einsum first; if it's in a hot loop, profile it; if it's slow, rewrite as a matmul or use <code>torch.compile</code>. <em>Don't</em> preemptively avoid einsum.</p>
+
+<h2>Code Magnets: build attention from einsum pieces</h2>
+
+<p>Here's a real-world puzzle. You have <code>q</code>, <code>k</code>, <code>v</code>, all of shape <code>(B, H, T, D)</code>. Build the attention output <code>(B, H, T, D)</code> using einsum and a softmax. The full sequence is: scores = q·kᵀ, then softmax over the key dimension, then output = scores·v.</p>
+
+<div class="magnets">
+<p>Arrange these magnets into a 3-line attention computation. Two are red herrings.</p>
+
+<div class="magnet-pool">
+  <span class="magnet">scores = torch.einsum('bhtd,bhsd-&gt;bhts', q, k)</span>
+  <span class="magnet">scores = torch.einsum('bhtd,bhds-&gt;bhts', q, k)</span>
+  <span class="magnet">attn = scores.softmax(dim=-1)</span>
+  <span class="magnet">attn = scores.softmax(dim=-2)</span>
+  <span class="magnet">out = torch.einsum('bhts,bhsd-&gt;bhtd', attn, v)</span>
+  <span class="magnet">out = torch.einsum('bhts,bhtd-&gt;bhsd', attn, v)</span>
+  <span class="magnet">scores = scores / (D ** 0.5)</span>
+</div>
+
+<details class="answer"><summary>show solution</summary>
+<pre><code>scores = torch.einsum(<span class="str">'bhtd,bhsd-&gt;bhts'</span>, q, k)
+scores = scores / (D ** <span class="num">0.5</span>)
+attn = scores.softmax(dim=-<span class="num">1</span>)
+out = torch.einsum(<span class="str">'bhts,bhsd-&gt;bhtd'</span>, attn, v)</code></pre>
+<p>The traps:</p>
+<ul>
+  <li><code>'bhtd,bhds-&gt;bhts'</code> would assume <code>k</code> is already transposed in its last two dims — but it's <code>(B,H,T,D)</code>, not <code>(B,H,D,T)</code>. The 's' has to align with k's T-axis, both labeled at the last D position.</li>
+  <li><code>softmax(dim=-2)</code> normalizes over the query axis, not the key axis. Wrong distribution.</li>
+  <li>The output einsum needs to "consume" the s axis (key positions) and produce d (the value dimension). <code>'bhts,bhtd-&gt;bhsd'</code> doesn't even share an axis between the two operands — that's an outer product, not a contraction.</li>
+</ul>
+<p>The scale factor <code>/ (D ** 0.5)</code> is included; it's the canonical scaled-dot-product attention.</p>
+</details>
+</div>
+
+<h2>Reductions: the axis argument is everything</h2>
+
+<p>Every reduction in PyTorch — <code>sum</code>, <code>mean</code>, <code>max</code>, <code>argmax</code>, <code>std</code>, <code>any</code>, <code>norm</code> — takes a <code>dim</code> argument and a <code>keepdim</code> flag. Master both and you're 80% of the way through "PyTorch shape gymnastics."</p>
+
+<pre><code>x = torch.randn(<span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>)
+
+x.sum()                      <span class="com"># scalar — sums everything</span>
+x.sum(dim=<span class="num">0</span>)                 <span class="com"># shape (3, 4) — collapse dim 0</span>
+x.sum(dim=<span class="num">1</span>)                 <span class="com"># shape (2, 4) — collapse dim 1</span>
+x.sum(dim=-<span class="num">1</span>)                <span class="com"># shape (2, 3) — last dim</span>
+x.sum(dim=(<span class="num">0</span>, <span class="num">2</span>))            <span class="com"># shape (3,) — collapse multiple dims</span>
+
+x.sum(dim=<span class="num">1</span>, keepdim=<span class="kw">True</span>)    <span class="com"># shape (2, 1, 4) — keep dim with size 1</span></code></pre>
+
+<p><code>keepdim=True</code> is the move that lets you broadcast the reduction back against the original tensor without fiddling with <code>unsqueeze</code>:</p>
+
+<pre><code><span class="com"># Mean-center each row of a (B, D) batch</span>
+x = torch.randn(<span class="num">32</span>, <span class="num">128</span>)
+mean = x.mean(dim=-<span class="num">1</span>, keepdim=<span class="kw">True</span>)         <span class="com"># shape (32, 1)</span>
+x_centered = x - mean                          <span class="com"># broadcasts cleanly</span>
+
+<span class="com"># Without keepdim, you'd need:</span>
+mean = x.mean(dim=-<span class="num">1</span>)                       <span class="com"># shape (32,)</span>
+x_centered = x - mean[:, <span class="kw">None</span>]                 <span class="com"># manual unsqueeze</span></code></pre>
+
+<p>Both work; the first is idiomatic. Norm computations, layer normalization, attention softmax — they all use <code>keepdim=True</code> for exactly this reason.</p>
+
+<div class="ndq">
+<h4>About reductions</h4>
+
+<p class="q">What's the difference between <code>x.sum(0)</code> and <code>x.sum(dim=0)</code>?</p>
+<p class="a">Nothing. The first arg of <code>sum</code> is <code>dim</code>. Same for <code>mean</code>, <code>max</code>, etc. People often skip the keyword name. Just be aware: in some functions, the first positional is something else (like <code>x.scatter(0, ...)</code> where <code>0</code> is the dim — but the rest of the args are different).</p>
+
+<p class="q">Why do <code>max</code> and <code>argmax</code> behave differently? <code>x.max(dim=0)</code> returns a tuple and <code>x.argmax(dim=0)</code> returns one tensor.</p>
+<p class="a">Historical accident. <code>max</code> with <code>dim</code> returns <em>both</em> values and indices, so you can do <code>vals, idx = x.max(dim=0)</code> in one call. <code>argmax</code> is the values-discarded shortcut. If you want only the values, you can use <code>x.max(dim=0).values</code> or <code>x.amax(dim=0)</code>. Modern PyTorch leans toward <code>amax</code>/<code>amin</code> for the values-only case.</p>
+
+<p class="q">When does <code>norm</code> blow up?</p>
+<p class="a">When you compute <code>x.norm()</code> on a tensor with very large values, fp16/bf16 overflows during the squaring. Use <code>torch.linalg.vector_norm</code> with explicit dtype upcasting in mixed-precision code. We'll come back to this in Module 14.</p>
+</div>
+
+<h2>Concatenation, stacking, splitting</h2>
+
+<p>Three operations, often confused.</p>
+
+<div class="table-wrap">
+<table>
+<caption>Joining and splitting tensors</caption>
+<thead><tr><th>Operation</th><th>What it does</th><th>Shape change</th></tr></thead>
+<tbody>
+<tr><td><code>torch.cat([a, b], dim=k)</code></td><td>Concatenate along an existing dim</td><td>That dim grows; others identical.</td></tr>
+<tr><td><code>torch.stack([a, b], dim=k)</code></td><td>Add a NEW dim, stack tensors along it</td><td>Adds a dim of size N (number of inputs).</td></tr>
+<tr><td><code>x.split(size, dim=k)</code></td><td>Split into chunks of given size along dim</td><td>Returns a list/tuple.</td></tr>
+<tr><td><code>x.chunk(n, dim=k)</code></td><td>Split into n equal-ish chunks along dim</td><td>Returns a list.</td></tr>
+<tr><td><code>x.unbind(dim=k)</code></td><td>Remove a dim by splitting it into a tuple</td><td>List of N tensors with that dim gone.</td></tr>
+</tbody>
+</table>
+</div>
+
+<pre><code>a = torch.randn(<span class="num">3</span>, <span class="num">4</span>)
+b = torch.randn(<span class="num">3</span>, <span class="num">4</span>)
+
+torch.cat([a, b], dim=<span class="num">0</span>).shape    <span class="com"># (6, 4) — extends dim 0</span>
+torch.stack([a, b], dim=<span class="num">0</span>).shape  <span class="com"># (2, 3, 4) — adds new dim 0</span>
+
+x = torch.randn(<span class="num">10</span>, <span class="num">5</span>)
+x.split(<span class="num">3</span>, dim=<span class="num">0</span>)               <span class="com"># [(3,5), (3,5), (3,5), (1,5)] — last is short</span>
+x.chunk(<span class="num">3</span>, dim=<span class="num">0</span>)               <span class="com"># [(4,5), (4,5), (2,5)] — n chunks, equal-ish</span></code></pre>
+
+<p>The mnemonic: <strong>cat</strong> is "concatenate" — like extending a list. <strong>stack</strong> is "make a stack" — like piling things on top of each other, which inherently adds a dimension. If you find yourself doing <code>torch.cat([a[None], b[None]], dim=0)</code>, that's <code>torch.stack([a, b], dim=0)</code>.</p>
+
+<h2>gather and scatter: the index ops</h2>
+
+<p>Two operations that look weird at first but are workhorses for things like top-k selection, embedding lookup, and computing per-sample loss.</p>
+
+<p><strong>gather</strong>: read <em>specific indices along a dimension</em>. Where regular indexing reads with a single index per dim, gather reads with a tensor of indices the same shape as the output.</p>
+
+<pre><code><span class="com"># I have a batch of logits and per-batch target indices</span>
+logits = torch.randn(<span class="num">4</span>, <span class="num">10</span>)              <span class="com"># 4 examples, 10 classes</span>
+targets = torch.tensor([<span class="num">3</span>, <span class="num">7</span>, <span class="num">1</span>, <span class="num">5</span>])      <span class="com"># target index for each</span>
+
+<span class="com"># I want logits[i, targets[i]] for each i — the logit for the correct class</span>
+correct = logits.gather(<span class="num">1</span>, targets[:, <span class="kw">None</span>]).squeeze(<span class="num">1</span>)  <span class="com"># shape (4,)</span></code></pre>
+
+<p>Read this: "along dim 1, pick the indices given by <code>targets</code>." The index tensor must have the same number of dims as <code>logits</code>; we wrap <code>targets</code> in <code>[:, None]</code> to make it <code>(4, 1)</code>, telling gather "for batch <code>i</code>, pick element <code>targets[i]</code>."</p>
+
+<p><strong>scatter</strong>: the inverse — write specific indices along a dim.</p>
+
+<pre><code><span class="com"># Build a one-hot encoding from class indices</span>
+classes = torch.tensor([<span class="num">2</span>, <span class="num">0</span>, <span class="num">3</span>])            <span class="com"># shape (3,)</span>
+onehot = torch.zeros(<span class="num">3</span>, <span class="num">5</span>)
+onehot.scatter_(<span class="num">1</span>, classes[:, <span class="kw">None</span>], <span class="num">1.0</span>)
+<span class="com"># onehot is now</span>
+<span class="com"># [[0, 0, 1, 0, 0],</span>
+<span class="com">#  [1, 0, 0, 0, 0],</span>
+<span class="com">#  [0, 0, 0, 1, 0]]</span></code></pre>
+
+<p>Modern PyTorch has <code>F.one_hot</code> for this exact use case, but understanding scatter is worth it because dozens of advanced ops (e.g., MoE routing — Module 28) are scatter operations underneath.</p>
+
+<div class="sticky">
+<strong>Whiteboard tattoo:</strong> if you're writing a Python <code>for</code> loop to read elements from a tensor based on a list of indices, stop. The op you want is either <code>gather</code>, <code>index_select</code>, or fancy indexing. Almost any per-batch indexing has a vectorized form.
+</div>
+
+<h3><code>index_select</code> and <code>masked_select</code></h3>
+
+<p>Two more in the family worth knowing:</p>
+
+<pre><code><span class="com"># index_select — pick specific indices along ONE dim, keeps the dim's shape</span>
+x = torch.arange(<span class="num">20</span>).reshape(<span class="num">4</span>, <span class="num">5</span>)
+y = x.index_select(<span class="num">0</span>, torch.tensor([<span class="num">0</span>, <span class="num">2</span>]))      <span class="com"># shape (2, 5)</span>
+
+<span class="com"># Roughly equivalent to fancy indexing on a single dim:</span>
+y = x[[<span class="num">0</span>, <span class="num">2</span>]]                                <span class="com"># same thing</span>
+
+<span class="com"># masked_select — pull out the elements where mask is True, ALWAYS flat</span>
+m = x &gt; <span class="num">10</span>
+y = x.masked_select(m)                          <span class="com"># shape (k,) where k = number of Trues</span>
+
+<span class="com"># masked_fill — write a scalar where mask is True</span>
+y = x.masked_fill(m, -<span class="num">1</span>)                       <span class="com"># shape preserved, masked entries become -1</span></code></pre>
+
+<h2>Common shape-bug patterns and how to spot them</h2>
+
+<p>A short rogues' gallery.</p>
+
+<h3>1. Forgot to squeeze after gather/index</h3>
+
+<pre><code>logits = torch.randn(<span class="num">4</span>, <span class="num">10</span>)
+targets = torch.tensor([<span class="num">3</span>, <span class="num">7</span>, <span class="num">1</span>, <span class="num">5</span>])
+correct = logits.gather(<span class="num">1</span>, targets[:, <span class="kw">None</span>])     <span class="com"># shape (4, 1) — !</span>
+
+<span class="com"># Now I take the mean and try to log it</span>
+loss = -correct.mean()                          <span class="com"># works, but...</span>
+
+<span class="com"># Later I want to compare to another (4,) tensor</span>
+mismatch = correct - other                      <span class="com"># shape (4, 1) - (4,) → (4, 4)!</span></code></pre>
+
+<p>Solution: <code>.squeeze(1)</code> after gather, or <code>.squeeze(-1)</code>. Get into the habit.</p>
+
+<h3>2. Off-by-one in the dim argument</h3>
+
+<pre><code>x = torch.randn(<span class="num">8</span>, <span class="num">3</span>, <span class="num">224</span>, <span class="num">224</span>)             <span class="com"># NCHW</span>
+mean_per_channel = x.mean(dim=<span class="num">0</span>)              <span class="com"># wrong! averages over batch only</span>
+
+<span class="com"># Want mean over batch AND spatial</span>
+mean_per_channel = x.mean(dim=(<span class="num">0</span>, <span class="num">2</span>, <span class="num">3</span>))         <span class="com"># shape (3,) — correct</span></code></pre>
+
+<p>When working with 4-D tensors, name your dims in comments: <code># (B, C, H, W)</code>. Future-you will thank present-you.</p>
+
+<h3>3. Broadcasting the wrong direction</h3>
+
+<pre><code><span class="com"># I have logits (B, T, V) and lengths (B,) — want to mask out padding</span>
+logits = torch.randn(<span class="num">4</span>, <span class="num">10</span>, <span class="num">100</span>)
+lengths = torch.tensor([<span class="num">7</span>, <span class="num">3</span>, <span class="num">10</span>, <span class="num">5</span>])
+mask = torch.arange(<span class="num">10</span>) &lt; lengths             <span class="com"># wrong! shape mismatch</span>
+
+<span class="com"># torch.arange(10) is (10,); lengths is (4,). Right-align: (10,) vs (4,) → 10≠4, error.</span>
+
+<span class="com"># Correct: make lengths broadcast against the position arange</span>
+positions = torch.arange(<span class="num">10</span>)                  <span class="com"># (10,)</span>
+mask = positions[<span class="kw">None</span>, :] &lt; lengths[:, <span class="kw">None</span>]  <span class="com"># (1, 10) &lt; (4, 1) → (4, 10) ✓</span>
+masked = logits.masked_fill(~mask[:, :, <span class="kw">None</span>], float(<span class="str">'-inf'</span>))</code></pre>
+
+<p>The <code>positions[None, :] &lt; lengths[:, None]</code> idiom for building masks is so common in NLP that it's worth tattooing into memory.</p>
+
+<h2>Exercises</h2>
+
+<div class="exercise">
+<p><strong>1.</strong> Given <code>x</code> of shape <code>(B, T, D)</code> and <code>w</code> of shape <code>(D, E)</code>, write the matmul <code>x @ w</code> three ways: with <code>@</code>, with <code>torch.matmul</code>, with <code>einsum</code>.</p>
+<details class="answer"><summary>show answer</summary>
+<pre><code>y = x @ w                                  <span class="com"># shape (B, T, E)</span>
+y = torch.matmul(x, w)                     <span class="com"># same</span>
+y = torch.einsum(<span class="str">'btd,de-&gt;bte'</span>, x, w)     <span class="com"># same</span></code></pre>
+<p>All three produce identical output. The einsum version is the most verbose but also the most readable when D appears in many places.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>2.</strong> Given a batch <code>x</code> of shape <code>(B, T, D)</code>, compute the mean and variance per-position-per-feature across the batch (so output shapes are <code>(T, D)</code> each).</p>
+<details class="answer"><summary>show answer</summary>
+<pre><code>mean = x.mean(dim=<span class="num">0</span>)                     <span class="com"># (T, D)</span>
+var = x.var(dim=<span class="num">0</span>, unbiased=<span class="kw">False</span>)        <span class="com"># (T, D)</span></code></pre>
+<p>The <code>unbiased=False</code> uses divide by N (not N−1); typical for ML normalization where you want the population variance, not the sample variance.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>3.</strong> Given <code>x</code> of shape <code>(B, T, D)</code> and a <em>per-batch</em> length tensor <code>lengths</code> of shape <code>(B,)</code>, build a mask that is True for positions <code>&lt; lengths[i]</code> and False otherwise. The result should have shape <code>(B, T)</code>.</p>
+<details class="answer"><summary>show answer</summary>
+<pre><code>positions = torch.arange(T, device=lengths.device)
+mask = positions[<span class="kw">None</span>, :] &lt; lengths[:, <span class="kw">None</span>]   <span class="com"># (B, T)</span></code></pre>
+<p>This appears in every transformer's attention mask building. Memorize it.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>4.</strong> Given a <em>(B, H, T, T)</em> attention score matrix and a (T, T) causal mask of booleans (True where allowed), apply the mask using <code>masked_fill</code> with <code>-inf</code> where False.</p>
+<details class="answer"><summary>show answer</summary>
+<pre><code>scores = scores.masked_fill(~causal_mask[<span class="kw">None</span>, <span class="kw">None</span>, :, :], float(<span class="str">'-inf'</span>))</code></pre>
+<p>The <code>~</code> flips the mask (False where allowed, True where to fill). The double <code>None</code> broadcasts the (T, T) mask over the (B, H) dims. Because we used <code>masked_fill</code> (out-of-place) instead of <code>masked_fill_</code>, autograd is happy.</p>
+</details>
+</div>
+
+<div class="exercise">
+<p><strong>5.</strong> Implement multi-head attention's "split the embedding into heads" reshape. Given <code>x</code> of shape <code>(B, T, D)</code> with <code>D = H * d_head</code>, get to shape <code>(B, H, T, d_head)</code>.</p>
+<details class="answer"><summary>show answer</summary>
+<pre><code>B, T, D = x.shape
+x = x.view(B, T, H, d_head)                  <span class="com"># (B, T, H, d_head)</span>
+x = x.transpose(<span class="num">1</span>, <span class="num">2</span>)                       <span class="com"># (B, H, T, d_head)</span></code></pre>
+<p>Note the <code>view</code>+<code>transpose</code> combo — first split the D dimension into H groups of d_head, then transpose to put H next to B. This is the canonical reshape in every attention implementation. The result is <em>non-contiguous</em>; a subsequent matmul handles it fine but a <code>.view()</code> would error.</p>
+</details>
+</div>
+
+<div class="bullet-points">
+<h3>What just happened?</h3>
+<ul>
+  <li><strong>Three rules govern shape interactions:</strong> right-aligned broadcasting, contraction (matmul/einsum), and reshape-or-permute (preserving total elements). Every shape error is one of these being violated.</li>
+  <li><strong>Indexing has four flavors:</strong> basic slicing (view), integer (view, drops a dim), boolean mask (copy, flat), fancy/advanced (copy, shape-preserving).</li>
+  <li><strong>Broadcasting right-aligns</strong> and treats size-1 dims as flexible. Pad on the left with implicit 1s. The Broadcaster character has just two rules: align right, then check each dim is equal or 1.</li>
+  <li><code>None</code> in a slice = <code>unsqueeze</code>. <code>x[:, None] * y[None, :]</code> is the outer-product idiom. Use it.</li>
+  <li><code>view</code> rewrites stride strictly; <code>permute</code>/<code>transpose</code> swap stride values; <code>reshape</code> = view-or-copy. They're not interchangeable — <code>view(C, B, T)</code> does NOT swap dims.</li>
+  <li><strong>einsum is the readable contraction syntax.</strong> Letters not in the output are summed. Letters in multiple inputs are contracted. The whole rule fits in one sentence.</li>
+  <li><code>keepdim=True</code> on reductions makes broadcasting back trivial. Use it for normalizations.</li>
+  <li><strong>cat extends</strong> an existing dim; <strong>stack adds</strong> a new dim. Don't write <code>torch.cat([a[None], b[None]], dim=0)</code> when you mean <code>torch.stack([a, b], dim=0)</code>.</li>
+  <li><strong>gather/scatter</strong> read/write at index tensors. Use them whenever you'd write a Python loop over a batch. Same for <code>index_select</code>, <code>masked_select</code>, <code>masked_fill</code>.</li>
+  <li>The mask-building idiom <code>positions[None, :] &lt; lengths[:, None]</code> appears in every NLP codebase. Tattoo it.</li>
+</ul>
+</div>
+
+<p>Module 03 will turn from <em>shapes</em> to <em>numbers</em>: the dtypes, devices, transfer mechanics, and numerical-stability primitives that make the difference between training that works and training that mysteriously NaNs at step 4000.</p>
+
+<div class="module-footer">
+  <span>PyTorch · From Tensor to Kernel</span>
+  <span class="num">02</span>
+  <span>Indexing, broadcasting & shape gymnastics</span>
+</div>
+"""
+
+emit("02_indexing_broadcasting", "Module 02 — Indexing, broadcasting & shape gymnastics", BODY)
