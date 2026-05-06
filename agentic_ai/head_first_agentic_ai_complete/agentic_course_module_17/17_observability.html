@@ -32,7 +32,7 @@ body {
   color: var(--ink);
   max-width: 880px;
   margin: 0 auto;
-  padding: 36px 28px 80px 28px;
+  padding: 36px 28px 100px 28px;
   line-height: 1.65;
   font-size: 16px;
 }
@@ -1320,5 +1320,44 @@ export OTEL_RESOURCE_ATTRIBUTES=&quot;deployment.environment=production,service.
 <p>The capstone won't introduce new patterns — those are all in M2 through M17. The capstone will <em>synthesize</em> — show how the patterns compose into a complete production agent system, how the layers interact, where the trade-offs surface, and how to know when the system is ready for production.</p>
 <p>Sam's customer-success bot, by M17's close, embodies most of the layers. The capstone takes a fresh problem (a deal-research-and-brief system) and walks through the full design from M2 through M17, showing how each layer's discipline contributes to the whole.</p>
 <p>For now: take the audit exercise from Section 9. Pick a production agent system. Audit its trace coverage, correlation IDs, metric dimensions, sampling, alert hierarchy, and time-to-diagnosis. The patterns from M17 are mature; the infrastructure exists; the work for production teams isn't building observability but using what's available deliberately. Sam's team's escalation diagnosis time dropped 90% from instrumenting the patterns from this module. Yours probably can too.</p>
+
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="../agentic_course_module_16/16_sagas.html" class="prev">&laquo; 16 Sagas</a>
+  <a href="../../../../index.html" class="home">Home</a>
+  <a href="../agentic_course_module_18/18_capstone.html" class="next">18 Capstone &raquo;</a>
+</nav>
 </body>
 </html>

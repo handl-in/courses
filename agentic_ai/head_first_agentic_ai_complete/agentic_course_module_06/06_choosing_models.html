@@ -32,7 +32,7 @@ body {
   color: var(--ink);
   max-width: 880px;
   margin: 0 auto;
-  padding: 36px 28px 80px 28px;
+  padding: 36px 28px 100px 28px;
   line-height: 1.65;
   font-size: 16px;
 }
@@ -1115,5 +1115,44 @@ model = select_model_with_ab(&quot;synthesizer&quot;, AB_CONFIG)
 <p>After Module 7 (context engineering principles), Module 8 covers compression and summarization (what to do when context overflows), and Module 9 covers memory across runs (state that persists between trajectories). By the end of that arc, you'll have a complete picture of what flows through your agents — what they read, what they remember, what they forget.</p>
 <p>Sam's deal-research system, post-Module 6, is well-shaped, well-tooled, well-secured, and economically right-sized. By Module 9 it'll also be smart about what it loads into context. The book builds.</p>
 <p>For now: take the audit exercise from Section 7. Find one Opus call that should be Sonnet. Find one Sonnet call that should be Haiku. Ship the changes. Watch the bill.</p>
+
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="../agentic_course_module_05/05_mcp.html" class="prev">&laquo; 05 MCP</a>
+  <a href="../../../../index.html" class="home">Home</a>
+  <a href="../agentic_course_module_07/07_context_engineering.html" class="next">07 Context &raquo;</a>
+</nav>
 </body>
 </html>

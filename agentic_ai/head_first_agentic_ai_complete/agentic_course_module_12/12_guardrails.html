@@ -32,7 +32,7 @@ body {
   color: var(--ink);
   max-width: 880px;
   margin: 0 auto;
-  padding: 36px 28px 80px 28px;
+  padding: 36px 28px 100px 28px;
   line-height: 1.65;
   font-size: 16px;
 }
@@ -1777,5 +1777,44 @@ async def handle_request(req: GuardedAgentRequest) -&gt; dict:
 <p>Module 18 is the capstone: a full system pulling together every layer from the book.</p>
 <p>For now: take the audit exercise from Section 9. Pick one agent. Look at 100 real transcripts against your company's policies. The gap you find is the work to do. Sam's playbook works; ship it.</p>
 <p>The single-agent foundations are now complete. M2 through M12 are everything you need to build a single agent that's hardened, restrained, well-tooled, well-protocoled, well-priced, well-fed, well-pruned, well-remembered, honest about what it knows, rigorous in self-evaluation, and honest about its boundaries. That's a high bar. The book has been deliberate about getting there step by step. Now we extend.</p>
+
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="../agentic_course_module_11/11_reflection.html" class="prev">&laquo; 11 Reflection</a>
+  <a href="../../../../index.html" class="home">Home</a>
+  <a href="../agentic_course_module_13/13_multi_agent_when.html" class="next">13 Multi-Agent &raquo;</a>
+</nav>
 </body>
 </html>

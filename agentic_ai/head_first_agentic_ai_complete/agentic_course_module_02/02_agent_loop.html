@@ -32,7 +32,7 @@ body {
   color: var(--ink);
   max-width: 880px;
   margin: 0 auto;
-  padding: 36px 28px 80px 28px;
+  padding: 36px 28px 100px 28px;
   line-height: 1.65;
   font-size: 16px;
 }
@@ -1530,5 +1530,44 @@ for turn in result.trace.turns:
 <p>Module 3 backs out one level and treats the five workflow patterns properly — prompt chaining, routing, parallelization, orchestrator-workers, evaluator-optimizer. Most of what you build is going to be one of these patterns, even after this module. The loop is the right tool when you need it; the workflow patterns are the right tools when you don't.</p>
 <p>We'll come back to the loop in Module 4 when we add tool design discipline (so the model has tools worth calling), and again in Module 7 when we add context engineering (so the loop's growing context doesn't strangle it). For now: take the hardened loop. Run it. Stress-test it. Build calibration with it.</p>
 <p>The next chapters assume you've done that. Sam did. So can you.</p>
+
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="../agentic_course_module_01/01_reframing.html" class="prev">&laquo; 01 Reframing</a>
+  <a href="../../../../index.html" class="home">Home</a>
+  <a href="../agentic_course_module_03/03_workflow_patterns.html" class="next">03 Workflow Patterns &raquo;</a>
+</nav>
 </body>
 </html>

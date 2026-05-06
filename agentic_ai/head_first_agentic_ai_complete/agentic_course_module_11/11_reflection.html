@@ -32,7 +32,7 @@ body {
   color: var(--ink);
   max-width: 880px;
   margin: 0 auto;
-  padding: 36px 28px 80px 28px;
+  padding: 36px 28px 100px 28px;
   line-height: 1.65;
   font-size: 16px;
 }
@@ -1459,5 +1459,44 @@ async def critique_with_budget(prompt: str, candidate: str, model: str) -&gt; Cr
 <p>Module 12 is guardrails. Input filtering, output checks, topical and behavioral constraints. The cousin of Module 5's protocol-level security, applied at the per-call layer. The agent that's been told "don't fabricate citations" in M10 still needs an output-time check that <em>verifies</em> it didn't fabricate one. M12 is where those checks live — the boundary discipline that catches what the upstream layers missed.</p>
 <p>After M12, the reliability arc closes (M10 hallucinations, M11 reflection, M12 guardrails). Then M13–15 take the system multi-agent (when complexity is justified, the architectures, the patterns). M16–17 are operations (sagas, observability). M18 is the capstone.</p>
 <p>For now: take the audit exercise from Section 8. Run the 20-call consistency test on any reflection step in your system. The variance you see will tell you whether you're using reflection or just paying for it. The fix path is in Section 4. The rigor is the optimization — for evaluators, for loops, for the whole system.</p>
+
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="../agentic_course_module_10/10_hallucinations.html" class="prev">&laquo; 10 Hallucinations</a>
+  <a href="../../../../index.html" class="home">Home</a>
+  <a href="../agentic_course_module_12/12_guardrails.html" class="next">12 Guardrails &raquo;</a>
+</nav>
 </body>
 </html>

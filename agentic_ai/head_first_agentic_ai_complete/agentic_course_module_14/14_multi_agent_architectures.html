@@ -32,7 +32,7 @@ body {
   color: var(--ink);
   max-width: 880px;
   margin: 0 auto;
-  padding: 36px 28px 80px 28px;
+  padding: 36px 28px 100px 28px;
   line-height: 1.65;
   font-size: 16px;
 }
@@ -1454,5 +1454,44 @@ async def run_company_researcher(
 <p>After M15, the architecture arc closes. Module 16 covers sagas — the transactional safety pattern for agent systems that take real-world actions across multiple steps. Module 17 covers observability for production agents. Module 18 is the capstone: a complete system pulling together every layer from the book.</p>
 <p>For now: take the framework from Section 6. If you have a multi-agent system in production or in design, run it through Q1-Q3 explicitly. If your system uses a pattern that doesn't match the structure of the work — orchestrator-worker for tree-structured tasks, hierarchical for flat tasks, swarm for tasks that need synthesis — the cost is real and the simplification is usually possible. Match the pattern to the structure.</p>
 <p>The architectures from M14 are powerful tools when applied to the right problems. M13's gate ensures you reach for them only when justified. M14's selection ensures you reach for the <em>right one</em> when you do. Together they're the architectural discipline that turns multi-agent from "the trendy thing we're trying" into "the right answer for the problems that need it."</p>
+
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="../agentic_course_module_13/13_multi_agent_when.html" class="prev">&laquo; 13 Multi-Agent</a>
+  <a href="../../../../index.html" class="home">Home</a>
+  <a href="../agentic_course_module_15/15_inter_agent_communication.html" class="next">15 Communication &raquo;</a>
+</nav>
 </body>
 </html>

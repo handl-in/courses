@@ -32,7 +32,7 @@ body {
   color: var(--ink);
   max-width: 880px;
   margin: 0 auto;
-  padding: 36px 28px 80px 28px;
+  padding: 36px 28px 100px 28px;
   line-height: 1.65;
   font-size: 16px;
 }
@@ -1515,5 +1515,44 @@ async def evaluator_optimizer_workflow(
 <p>Module 4 is the first of the building-blocks chapters: tools. The agent loop and the workflows we've built so far have leaned heavily on tools (web search, structured output, custom handlers) — but we haven't designed them carefully. Tool design is where most agent failures actually originate. We'll cover what makes a good tool description, how to structure schemas the model can use, the confused-deputy problem, idempotency, dry-run patterns, and the "tool result poisoning" failure mode that crashes more agents than any other single cause.</p>
 <p>After Module 4, you'll know what to put inside your hardened loop and your workflow steps. The patterns are how you compose; the tools are what the model actually calls.</p>
 <p>Sam wrote the v1 of the deal-research workflow on Thursday. It worked. They'll be back in Module 4 to figure out why one of the tools — a "company search" wrapper they slapped together — keeps producing results that the synthesizer treats with too much confidence. Tools are next.</p>
+
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="../agentic_course_module_02/02_agent_loop.html" class="prev">&laquo; 02 Agent Loop</a>
+  <a href="../../../../index.html" class="home">Home</a>
+  <a href="../agentic_course_module_04/04_tools.html" class="next">04 Tools &raquo;</a>
+</nav>
 </body>
 </html>

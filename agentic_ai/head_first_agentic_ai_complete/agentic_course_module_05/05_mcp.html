@@ -32,7 +32,7 @@ body {
   color: var(--ink);
   max-width: 880px;
   margin: 0 auto;
-  padding: 36px 28px 80px 28px;
+  padding: 36px 28px 100px 28px;
   line-height: 1.65;
   font-size: 16px;
 }
@@ -1081,5 +1081,44 @@ def deal_brief(deal_id: str) -&gt; str:
 <p>After Module 6, Modules 7-9 cover context engineering: what goes in the context window, what gets compressed away, what gets remembered across runs. By that point you'll have everything you need to build agents that are well-shaped, well-tooled, and well-fed.</p>
 <p>Sam's deal-research system, as of the end of Module 5, is multi-team, secure, and production-ready. By Module 9 it'll also be smart about what it loads into context. Then Modules 10-12 will harden it against hallucinations, give it self-correction, and put the guardrails on. The book builds.</p>
 <p>Take the audit exercise from Section 7. Write your first MCP server. Watch the moment when the second consumer connects without you changing the server's code. That moment is what the protocol is for.</p>
+
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="../agentic_course_module_04/04_tools.html" class="prev">&laquo; 04 Tools</a>
+  <a href="../../../../index.html" class="home">Home</a>
+  <a href="../agentic_course_module_06/06_choosing_models.html" class="next">06 Models &raquo;</a>
+</nav>
 </body>
 </html>

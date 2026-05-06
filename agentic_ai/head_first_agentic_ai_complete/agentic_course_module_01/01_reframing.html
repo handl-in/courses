@@ -32,7 +32,7 @@ body {
   color: var(--ink);
   max-width: 880px;
   margin: 0 auto;
-  padding: 36px 28px 80px 28px;
+  padding: 36px 28px 100px 28px;
   line-height: 1.65;
   font-size: 16px;
 }
@@ -925,5 +925,44 @@ def run_agent(user_query: str, max_turns: int = 20) -&gt; str:
 <p>Module 2 takes the minimal agent loop from Section 4 and hardens it into something you'd ship. Error handling, budget caps, partial failures, observability, the agent's relationship with its own context, and the operational instincts that turn "code that runs once successfully in a notebook" into "code that survives production." It's where the book stops talking about what agents are and starts talking about how to build them.</p>
 <p>Before Module 2 — really sit with the field guide in Section 6. The next 17 modules assume you can apply it. If you can't, the rest of the book is going to feel like it's solving the wrong problems. The discrimination between augmented call, workflow, and agent is the foundation. Build on it.</p>
 <p>Go ship something simple first. Then come back.</p>
+
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="#" class="prev disabled">&laquo; Prev</a>
+  <a href="../../../../index.html" class="home">Home</a>
+  <a href="../agentic_course_module_02/02_agent_loop.html" class="next">02 Agent Loop &raquo;</a>
+</nav>
 </body>
 </html>

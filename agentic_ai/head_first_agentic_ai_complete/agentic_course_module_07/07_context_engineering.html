@@ -32,7 +32,7 @@ body {
   color: var(--ink);
   max-width: 880px;
   margin: 0 auto;
-  padding: 36px 28px 80px 28px;
+  padding: 36px 28px 100px 28px;
   line-height: 1.65;
   font-size: 16px;
 }
@@ -947,5 +947,44 @@ sources disagree, surface the disagreement and cite both.
 <p>After Module 8, Module 9 covers memory across runs — state that persists between separate trajectories, so a customer-success agent remembers what it learned about a customer last week. By the end of the M7-M9 arc, you'll have the complete picture: what to put in, what to take out, what to remember.</p>
 <p>Sam's deal-research system, post-Module 7, has tight, well-curated context per call. By Module 9 it'll also be smart about what it carries between calls. Then Module 10 starts the reliability arc — hallucinations, reflection, guardrails — which is the layer above context.</p>
 <p>For now: take the audit exercise from Section 9. Open one production trace. Count the tokens. Find the bloat. Ship the trim. Watch the quality move.</p>
+
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="../agentic_course_module_06/06_choosing_models.html" class="prev">&laquo; 06 Models</a>
+  <a href="../../../../index.html" class="home">Home</a>
+  <a href="../agentic_course_module_08/08_compaction.html" class="next">08 Compaction &raquo;</a>
+</nav>
 </body>
 </html>

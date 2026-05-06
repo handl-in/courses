@@ -32,7 +32,7 @@ body {
   color: var(--ink);
   max-width: 880px;
   margin: 0 auto;
-  padding: 36px 28px 80px 28px;
+  padding: 36px 28px 100px 28px;
   line-height: 1.65;
   font-size: 16px;
 }
@@ -1163,5 +1163,44 @@ def update_account_email(
 <p>After Module 5, you'll know how to write tools (M4) and how to expose them at scale across services (M5). After that, Module 6 backs up to the model layer: routing requests to the right model is the next big lever, and we'll spend a module on the trade-offs.</p>
 <p>For now: take the audit exercise from Section 10. Run it against a tool you've shipped. The first time you do this exercise, you'll find issues you can't believe you missed. That's normal. Tool design is something you don't see clearly until you've been bitten by a Mercer.</p>
 <p>Sam was bitten on Monday. Don't be Sam.</p>
+
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="../agentic_course_module_03/03_workflow_patterns.html" class="prev">&laquo; 03 Workflow Patterns</a>
+  <a href="../../../../index.html" class="home">Home</a>
+  <a href="../agentic_course_module_05/05_mcp.html" class="next">05 MCP &raquo;</a>
+</nav>
 </body>
 </html>

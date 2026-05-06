@@ -32,7 +32,7 @@ body {
   color: var(--ink);
   max-width: 880px;
   margin: 0 auto;
-  padding: 36px 28px 80px 28px;
+  padding: 36px 28px 100px 28px;
   line-height: 1.65;
   font-size: 16px;
 }
@@ -1541,5 +1541,44 @@ multi-jurisdictional landscape rather than picking one or averaging across.
 <p>Module 18 is the capstone: a complete system pulling together every layer from M1-M17. Sam's deal-research workflow, customer-success bot, deal Q&amp;A agent, research-on-demand packets, regulatory-research briefs — operating together as one production agent platform.</p>
 <p>For now: take the framework from Section 8. If you have a multi-agent system in production, run the audit. If you're designing one, design with these patterns from day one. The single-agent disciplines from M2-M12 plus the multi-agent disciplines from M13-M15 are the foundation; M16-M17 are the operations layer; M18 is the integration. Six modules out of eighteen are about how to build them; the other twelve — including this one — are about how to think about them.</p>
 <p>The architecture from M14 needs the communication from M15. Together they're the multi-agent half of the book. The first half (M2-M12) was building one agent well. The second half started with the gate (M13), proceeded to the architectures (M14), and now closes the design space (M15). What's left is making it all run reliably in production. M16 next.</p>
+
+<style>
+.page-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.05em;
+}
+.page-nav a {
+  color: #fdfbf3;
+  text-decoration: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.page-nav a:hover {
+  background: rgba(255,255,255,0.15);
+}
+.page-nav .home {
+  color: #fef3a4;
+}
+.page-nav .disabled {
+  color: #555;
+  pointer-events: none;
+}
+</style>
+<nav class="page-nav">
+  <a href="../agentic_course_module_14/14_multi_agent_architectures.html" class="prev">&laquo; 14 Architectures</a>
+  <a href="../../../../index.html" class="home">Home</a>
+  <a href="../agentic_course_module_16/16_sagas.html" class="next">16 Sagas &raquo;</a>
+</nav>
 </body>
 </html>

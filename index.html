@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Head First Agentic AI — Workflows, Agents, and Multi-Agent Systems</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Patrick+Hand&family=Architects+Daughter&family=Bitter:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #fdfbf3;
+  --ink: #1a1a1a;
+  --accent: #c0392b;
+  --highlight: #b8860b;
+  --marker: #fef3a4;
+  --paper: #ffffff;
+  --softline: #d4cfb8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Bitter', Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 36px 28px 80px 28px;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 48px 20px 36px;
+  margin-bottom: 2em;
+  border-bottom: 4px solid var(--ink);
+}
+.hero h1 {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 2.8em;
+  line-height: 1.15;
+  margin-bottom: 12px;
+}
+.hero h1 span {
+  color: var(--accent);
+}
+.hero .subtitle {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5em;
+  color: var(--highlight);
+  margin-top: 8px;
+}
+.hero .meta {
+  font-family: 'Patrick Hand', cursive;
+  color: #888;
+  font-size: 1.05em;
+  margin-top: 14px;
+}
+
+/* SECTION HEADERS */
+.section-title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.65em;
+  background: var(--marker);
+  padding: 6px 14px;
+  display: inline-block;
+  border-bottom: 3px solid var(--ink);
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+
+/* MODULE GRID */
+.modules {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+  margin-top: 1em;
+}
+
+.module-card {
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 10px;
+  padding: 20px 22px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.module-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.module-card .num {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.9em;
+  color: var(--accent);
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+.module-card .title {
+  font-family: 'Architects Daughter', cursive;
+  font-size: 1.25em;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+.module-card .words {
+  font-family: 'Patrick Hand', cursive;
+  color: #999;
+  font-size: 0.95em;
+  margin-top: auto;
+}
+
+/* READING PATHS */
+.paths {
+  margin-top: 1em;
+}
+.path {
+  background: var(--paper);
+  border: 2px solid var(--softline);
+  border-radius: 8px;
+  padding: 14px 20px;
+  margin-bottom: 12px;
+}
+.path .label {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15em;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.path .route {
+  font-family: 'Bitter', Georgia, serif;
+  font-size: 0.95em;
+  color: #555;
+}
+
+/* FOOTER */
+footer {
+  margin-top: 3em;
+  padding-top: 1.5em;
+  border-top: 2px dashed var(--softline);
+  text-align: center;
+  font-family: 'Patrick Hand', cursive;
+  color: #aaa;
+  font-size: 1.05em;
+}
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .hero h1 { font-size: 2em; }
+  .hero .subtitle { font-size: 1.25em; }
+  .modules { grid-template-columns: 1fr; }
+  body { padding: 20px 16px 60px; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Head First <span>Agentic AI</span></h1>
+  <div class="subtitle">Workflows, Agents, and Multi-Agent Systems</div>
+  <div class="meta">18 modules &middot; ~139,520 words &middot; ~700 pages &middot; Head First style</div>
+</div>
+
+<div class="section-title">Modules</div>
+
+<div class="modules">
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_01/01_reframing.html">
+    <div class="num">MODULE 01</div>
+    <div class="title">Reframing: Workflows in a Trench Coat</div>
+    <div class="words">5,391 words</div>
+  </a>
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_02/02_agent_loop.html">
+    <div class="num">MODULE 02</div>
+    <div class="title">The Agent Loop, Hardened</div>
+    <div class="words">7,545 words</div>
+  </a>
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_03/03_workflow_patterns.html">
+    <div class="num">MODULE 03</div>
+    <div class="title">Workflow Patterns You Should Reach for First</div>
+    <div class="words">8,572 words</div>
+  </a>
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_04/04_tools.html">
+    <div class="num">MODULE 04</div>
+    <div class="title">Tools: Design, Description, and Disaster</div>
+    <div class="words">7,236 words</div>
+  </a>
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_05/05_mcp.html">
+    <div class="num">MODULE 05</div>
+    <div class="title">MCP Deep Dive</div>
+    <div class="words">6,381 words</div>
+  </a>
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_06/06_choosing_models.html">
+    <div class="num">MODULE 06</div>
+    <div class="title">Choosing Models / Routing as Architecture</div>
+    <div class="words">6,408 words</div>
+  </a>
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_07/07_context_engineering.html">
+    <div class="num">MODULE 07</div>
+    <div class="title">Context Engineering Principles</div>
+    <div class="words">6,733 words</div>
+  </a>
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_08/08_compaction.html">
+    <div class="num">MODULE 08</div>
+    <div class="title">Compaction and Summarization</div>
+    <div class="words">7,330 words</div>
+  </a>
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_09/09_memory.html">
+    <div class="num">MODULE 09</div>
+    <div class="title">Memory Across Runs</div>
+    <div class="words">7,533 words</div>
+  </a>
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_10/10_hallucinations.html">
+    <div class="num">MODULE 10</div>
+    <div class="title">Hallucinations</div>
+    <div class="words">8,046 words</div>
+  </a>
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_11/11_reflection.html">
+    <div class="num">MODULE 11</div>
+    <div class="title">Reflection and Self-Correction</div>
+    <div class="words">8,319 words</div>
+  </a>
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_12/12_guardrails.html">
+    <div class="num">MODULE 12</div>
+    <div class="title">Guardrails</div>
+    <div class="words">9,517 words</div>
+  </a>
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_13/13_multi_agent_when.html">
+    <div class="num">MODULE 13</div>
+    <div class="title">When Multi-Agent Earns Complexity</div>
+    <div class="words">8,015 words</div>
+  </a>
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_14/14_multi_agent_architectures.html">
+    <div class="num">MODULE 14</div>
+    <div class="title">Multi-Agent Architectures</div>
+    <div class="words">8,070 words</div>
+  </a>
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_15/15_inter_agent_communication.html">
+    <div class="num">MODULE 15</div>
+    <div class="title">Inter-Agent Communication</div>
+    <div class="words">9,153 words</div>
+  </a>
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_16/16_sagas.html">
+    <div class="num">MODULE 16</div>
+    <div class="title">Sagas: Transactional Safety for Agent Actions</div>
+    <div class="words">8,853 words</div>
+  </a>
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_17/17_observability.html">
+    <div class="num">MODULE 17</div>
+    <div class="title">Observability for Production Agents</div>
+    <div class="words">8,423 words</div>
+  </a>
+  <a class="module-card" href="agentic_ai/head_first_agentic_ai_complete/agentic_course_module_18/18_capstone.html">
+    <div class="num">MODULE 18</div>
+    <div class="title">The Capstone</div>
+    <div class="words">7,995 words</div>
+  </a>
+</div>
+
+<div class="section-title">Reading Paths</div>
+
+<div class="paths">
+  <div class="path">
+    <div class="label">New project</div>
+    <div class="route">M1 &rarr; M2-M3, then M13 to determine if multi-agent applies</div>
+  </div>
+  <div class="path">
+    <div class="label">Struggling project</div>
+    <div class="route">M11-M12 + M16-M17 (the layers most often missing)</div>
+  </div>
+  <div class="path">
+    <div class="label">Multi-agent design</div>
+    <div class="route">M13 &rarr; M14 &rarr; M15</div>
+  </div>
+  <div class="path">
+    <div class="label">Operational issues</div>
+    <div class="route">M16 + M17</div>
+  </div>
+  <div class="path">
+    <div class="label">Tool design problems</div>
+    <div class="route">M4 &rarr; M5</div>
+  </div>
+  <div class="path">
+    <div class="label">Context bloat / cost issues</div>
+    <div class="route">M7 &rarr; M8</div>
+  </div>
+  <div class="path">
+    <div class="label">Hallucination issues</div>
+    <div class="route">M10 &rarr; M11</div>
+  </div>
+  <div class="path">
+    <div class="label">"Agent does the wrong thing"</div>
+    <div class="route">M12 first</div>
+  </div>
+  <div class="path">
+    <div class="label">"Agent gets stuck or fails weirdly"</div>
+    <div class="route">M2 + M17</div>
+  </div>
+</div>
+
+<footer>
+  <p>The disciplines that turn AI agent development from an art into an engineering practice.</p>
+  <p style="margin-top: 8px;"><a href="https://github.com/handl-in/courses">GitHub</a></p>
+</footer>
+
+</body>
+</html>
